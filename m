@@ -2,124 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09B7C45F6CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 23:19:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 009F545F6D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 23:20:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243454AbhKZWWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 17:22:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53222 "EHLO
+        id S244913AbhKZWYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 17:24:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243532AbhKZWUH (ORCPT
+        with ESMTP id S233615AbhKZWWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 17:20:07 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85BAC06173E;
-        Fri, 26 Nov 2021 14:16:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EntB1bbOJyfmGweu3RU+T8l6UeFUccPmGGuVsMlG2Eo=; b=AC8lhUU5E49eFZoE4e2sHAnAX9
-        kHHIAqB6luQZYLE4LWZ7ew4taByaDQ3nIwp6HUbjkeIXIYYgmmvQyL++HpXPPAuEoWjKaVtpuUv0J
-        hDRUuMHv3vB6OavPVAlSbd8/4HJNbAj7iGK8yieFViHswVFTxtksTJZiwGFqbhpneWAr3PTa5BBq5
-        cXM7HmcBycjUxcQ73JPFl0lFgYBu+hi3Be2LqMatUPmHoWKFaBNHeb3mn7R7UQBMcP8MuOo3H/d1D
-        paiCR2xp77kYzrGSFDvuDHl6XvX6ujijYsTZOu2obCZpfqqjmUiurJR2T6IOuSr/GsmMrTSNQFSlW
-        JMOb6tZA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mqjWN-00CN1H-DW; Fri, 26 Nov 2021 22:16:44 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4E2D83000DD;
-        Fri, 26 Nov 2021 23:16:43 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 338A52DC5775F; Fri, 26 Nov 2021 23:16:43 +0100 (CET)
-Date:   Fri, 26 Nov 2021 23:16:43 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Peter Oskolkov <posk@posk.io>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-api@vger.kernel.org, Paul Turner <pjt@google.com>,
-        Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@google.com>,
-        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
-        Thierry Delisle <tdelisle@uwaterloo.ca>
-Subject: Re: [PATCH v0.9.1 3/6] sched/umcg: implement UMCG syscalls
-Message-ID: <YaFcyzq0WpnXu+2R@hirez.programming.kicks-ass.net>
-References: <20211122211327.5931-1-posk@google.com>
- <20211122211327.5931-4-posk@google.com>
- <20211124200822.GF721624@worktop.programming.kicks-ass.net>
- <CAFTs51Uka8VRCHuGidw7mRwATufp87U6S8SWUVod_kU-h6T3ew@mail.gmail.com>
- <YaEUts3RbOLyvAjl@hirez.programming.kicks-ass.net>
+        Fri, 26 Nov 2021 17:22:04 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA6B5C061574;
+        Fri, 26 Nov 2021 14:18:50 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id o13so21384219wrs.12;
+        Fri, 26 Nov 2021 14:18:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8YPOf/hryHXLNf5LZMrhfLPR/t5FxaDsdYpZZbn9qeA=;
+        b=SAOmx1u+b9+/SH8EqbHf0gb/dxmO2bkyeCAIwQBrMKZ7EvZvpx3ScaGlZxHm8jT95Z
+         swm58WRmEwpOkEjxMVi+lqc5bX0TzP7BaGyGByM7VGLfbEkM7dpkEInJcnCKM/uCUf5L
+         RE+2FkoY0n1sNWSVnlLqXdldFP5/9OxFlijQaXSi6aKzJWard7iMkkBu+IraRbvMqdV8
+         fAHj/Fo4wmoZ2xYx8FPu+KyhgS0WtlpndS4Bp/1y+st3QRx2eNtF/bMlPD+PIHUejNJT
+         fEMuhHvXmfOHQfIB9teoiqOu6l1X3r17Y4aIiIEib6f1CWt1Fl0f8hyKcm74QKYyLfMj
+         tsQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8YPOf/hryHXLNf5LZMrhfLPR/t5FxaDsdYpZZbn9qeA=;
+        b=eW0H2SH5MP4jGvhXVza4QwVbw70uq/lSuDMwFDTqa+IILIto4+tYFPHhlNrHzj6en8
+         q9RJVir+zl2hR+igJ9IACSVyRfQlJ89LPY3B6/P5SJL6UneVc7UIs0paVywChSc6hUGm
+         88bXn2d8lRhCNdWni8ZMyEv+BOppMYzUSWMycouA29G5MwxcrFKYz48FOSJ24u/tcX6q
+         kY0vaqpts8hW5/ypNZNH7Jnbi+Tr59KCH8sj712UKV+RvpWMm8SsNTR9AiFVx0IJNCs8
+         F4UimJFOSwvqSoCvRdP+/f+XUyjnnwvtS2dfaFtODhsRgBQNQwm7aUKIEXhjQ5azIIqp
+         L+IA==
+X-Gm-Message-State: AOAM5324upOW+xtueqIqWbDKNOYYQz/FICvzulijoAMYua41NakPIhVy
+        LFrQVmPRrmq4sQ==
+X-Google-Smtp-Source: ABdhPJzpv1hu+dk1JBApzyvzlN/nfu36ibqkZGgaQtsO4EvvZHjLPhpWgb7j1GDiHcPgqf2FxMTJGg==
+X-Received: by 2002:adf:cc91:: with SMTP id p17mr16899891wrj.589.1637965129359;
+        Fri, 26 Nov 2021 14:18:49 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id j40sm8547915wms.16.2021.11.26.14.18.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Nov 2021 14:18:49 -0800 (PST)
+From:   Colin Ian King <colin.i.king@googlemail.com>
+X-Google-Original-From: Colin Ian King <colin.i.king@gmail.com>
+To:     Tony Luck <tony.luck@intel.com>, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>, linux-edac@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] EDAC/sb_edac: Remove redundant initialization of variable rc
+Date:   Fri, 26 Nov 2021 22:18:48 +0000
+Message-Id: <20211126221848.1125321-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YaEUts3RbOLyvAjl@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 06:09:10PM +0100, Peter Zijlstra wrote:
+The variable rc is being initialized with a value that is never
+read, it is being updated later on. The assignment is redundant and
+can be removed.
 
-> @@ -155,8 +159,7 @@ static unsigned long exit_to_user_mode_l
->  	 * Before returning to user space ensure that all pending work
->  	 * items have been completed.
->  	 */
-> -	while (ti_work & EXIT_TO_USER_MODE_WORK) {
-> -
-> +	do {
->  		local_irq_enable_exit_to_user(ti_work);
->  
->  		if (ti_work & _TIF_NEED_RESCHED)
-> @@ -168,6 +171,10 @@ static unsigned long exit_to_user_mode_l
->  		if (ti_work & _TIF_PATCH_PENDING)
->  			klp_update_patch_state(current);
->  
-> +		/* must be before handle_signal_work(); terminates on sigpending */
-> +		if (ti_work & _TIF_UMCG)
-> +			umcg_notify_resume(regs);
-> +
->  		if (ti_work & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL))
->  			handle_signal_work(regs, ti_work);
->  
-> @@ -188,7 +195,7 @@ static unsigned long exit_to_user_mode_l
->  		tick_nohz_user_enter_prepare();
->  
->  		ti_work = READ_ONCE(current_thread_info()->flags);
-> -	}
-> +	} while (ti_work & EXIT_TO_USER_MODE_WORK);
->  
->  	/* Return the latest work state for arch_exit_to_user_mode() */
->  	return ti_work;
-> @@ -203,7 +210,7 @@ static void exit_to_user_mode_prepare(st
->  	/* Flush pending rcuog wakeup before the last need_resched() check */
->  	tick_nohz_user_enter_prepare();
->  
-> -	if (unlikely(ti_work & EXIT_TO_USER_MODE_WORK))
-> +	if (unlikely(ti_work & (EXIT_TO_USER_MODE_WORK | _TIF_UMCG)))
->  		ti_work = exit_to_user_mode_loop(regs, ti_work);
->  
->  	arch_exit_to_user_mode_prepare(regs, ti_work);
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/edac/sb_edac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thomas, since you're looking at this. I'm not quite sure I got this
-right. The intent is that when _TIF_UMCG is set (and it is never cleared
-until the task unregisters) it is called at least once.
-
-The thinking is that if umcg_wait() gets interrupted, we'll drop out,
-handle the signal and then resume the wait, which can obviously happen
-any number of times.
-
-It's just that I'm never quite sure where signal crud happens; I'm
-assuming handle_signal_work() simply mucks about with regs (sets sp and
-ip etc.. to the signal stack) and drops out of kernel mode, and on
-re-entry we do this whole merry cycle once again. But I never actually
-dug that deep.
-
+diff --git a/drivers/edac/sb_edac.c b/drivers/edac/sb_edac.c
+index 1522d4aa2ca6..9678ab97c7ac 100644
+--- a/drivers/edac/sb_edac.c
++++ b/drivers/edac/sb_edac.c
+@@ -3439,7 +3439,7 @@ MODULE_DEVICE_TABLE(x86cpu, sbridge_cpuids);
+ 
+ static int sbridge_probe(const struct x86_cpu_id *id)
+ {
+-	int rc = -ENODEV;
++	int rc;
+ 	u8 mc, num_mc = 0;
+ 	struct sbridge_dev *sbridge_dev;
+ 	struct pci_id_table *ptable = (struct pci_id_table *)id->driver_data;
+-- 
+2.33.1
 
