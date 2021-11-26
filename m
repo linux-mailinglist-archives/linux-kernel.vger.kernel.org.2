@@ -2,66 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D2E45F628
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 22:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC4945F631
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 22:16:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238112AbhKZVM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 16:12:28 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:46948 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238715AbhKZVK1 (ORCPT
+        id S241551AbhKZVTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 16:19:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241310AbhKZVRj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 16:10:27 -0500
-Received: from mail.kernel.org (unknown [198.145.29.99])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BDB4CB828FB;
-        Fri, 26 Nov 2021 21:07:12 +0000 (UTC)
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2C8DA60184;
-        Fri, 26 Nov 2021 21:07:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637960831;
-        bh=LQrmHwWDfECeJoOBW4ERPbA+s0p1dR9xtWBXrvG3taY=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=j9wNEcX+a4hrvzaOEESWvsjuBI1Q+nRLozIXry9A/RRMc4xET67SADVbvqp0nA89o
-         BjD9pGC0kuJLd5PAnQBPyuJtfp5eVEjv9A+31tS4qYSiFyNmvKVAA4MznbJZ7azm50
-         uyYYzfAY2J+RXHyUc52x9y5i46ou6TTap2xLiSOMf7+yaDLVIjLeBKy0tfBPbRD9gf
-         z3lslbfFGCc9ff/Idb16Dt+uFgHT8B7++y67iTcbSHueM0lDTLVFMEjYNide1BB71D
-         D5BKUXouDKPdISSoi0rXsrv2WnHegt+8a5PAFb1wQmql2bvpYv6z9DhS6Ra61reXRn
-         biG546UNsNpnA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 16793609BA;
-        Fri, 26 Nov 2021 21:07:11 +0000 (UTC)
-Subject: Re: [GIT PULL] Networking for 5.16-rc3
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211126205348.1807629-1-kuba@kernel.org>
-References: <20211126205348.1807629-1-kuba@kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211126205348.1807629-1-kuba@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.16-rc3
-X-PR-Tracked-Commit-Id: b3612ccdf2841c64ae7a8dd9e780c91240093fe6
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c5c17547b778975b3d83a73c8d84e8fb5ecf3ba5
-Message-Id: <163796083103.23165.1266886008125183216.pr-tracker-bot@kernel.org>
-Date:   Fri, 26 Nov 2021 21:07:11 +0000
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        Fri, 26 Nov 2021 16:17:39 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06239C061379;
+        Fri, 26 Nov 2021 13:08:17 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637960895;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=f6VUv4Z18iiVkYNnHOfhYKc+DQU8mlJLl1Ev8ZazBU0=;
+        b=DU2kSHhLtGnX5Fg26OQwu7y/i8DrtEnvezQfnAeUGVSMr7tG8SmqRbFi6laxe6J1393G0i
+        daMgBCVSJ72QK5MH8iZPI2Da2hBLeGngGM9FHYo9NgkVjqwdM1tnfrI6gMVylsweu8+yWZ
+        32cg4FavROT6Rz47R0ppjPM4zDZZ9p1k1Jq8kh0yHiPVrexA2J0adb54AsdjqjUV/knSLb
+        nScQ89Nk+60yNfIkTT9Y1paTTvlusCSj0biO5paVLXKRkGFmxD+nJs8RTP3Pyx86qanVNm
+        I1p9T9oXRkq2UxcoXsnHOrO3Nyrzf0TzOAV+NvcUifdQWi+/QA2N4VwL281gIw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637960895;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=f6VUv4Z18iiVkYNnHOfhYKc+DQU8mlJLl1Ev8ZazBU0=;
+        b=vYDvWMO+6QFlanuZcOzyQH1Qg2pXZJYikz93JSFQCQTmUNkeqYUQnXCEQDMcYMK4WIGB1l
+        HJN8zF2MfU7nTKDQ==
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Peter Oskolkov <posk@posk.io>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org, Paul Turner <pjt@google.com>,
+        Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>
+Subject: Re: [PATCH v0.9.1 3/6] sched/umcg: implement UMCG syscalls
+In-Reply-To: <YaEUts3RbOLyvAjl@hirez.programming.kicks-ass.net>
+References: <20211122211327.5931-1-posk@google.com>
+ <20211122211327.5931-4-posk@google.com>
+ <20211124200822.GF721624@worktop.programming.kicks-ass.net>
+ <CAFTs51Uka8VRCHuGidw7mRwATufp87U6S8SWUVod_kU-h6T3ew@mail.gmail.com>
+ <YaEUts3RbOLyvAjl@hirez.programming.kicks-ass.net>
+Date:   Fri, 26 Nov 2021 22:08:14 +0100
+Message-ID: <87a6hqhbgh.ffs@tglx>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 26 Nov 2021 12:53:48 -0800:
+On Fri, Nov 26 2021 at 18:09, Peter Zijlstra wrote:
+> +
+> +	if (timo) {
+> +		hrtimer_init_sleeper_on_stack(&timeout, tsk->umcg_clock,
+> +					      HRTIMER_MODE_ABS);
+> +		hrtimer_set_expires_range_ns(&timeout.timer, (s64)timo,
+> +					     tsk->timer_slack_ns);
+> +	}
+> +
+> +	for (;;) {
+> +		set_current_state(TASK_INTERRUPTIBLE);
+> +
+> +		ret = -EINTR;
+> +		if (signal_pending(current))
+> +			break;
+> +
+> +		/*
+> +		 * Faults can block and scribble our wait state.
+> +		 */
+> +		pagefault_disable();
+> +		if (get_user(state, &self->state)) {
+> +			pagefault_enable();
+> +
+> +			ret = -EFAULT;
+> +			if (page) {
+> +				unpin_user_page(page);
+> +				page = NULL;
+> +				break;
+> +			}
+> +
+> +			if (pin_user_pages_fast((unsigned long)self, 1, 0, &page) != 1) {
+> +				page = NULL;
+> +				break;
+> +			}
+> +
+> +			continue;
+> +		}
+> +
+> +		if (page) {
+> +			unpin_user_page(page);
+> +			page = NULL;
+> +		}
+> +		pagefault_enable();
+> +
+> +		state &= UMCG_TASK_MASK;
+> +		if (state != UMCG_TASK_RUNNABLE) {
+> +			ret = 0;
+> +			if (state == UMCG_TASK_RUNNING)
+> +				break;
+> +
+> +			ret = -EINVAL;
+> +			break;
+> +		}
+> +
+> +		if (timo)
+> +			hrtimer_sleeper_start_expires(&timeout, HRTIMER_MODE_ABS);
+> +
+> +		freezable_schedule();
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.16-rc3
+You can replace the whole hrtimer foo with
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c5c17547b778975b3d83a73c8d84e8fb5ecf3ba5
+                if (!schedule_hrtimeout_range_clock(timo ? &timo : NULL,
+                                                    tsk->timer_slack_ns,
+                                                    HRTIMER_MODE_ABS,
+                                                    tsk->umcg_clock)) {
+                	ret = -ETIMEOUT;
+                        break;
+                }
 
-Thank you!
+Thanks,
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+        tglx
