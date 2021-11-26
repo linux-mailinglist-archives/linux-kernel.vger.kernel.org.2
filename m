@@ -2,248 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD3945F109
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:48:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB6F45F0E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:42:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378248AbhKZPvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 10:51:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232773AbhKZPtG (ORCPT
+        id S1354133AbhKZPqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 10:46:01 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4174 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1377923AbhKZPoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 10:49:06 -0500
-X-Greylist: delayed 386 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 26 Nov 2021 07:41:37 PST
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A691C0613A5;
-        Fri, 26 Nov 2021 07:41:37 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7FFE9B82815;
-        Fri, 26 Nov 2021 15:35:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AB04C53FAD;
-        Fri, 26 Nov 2021 15:35:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637940908;
-        bh=7sGaivk9SIBD3rEdzn/r1iB88vdis4bTEwAuVWFRCvE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uUWlqUFGnhlJn1s++MwNx1a7X5w9RGrQ4m6hkpAuyyqNQp6k6vBA9XSdN6v3SpLkQ
-         KFOsQh6Qawe95gc1FRT/Ki46HivGgBrLiJZDjgSf0koIj7FqrEZgHsePAptmeXKj9V
-         BHip6rWp1DJC9+3yvsp7Xygs/aQgqX/pHvZSFV5yhfAhxhY6KMrcLsFu3gbvyynC1o
-         cYv7s+VOwZ1ntxvsVKSLKPCOeXqUbYX4who9W6davgumiUGNjFxTz1H2Dh3LACysZx
-         45syM3eGVPcmNkzamWmF2XrIE8o8ui0TRv5DACUUi09mppkHxeuVXlAXXobGCtOtWB
-         Hsgu4p20ietPQ==
-Received: by mail-oi1-f171.google.com with SMTP id bk14so19505840oib.7;
-        Fri, 26 Nov 2021 07:35:08 -0800 (PST)
-X-Gm-Message-State: AOAM530vBrcJKKzaDTB8PIxj9HN8N9DLjR3hBa12mw3ClWmcwnAww9dO
-        BGa5XlpirSrTdvv36GeT/dOvjKSNa9QpGjq7wQM=
-X-Google-Smtp-Source: ABdhPJxNG3xC9NI07rXwe6DyWfvVUgUCBphev89HAiaPLfYDO1heU9rqkPr/jzYT6Bo3WlKzjuk0GnXApSegmgt4JjQ=
-X-Received: by 2002:aca:ad95:: with SMTP id w143mr23154242oie.47.1637940907278;
- Fri, 26 Nov 2021 07:35:07 -0800 (PST)
+        Fri, 26 Nov 2021 10:44:00 -0500
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4J0zPX2h4tz67fMV;
+        Fri, 26 Nov 2021 23:36:48 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 26 Nov 2021 16:40:45 +0100
+Received: from localhost.localdomain (10.69.192.58) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 26 Nov 2021 15:40:42 +0000
+From:   John Garry <john.garry@huawei.com>
+To:     <jinpu.wang@cloud.ionos.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>
+CC:     <Viswas.G@microchip.com>, <Ajish.Koshy@microchip.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCH] scsi: pm8001: Fix phys_to_virt() usage on dma_addr_t
+Date:   Fri, 26 Nov 2021 23:35:33 +0800
+Message-ID: <1637940933-107862-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-References: <20211126143329.2689618-1-arnd@kernel.org>
-In-Reply-To: <20211126143329.2689618-1-arnd@kernel.org>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 26 Nov 2021 16:34:56 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGBVfvpD4n6LT1Y=61apibu1Nir0z53k=uguZ9-0vDiWw@mail.gmail.com>
-Message-ID: <CAMj1kXGBVfvpD4n6LT1Y=61apibu1Nir0z53k=uguZ9-0vDiWw@mail.gmail.com>
-Subject: Re: [PATCH] crypto: siphash - use _unaligned version by default
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jean-Philippe Aumasson <jeanphilippe.aumasson@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Nov 2021 at 16:02, Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> On ARM v6 and later, we define CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
-> because the ordinary load/store instructions (ldr, ldrh, ldrb) can
-> tolerate any misalignment of the memory address. However, load/store
-> double and load/store multiple instructions (ldrd, ldm) may still only
-> be used on memory addresses that are 32-bit aligned, and so we have to
-> use the CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS macro with care, or we
-> may end up with a severe performance hit due to alignment traps that
-> require fixups by the kernel. Testing shows that this currently happens
-> with clang-13 but not gcc-11. In theory, any compiler version can
-> produce this bug or other problems, as we are dealing with undefined
-> behavior in C99 even on architectures that support this in hardware,
-> see also https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100363.
->
-> Fortunately, the get_unaligned() accessors do the right thing: when
-> building for ARMv6 or later, the compiler will emit unaligned accesses
-> using the ordinary load/store instructions (but avoid the ones that
-> require 32-bit alignment). When building for older ARM, those accessors
-> will emit the appropriate sequence of ldrb/mov/orr instructions. And on
-> architectures that can truly tolerate any kind of misalignment, the
-> get_unaligned() accessors resolve to the leXX_to_cpup accessors that
-> operate on aligned addresses.
->
-> Since the compiler will in fact emit ldrd or ldm instructions when
-> building this code for ARM v6 or later, the solution is to use the
-> unaligned accessors unconditionally on architectures where this is
-> known to be fast. The _aligned version of the hash function is
-> however still needed to get the best performance on architectures
-> that cannot do any unaligned access in hardware.
->
-> This new version avoids the undefined behavior and should produce
-> the fastest hash on all architectures we support.
->
-> Link: https://lore.kernel.org/linux-arm-kernel/20181008211554.5355-4-ard.biesheuvel@linaro.org/
-> Reported-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-> Fixes: 2c956a60778c ("siphash: add cryptographically secure PRF")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+The driver supports a "direct" mode of operation, where the SMP req frame
+is directly copied into the command payload (and vice-versa for the SMP
+resp).
 
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
+To get at the SMP req frame data in the scatterlist the driver uses
+phys_to_virt() on the DMA mapped memory dma_addr_t . This is broken,
+and subsequently crashes as follows when an IOMMU is enabled:
 
-> ---
->  include/linux/siphash.h | 14 ++++----------
->  lib/siphash.c           | 12 ++++++------
->  2 files changed, 10 insertions(+), 16 deletions(-)
->
-> diff --git a/include/linux/siphash.h b/include/linux/siphash.h
-> index bf21591a9e5e..0cda61855d90 100644
-> --- a/include/linux/siphash.h
-> +++ b/include/linux/siphash.h
-> @@ -27,9 +27,7 @@ static inline bool siphash_key_is_zero(const siphash_key_t *key)
->  }
->
->  u64 __siphash_aligned(const void *data, size_t len, const siphash_key_t *key);
-> -#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
->  u64 __siphash_unaligned(const void *data, size_t len, const siphash_key_t *key);
-> -#endif
->
->  u64 siphash_1u64(const u64 a, const siphash_key_t *key);
->  u64 siphash_2u64(const u64 a, const u64 b, const siphash_key_t *key);
-> @@ -82,10 +80,9 @@ static inline u64 ___siphash_aligned(const __le64 *data, size_t len,
->  static inline u64 siphash(const void *data, size_t len,
->                           const siphash_key_t *key)
->  {
-> -#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
-> -       if (!IS_ALIGNED((unsigned long)data, SIPHASH_ALIGNMENT))
-> +       if (IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) ||
-> +           !IS_ALIGNED((unsigned long)data, SIPHASH_ALIGNMENT))
->                 return __siphash_unaligned(data, len, key);
-> -#endif
->         return ___siphash_aligned(data, len, key);
->  }
->
-> @@ -96,10 +93,8 @@ typedef struct {
->
->  u32 __hsiphash_aligned(const void *data, size_t len,
->                        const hsiphash_key_t *key);
-> -#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
->  u32 __hsiphash_unaligned(const void *data, size_t len,
->                          const hsiphash_key_t *key);
-> -#endif
->
->  u32 hsiphash_1u32(const u32 a, const hsiphash_key_t *key);
->  u32 hsiphash_2u32(const u32 a, const u32 b, const hsiphash_key_t *key);
-> @@ -135,10 +130,9 @@ static inline u32 ___hsiphash_aligned(const __le32 *data, size_t len,
->  static inline u32 hsiphash(const void *data, size_t len,
->                            const hsiphash_key_t *key)
->  {
-> -#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
-> -       if (!IS_ALIGNED((unsigned long)data, HSIPHASH_ALIGNMENT))
-> +       if (IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) ||
-> +           !IS_ALIGNED((unsigned long)data, HSIPHASH_ALIGNMENT))
->                 return __hsiphash_unaligned(data, len, key);
-> -#endif
->         return ___hsiphash_aligned(data, len, key);
->  }
->
-> diff --git a/lib/siphash.c b/lib/siphash.c
-> index a90112ee72a1..72b9068ab57b 100644
-> --- a/lib/siphash.c
-> +++ b/lib/siphash.c
-> @@ -49,6 +49,7 @@
->         SIPROUND; \
->         return (v0 ^ v1) ^ (v2 ^ v3);
->
-> +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
->  u64 __siphash_aligned(const void *data, size_t len, const siphash_key_t *key)
->  {
->         const u8 *end = data + len - (len % sizeof(u64));
-> @@ -80,8 +81,8 @@ u64 __siphash_aligned(const void *data, size_t len, const siphash_key_t *key)
->         POSTAMBLE
->  }
->  EXPORT_SYMBOL(__siphash_aligned);
-> +#endif
->
-> -#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
->  u64 __siphash_unaligned(const void *data, size_t len, const siphash_key_t *key)
->  {
->         const u8 *end = data + len - (len % sizeof(u64));
-> @@ -113,7 +114,6 @@ u64 __siphash_unaligned(const void *data, size_t len, const siphash_key_t *key)
->         POSTAMBLE
->  }
->  EXPORT_SYMBOL(__siphash_unaligned);
-> -#endif
->
->  /**
->   * siphash_1u64 - compute 64-bit siphash PRF value of a u64
-> @@ -250,6 +250,7 @@ EXPORT_SYMBOL(siphash_3u32);
->         HSIPROUND; \
->         return (v0 ^ v1) ^ (v2 ^ v3);
->
-> +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
->  u32 __hsiphash_aligned(const void *data, size_t len, const hsiphash_key_t *key)
->  {
->         const u8 *end = data + len - (len % sizeof(u64));
-> @@ -280,8 +281,8 @@ u32 __hsiphash_aligned(const void *data, size_t len, const hsiphash_key_t *key)
->         HPOSTAMBLE
->  }
->  EXPORT_SYMBOL(__hsiphash_aligned);
-> +#endif
->
-> -#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
->  u32 __hsiphash_unaligned(const void *data, size_t len,
->                          const hsiphash_key_t *key)
->  {
-> @@ -313,7 +314,6 @@ u32 __hsiphash_unaligned(const void *data, size_t len,
->         HPOSTAMBLE
->  }
->  EXPORT_SYMBOL(__hsiphash_unaligned);
-> -#endif
->
->  /**
->   * hsiphash_1u32 - compute 64-bit hsiphash PRF value of a u32
-> @@ -418,6 +418,7 @@ EXPORT_SYMBOL(hsiphash_4u32);
->         HSIPROUND; \
->         return v1 ^ v3;
->
-> +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
->  u32 __hsiphash_aligned(const void *data, size_t len, const hsiphash_key_t *key)
->  {
->         const u8 *end = data + len - (len % sizeof(u32));
-> @@ -438,8 +439,8 @@ u32 __hsiphash_aligned(const void *data, size_t len, const hsiphash_key_t *key)
->         HPOSTAMBLE
->  }
->  EXPORT_SYMBOL(__hsiphash_aligned);
-> +#endif
->
-> -#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
->  u32 __hsiphash_unaligned(const void *data, size_t len,
->                          const hsiphash_key_t *key)
->  {
-> @@ -461,7 +462,6 @@ u32 __hsiphash_unaligned(const void *data, size_t len,
->         HPOSTAMBLE
->  }
->  EXPORT_SYMBOL(__hsiphash_unaligned);
-> -#endif
->
->  /**
->   * hsiphash_1u32 - compute 32-bit hsiphash PRF value of a u32
-> --
-> 2.29.2
->
+ Unable to handle kernel paging request at virtual address
+ffff0000fcebfb00
+	...
+ pc : pm80xx_chip_smp_req+0x2d0/0x3d0
+ lr : pm80xx_chip_smp_req+0xac/0x3d0
+ pm80xx_chip_smp_req+0x2d0/0x3d0
+ pm8001_task_exec.constprop.0+0x368/0x520
+ pm8001_queue_command+0x1c/0x30
+ smp_execute_task_sg+0xdc/0x204
+ sas_discover_expander.part.0+0xac/0x6cc
+ sas_discover_root_expander+0x8c/0x150
+ sas_discover_domain+0x3ac/0x6a0
+ process_one_work+0x1d0/0x354
+ worker_thread+0x13c/0x470
+ kthread+0x17c/0x190
+ ret_from_fork+0x10/0x20
+ Code: 371806e1 910006d6 6b16033f 54000249 (38766b05)
+ ---[ end trace b91d59aaee98ea2d ]---
+note: kworker/u192:0[7] exited with preempt_count 1
+
+Instead use kmap{_atomic}().
+
+Signed-off-by: John Garry <john.garry@huawei.com>
+--
+I would appreciate if someone could test this change a bit more.
+
+Even though my system boots and I can mount the disks now, SCSI error
+handling kicks eventually in for some erroneously completed tasks.
+That's even on my x86 machine, IIRC. I think the card FW needs updating.
+
+diff --git a/drivers/scsi/pm8001/pm80xx_hwi.c b/drivers/scsi/pm8001/pm80xx_hwi.c
+index b9f6d83ff380..0e2221b4f411 100644
+--- a/drivers/scsi/pm8001/pm80xx_hwi.c
++++ b/drivers/scsi/pm8001/pm80xx_hwi.c
+@@ -3053,7 +3053,6 @@ mpi_smp_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
+ 	struct smp_completion_resp *psmpPayload;
+ 	struct task_status_struct *ts;
+ 	struct pm8001_device *pm8001_dev;
+-	char *pdma_respaddr = NULL;
+ 
+ 	psmpPayload = (struct smp_completion_resp *)(piomb + 4);
+ 	status = le32_to_cpu(psmpPayload->status);
+@@ -3080,19 +3079,23 @@ mpi_smp_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
+ 		if (pm8001_dev)
+ 			atomic_dec(&pm8001_dev->running_req);
+ 		if (pm8001_ha->smp_exp_mode == SMP_DIRECT) {
++			struct scatterlist *sg_resp = &t->smp_task.smp_resp;
++			u8 *payload;
++			void *to;
++
+ 			pm8001_dbg(pm8001_ha, IO,
+ 				   "DIRECT RESPONSE Length:%d\n",
+ 				   param);
+-			pdma_respaddr = (char *)(phys_to_virt(cpu_to_le64
+-						((u64)sg_dma_address
+-						(&t->smp_task.smp_resp))));
++			to = kmap_atomic(sg_page(sg_resp));
++			payload = to + sg_resp->offset;
+ 			for (i = 0; i < param; i++) {
+-				*(pdma_respaddr+i) = psmpPayload->_r_a[i];
++				*(payload + i) = psmpPayload->_r_a[i];
+ 				pm8001_dbg(pm8001_ha, IO,
+ 					   "SMP Byte%d DMA data 0x%x psmp 0x%x\n",
+-					   i, *(pdma_respaddr + i),
++					   i, *(payload + i),
+ 					   psmpPayload->_r_a[i]);
+ 			}
++			kunmap_atomic(to);
+ 		}
+ 		break;
+ 	case IO_ABORTED:
+@@ -4236,14 +4239,14 @@ static int pm80xx_chip_smp_req(struct pm8001_hba_info *pm8001_ha,
+ 	struct sas_task *task = ccb->task;
+ 	struct domain_device *dev = task->dev;
+ 	struct pm8001_device *pm8001_dev = dev->lldd_dev;
+-	struct scatterlist *sg_req, *sg_resp;
++	struct scatterlist *sg_req, *sg_resp, *smp_req;
+ 	u32 req_len, resp_len;
+ 	struct smp_req smp_cmd;
+ 	u32 opc;
+ 	struct inbound_queue_table *circularQ;
+-	char *preq_dma_addr = NULL;
+-	__le64 tmp_addr;
+ 	u32 i, length;
++	u8 *payload;
++	u8 *to;
+ 
+ 	memset(&smp_cmd, 0, sizeof(smp_cmd));
+ 	/*
+@@ -4280,8 +4283,9 @@ static int pm80xx_chip_smp_req(struct pm8001_hba_info *pm8001_ha,
+ 		pm8001_ha->smp_exp_mode = SMP_INDIRECT;
+ 
+ 
+-	tmp_addr = cpu_to_le64((u64)sg_dma_address(&task->smp_task.smp_req));
+-	preq_dma_addr = (char *)phys_to_virt(tmp_addr);
++	smp_req = &task->smp_task.smp_req;
++	to = kmap(sg_page(smp_req));
++	payload = to + smp_req->offset;
+ 
+ 	/* INDIRECT MODE command settings. Use DMA */
+ 	if (pm8001_ha->smp_exp_mode == SMP_INDIRECT) {
+@@ -4289,7 +4293,7 @@ static int pm80xx_chip_smp_req(struct pm8001_hba_info *pm8001_ha,
+ 		/* for SPCv indirect mode. Place the top 4 bytes of
+ 		 * SMP Request header here. */
+ 		for (i = 0; i < 4; i++)
+-			smp_cmd.smp_req16[i] = *(preq_dma_addr + i);
++			smp_cmd.smp_req16[i] = *(payload + i);
+ 		/* exclude top 4 bytes for SMP req header */
+ 		smp_cmd.long_smp_req.long_req_addr =
+ 			cpu_to_le64((u64)sg_dma_address
+@@ -4320,20 +4324,20 @@ static int pm80xx_chip_smp_req(struct pm8001_hba_info *pm8001_ha,
+ 		pm8001_dbg(pm8001_ha, IO, "SMP REQUEST DIRECT MODE\n");
+ 		for (i = 0; i < length; i++)
+ 			if (i < 16) {
+-				smp_cmd.smp_req16[i] = *(preq_dma_addr+i);
++				smp_cmd.smp_req16[i] = *(payload+i);
+ 				pm8001_dbg(pm8001_ha, IO,
+ 					   "Byte[%d]:%x (DMA data:%x)\n",
+ 					   i, smp_cmd.smp_req16[i],
+-					   *(preq_dma_addr));
++					   *(payload));
+ 			} else {
+-				smp_cmd.smp_req[i] = *(preq_dma_addr+i);
++				smp_cmd.smp_req[i] = *(payload+i);
+ 				pm8001_dbg(pm8001_ha, IO,
+ 					   "Byte[%d]:%x (DMA data:%x)\n",
+ 					   i, smp_cmd.smp_req[i],
+-					   *(preq_dma_addr));
++					   *(payload));
+ 			}
+ 	}
+-
++	kunmap(sg_page(smp_req));
+ 	build_smp_cmd(pm8001_dev->device_id, smp_cmd.tag,
+ 				&smp_cmd, pm8001_ha->smp_exp_mode, length);
+ 	rc = pm8001_mpi_build_cmd(pm8001_ha, circularQ, opc, &smp_cmd,
+-- 
+2.17.1
+
