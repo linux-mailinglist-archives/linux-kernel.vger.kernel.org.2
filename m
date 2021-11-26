@@ -2,98 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E5F45F0C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52EE045F0C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:34:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378086AbhKZPhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 10:37:09 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:44394 "EHLO
+        id S1378121AbhKZPhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 10:37:46 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:44450 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347256AbhKZPfG (ORCPT
+        with ESMTP id S1354667AbhKZPfk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 10:35:06 -0500
+        Fri, 26 Nov 2021 10:35:40 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D4BA82193C;
-        Fri, 26 Nov 2021 15:31:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637940712; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=iuWswj+KSBKhGTzpmaFe1OYVr6F6OkM+6uhQMY9vN6U=;
-        b=RUScaE9Z/A4fFF1JFlCkn4fO8pSEQRWQhJzg8wUClWJJT51aDFtUKPBhbm5mahTWg/c0Oy
-        L1m1ZquVx9X1Gxn7qf+uWsrQ3Cq35aX83ZijsE52IvKEaLVbc85I8Q2gVi0ajYeXkYIPnk
-        USZ/gWrE/TDjnn1rkbjj0WYkgLx+jCQ=
+        by smtp-out1.suse.de (Postfix) with ESMTPS id DEE362191A;
+        Fri, 26 Nov 2021 15:32:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637940746; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4OPGGG/iKy2NLyQ5ovfbpVS9DeN3FCw/U9mCaWyfW0Y=;
+        b=awh5HL8S8Ggxp5+RF2rsxFt+zZepTctjNHS7/tsWg+xjm9qpg3VAcaPxkfT8v3zQ1d/LGn
+        Jw/ByaZJ+0mB0/zCPT5CstBZtcwhXKaMTbpYMXcswlc/prbA08ix3sqnjc+crHYXvUlHzD
+        yIBHOQu6TLnkT/vObhVpF0hFV8bUHL8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637940746;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4OPGGG/iKy2NLyQ5ovfbpVS9DeN3FCw/U9mCaWyfW0Y=;
+        b=ADwz39vvqUlJq5Ls4//kyWbe1lO+hcj+6R+kSIAxk3CrEHCUPrH1jhrDHqOOPQLMKP7Mal
+        StfEUYeBIBfaQEDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A753613C65;
-        Fri, 26 Nov 2021 15:31:52 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ACDA513C65;
+        Fri, 26 Nov 2021 15:32:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 1y6hJ+j9oGGubgAAMHmgww
-        (envelope-from <jgross@suse.com>); Fri, 26 Nov 2021 15:31:52 +0000
-From:   Juergen Gross <jgross@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-        boris.ostrovsky@oracle.com
-Subject: [GIT PULL] xen: branch for v5.16-rc3
-Date:   Fri, 26 Nov 2021 16:31:52 +0100
-Message-Id: <20211126153152.380-1-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
+        id 6nlfKQr+oGHfbgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Fri, 26 Nov 2021 15:32:26 +0000
+Message-ID: <a71a3135-b7ee-bb28-4ccc-ccab9a055b9b@suse.cz>
+Date:   Fri, 26 Nov 2021 16:32:26 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH v2 2/4] mm/vmalloc: add support for __GFP_NOFAIL
+Content-Language: en-US
+To:     Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
+        Christoph Hellwig <hch@lst.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Michal Hocko <mhocko@suse.com>
+References: <20211122153233.9924-1-mhocko@kernel.org>
+ <20211122153233.9924-3-mhocko@kernel.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20211122153233.9924-3-mhocko@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On 11/22/21 16:32, Michal Hocko wrote:
+> From: Michal Hocko <mhocko@suse.com>
+> 
+> Dave Chinner has mentioned that some of the xfs code would benefit from
+> kvmalloc support for __GFP_NOFAIL because they have allocations that
+> cannot fail and they do not fit into a single page.
+> 
+> The large part of the vmalloc implementation already complies with the
+> given gfp flags so there is no work for those to be done. The area
+> and page table allocations are an exception to that. Implement a retry
+> loop for those.
+> 
+> Add a short sleep before retrying. 1 jiffy is a completely random
+> timeout. Ideally the retry would wait for an explicit event - e.g.
+> a change to the vmalloc space change if the failure was caused by
+> the space fragmentation or depletion. But there are multiple different
+> reasons to retry and this could become much more complex. Keep the retry
+> simple for now and just sleep to prevent from hogging CPUs.
+> 
+> Signed-off-by: Michal Hocko <mhocko@suse.com>
 
-Please git pull the following tag:
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
- git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.16c-rc3-tag
+> @@ -2921,6 +2923,7 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+>  {
+>  	const gfp_t nested_gfp = (gfp_mask & GFP_RECLAIM_MASK) | __GFP_ZERO;
+>  	const gfp_t orig_gfp_mask = gfp_mask;
+> +	bool nofail = gfp_mask & __GFP_NOFAIL;
+>  	unsigned long addr = (unsigned long)area->addr;
+>  	unsigned long size = get_vm_area_size(area);
+>  	unsigned long array_size;
+> @@ -2978,8 +2981,12 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+>  	else if ((gfp_mask & (__GFP_FS | __GFP_IO)) == 0)
+>  		flags = memalloc_noio_save();
+>  
+> -	ret = vmap_pages_range(addr, addr + size, prot, area->pages,
+> +	do {
+> +		ret = vmap_pages_range(addr, addr + size, prot, area->pages,
+>  			page_shift);
+> +		if (nofail && (ret < 0))
+> +			schedule_timeout_uninterruptible(1);
+> +	} while (nofail && (ret < 0));
 
-xen: branch for v5.16-rc3
+Kind of ugly to have the same condition twice here, but no hard feelings.
 
-It contains the following changes:
-- a Xen related Kconfig fix for making it possible to control building
-  of the privcmd driver
-- 3 patches for fixing issues identified by the kernel test robot
-- a 5 patch series for simplifying timeout handling for Xen PV driver
-  initialization
-- 2 patches for fixing error paths in xenstore/xenbus driver initialization
+>  
+>  	if ((gfp_mask & (__GFP_FS | __GFP_IO)) == __GFP_IO)
+>  		memalloc_nofs_restore(flags);
+> @@ -3074,9 +3081,14 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
+>  				  VM_UNINITIALIZED | vm_flags, start, end, node,
+>  				  gfp_mask, caller);
+>  	if (!area) {
+> +		bool nofail = gfp_mask & __GFP_NOFAIL;
+>  		warn_alloc(gfp_mask, NULL,
+> -			"vmalloc error: size %lu, vm_struct allocation failed",
+> -			real_size);
+> +			"vmalloc error: size %lu, vm_struct allocation failed%s",
+> +			real_size, (nofail) ? ". Retrying." : "");
+> +		if (nofail) {
+> +			schedule_timeout_uninterruptible(1);
+> +			goto again;
+> +		}
+>  		goto fail;
+>  	}
+>  
+> 
 
-Thanks.
-
-Juergen
-
- arch/x86/include/asm/xen/hypercall.h       |  4 ++--
- arch/x86/include/asm/xen/hypervisor.h      |  1 +
- drivers/gpu/drm/xen/xen_drm_front.c        |  1 +
- drivers/input/misc/xen-kbdfront.c          |  1 +
- drivers/tty/hvc/hvc_xen.c                  |  1 +
- drivers/video/fbdev/xen-fbfront.c          |  1 +
- drivers/xen/Kconfig                        |  8 +++++++-
- drivers/xen/pvcalls-front.c                |  1 +
- drivers/xen/xenbus/xenbus_probe.c          | 27 ++++++++++++++++++++++++++-
- drivers/xen/xenbus/xenbus_probe_frontend.c | 14 +++-----------
- include/xen/xenbus.h                       |  1 +
- sound/xen/xen_snd_front.c                  |  1 +
- 12 files changed, 46 insertions(+), 15 deletions(-)
-
-Juergen Gross (9):
-      xen/privcmd: make option visible in Kconfig
-      xen/pvh: add missing prototype to header
-      xen: add "not_essential" flag to struct xenbus_driver
-      xen: flag xen_drm_front to be not essential for system boot
-      xen: flag hvc_xen to be not essential for system boot
-      xen: flag pvcalls-front to be not essential for system boot
-      xen: flag xen_snd_front to be not essential for system boot
-      xen: make HYPERVISOR_get_debugreg() always_inline
-      xen: make HYPERVISOR_set_debugreg() always_inline
-
-Stefano Stabellini (2):
-      xen: don't continue xenstore initialization in case of errors
-      xen: detect uninitialized xenbus in xenbus_init
