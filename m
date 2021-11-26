@@ -2,112 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B96F45F5F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 21:41:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B11345F600
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 21:42:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236010AbhKZUoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 15:44:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59724 "EHLO
+        id S240565AbhKZUp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 15:45:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231418AbhKZUmO (ORCPT
+        with ESMTP id S234561AbhKZUn2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 15:42:14 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B62C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 12:33:42 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id b68so9913633pfg.11
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 12:33:42 -0800 (PST)
+        Fri, 26 Nov 2021 15:43:28 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29155C061398
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 12:36:45 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id 207so20835695ljf.10
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 12:36:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=su3YaAtYA3Jm75i9GGPnHnjOmzDIJJuzGPL8eq2UD7s=;
-        b=D2BMGYkQ/wHLSfqcV8r7k0xgHB7HxWaHznGtHQ0XNUobSsRUMivzhLU0iBhauEHpkZ
-         1Km14sCr0S2Q9RrzNCh9D7quHUYuafNdqnOOiVwxKN2caZH3QhYiBF8im0o6yC42zSDY
-         Q22qPsF+gqz3lSVo4nWxWGi1d5dnYQ+4C8l6uhi0MgR6I1NwBHm4Ssk9kpXMR1fnnqB1
-         gwxH2ObFnczDTV+3G4gAbQPaIk8SxwD8P2naUY4tGoNN4GBgm+kl7I0pvQ7NfhqZFmpR
-         ujzc2reEju+HDg/A0ptNa5UeY7r/21r6DTsiQzUCJaIfcQch1aT2C+fdfg2dltqLd0uo
-         1F/w==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KL+cXQOYHhgidLM99dBCGy7kasZp0rKjTyY/gJtJdQ4=;
+        b=BMTsjWWZUf226r0O46xi6CYkFlWm4vfNRvYD+wh4KTBX2j3WsYChKyNieTjL5pER1x
+         woEWSvm4nj3xg9A5atvpLm8FQ+6jaCBj2rl7zZQ6bR/PGxYWNZ+GtZc8YBVC7v6luAd4
+         bpwGxCioARQeunnpIIG/XrIiksJiGK3/Bs2PHra56pBYCfw+2K+YMBMDUTkwOmkHFy3E
+         8CDxI2CkNUghVdCU2c4RNZvNHgP9AeaVMmG+Qi2gI3k9BjeIdQ4OuiGfauMmxbplUaC/
+         v8NxLw8ITZLXoUAxlfWZ6QQ0K7F0/d6WPDrGrLJuFGKmjssFYK4fA+jIdI+jCPQhnfwH
+         tcVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=su3YaAtYA3Jm75i9GGPnHnjOmzDIJJuzGPL8eq2UD7s=;
-        b=mWcDO4MWvWrs1rBUE1YNRD0x5PkW+ZViZsLd1nTidV7+8rhou8Ei7tZ9bCLnAK3NSW
-         8AGjpLNOFYyJk1S4hBOM/kHChVcWDyf8daAvYAsZJ8kFJ9DoGlOwLB5u0fYsc0Bsra4m
-         EQC1uFWMXmmNvC5JZQAGA9fpkFC7tzDfZWhDDMq+0xGtSgmSV3UUxmHJqj0WEzKOy1C7
-         okxiHi3yKj6Cmj6018ghxrTF2lcMpWpXNKqY/hD7DVw3QJA3+b8DQIJwll1LXR3w00Oj
-         CnbVqBB2dvPaP0TlLrBW9o5eWWcjdE+1pSXA6mKW9zXLi5O5aybTxUiZ96vBTpwELdHn
-         7ACg==
-X-Gm-Message-State: AOAM533GRm60A31UpJrBRQSipr3N+4mzoLWZz3wChKy2N2k0bpR6kfTU
-        VjnBeN+SolS7IgiW3GmobL5VH55bP/o83qgLo/g=
-X-Google-Smtp-Source: ABdhPJxM1vi5dMbXGJm+eGOMKg6HeXT5ik1Q39qdSa+CORNzQyeMO5R76fqvAd2vwsAiLkNGbkJOw7Qy7IqzTCaLT0I=
-X-Received: by 2002:a63:1b1a:: with SMTP id b26mr23279089pgb.338.1637958822426;
- Fri, 26 Nov 2021 12:33:42 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KL+cXQOYHhgidLM99dBCGy7kasZp0rKjTyY/gJtJdQ4=;
+        b=OS9OQIj8PVRrHQeweB1yxGpFJVRB7mLqR+9RLhsbjCJ45D/oaNGnFyx3GFzCaa+dag
+         trQ+YfihJzmoKmzv0ggmxKWYIoZx7CP5+hIeA5afl7MWCquQ1V9sw7qe0yDkSpvsutEz
+         lDwN2xGpJ4iv1eu013TJkumsud9O7yEIuituR4DLznIUIdtkoj5CrkmJDWw432hDnQan
+         wAj27jSGcUAb4sPeyXzIXiCOuhbtGq4UeH+pZYbdaaN2EtLp+WqE9Xj2Pt7R23mQPKTr
+         jFt45sLTcbmHmhAuYtzdEO2VsIPK17QqgSCdUXF5ZNYYx6WZ3Z7/gBLgGIaetPx4nCeY
+         6CBg==
+X-Gm-Message-State: AOAM533GB4vjyXDEI356NhCFbcQrRc8xdO1Ny+oVs2FpQ5/f5OYAEpi5
+        pjnGLt89/9nUEvBjErR4sbeLeA==
+X-Google-Smtp-Source: ABdhPJyAth1JfmI8KnvqiYVW7NfxbEhPUAsrlQ7saok2itcm6rdRZ1bWu82XuJvu51fkDxdqx1HIvg==
+X-Received: by 2002:a2e:b5d8:: with SMTP id g24mr33611410ljn.250.1637959003359;
+        Fri, 26 Nov 2021 12:36:43 -0800 (PST)
+Received: from localhost ([31.134.121.151])
+        by smtp.gmail.com with ESMTPSA id u16sm583114lfu.42.2021.11.26.12.36.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Nov 2021 12:36:42 -0800 (PST)
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        David Virag <virag.david003@gmail.com>,
+        =?UTF-8?q?Pawe=C5=82=20Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: [PATCH 1/2] dt-bindings: clock: exynos850: Add bindings for Exynos850 sysreg clocks
+Date:   Fri, 26 Nov 2021 22:36:40 +0200
+Message-Id: <20211126203641.24005-1-semen.protsenko@linaro.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20211125193852.3617-1-goldstein.w.n@gmail.com>
- <CANn89iLnH5B11CtzZ14nMFP7b--7aOfnQqgmsER+NYNzvnVurQ@mail.gmail.com>
- <CAFUsyfK-znRWJN7FTMdJaDTd45DgtBQ9ckKGyh8qYqn0eFMMFA@mail.gmail.com>
- <CANn89iJA1JOevgLSK019VYXKkLJsMjV-u9ZHvrgZ+XUypRWwfQ@mail.gmail.com>
- <CAFUsyfLeVGW8etXHuSGvYy_RoS3RGaA1L+NLKnpc7EsSMVORBg@mail.gmail.com>
- <CANn89iJxMhGfp364rPu6p_ZLrKnM1qWF_NWrw4_oL_KG+piByg@mail.gmail.com>
- <CAFUsyfJ33cKFQdUagHQ_b4N80CfBtGQZhyA4CN_JLgEmXEX=DA@mail.gmail.com>
- <CAFUsyf+TuU2Xe5Guy5yiFWsV-JZSjUJxcGZv=f0BYDSmODV+_w@mail.gmail.com>
- <CANn89iLjw7YeWNGNtVNi690adJfoSVwgLScrtx-zSyh=COZRsQ@mail.gmail.com>
- <CAFUsyfK5r+P6aQLBpYZoi0FSgvLwfawBUYTHtQL0TJRozujp3g@mail.gmail.com> <CANn89iKkK0eMQkOTSMGbvdtf+G=eRfXJG0Semju5h-C63QytaQ@mail.gmail.com>
-In-Reply-To: <CANn89iKkK0eMQkOTSMGbvdtf+G=eRfXJG0Semju5h-C63QytaQ@mail.gmail.com>
-From:   Noah Goldstein <goldstein.w.n@gmail.com>
-Date:   Fri, 26 Nov 2021 14:33:31 -0600
-Message-ID: <CAFUsyf+9F9b2V-YDm8UdbnANrQ0_fYV6cGfRgPciASfvp9p=7w@mail.gmail.com>
-Subject: Re: [PATCH v1] x86/lib: Optimize 8x loop and memory clobbers in csum_partial.c
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com,
-        Borislav Petkov <bp@alien8.de>, dave.hansen@linux.intel.com,
-        X86 ML <x86@kernel.org>, hpa@zytor.com, peterz@infradead.org,
-        alexanderduyck@fb.com, open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 2:07 PM Eric Dumazet <edumazet@google.com> wrote:
->
-> On Fri, Nov 26, 2021 at 11:50 AM Noah Goldstein <goldstein.w.n@gmail.com> wrote:
-> >
-> > Bright :) but it will need a BMI support check.
->
-> Yes, probably not worth the pain.
+System Register is used to configure system behavior, like USI protocol,
+etc. SYSREG clocks should be provided to corresponding syscon nodes, to
+make it possible to modify SYSREG registers.
 
-Making a V2 for my patch with your optimization for the loop case. Do you think
-1 or 2 accum for the 32 byte case?
->
-> >
-> > I actually get better performance in hyperthread benchmarks with 2 accum:
-> >
-> > Used:
-> >
-> >         u64 res;
-> >         temp64 = (__force uint64_t)sum;
-> >         asm("movq 0*8(%[src]),%[res]\n\t"
-> >             "addq 1*8(%[src]),%[res]\n\t"
-> >             "adcq 2*8(%[src]),%[res]\n\t"
-> >             "adcq   $0, %[res]\n"
-> >             "addq 3*8(%[src]),%[temp64]\n\t"
-> >             "adcq 4*8(%[src]),%[temp64]\n\t"
-> >             "adcq   %[res], %[temp64]\n\t"
-> >             "mov  %k[temp64],%k[res]\n\t"
-> >             "rorx $32,%[temp64],%[temp64]\n\t"
-> >             "adcl %k[temp64],%k[res]\n\t"
-> >             "adcl $0,%k[res]"
-> >             : [temp64] "+r"(temp64), [res] "=&r"(res)
-> >             : [src] "r"(buff)
-> >             : "memory");
-> >         return (__force __wsum)res;
-> >
-> > w/ hyperthread:
-> > size,    2acc lat,    1acc lat,   2acc tput,   1acc tput
-> >   40,       6.511,       7.863,       6.177,       6.157
-> >
-> > w/o hyperthread:
-> > size,    2acc lat,    1acc lat,   2acc tput,   1acc tput
-> >   40,       5.577,       6.764,       3.150,       3.210
+While at it, add also missing PMU and GPIO clocks, which looks necessary
+and might be needed for corresponding Exynos850 features soon.
+
+Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+---
+ include/dt-bindings/clock/exynos850.h | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/include/dt-bindings/clock/exynos850.h b/include/dt-bindings/clock/exynos850.h
+index 8aa5e82af0d3..0b6a3c6a7c90 100644
+--- a/include/dt-bindings/clock/exynos850.h
++++ b/include/dt-bindings/clock/exynos850.h
+@@ -82,7 +82,10 @@
+ #define CLK_GOUT_I3C_PCLK		19
+ #define CLK_GOUT_I3C_SCLK		20
+ #define CLK_GOUT_SPEEDY_PCLK		21
+-#define APM_NR_CLK			22
++#define CLK_GOUT_GPIO_ALIVE_PCLK	22
++#define CLK_GOUT_PMU_ALIVE_PCLK		23
++#define CLK_GOUT_SYSREG_APM_PCLK	24
++#define APM_NR_CLK			25
+ 
+ /* CMU_CMGP */
+ #define CLK_RCO_CMGP			1
+@@ -99,7 +102,8 @@
+ #define CLK_GOUT_CMGP_USI0_PCLK		12
+ #define CLK_GOUT_CMGP_USI1_IPCLK	13
+ #define CLK_GOUT_CMGP_USI1_PCLK		14
+-#define CMGP_NR_CLK			15
++#define CLK_GOUT_SYSREG_CMGP_PCLK	15
++#define CMGP_NR_CLK			16
+ 
+ /* CMU_HSI */
+ #define CLK_MOUT_HSI_BUS_USER		1
+@@ -167,7 +171,9 @@
+ #define CLK_GOUT_MMC_EMBD_SDCLKIN	10
+ #define CLK_GOUT_SSS_ACLK		11
+ #define CLK_GOUT_SSS_PCLK		12
+-#define CORE_NR_CLK			13
++#define CLK_GOUT_GPIO_CORE_PCLK		13
++#define CLK_GOUT_SYSREG_CORE_PCLK	14
++#define CORE_NR_CLK			15
+ 
+ /* CMU_DPU */
+ #define CLK_MOUT_DPU_USER		1
+-- 
+2.30.2
+
