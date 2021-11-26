@@ -2,153 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B0F45F076
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DDFE45F045
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377962AbhKZPTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 10:19:03 -0500
-Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17225 "EHLO
-        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1354208AbhKZPRC (ORCPT
+        id S1377885AbhKZPFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 10:05:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353817AbhKZPDp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 10:17:02 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1637932178; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=YCD9Qy/t2w3SG/dzfftvb30u8EtAqWFB0/v7Gz5mdsDG1lqyu9jplrgieI983y96ACu3TkHCX8b01GKHM55T/OU6FAQ8dcNYRTmnarjSbxT9g2a5aVINpvv7DC7wRJoXwqz59IREFqMDrvFpKNhVagDKOIiykKK/0ZcWsa3ukFE=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1637932178; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
-        bh=DKINIDnMGkMKeLcTBYO3BxCbPU2T+QmP00nUmcd3ZJM=; 
-        b=Er6e0/lkmSRSDyV226mD5NFNTE/ZyV1j6Sg4apZ8oYShb5o7o/EuMxFx6NPd3wIaEr3a34zyjqlEa5amf7z0Elcsdj/6FjwkhpNuytXuHv6z29aHOZgioU8SOVfHCs4LkJrbOdseCedcLEQLiSxbsKHOHOML12KgAWoPIAlxFoU=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1637932178;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=DKINIDnMGkMKeLcTBYO3BxCbPU2T+QmP00nUmcd3ZJM=;
-        b=TSAddY81PkFDLj1aC2Geq5A7DpzYXqjiqX2cd1JiU6+p8vo+ip6IQL0AJwqYzL8q
-        SL/EUFY7eXLVgpH6U+sChP4Mp9AvTMG1SmkiGP7ZB/e4e59TCqEV3ypRXpjFSaUYX4Q
-        jlj9W1EHKYPABmA1E5luDrb6We20clxMVRqlY6V0=
-Received: from mail.baihui.com by mx.zoho.com.cn
-        with SMTP id 163793217656496.81082384691524; Fri, 26 Nov 2021 21:09:36 +0800 (CST)
-Date:   Fri, 26 Nov 2021 21:09:36 +0800
-From:   Chengguang Xu <cgxu519@mykernel.net>
-Reply-To: cgxu519@mykernel.net
-To:     "Jan Kara" <jack@suse.cz>
-Cc:     "miklos" <miklos@szeredi.hu>, "amir73il" <amir73il@gmail.com>,
-        "linux-unionfs" <linux-unionfs@vger.kernel.org>,
-        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "Chengguang Xu" <charliecgxu@tencent.com>,
-        "ronyjin" <ronyjin@tencent.com>
-Message-ID: <17d5c5d9498.134e725b210976.7805957202314611987@mykernel.net>
-In-Reply-To: <20211126091430.GC13004@quack2.suse.cz>
-References: <20211122030038.1938875-1-cgxu519@mykernel.net>
- <20211122030038.1938875-4-cgxu519@mykernel.net> <20211126091430.GC13004@quack2.suse.cz>
-Subject: Re: [RFC PATCH V6 3/7] ovl: implement overlayfs' own ->write_inode
- operation
+        Fri, 26 Nov 2021 10:03:45 -0500
+X-Greylist: delayed 472 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 26 Nov 2021 06:41:29 PST
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC242C061D7F;
+        Fri, 26 Nov 2021 06:41:29 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8D30F62299;
+        Fri, 26 Nov 2021 14:33:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA948C93056;
+        Fri, 26 Nov 2021 14:33:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637937215;
+        bh=/oFikfPOlZbyO3XhVBjoIkXnbwk1TaPmDKbQnOtd3aE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TiZt/MRyW48c+ZAN9D/HAvEoUwRpA/u2ld4yqchvO7sLsO8DV8DoZtrPOZlXLmIsP
+         Xe6rzYrstLJBwaH/p6kb+XrnSgnShrMphLq5s8mQSyL+bwt0mB4o1C/YGfqOoCk/2U
+         QfGUTH1SSPGVTSKeqe8Xy24CvIFKjHENJfnJdK9JNYHgDJ/OAjOgANRW/paR1cxkyD
+         SU4DyFxCk0mCdlMZmxQh3Lr4vwvfOnWGA5Il8gHTW43yWUbPbHzTZ1D9/Nx5Cl7DIT
+         xxBqxdCB6OSu7YAw44fHhLQu5KKPNVodooLzS9fv6/B8sfsf40/HtJeOsZ7wGLnP+C
+         xleRTEoKUaqSw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     linux-crypto@vger.kernel.org,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jean-Philippe Aumasson <jeanphilippe.aumasson@gmail.com>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: [PATCH] crypto: siphash - use _unaligned version by default
+Date:   Fri, 26 Nov 2021 15:33:13 +0100
+Message-Id: <20211126143329.2689618-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Importance: Medium
-User-Agent: ZohoCN Mail
-X-Mailer: ZohoCN Mail
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=BA=94, 2021-11-26 17:14:30 Jan Kara <=
-jack@suse.cz> =E6=92=B0=E5=86=99 ----
- > On Mon 22-11-21 11:00:34, Chengguang Xu wrote:
- > > From: Chengguang Xu <charliecgxu@tencent.com>
- > >=20
- > > Sync dirty data and meta of upper inode in overlayfs' ->write_inode()
- > > and redirty overlayfs' inode.
- > >=20
- > > Signed-off-by: Chengguang Xu <charliecgxu@tencent.com>
- >=20
- > Looks good. I'm still not 100% convinced keeping inodes dirty all the ti=
-me
- > will not fire back in excessive writeback activity (e.g. flush worker wi=
-ll
- > traverse the list of all dirty inodes every 30 seconds and try to write
- > them) but I guess we can start with this and if people complain, dirtine=
-ss
- > handling can be improved.=20
+From: Arnd Bergmann <arnd@arndb.de>
 
-Hi Jan,
+On ARM v6 and later, we define CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+because the ordinary load/store instructions (ldr, ldrh, ldrb) can
+tolerate any misalignment of the memory address. However, load/store
+double and load/store multiple instructions (ldrd, ldm) may still only
+be used on memory addresses that are 32-bit aligned, and so we have to
+use the CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS macro with care, or we
+may end up with a severe performance hit due to alignment traps that
+require fixups by the kernel. Testing shows that this currently happens
+with clang-13 but not gcc-11. In theory, any compiler version can
+produce this bug or other problems, as we are dealing with undefined
+behavior in C99 even on architectures that support this in hardware,
+see also https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100363.
 
-Thanks for the review and suggestion.
+Fortunately, the get_unaligned() accessors do the right thing: when
+building for ARMv6 or later, the compiler will emit unaligned accesses
+using the ordinary load/store instructions (but avoid the ones that
+require 32-bit alignment). When building for older ARM, those accessors
+will emit the appropriate sequence of ldrb/mov/orr instructions. And on
+architectures that can truly tolerate any kind of misalignment, the
+get_unaligned() accessors resolve to the leXX_to_cpup accessors that
+operate on aligned addresses.
 
+Since the compiler will in fact emit ldrd or ldm instructions when
+building this code for ARM v6 or later, the solution is to use the
+unaligned accessors unconditionally on architectures where this is
+known to be fast. The _aligned version of the hash function is
+however still needed to get the best performance on architectures
+that cannot do any unaligned access in hardware.
 
-Thanks,
-Chengguang
+This new version avoids the undefined behavior and should produce
+the fastest hash on all architectures we support.
 
+Link: https://lore.kernel.org/linux-arm-kernel/20181008211554.5355-4-ard.biesheuvel@linaro.org/
+Reported-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Fixes: 2c956a60778c ("siphash: add cryptographically secure PRF")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ include/linux/siphash.h | 14 ++++----------
+ lib/siphash.c           | 12 ++++++------
+ 2 files changed, 10 insertions(+), 16 deletions(-)
 
+diff --git a/include/linux/siphash.h b/include/linux/siphash.h
+index bf21591a9e5e..0cda61855d90 100644
+--- a/include/linux/siphash.h
++++ b/include/linux/siphash.h
+@@ -27,9 +27,7 @@ static inline bool siphash_key_is_zero(const siphash_key_t *key)
+ }
+ 
+ u64 __siphash_aligned(const void *data, size_t len, const siphash_key_t *key);
+-#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+ u64 __siphash_unaligned(const void *data, size_t len, const siphash_key_t *key);
+-#endif
+ 
+ u64 siphash_1u64(const u64 a, const siphash_key_t *key);
+ u64 siphash_2u64(const u64 a, const u64 b, const siphash_key_t *key);
+@@ -82,10 +80,9 @@ static inline u64 ___siphash_aligned(const __le64 *data, size_t len,
+ static inline u64 siphash(const void *data, size_t len,
+ 			  const siphash_key_t *key)
+ {
+-#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+-	if (!IS_ALIGNED((unsigned long)data, SIPHASH_ALIGNMENT))
++	if (IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) ||
++	    !IS_ALIGNED((unsigned long)data, SIPHASH_ALIGNMENT))
+ 		return __siphash_unaligned(data, len, key);
+-#endif
+ 	return ___siphash_aligned(data, len, key);
+ }
+ 
+@@ -96,10 +93,8 @@ typedef struct {
+ 
+ u32 __hsiphash_aligned(const void *data, size_t len,
+ 		       const hsiphash_key_t *key);
+-#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+ u32 __hsiphash_unaligned(const void *data, size_t len,
+ 			 const hsiphash_key_t *key);
+-#endif
+ 
+ u32 hsiphash_1u32(const u32 a, const hsiphash_key_t *key);
+ u32 hsiphash_2u32(const u32 a, const u32 b, const hsiphash_key_t *key);
+@@ -135,10 +130,9 @@ static inline u32 ___hsiphash_aligned(const __le32 *data, size_t len,
+ static inline u32 hsiphash(const void *data, size_t len,
+ 			   const hsiphash_key_t *key)
+ {
+-#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+-	if (!IS_ALIGNED((unsigned long)data, HSIPHASH_ALIGNMENT))
++	if (IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) ||
++	    !IS_ALIGNED((unsigned long)data, HSIPHASH_ALIGNMENT))
+ 		return __hsiphash_unaligned(data, len, key);
+-#endif
+ 	return ___hsiphash_aligned(data, len, key);
+ }
+ 
+diff --git a/lib/siphash.c b/lib/siphash.c
+index a90112ee72a1..72b9068ab57b 100644
+--- a/lib/siphash.c
++++ b/lib/siphash.c
+@@ -49,6 +49,7 @@
+ 	SIPROUND; \
+ 	return (v0 ^ v1) ^ (v2 ^ v3);
+ 
++#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+ u64 __siphash_aligned(const void *data, size_t len, const siphash_key_t *key)
+ {
+ 	const u8 *end = data + len - (len % sizeof(u64));
+@@ -80,8 +81,8 @@ u64 __siphash_aligned(const void *data, size_t len, const siphash_key_t *key)
+ 	POSTAMBLE
+ }
+ EXPORT_SYMBOL(__siphash_aligned);
++#endif
+ 
+-#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+ u64 __siphash_unaligned(const void *data, size_t len, const siphash_key_t *key)
+ {
+ 	const u8 *end = data + len - (len % sizeof(u64));
+@@ -113,7 +114,6 @@ u64 __siphash_unaligned(const void *data, size_t len, const siphash_key_t *key)
+ 	POSTAMBLE
+ }
+ EXPORT_SYMBOL(__siphash_unaligned);
+-#endif
+ 
+ /**
+  * siphash_1u64 - compute 64-bit siphash PRF value of a u64
+@@ -250,6 +250,7 @@ EXPORT_SYMBOL(siphash_3u32);
+ 	HSIPROUND; \
+ 	return (v0 ^ v1) ^ (v2 ^ v3);
+ 
++#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+ u32 __hsiphash_aligned(const void *data, size_t len, const hsiphash_key_t *key)
+ {
+ 	const u8 *end = data + len - (len % sizeof(u64));
+@@ -280,8 +281,8 @@ u32 __hsiphash_aligned(const void *data, size_t len, const hsiphash_key_t *key)
+ 	HPOSTAMBLE
+ }
+ EXPORT_SYMBOL(__hsiphash_aligned);
++#endif
+ 
+-#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+ u32 __hsiphash_unaligned(const void *data, size_t len,
+ 			 const hsiphash_key_t *key)
+ {
+@@ -313,7 +314,6 @@ u32 __hsiphash_unaligned(const void *data, size_t len,
+ 	HPOSTAMBLE
+ }
+ EXPORT_SYMBOL(__hsiphash_unaligned);
+-#endif
+ 
+ /**
+  * hsiphash_1u32 - compute 64-bit hsiphash PRF value of a u32
+@@ -418,6 +418,7 @@ EXPORT_SYMBOL(hsiphash_4u32);
+ 	HSIPROUND; \
+ 	return v1 ^ v3;
+ 
++#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+ u32 __hsiphash_aligned(const void *data, size_t len, const hsiphash_key_t *key)
+ {
+ 	const u8 *end = data + len - (len % sizeof(u32));
+@@ -438,8 +439,8 @@ u32 __hsiphash_aligned(const void *data, size_t len, const hsiphash_key_t *key)
+ 	HPOSTAMBLE
+ }
+ EXPORT_SYMBOL(__hsiphash_aligned);
++#endif
+ 
+-#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+ u32 __hsiphash_unaligned(const void *data, size_t len,
+ 			 const hsiphash_key_t *key)
+ {
+@@ -461,7 +462,6 @@ u32 __hsiphash_unaligned(const void *data, size_t len,
+ 	HPOSTAMBLE
+ }
+ EXPORT_SYMBOL(__hsiphash_unaligned);
+-#endif
+ 
+ /**
+  * hsiphash_1u32 - compute 32-bit hsiphash PRF value of a u32
+-- 
+2.29.2
 
- > So feel free to add:
- >=20
- > Reviewed-by: Jan Kara <jack@suse.cz>
- >=20
- >                                 Honza
- >=20
- > > ---
- > >  fs/overlayfs/super.c | 21 +++++++++++++++++++++
- > >  1 file changed, 21 insertions(+)
- > >=20
- > > diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
- > > index 18a12088a37b..12acf0ec7395 100644
- > > --- a/fs/overlayfs/super.c
- > > +++ b/fs/overlayfs/super.c
- > > @@ -15,6 +15,7 @@
- > >  #include <linux/seq_file.h>
- > >  #include <linux/posix_acl_xattr.h>
- > >  #include <linux/exportfs.h>
- > > +#include <linux/writeback.h>
- > >  #include "overlayfs.h"
- > > =20
- > >  MODULE_AUTHOR("Miklos Szeredi <miklos@szeredi.hu>");
- > > @@ -406,12 +407,32 @@ static int ovl_remount(struct super_block *sb, i=
-nt *flags, char *data)
- > >      return ret;
- > >  }
- > > =20
- > > +static int ovl_write_inode(struct inode *inode,
- > > +               struct writeback_control *wbc)
- > > +{
- > > +    struct ovl_fs *ofs =3D inode->i_sb->s_fs_info;
- > > +    struct inode *upper_inode =3D ovl_inode_upper(inode);
- > > +    int ret =3D 0;
- > > +
- > > +    if (!upper_inode)
- > > +        return 0;
- > > +
- > > +    if (!ovl_should_sync(ofs))
- > > +        return 0;
- > > +
- > > +    ret =3D write_inode_now(upper_inode, wbc->sync_mode =3D=3D WB_SYN=
-C_ALL);
- > > +    mark_inode_dirty(inode);
- > > +
- > > +    return ret;
- > > +}
- > > +
- > >  static const struct super_operations ovl_super_operations =3D {
- > >      .alloc_inode    =3D ovl_alloc_inode,
- > >      .free_inode    =3D ovl_free_inode,
- > >      .destroy_inode    =3D ovl_destroy_inode,
- > >      .drop_inode    =3D generic_delete_inode,
- > >      .put_super    =3D ovl_put_super,
- > > +    .write_inode    =3D ovl_write_inode,
- > >      .sync_fs    =3D ovl_sync_fs,
- > >      .statfs        =3D ovl_statfs,
- > >      .show_options    =3D ovl_show_options,
- > > --=20
- > > 2.27.0
- > >=20
- > >=20
- > --=20
- > Jan Kara <jack@suse.com>
- > SUSE Labs, CR
- >=20
