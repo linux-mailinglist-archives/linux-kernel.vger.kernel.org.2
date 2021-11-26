@@ -2,237 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC07345F279
+	by mail.lfdr.de (Postfix) with ESMTP id 14FA945F277
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:50:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242574AbhKZQxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:53:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:32481 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1354881AbhKZQv3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:51:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637945296;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OYsAcPSlRkl2DsuuqLF/X0qsnzjiIk9tSNjhgB+R1/g=;
-        b=cpr1kQvb7dC8ZWnG6d/fTc0LuSUwIjcwAysGl4Qmww1IDVYfw5wtVjySHcgRUajHN80vAK
-        gJVQK7MvBApdI5dRqnSQ6itEAoHOM1j71jQI7s5hFMJGhjV5U7wRmOGE5ohtppQTxRW17L
-        CMqWUsyHsU+KWadUiHrtVUPBdNHQ/bA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-509-U1CIvzgBPm-r-3VL5h1SJw-1; Fri, 26 Nov 2021 11:48:11 -0500
-X-MC-Unique: U1CIvzgBPm-r-3VL5h1SJw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 66294801B10;
-        Fri, 26 Nov 2021 16:48:10 +0000 (UTC)
-Received: from steredhat.redhat.com (unknown [10.39.193.110])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9ABA4604CC;
-        Fri, 26 Nov 2021 16:48:03 +0000 (UTC)
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     virtualization@lists.linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Parav Pandit <parav@nvidia.com>
-Subject: [PATCH v2 2/2] vdpa: add driver_override support
-Date:   Fri, 26 Nov 2021 17:47:53 +0100
-Message-Id: <20211126164753.181829-3-sgarzare@redhat.com>
-In-Reply-To: <20211126164753.181829-1-sgarzare@redhat.com>
-References: <20211126164753.181829-1-sgarzare@redhat.com>
+        id S240084AbhKZQx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:53:26 -0500
+Received: from pegase2.c-s.fr ([93.17.235.10]:57857 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241037AbhKZQvZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 11:51:25 -0500
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4J10zv3Fykz9sSM;
+        Fri, 26 Nov 2021 17:48:11 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id iT1NlAx0KOb0; Fri, 26 Nov 2021 17:48:11 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4J10zv2TKfz9sSL;
+        Fri, 26 Nov 2021 17:48:11 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2D17B8B781;
+        Fri, 26 Nov 2021 17:48:11 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 4YWlgfbD8PPb; Fri, 26 Nov 2021 17:48:11 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.204.6])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C3D328B763;
+        Fri, 26 Nov 2021 17:48:10 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 1AQGm0JW535496
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Fri, 26 Nov 2021 17:48:00 +0100
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 1AQGlwhX535494;
+        Fri, 26 Nov 2021 17:47:58 +0100
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Evgeniy Polyakov <zbr@ioremap.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v2] w1: Misuse of get_user()/put_user() reported by sparse
+Date:   Fri, 26 Nov 2021 17:47:58 +0100
+Message-Id: <926b572075a26835f4e39d05710cd1b75fd4d5a4.1637945194.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1637945277; l=2705; s=20211009; h=from:subject:message-id; bh=SVUMkVnipXBjjq9DCo0mD5/KzMfOIiozrkaDhNORXKs=; b=juPaoguppVb32lY8pgYiub5+I7hjx7U5hpFro3lMp9EqeH7x70MekAOrY3fzVUtEFJ0MpZpzshNd 5cQ4vpG6AHZ7+FvY3pNlumwYLWG6vUiRzeraGWXVIX4otRjLA54n
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`driver_override` allows to control which of the vDPA bus drivers
-binds to a vDPA device.
+sparse warnings: (new ones prefixed by >>)
+>> drivers/w1/slaves/w1_ds28e04.c:342:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char [noderef] __user *_pu_addr @@     got char *buf @@
+   drivers/w1/slaves/w1_ds28e04.c:342:13: sparse:     expected char [noderef] __user *_pu_addr
+   drivers/w1/slaves/w1_ds28e04.c:342:13: sparse:     got char *buf
+>> drivers/w1/slaves/w1_ds28e04.c:356:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char const [noderef] __user *_gu_addr @@     got char const *buf @@
+   drivers/w1/slaves/w1_ds28e04.c:356:13: sparse:     expected char const [noderef] __user *_gu_addr
+   drivers/w1/slaves/w1_ds28e04.c:356:13: sparse:     got char const *buf
 
-If `driver_override` is not set, the previous behaviour is followed:
-devices use the first vDPA bus driver loaded (unless auto binding
-is disabled).
+The buffer buf is a failsafe buffer in kernel space, it's not user
+memory hence doesn't deserve the use of get_user() or put_user().
 
-Tested on Fedora 34 with driverctl(8):
-  $ modprobe virtio-vdpa
-  $ modprobe vhost-vdpa
-  $ modprobe vdpa-sim-net
+Access 'buf' content directly.
 
-  $ vdpa dev add mgmtdev vdpasim_net name dev1
-
-  # dev1 is attached to the first vDPA bus driver loaded
-  $ driverctl -b vdpa list-devices
-    dev1 virtio_vdpa
-
-  $ driverctl -b vdpa set-override dev1 vhost_vdpa
-
-  $ driverctl -b vdpa list-devices
-    dev1 vhost_vdpa [*]
-
-  Note: driverctl(8) integrates with udev so the binding is
-  preserved.
-
-Suggested-by: Jason Wang <jasowang@redhat.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/lkml/202111190526.K5vb7NWC-lkp@intel.com/T/
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
-v2:
-- added documentation in Documentation/ABI/testing/sysfs-bus-vdpa
+v2: Use sysfs_emit() and kstrtobool()
 ---
- include/linux/vdpa.h                     |  2 +
- drivers/vdpa/vdpa.c                      | 74 ++++++++++++++++++++++++
- Documentation/ABI/testing/sysfs-bus-vdpa | 20 +++++++
- 3 files changed, 96 insertions(+)
+ drivers/w1/slaves/w1_ds28e04.c | 25 +++----------------------
+ 1 file changed, 3 insertions(+), 22 deletions(-)
 
-diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-index c3011ccda430..ae34015b37b7 100644
---- a/include/linux/vdpa.h
-+++ b/include/linux/vdpa.h
-@@ -64,6 +64,7 @@ struct vdpa_mgmt_dev;
-  * struct vdpa_device - representation of a vDPA device
-  * @dev: underlying device
-  * @dma_dev: the actual device that is performing DMA
-+ * @driver_override: driver name to force a match
-  * @config: the configuration ops for this device.
-  * @cf_mutex: Protects get and set access to configuration layout.
-  * @index: device index
-@@ -76,6 +77,7 @@ struct vdpa_mgmt_dev;
- struct vdpa_device {
- 	struct device dev;
- 	struct device *dma_dev;
-+	const char *driver_override;
- 	const struct vdpa_config_ops *config;
- 	struct mutex cf_mutex; /* Protects get/set config */
- 	unsigned int index;
-diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
-index 7332a74a4b00..659231bbfee8 100644
---- a/drivers/vdpa/vdpa.c
-+++ b/drivers/vdpa/vdpa.c
-@@ -52,8 +52,81 @@ static void vdpa_dev_remove(struct device *d)
- 		drv->remove(vdev);
+diff --git a/drivers/w1/slaves/w1_ds28e04.c b/drivers/w1/slaves/w1_ds28e04.c
+index e4f336111edc..98f80f412cfd 100644
+--- a/drivers/w1/slaves/w1_ds28e04.c
++++ b/drivers/w1/slaves/w1_ds28e04.c
+@@ -32,7 +32,7 @@ static int w1_strong_pullup = 1;
+ module_param_named(strong_pullup, w1_strong_pullup, int, 0);
+ 
+ /* enable/disable CRC checking on DS28E04-100 memory accesses */
+-static char w1_enable_crccheck = 1;
++static bool w1_enable_crccheck = true;
+ 
+ #define W1_EEPROM_SIZE		512
+ #define W1_PAGE_COUNT		16
+@@ -339,32 +339,13 @@ static BIN_ATTR_RW(pio, 1);
+ static ssize_t crccheck_show(struct device *dev, struct device_attribute *attr,
+ 			     char *buf)
+ {
+-	if (put_user(w1_enable_crccheck + 0x30, buf))
+-		return -EFAULT;
+-
+-	return sizeof(w1_enable_crccheck);
++	return sysfs_emit(buf, "%d\n", w1_enable_crccheck);
  }
  
-+static int vdpa_dev_match(struct device *dev, struct device_driver *drv)
-+{
-+	struct vdpa_device *vdev = dev_to_vdpa(dev);
-+
-+	/* Check override first, and if set, only use the named driver */
-+	if (vdev->driver_override)
-+		return strcmp(vdev->driver_override, drv->name) == 0;
-+
-+	/* Currently devices must be supported by all vDPA bus drivers */
-+	return 1;
-+}
-+
-+static ssize_t driver_override_store(struct device *dev,
-+				     struct device_attribute *attr,
-+				     const char *buf, size_t count)
-+{
-+	struct vdpa_device *vdev = dev_to_vdpa(dev);
-+	const char *driver_override, *old;
-+	char *cp;
-+
-+	/* We need to keep extra room for a newline */
-+	if (count >= (PAGE_SIZE - 1))
-+		return -EINVAL;
-+
-+	driver_override = kstrndup(buf, count, GFP_KERNEL);
-+	if (!driver_override)
-+		return -ENOMEM;
-+
-+	cp = strchr(driver_override, '\n');
-+	if (cp)
-+		*cp = '\0';
-+
-+	device_lock(dev);
-+	old = vdev->driver_override;
-+	if (strlen(driver_override)) {
-+		vdev->driver_override = driver_override;
-+	} else {
-+		kfree(driver_override);
-+		vdev->driver_override = NULL;
-+	}
-+	device_unlock(dev);
-+
-+	kfree(old);
-+
-+	return count;
-+}
-+
-+static ssize_t driver_override_show(struct device *dev,
-+				    struct device_attribute *attr, char *buf)
-+{
-+	struct vdpa_device *vdev = dev_to_vdpa(dev);
-+	ssize_t len;
-+
-+	device_lock(dev);
-+	len = snprintf(buf, PAGE_SIZE, "%s\n", vdev->driver_override);
-+	device_unlock(dev);
-+
-+	return len;
-+}
-+static DEVICE_ATTR_RW(driver_override);
-+
-+static struct attribute *vdpa_dev_attrs[] = {
-+	&dev_attr_driver_override.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group vdpa_dev_group = {
-+	.attrs  = vdpa_dev_attrs,
-+};
-+__ATTRIBUTE_GROUPS(vdpa_dev);
-+
- static struct bus_type vdpa_bus = {
- 	.name  = "vdpa",
-+	.dev_groups = vdpa_dev_groups,
-+	.match = vdpa_dev_match,
- 	.probe = vdpa_dev_probe,
- 	.remove = vdpa_dev_remove,
- };
-@@ -68,6 +141,7 @@ static void vdpa_release_dev(struct device *d)
- 
- 	ida_simple_remove(&vdpa_index_ida, vdev->index);
- 	mutex_destroy(&vdev->cf_mutex);
-+	kfree(vdev->driver_override);
- 	kfree(vdev);
+ static ssize_t crccheck_store(struct device *dev, struct device_attribute *attr,
+ 			      const char *buf, size_t count)
+ {
+-	char val;
+-
+-	if (count != 1 || !buf)
+-		return -EINVAL;
+-
+-	if (get_user(val, buf))
+-		return -EFAULT;
+-
+-	/* convert to decimal */
+-	val = val - 0x30;
+-	if (val != 0 && val != 1)
+-		return -EINVAL;
+-
+-	/* set the new value */
+-	w1_enable_crccheck = val;
+-
+-	return sizeof(w1_enable_crccheck);
++	return kstrtobool(buf, &w1_enable_crccheck) ? : count;
  }
  
-diff --git a/Documentation/ABI/testing/sysfs-bus-vdpa b/Documentation/ABI/testing/sysfs-bus-vdpa
-index 4e55761a39df..28a6111202ba 100644
---- a/Documentation/ABI/testing/sysfs-bus-vdpa
-+++ b/Documentation/ABI/testing/sysfs-bus-vdpa
-@@ -35,3 +35,23 @@ Description:
- 		Writing a device name to this file will cause the driver to
- 		attempt to unbind from the device. This may be useful when
- 		overriding default bindings.
-+
-+What:		/sys/bus/vdpa/devices/.../driver_override
-+Date:		November 2021
-+Contact:	virtualization@lists.linux-foundation.org
-+Description:
-+		This file allows the driver for a device to be specified.
-+		When specified, only a driver with a name matching the value
-+		written to driver_override will have an opportunity to bind to
-+		the device. The override is specified by writing a string to the
-+		driver_override file (echo vhost-vdpa > driver_override) and may
-+		be cleared with an empty string (echo > driver_override).
-+		This returns the device to standard matching rules binding.
-+		Writing to driver_override does not automatically unbind the
-+		device from its current driver or make any attempt to
-+		automatically load the specified driver. If no driver with a
-+		matching name is currently loaded in the kernel, the device will
-+		not bind to any driver. This also allows devices to opt-out of
-+		driver binding using a driver_override name such as "none".
-+		Only a single driver may be specified in the override, there is
-+		no support for parsing delimiters.
+ static DEVICE_ATTR_RW(crccheck);
 -- 
-2.31.1
+2.33.1
 
