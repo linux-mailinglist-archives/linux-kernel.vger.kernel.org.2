@@ -2,292 +2,345 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8F345E7B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 07:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 953D145E7BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 07:11:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358770AbhKZGIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 01:08:31 -0500
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:11664 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244112AbhKZGGa (ORCPT
+        id S1358710AbhKZGOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 01:14:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345645AbhKZGMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 01:06:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1637906597; x=1669442597;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=oUs8KHpPoES62pGveh25YWvNvWsKpMxtp/olrjhpVBo=;
-  b=YXe+c9t/GQ9zDUpPBhlaesx1udIX32JmIW2UVsC4oCn2z+ndv+PwV1la
-   gZO3YPGS/3gItBqlZ2INwDt2CGeHefHzHYkCIUzXWVhyYPkFZ5EYRpahc
-   PlnqisB5598pl57XxypfZFEHpL8621zTCp9iwGR3RouhduEeFyDB7/ibS
-   I5hKW4vX/nL4nqeCszy0erQ2qxgryPhtjGPb8NZFrQSBwkygvC6E2s3XE
-   KUqNOKPgF7bXGSsd5gHHDaUeALW5+77NWiAGCHzkkFs05wIISnKrYecyi
-   ZTETo4PquI0J6vRvSZC6pMD35LJJ26Ayd1k7bQHQ0QfMbSMt6MoCdl653
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.87,263,1631548800"; 
-   d="scan'208";a="191493925"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 26 Nov 2021 14:01:26 +0800
-IronPort-SDR: P4NhqC9uNCI8EhXT4MrE9St5qYSpycba5bHiU0okSqTIP76MuzGH+L/H6fXZhOUdGtRdvFEtB3
- l5q6s9YPxQ/pgxXcPeLOKrYsGMwQhA4FBx4gdHPB6GPonHmC5mjYum/wbfOqKe5NZwrQj2PiGY
- suayzFCLCf5pSBt9N9xV1uM7AETmDnSQxixkFo5wsdSJBAbe8B7/BTQBB+Xe2x7TyEGzG1M+CV
- VIh0eCgh1DygurDt9aVxYKFLW8wf9qYGl1EF3zymCm2Xca+esEiuFowpK5TIPA5MXJ0GGXUkEp
- Yxk55tuDBXv8GxS/dmSSefUe
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 21:34:45 -0800
-IronPort-SDR: cE5OImlxdAllmq4hcGPccRSPmd6KASf86djUsRa0h9MrUZ7DujAbM8SSLzSok3rrxkn2Su5wsb
- SEx7hdZZ9gmQuLIgqwvh+SOrUyNsxhoHR1UTF6rMRqW67cenAgc3Zq10lR8TsRnahkUgvgjAEt
- QduJweYKXbV5MrHAgm93/hCzuve3gySzyDd74oSw78PmxANSPROGvddlT/zaaBbYLLyVhp1DIV
- fcYme91JkH5/YF345Vxt/xRFo6t3QK58vl2HimCL6VJL2jpreB+ejAumZpCeW3sGCx+fZ4hSvv
- tC8=
-WDCIronportException: Internal
-Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 22:01:27 -0800
-Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4J0kdf75jLz1RtW5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 22:01:26 -0800 (PST)
-Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)"
-        header.d=opensource.wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
-        opensource.wdc.com; h=content-transfer-encoding:mime-version
-        :references:in-reply-to:x-mailer:message-id:date:subject:to
-        :from; s=dkim; t=1637906485; x=1640498486; bh=oUs8KHpPoES62pGveh
-        25YWvNvWsKpMxtp/olrjhpVBo=; b=ADB3Iga72GY66n+Uk4bV4rpd9x0Ognceny
-        byUnLSah0nVg7yvJK5Aq1Mj+bX2p4AqBYvGWHYAYtLWQWQjvWbeWOITmKpkA9RFv
-        hh34RuaH0uEyAAnbEJqNlBOy22wvJD0wWpnjyFkE2n1AlYWA4QwbJ53vKIIcnNll
-        Rt8486s/kqn/6uq4oX5E8YPeUmkeaho9v0Sxkfa1Cp1sxY/5aTjyMR0daR94Yaj9
-        GJGeuLN+rmsJ65GSQnG4jNWiTsMKNrxTtHkkW2HnOVQ+rsH/kuth0qIrGIlpvBSk
-        ZfwekZfEez2+Ge676qILQLIu3Qml1LRIQUwf4uuLhyCGWWia7UJA==
-X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
-Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
-        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id aTkrquMser5U for <linux-kernel@vger.kernel.org>;
-        Thu, 25 Nov 2021 22:01:25 -0800 (PST)
-Received: from toolbox.wdc.com (unknown [10.225.165.62])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4J0kdT2FD4z1RtW3;
-        Thu, 25 Nov 2021 22:01:16 -0800 (PST)
-From:   Alistair Francis <alistair.francis@opensource.wdc.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     tglx@linutronix.de, arnd@arndb.de, namhyung@kernel.org,
-        peterz@infradead.org, alistair23@gmail.com, jolsa@redhat.com,
-        dave@stgolabs.net, mingo@redhat.com, dvhart@infradead.org,
-        acme@kernel.org, linux-perf-users@vger.kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        Alistair Francis <alistair.francis@wdc.com>
-Subject: [PATCH v3 6/6] selftests: futex: Use futex_waitv helper function
-Date:   Fri, 26 Nov 2021 16:00:24 +1000
-Message-Id: <20211126060024.3290177-6-alistair.francis@opensource.wdc.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211126060024.3290177-1-alistair.francis@opensource.wdc.com>
-References: <20211126060024.3290177-1-alistair.francis@opensource.wdc.com>
-MIME-Version: 1.0
+        Fri, 26 Nov 2021 01:12:08 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D18C061574;
+        Thu, 25 Nov 2021 22:08:56 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id 71so7250954pgb.4;
+        Thu, 25 Nov 2021 22:08:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:content-transfer-encoding:mime-version:subject:message-id:date
+         :cc:to;
+        bh=/v+ZevPO8Jeofw86ZAQaEHKzZ1qKhCceNSzVJc9Z12Q=;
+        b=UIy7z7iVwE7tUICcJH2q7jARYJn6VoA6oNyeTrxv4T4rHZDBp6HiE6NrU+T3ObS0fB
+         Sf77pgkLph2vRbhMeF/FRAPMERxuUpvDk61niFN3CgPs6paceUbgwmN1axTzN/WXJ4Ye
+         Ujf2mTElVrPIxLJbHCrH0/HzlnLwC8fCHwZTmA8J0N539dXIhsVCVpWz4BCVnP7Hj+oP
+         4FcG88XAt2O+T4ojzGa7Nf6ORTP1VW9YOhkgKgIsGv/EABeJutogGCGYZiJ02JtIc/8C
+         lQGLH/eg0TG7mpqmIoPjdKhO9HlT9JJgzRymo5xA1Sw5JWbuc3EycMBfTWKcV9F7fti0
+         W/bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:content-transfer-encoding:mime-version
+         :subject:message-id:date:cc:to;
+        bh=/v+ZevPO8Jeofw86ZAQaEHKzZ1qKhCceNSzVJc9Z12Q=;
+        b=Zx53IqJzCdhhUEBX09lJFGmQqMLbWHjZ8juRD7He/7Hpi3bttRs/EVPALpde2vDjBD
+         ImdVyPtyq/wl0ORsbnNQmnE5vArN/R0Bg5ycyJ+6V5HKyDlOwYvBbXZ2MXkdm4xiajv0
+         PwFDhwPqahgWrJjKpCUTPHOwAsUVdelDG9OjcNFiaV7tLJvgK2Uvf2EpNCyWC4dA6rIk
+         Ojbp16Mql6+s53SN5w2jArfnNyz5ulLfCkiesqB6DnBrHIWyODqRe07mCNHb/MhHKKeQ
+         fkvbWh1fgm247OGMUF4IUSn3rPFeCTNvxsH8V0ZKg0YS3zVHgKtcUtGOK/ETwRdqXFES
+         RE0g==
+X-Gm-Message-State: AOAM532jwDGzweCFoMSgmTgmV8bws1WjhiYv93L+rpkjW/T3NoLgwhiC
+        PC3c/ABlEPfLR1RWCfJ20KZiOubKRj0=
+X-Google-Smtp-Source: ABdhPJx4dDHLcmkO130v8wn++TLKMCP/CPF7Joomza+RmNBK/VG/eB0IgOWERwI4/Wtk02i6LQhT/w==
+X-Received: by 2002:a63:91ca:: with SMTP id l193mr5982241pge.488.1637906935685;
+        Thu, 25 Nov 2021 22:08:55 -0800 (PST)
+Received: from smtpclient.apple ([66.170.99.1])
+        by smtp.gmail.com with ESMTPSA id pc10sm5106275pjb.9.2021.11.25.22.08.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 25 Nov 2021 22:08:55 -0800 (PST)
+From:   Nadav Amit <nadav.amit@gmail.com>
+Content-Type: text/plain;
+        charset=us-ascii
 Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: [PATCH 4.9] hugetlbfs: flush TLBs correctly after  huge_pmd_unshare
+Message-Id: <3BD89231-2CB9-4CE5-B0FA-5B58419D7CB8@gmail.com>
+Date:   Thu, 25 Nov 2021 22:08:53 -0800
+Cc:     LKML <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+To:     Nick Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alistair Francis <alistair.francis@wdc.com>
+Below is a patch to address CVE-2021-4002 [1] that I created to backport
+to 4.9. The stable kernels of 4.14 and prior ones do not have unified
+TLB flushing code, and I managed to mess up the arch code a couple of
+times.
 
-Use the publically exposed __kernel_futex_syscall_waitv() helper
-function for the futex_waitv tests.
+Now that the CVE is public, I would appreciate your review of this
+patch. I send 4.9 for review - the other ones (4.14 and prior) are
+pretty similar.
 
-Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+[1] https://www.openwall.com/lists/oss-security/2021/11/25/1
+
+Thanks,
+Nadav
+
+-- >8 --
+
+From: Nadav Amit <namit@vmware.com>
+Date: Sat, 20 Nov 2021 12:55:21 -0800
+Subject: [kernel v4.9 ] hugetlbfs: flush TLBs correctly after
+ huge_pmd_unshare
+
+When __unmap_hugepage_range() calls to huge_pmd_unshare() succeed, a TLB
+flush is missing. This TLB flush must be performed before releasing the
+i_mmap_rwsem, in order to prevent an unshared PMDs page from being
+released and reused before the TLB flush took place.
+
+Arguably, a comprehensive solution would use mmu_gather interface to
+batch the TLB flushes and the PMDs page release, however it is not an
+easy solution: (1) try_to_unmap_one() and try_to_migrate_one() also call
+huge_pmd_unshare() and they cannot use the mmu_gather interface; and (2)
+deferring the release of the page reference for the PMDs page until
+after i_mmap_rwsem is dropeed can confuse huge_pmd_unshare() into
+thinking PMDs are shared when they are not.
+
+Fix __unmap_hugepage_range() by adding the missing TLB flush, and
+forcing a flush when unshare is successful.
+
+Fixes: 24669e58477e ("hugetlb: use mmu_gather instead of a temporary =
+linked list for accumulating pages)" # 3.6
+Signed-off-by: Nadav Amit <namit@vmware.com>
 ---
- .../futex/functional/futex_wait_timeout.c     |  6 ++---
- .../futex/functional/futex_wait_wouldblock.c  |  4 ++--
- .../selftests/futex/functional/futex_waitv.c  | 16 ++++++++------
- .../selftests/futex/include/futex2test.h      | 22 -------------------
- 4 files changed, 14 insertions(+), 34 deletions(-)
- delete mode 100644 tools/testing/selftests/futex/include/futex2test.h
+ arch/arm/include/asm/tlb.h  |  8 ++++++++
+ arch/ia64/include/asm/tlb.h | 10 ++++++++++
+ arch/s390/include/asm/tlb.h | 14 ++++++++++++++
+ arch/sh/include/asm/tlb.h   | 10 ++++++++++
+ arch/um/include/asm/tlb.h   | 12 ++++++++++++
+ include/asm-generic/tlb.h   |  2 ++
+ mm/hugetlb.c                | 19 +++++++++++++++++++
+ mm/memory.c                 | 16 ++++++++++++++++
+ 8 files changed, 91 insertions(+)
 
-diff --git a/tools/testing/selftests/futex/functional/futex_wait_timeout.=
-c b/tools/testing/selftests/futex/functional/futex_wait_timeout.c
-index 3651ce17beeb..f25e3bd8222e 100644
---- a/tools/testing/selftests/futex/functional/futex_wait_timeout.c
-+++ b/tools/testing/selftests/futex/functional/futex_wait_timeout.c
-@@ -15,9 +15,9 @@
-  *
-  ***********************************************************************=
-******/
+diff --git a/arch/arm/include/asm/tlb.h b/arch/arm/include/asm/tlb.h
+index 1e25cd80589e..1cee2d540956 100644
+--- a/arch/arm/include/asm/tlb.h
++++ b/arch/arm/include/asm/tlb.h
+@@ -278,6 +278,14 @@ tlb_remove_pmd_tlb_entry(struct mmu_gather *tlb, =
+pmd_t *pmdp, unsigned long addr
+ 	tlb_add_flush(tlb, addr);
+ }
 =20
-+#include <linux/futex_syscall.h>
- #include <pthread.h>
- #include "futextest.h"
--#include "futex2test.h"
- #include "logging.h"
-=20
- #define TEST_NAME "futex-wait-timeout"
-@@ -185,13 +185,13 @@ int main(int argc, char *argv[])
- 	/* futex_waitv with CLOCK_MONOTONIC */
- 	if (futex_get_abs_timeout(CLOCK_MONOTONIC, &to, timeout_ns))
- 		return RET_FAIL;
--	res =3D futex_waitv(&waitv, 1, 0, &to, CLOCK_MONOTONIC);
-+	res =3D __kernel_futex_syscall_waitv(&waitv, 1, 0, &to, CLOCK_MONOTONIC=
-);
- 	test_timeout(res, &ret, "futex_waitv monotonic", ETIMEDOUT);
-=20
- 	/* futex_waitv with CLOCK_REALTIME */
- 	if (futex_get_abs_timeout(CLOCK_REALTIME, &to, timeout_ns))
- 		return RET_FAIL;
--	res =3D futex_waitv(&waitv, 1, 0, &to, CLOCK_REALTIME);
-+	res =3D __kernel_futex_syscall_waitv(&waitv, 1, 0, &to, CLOCK_REALTIME)=
-;
- 	test_timeout(res, &ret, "futex_waitv realtime", ETIMEDOUT);
-=20
- 	ksft_print_cnts();
-diff --git a/tools/testing/selftests/futex/functional/futex_wait_wouldblo=
-ck.c b/tools/testing/selftests/futex/functional/futex_wait_wouldblock.c
-index 7d7a6a06cdb7..399ac636524b 100644
---- a/tools/testing/selftests/futex/functional/futex_wait_wouldblock.c
-+++ b/tools/testing/selftests/futex/functional/futex_wait_wouldblock.c
-@@ -17,12 +17,12 @@
-=20
- #include <errno.h>
- #include <getopt.h>
-+#include <linux/futex_syscall.h>
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
- #include <time.h>
- #include "futextest.h"
--#include "futex2test.h"
- #include "logging.h"
-=20
- #define TEST_NAME "futex-wait-wouldblock"
-@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
- 	}
-=20
- 	info("Calling futex_waitv on f1: %u @ %p with val=3D%u\n", f1, &f1, f1+=
-1);
--	res =3D futex_waitv(&waitv, 1, 0, &to, CLOCK_MONOTONIC);
-+	res =3D __kernel_futex_syscall_waitv(&waitv, 1, 0, &to, CLOCK_MONOTONIC=
-);
- 	if (!res || errno !=3D EWOULDBLOCK) {
- 		ksft_test_result_pass("futex_waitv returned: %d %s\n",
- 				      res ? errno : res,
-diff --git a/tools/testing/selftests/futex/functional/futex_waitv.c b/too=
-ls/testing/selftests/futex/functional/futex_waitv.c
-index a94337f677e1..8ba45363c094 100644
---- a/tools/testing/selftests/futex/functional/futex_waitv.c
-+++ b/tools/testing/selftests/futex/functional/futex_waitv.c
-@@ -8,6 +8,7 @@
- #include <errno.h>
- #include <error.h>
- #include <getopt.h>
-+#include <linux/futex_syscall.h>
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
-@@ -16,7 +17,6 @@
- #include <stdint.h>
- #include <sys/shm.h>
- #include "futextest.h"
--#include "futex2test.h"
- #include "logging.h"
-=20
- #define TEST_NAME "futex-wait"
-@@ -25,6 +25,8 @@
- static struct futex_waitv waitv[NR_FUTEXES];
- u_int32_t futexes[NR_FUTEXES] =3D {0};
-=20
-+#define u64_to_ptr(x) ((void *)(uintptr_t)(x))
++static inline void
++tlb_flush_pmd_range(struct mmu_gather *tlb, unsigned long address,
++		    unsigned long size)
++{
++	tlb_add_flush(tlb, address);
++	tlb_add_flush(tlb, address + size - PMD_SIZE);
++}
 +
- void usage(char *prog)
+ #define pte_free_tlb(tlb, ptep, addr)	__pte_free_tlb(tlb, ptep, addr)
+ #define pmd_free_tlb(tlb, pmdp, addr)	__pmd_free_tlb(tlb, pmdp, addr)
+ #define pud_free_tlb(tlb, pudp, addr)	pud_free((tlb)->mm, pudp)
+diff --git a/arch/ia64/include/asm/tlb.h b/arch/ia64/include/asm/tlb.h
+index 77e541cf0e5d..34f4a5359561 100644
+--- a/arch/ia64/include/asm/tlb.h
++++ b/arch/ia64/include/asm/tlb.h
+@@ -272,6 +272,16 @@ __tlb_remove_tlb_entry (struct mmu_gather *tlb, =
+pte_t *ptep, unsigned long addre
+ 	tlb->end_addr =3D address + PAGE_SIZE;
+ }
+=20
++static inline void
++tlb_flush_pmd_range(struct mmu_gather *tlb, unsigned long address,
++		    unsigned long size)
++{
++	if (tlb->start_addr > address)
++		tlb->start_addr =3D address;
++	if (tlb->end_addr < address + size)
++		tlb->end_addr =3D address + size;
++}
++
+ #define tlb_migrate_finish(mm)	platform_tlb_migrate_finish(mm)
+=20
+ #define tlb_start_vma(tlb, vma)			do { } while (0)
+diff --git a/arch/s390/include/asm/tlb.h b/arch/s390/include/asm/tlb.h
+index 15711de10403..d2681d5a3d5a 100644
+--- a/arch/s390/include/asm/tlb.h
++++ b/arch/s390/include/asm/tlb.h
+@@ -116,6 +116,20 @@ static inline void tlb_remove_page_size(struct =
+mmu_gather *tlb,
+ 	return tlb_remove_page(tlb, page);
+ }
+=20
++static inline void tlb_flush_pmd_range(struct mmu_gather *tlb,
++				unsigned long address, unsigned long =
+size)
++{
++	/*
++	 * the range might exceed the original range that was provided =
+to
++	 * tlb_gather_mmu(), so we need to update it despite the fact it =
+is
++	 * usually not updated.
++	 */
++	if (tlb->start > address)
++		tlb->start =3D address;
++	if (tlb->end < address + size)
++		tlb->end =3D address + size;
++}
++
+ /*
+  * pte_free_tlb frees a pte table and clears the CRSTE for the
+  * page table from the tlb.
+diff --git a/arch/sh/include/asm/tlb.h b/arch/sh/include/asm/tlb.h
+index 025cdb1032f6..7aba716fd9a5 100644
+--- a/arch/sh/include/asm/tlb.h
++++ b/arch/sh/include/asm/tlb.h
+@@ -115,6 +115,16 @@ static inline bool __tlb_remove_page_size(struct =
+mmu_gather *tlb,
+ 	return __tlb_remove_page(tlb, page);
+ }
+=20
++static inline voide
++tlb_flush_pmd_range(struct mmu_gather *tlb, unsigned long address,
++		    unsigned long size)
++{
++	if (tlb->start > address)
++		tlb->start =3D address;
++	if (tlb->end < address + size)
++		tlb->end =3D address + size;
++}
++
+ static inline bool __tlb_remove_pte_page(struct mmu_gather *tlb,
+ 					 struct page *page)
  {
- 	printf("Usage: %s\n", prog);
-@@ -45,7 +47,7 @@ void *waiterfn(void *arg)
+diff --git a/arch/um/include/asm/tlb.h b/arch/um/include/asm/tlb.h
+index 821ff0acfe17..6fb47b17179f 100644
+--- a/arch/um/include/asm/tlb.h
++++ b/arch/um/include/asm/tlb.h
+@@ -128,6 +128,18 @@ static inline void tlb_remove_page_size(struct =
+mmu_gather *tlb,
+ 	return tlb_remove_page(tlb, page);
+ }
 =20
- 	to.tv_sec++;
++static inline void
++tlb_flush_pmd_range(struct mmu_gather *tlb, unsigned long address,
++		    unsigned long size)
++{
++	tlb->need_flush =3D 1;
++
++	if (tlb->start > address)
++		tlb->start =3D address;
++	if (tlb->end < address + size)
++		tlb->end =3D address + size;
++}
++
+ /**
+  * tlb_remove_tlb_entry - remember a pte unmapping for later tlb =
+invalidation.
+  *
+diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
+index c6d667187608..e9851100c0f7 100644
+--- a/include/asm-generic/tlb.h
++++ b/include/asm-generic/tlb.h
+@@ -123,6 +123,8 @@ void tlb_finish_mmu(struct mmu_gather *tlb, unsigned =
+long start,
+ 							unsigned long =
+end);
+ extern bool __tlb_remove_page_size(struct mmu_gather *tlb, struct page =
+*page,
+ 				   int page_size);
++void tlb_flush_pmd_range(struct mmu_gather *tlb, unsigned long address,
++			 unsigned long size);
 =20
--	res =3D futex_waitv(waitv, NR_FUTEXES, 0, &to, CLOCK_MONOTONIC);
-+	res =3D __kernel_futex_syscall_waitv(waitv, NR_FUTEXES, 0, &to, CLOCK_M=
-ONOTONIC);
- 	if (res < 0) {
- 		ksft_test_result_fail("futex_waitv returned: %d %s\n",
- 				      errno, strerror(errno));
-@@ -153,7 +155,7 @@ int main(int argc, char *argv[])
+ static inline void __tlb_adjust_range(struct mmu_gather *tlb,
+ 				      unsigned long address)
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index de89e9295f6c..7d51211995b9 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -3395,6 +3395,7 @@ void __unmap_hugepage_range(struct mmu_gather =
+*tlb, struct vm_area_struct *vma,
+ 	unsigned long sz =3D huge_page_size(h);
+ 	const unsigned long mmun_start =3D start;	/* For =
+mmu_notifiers */
+ 	const unsigned long mmun_end   =3D end;	/* For mmu_notifiers */
++	bool force_flush =3D false;
 =20
- 	to.tv_sec++;
+ 	WARN_ON(!is_vm_hugetlb_page(vma));
+ 	BUG_ON(start & ~huge_page_mask(h));
+@@ -3411,6 +3412,8 @@ void __unmap_hugepage_range(struct mmu_gather =
+*tlb, struct vm_area_struct *vma,
+ 		ptl =3D huge_pte_lock(h, mm, ptep);
+ 		if (huge_pmd_unshare(mm, &address, ptep)) {
+ 			spin_unlock(ptl);
++			tlb_flush_pmd_range(tlb, address & PUD_MASK, =
+PUD_SIZE);
++			force_flush =3D true;
+ 			continue;
+ 		}
 =20
--	res =3D futex_waitv(waitv, NR_FUTEXES, 0, &to, CLOCK_MONOTONIC);
-+	res =3D __kernel_futex_syscall_waitv(waitv, NR_FUTEXES, 0, &to, CLOCK_M=
-ONOTONIC);
- 	if (res =3D=3D EINVAL) {
- 		ksft_test_result_fail("futex_waitv private returned: %d %s\n",
- 				      res ? errno : res,
-@@ -172,7 +174,7 @@ int main(int argc, char *argv[])
+@@ -3467,6 +3470,22 @@ void __unmap_hugepage_range(struct mmu_gather =
+*tlb, struct vm_area_struct *vma,
+ 	}
+ 	mmu_notifier_invalidate_range_end(mm, mmun_start, mmun_end);
+ 	tlb_end_vma(tlb, vma);
++
++	/*
++	 * If we unshared PMDs, the TLB flush was not recorded in =
+mmu_gather. We
++	 * could defer the flush until now, since by holding =
+i_mmap_rwsem we
++	 * guaranteed that the last refernece would not be dropped. But =
+we must
++	 * do the flushing before we return, as otherwise i_mmap_rwsem =
+will be
++	 * dropped and the last reference to the shared PMDs page might =
+be
++	 * dropped as well.
++	 *
++	 * In theory we could defer the freeing of the PMD pages as =
+well, but
++	 * huge_pmd_unshare() relies on the exact page_count for the PMD =
+page to
++	 * detect sharing, so we cannot defer the release of the page =
+either.
++	 * Instead, do flush now.
++	 */
++	if (force_flush)
++		tlb_flush_mmu(tlb);
+ }
 =20
- 	to.tv_sec++;
+ void __unmap_hugepage_range_final(struct mmu_gather *tlb,
+diff --git a/mm/memory.c b/mm/memory.c
+index be592d434ad8..c2890dc104d9 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -320,6 +320,22 @@ bool __tlb_remove_page_size(struct mmu_gather *tlb, =
+struct page *page, int page_
+ 	return false;
+ }
 =20
--	res =3D futex_waitv(waitv, NR_FUTEXES, 0, &to, CLOCK_MONOTONIC);
-+	res =3D __kernel_futex_syscall_waitv(waitv, NR_FUTEXES, 0, &to, CLOCK_M=
-ONOTONIC);
- 	if (res =3D=3D EINVAL) {
- 		ksft_test_result_fail("futex_wake private returned: %d %s\n",
- 				      res ? errno : res,
-@@ -190,7 +192,7 @@ int main(int argc, char *argv[])
++void tlb_flush_pmd_range(struct mmu_gather *tlb, unsigned long address,
++			 unsigned long size)
++{
++	if (tlb->page_size !=3D 0 && tlb->page_size !=3D PMD_SIZE)
++		tlb_flush_mmu(tlb);
++
++	tlb->page_size =3D PMD_SIZE;
++	tlb->start =3D min(tlb->start, address);
++	tlb->end =3D max(tlb->end, address + size);
++	/*
++	 * Track the last address with which we adjusted the range. This
++	 * will be used later to adjust again after a mmu_flush due to
++	 * failed __tlb_remove_page
++	 */
++	tlb->addr =3D address + size - PMD_SIZE;
++}
+ #endif /* HAVE_GENERIC_MMU_GATHER */
 =20
- 	to.tv_sec++;
-=20
--	res =3D futex_waitv(waitv, NR_FUTEXES, 0, &to, CLOCK_MONOTONIC);
-+	res =3D __kernel_futex_syscall_waitv(waitv, NR_FUTEXES, 0, &to, CLOCK_M=
-ONOTONIC);
- 	if (res =3D=3D EINVAL) {
- 		ksft_test_result_fail("futex_waitv private returned: %d %s\n",
- 				      res ? errno : res,
-@@ -206,7 +208,7 @@ int main(int argc, char *argv[])
-=20
- 	to.tv_sec++;
-=20
--	res =3D futex_waitv(NULL, NR_FUTEXES, 0, &to, CLOCK_MONOTONIC);
-+	res =3D __kernel_futex_syscall_waitv(NULL, NR_FUTEXES, 0, &to, CLOCK_MO=
-NOTONIC);
- 	if (res =3D=3D EINVAL) {
- 		ksft_test_result_fail("futex_waitv private returned: %d %s\n",
- 				      res ? errno : res,
-@@ -222,7 +224,7 @@ int main(int argc, char *argv[])
-=20
- 	to.tv_sec++;
-=20
--	res =3D futex_waitv(NULL, NR_FUTEXES, 0, &to, CLOCK_TAI);
-+	res =3D __kernel_futex_syscall_waitv(NULL, NR_FUTEXES, 0, &to, CLOCK_TA=
-I);
- 	if (res =3D=3D EINVAL) {
- 		ksft_test_result_fail("futex_waitv private returned: %d %s\n",
- 				      res ? errno : res,
-diff --git a/tools/testing/selftests/futex/include/futex2test.h b/tools/t=
-esting/selftests/futex/include/futex2test.h
-deleted file mode 100644
-index 9d305520e849..000000000000
---- a/tools/testing/selftests/futex/include/futex2test.h
-+++ /dev/null
-@@ -1,22 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-or-later */
--/*
-- * Futex2 library addons for futex tests
-- *
-- * Copyright 2021 Collabora Ltd.
-- */
--#include <stdint.h>
--
--#define u64_to_ptr(x) ((void *)(uintptr_t)(x))
--
--/**
-- * futex_waitv - Wait at multiple futexes, wake on any
-- * @waiters:    Array of waiters
-- * @nr_waiters: Length of waiters array
-- * @flags: Operation flags
-- * @timo:  Optional timeout for operation
-- */
--static inline int futex_waitv(volatile struct futex_waitv *waiters, unsi=
-gned long nr_waiters,
--			      unsigned long flags, struct timespec *timo, clockid_t clockid)
--{
--	return syscall(__NR_futex_waitv, waiters, nr_waiters, flags, timo, cloc=
-kid);
--}
+ #ifdef CONFIG_HAVE_RCU_TABLE_FREE
 --=20
-2.31.1
+2.25.1
 
