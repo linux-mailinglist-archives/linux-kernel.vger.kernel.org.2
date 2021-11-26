@@ -2,170 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2FB45F081
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:19:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4840045F0A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:27:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377996AbhKZPXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 10:23:04 -0500
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:11130 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344954AbhKZPVD (ORCPT
+        id S1378058AbhKZPa3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 26 Nov 2021 10:30:29 -0500
+Received: from proxmox-new.maurer-it.com ([94.136.29.106]:65452 "EHLO
+        proxmox-new.maurer-it.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345647AbhKZP21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 10:21:03 -0500
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AQF2jmZ017915;
-        Fri, 26 Nov 2021 15:16:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=V/gadEoNS7p0mffZIqwyneDcsSaxclv6pID1M46Kh8g=;
- b=p0cKybGific1YIKz0hQFY1EdDAciNvUjY96KAnhlt3RLzWjfuugMYhuDSWcMMGOQucQG
- mSU9s1c7RBEdF/ucJ5pspIW22MZ41+EoR5VIAysOsFfmAHsl+FyPjfz1l/UMOrDg2k+H
- 55pjel6yz+g0XfD5K6ttexFtKNOyfF3jyyGjusp/dfmhY8aRJzwfYnm6fXfKmvg3HGd5
- pnPrjsKpguCD2WMJTzprZBBgtuMteiPxGpaxTm9BLYmk4xd/UQHXTb91aOWAjtzZMSIg
- YiRXPsGYuPaL/zelKeURdknNhpZkx/zfnLx+qxqFwc7qYxFMZ7XVFEG7YPxhmA50hbNH Bw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3ck1vmr2hh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Nov 2021 15:16:28 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AQFBQK1027148;
-        Fri, 26 Nov 2021 15:16:27 GMT
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1anam02lp2042.outbound.protection.outlook.com [104.47.57.42])
-        by aserp3030.oracle.com with ESMTP id 3ceq2k28cs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Nov 2021 15:16:27 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZL/jQFMsd5m0gP+BfUrRlHX3myiEg1W3d+fXVJfOT0eG0qjpokHO+Knac7iHpFHVMAZ03tB2IbjPvyJQOtqMwwS48cFlUD6ohWKSvlTbOvdW7jsl5zSYyY0b0z0svDOR3lkbiVYBHlvmkx7u3SWGJNcdkC2crYfKEPgtJUoYYPTyugTi9TK5iPKgR2QLPloC1yhZwG8rnxqzUEgJO3yn3vHL+7Pwe6d64ILFzfpb1Z6QYpBH8s2pXRdlmxcZIlIrOtztlqohFxWjHW0ATCNDgP4LoQzWgQDCXR57hU/bBRbw1n9THZmACiv2euasXGCXugmdokQ7QYAV0Tqyo8Ivxw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=V/gadEoNS7p0mffZIqwyneDcsSaxclv6pID1M46Kh8g=;
- b=T7sXEuP3CwxYt0bCiJjxDV/OaQx0HOJm5kgZ2xZXht+yZZ65XvQ9lFcv6KPwRfPQwlyAB9fv8iHyAa/uEFq+sTX7HaWvKUjY7PnCVUyrIQg7cfBWQ8TqnmZCN4DzMDD1PEfYVJEgTLGwJVX/Sk5Hp2aYinJgjxlT2sJxiTOLVnvwjQUyVCjsFgqYp6toa0o+DUvY3inzexpZtcwPK2SALCYE9x3/my867forXxHuCDyMbgUZEqTIiqSPE3K91rr+2E+Nx2mysLtzWvRcydyezpEpzywkVieGDJx+TCBkXf4JJgjQxQgeCfPezNWRz6f7/+a2uoZkcFKO6SfkJ9s7Yg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V/gadEoNS7p0mffZIqwyneDcsSaxclv6pID1M46Kh8g=;
- b=lGjLM09us2U6ko3GVMbpDpfEtDlNV8PNIWqXDsUAhKoGFCqT+kZnLN9LfkYtRQQyUAvnWCqOscaywXudrdAdnMfZqQ1MnwUZnKR00vKHq4xAtDxDn5lJLjil0Ub0wa/KaNbDK8iEiLDuwCzz5Xr/6UeqaQBAKxa7WufmAfokwjE=
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
- by BL0PR10MB3010.namprd10.prod.outlook.com (2603:10b6:208:78::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.20; Fri, 26 Nov
- 2021 15:16:26 +0000
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::8d84:1f40:881:7b12]) by BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::8d84:1f40:881:7b12%4]) with mapi id 15.20.4734.023; Fri, 26 Nov 2021
- 15:16:26 +0000
-Message-ID: <2893fd9b-c4d4-e601-e9e1-19a21297bb5e@oracle.com>
-Date:   Fri, 26 Nov 2021 10:16:20 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.2
-Subject: Re: [PATCH 0/2] xen: make debugreg accessors always_inline
-Content-Language: en-US
-To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, Stefano Stabellini <sstabellini@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-References: <20211125092056.24758-1-jgross@suse.com>
-From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
-In-Reply-To: <20211125092056.24758-1-jgross@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY5PR20CA0029.namprd20.prod.outlook.com
- (2603:10b6:a03:1f4::42) To BLAPR10MB5009.namprd10.prod.outlook.com
- (2603:10b6:208:321::10)
+        Fri, 26 Nov 2021 10:28:27 -0500
+X-Greylist: delayed 501 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Nov 2021 10:28:26 EST
+Received: from proxmox-new.maurer-it.com (localhost.localdomain [127.0.0.1])
+        by proxmox-new.maurer-it.com (Proxmox) with ESMTP id D6F90459D1;
+        Fri, 26 Nov 2021 16:16:51 +0100 (CET)
+Date:   Fri, 26 Nov 2021 16:16:41 +0100
+From:   Fabian =?iso-8859-1?q?Gr=FCnbichler?= <f.gruenbichler@proxmox.com>
+Subject: Re: [PATCH v4 bpf-next 3/5] kbuild: build kernel module BTFs if BTF
+ is enabled and pahole supports it
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "Starovoitov, Alexei" <ast@fb.com>, bpf <bpf@vger.kernel.org>,
+        "Allan, Bruce W" <bruce.w.allan@intel.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "jeyu@kernel.org" <jeyu@kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>
+References: <20201110011932.3201430-1-andrii@kernel.org>
+        <20201110011932.3201430-4-andrii@kernel.org>
+        <B51AA745-00B6-4F2A-A7F0-461E845C8414@fb.com>
+        <SN6PR11MB2751CF60B28D5788B0C15B5AB5E30@SN6PR11MB2751.namprd11.prod.outlook.com>
+        <CAEf4BzYSN+XnaA4V3jTLEmoUZO=Yxwp7OAwAY+HOvVEKT5kRFA@mail.gmail.com>
+        <20201116132409.4a5b8e0b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201116132409.4a5b8e0b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Received: from [10.74.104.211] (138.3.200.19) by BY5PR20CA0029.namprd20.prod.outlook.com (2603:10b6:a03:1f4::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.23 via Frontend Transport; Fri, 26 Nov 2021 15:16:23 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 43e87a88-f3f6-43e1-b613-08d9b0efb688
-X-MS-TrafficTypeDiagnostic: BL0PR10MB3010:
-X-Microsoft-Antispam-PRVS: <BL0PR10MB3010C9C1209193C686E757AA8A639@BL0PR10MB3010.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1002;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: R8aQOFpFMvf8CZX3VQuaYuqhTNltMX3p9mHSFQSFTgQxUI/WgN11uW9tbLz+bUBFfJ3WxcD11EHjNsm0bzh6myG8hEHPN+9AeLpwYGtNE3FSshNwbLLlnF43Vnln5+tdNoEaWBVDAYdlvusIE+Pl6AZMiSJF6yhmyNtK9zV1S7CEn94cunNllqSDYiJjgW9oWJ5ZI2FDPaXm2QkQY7s5xOFoswxleZcZEvcQPAYyIzTkggHs2Or4OtRgxwfB9+mt8MYh2RjNaRcd4B6lQHODE336vjucYv0BPrP7tscMSwXWH8qa+exPKCSMF/Xh4WD2qs+CgNcuoH7HocUD9yfMw+fwXf3m1/d5BuwXskiXKYRy29k8mFEyrl4tc3XeU2bXtXYjvLW2rzQmKj9dB4xgHnWccwHQ6pNUNrX7kPjwkqy9iFhUZ8E0wGiFDoZuxN1bqvuWfZ25dsYUgQEfPlSgyHnrmJ0f5dfUp33ZpezRfbE1PDSsHOcOeqZU4s92dDCvAtrUDGn9nnW2jUY6TxftU5DJuNUSj+rbZ2CW7CUe43A84B2k30lZOnHGJ9DzKXneMVsj63zsJmeDOP7bnKzYGV4mnpOKJWKs19xozrM5+AJQlW1CjC8/cSwdqZ8amd7TNEFKzlIJ0NmyWk6abq9LnIwqe3IK9FE8JCHnwn0vGu8AWQD8Ut0X31sXxFXeuphAbYqWCspfjrFD6QztnHLmsPsFUfrld2xFfKkKUwrVEEVjsBsepoewtiX1nyhLiyxm
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(38100700002)(2906002)(2616005)(44832011)(26005)(186003)(31686004)(83380400001)(4326008)(956004)(36756003)(558084003)(66946007)(53546011)(5660300002)(8936002)(8676002)(66476007)(16576012)(54906003)(66556008)(6486002)(508600001)(31696002)(7416002)(86362001)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NkRjdFlkK3VXOHBJdHJxcHJXdy9IY3RRWHdheXp1dmJ5ek5zL0QvWi83MHNN?=
- =?utf-8?B?Rm41azBsSE5relhNUGljZ2NKOG5yVWRZZ1dhNFY0YjNrUjdpdy8zSWQwQ3dl?=
- =?utf-8?B?OG5hdlJhaEVxSkZXVDdOT1p6VHVSbk5VQjJNM0dwZ3ZVNk1jUFVkVXVzdFJz?=
- =?utf-8?B?N2FQT1pRdnU2THM3UC9QakZ0cXduVWVFTzhLSFVMd1ZtQTdMNmlqUTFvd0J5?=
- =?utf-8?B?RTc5VWRWU1NIZ3owdzBOYlFrT2FxUGhudVJSNDhhU1RYUEZiTExydGJTY2Ra?=
- =?utf-8?B?QVNnOXNPUkRDNnFmZmNuWXdtemJaanQxalBWVFgyR0xqNFhxTWN2QVZzNmFC?=
- =?utf-8?B?bVVLZ21WR1gzK28ySElMdVZVWERkbU40bmt2YWR6R2V1OVVxTVFWUGFtNFF4?=
- =?utf-8?B?S1FLNko2ZXRGTDVSc3U4SUpranM5QWJyUUZyTm9WbDIwNkJDWHp2cHVmRm5W?=
- =?utf-8?B?N3pGcU9NUThzVlpXMHVlMWtIcFZaNnhOeTNZeWJONDRGVDRqY0h4UVF3Yjdt?=
- =?utf-8?B?dEh6TmJRdzdNb1RIUk9ZRWl6WGZGNSsrUm9pNENTR3VYTUdsaFlwdHVjTG9T?=
- =?utf-8?B?bzd5Y0QzWjJrZHZ4bmt0aFFSbElXNm1JdERXMTFxQ1E3bzhDVndTcCt2SmRi?=
- =?utf-8?B?Ym1zYmxXbnFHckZsSWpUd2NKTGEwOXBOU1ZQOEdKcFhSellUWWlEN1VMTGQr?=
- =?utf-8?B?bmZ6Q2JOQzBOcDk2VlQ1MEx2MCtCelhHRUF6SlR2U1JNVVJnNjZyQ0ZVazB6?=
- =?utf-8?B?N1kxWW44RkxZQSs0dnFPNmVNaFhJSDkyc2g4bC9YaXlBaUdjbmZzbVNIYkhj?=
- =?utf-8?B?cnh0eElnMWppZENHM1lzYWN4Nit4cDhGSFlaSDhSRnNhRkNFMng1RUZMNEMv?=
- =?utf-8?B?enhSTkpFVm1hTXBxUWVja2FVOXNTMmhyalF5OXJoODB3T0dpZXduV005RU80?=
- =?utf-8?B?eFRYOUREMk9pTU9vQWxyYWtaK0dXbnN2d3lCRlR0RHBpWUliVDU1eDdDNkNZ?=
- =?utf-8?B?WE0zR2NqVGtBLzROR0lCMFdGOHFBUGNYbWExN0pxTkhQMExIL1BPMGE0M2dn?=
- =?utf-8?B?SFJIT3EyQy9lNW9rNGppM1FwZFQ2TU5JNTBNTDN0bFRYbFFlc0l4VFlONE1j?=
- =?utf-8?B?T0xidjkzVTFobW95V3dEMEVGcVByVEJnTnd3ck1NUUtuUHQxb3ZEWFpDKzBw?=
- =?utf-8?B?Rm40b1V1NFBDSDFmRHFMNWlhOXVMWEo0VnExazJwUk00MndxTUVNcldoNTQz?=
- =?utf-8?B?V1VkcUdrdkE4Zlo5b1JsTzRnRVVpU2lKaWVkMWk0UEpzVzdKdGFmVkxiVURS?=
- =?utf-8?B?L2t2M2VLQmFqSmRhMXo1UVlEbDdKdCsza0hwT3JCN20zRnQ5SU1XYUlvdmln?=
- =?utf-8?B?R3dUWm1zb2JmNUdod0V5Y2REbU0xOTlHNVhTcSt1dFdEOCtpaGIvNlF3SVdP?=
- =?utf-8?B?UkFkYWkwcldMbzg2Z2dZVW8xbnpZUGdpeXlmT2N5ZWJRZEk3TGkzMEJBZkls?=
- =?utf-8?B?M3VZSk1Vb0VXbWVldjl6eEpCbmtybk1nc3Zpa2l2b2xCTGRnZnY2UFJhZXhF?=
- =?utf-8?B?MFJLSVhYdXVlM2hGMFM1VDNtQVNzMnRLNXM3OTd2cXJOdysvazRJRTIrbC9B?=
- =?utf-8?B?VXhBYWdleGQ0ajhWdlNWZ2NwbG11S0h0WnVWNVAzL0NqK3hHUE8yNEtiYVc1?=
- =?utf-8?B?QW5JaFcrd0V6M21qQWZUbkR4VlNEaXJVeGdLMWd0Zmo0dlROb2kvbmNLd2tK?=
- =?utf-8?B?QmxpK1RFOENMQVBsaXVtSzFzbnNHbEJnMGFmVmQ4bGc1ekNLMU4zaU8wbGxa?=
- =?utf-8?B?dVAvakF3VU1UVzl0VEZSN1hoRERrTzh4Q2RjYnFlMjVvbWdTNUx0Y0MzajF0?=
- =?utf-8?B?aDc4RnRKSFZ2dVBEdnJrbzZWS1ZZL3RVOUd2V1lYY0wyMFhnMm9IY3Z6RVFX?=
- =?utf-8?B?MC96SEVVbklOTGRMUHQ2OEJDbUlxajhTUXdLV3J6Y1BPZW85Umh5cHhqSGIz?=
- =?utf-8?B?UndQc0doQ1dnY244aGxwSTVoUG5TMUIvdnZMNncyOVMxMlNaTEhITWpZcnRS?=
- =?utf-8?B?b1Q5cE1ucXlGeFhxYkx4eUxLc0hqaEQyZVd4TzFPc1Bsais1NksrbUVUNU1E?=
- =?utf-8?B?OFlxdFJwalFQT3NROHd4M1d4ekp0UGh3SFBQOTZLMmFhT3g0U0Z3SWQ5STIz?=
- =?utf-8?B?bUhGUk5rWmE3blA2NDJrdWQ4WnhVMUFlSXRtejRWOWNKbDlGa0hIUFZYaElY?=
- =?utf-8?B?bk9uUW10dGZxcU1CUG5LRGx1Uy9RPT0=?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 43e87a88-f3f6-43e1-b613-08d9b0efb688
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Nov 2021 15:16:26.1117
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QfhjBRlBYOEn+8AQ8PayrEb8KBYJ3TSRa5pBgMR2t/hx5iWrtXdcC0v9FPA6xROghAwlC0ujQxEwtf54Vk4rulm39/CXi00Cyk3uToIQeg8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR10MB3010
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10180 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0 spamscore=0
- bulkscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111260089
-X-Proofpoint-ORIG-GUID: tU2Gqcv6ZmgIdQKpnP33z9_y8dQAAMja
-X-Proofpoint-GUID: tU2Gqcv6ZmgIdQKpnP33z9_y8dQAAMja
+User-Agent: astroid/0.15.0 (https://github.com/astroidmail/astroid)
+Message-Id: <1637926692.uyvrkty41j.astroid@nora.none>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On November 16, 2020 10:24 pm, Jakub Kicinski wrote:
+> On Mon, 16 Nov 2020 12:34:17 -0800 Andrii Nakryiko wrote:
+>> > This change, commit 5f9ae91f7c0d ("kbuild: Build kernel module BTFs if BTF is enabled and pahole
+>> > supports it") currently in net-next, linux-next, etc. breaks the use-case of compiling only a specific
+>> > kernel module (both in-tree and out-of-tree, e.g. 'make M=drivers/net/ethernet/intel/ice') after
+>> > first doing a 'make modules_prepare'.  Previously, that use-case would result in a warning noting
+>> > "Symbol info of vmlinux is missing. Unresolved symbol check will be entirely skipped" but now it
+>> > errors out after noting "No rule to make target 'vmlinux', needed by '<...>.ko'.  Stop."
+>> >
+>> > Is that intentional?  
+>> 
+>> I wasn't aware of such a use pattern, so definitely not intentional.
+>> But vmlinux is absolutely necessary to generate the module BTF. So I'm
+>> wondering what's the proper fix here? Leave it as is (that error
+>> message is actually surprisingly descriptive, btw)? Force vmlinux
+>> build? Or skip BTF generation for that module?
+> 
+> For an external out-of-tree module there is no guarantee that vmlinux
+> will even be on the system, no? So only the last option can work in
+> that case.
 
-On 11/25/21 4:20 AM, Juergen Gross wrote:
-> Juergen Gross (2):
->    xen: make HYPERVISOR_get_debugreg() always_inline
->    xen: make HYPERVISOR_set_debugreg() always_inline
->
->   arch/x86/include/asm/xen/hypercall.h | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+a year late to the party, but it seems to me that this patch 
+series/features also missed another, not yet fixed scenario. I have to 
+admit I am not very well-versed in BTF/BPF matters though, so please 
+take the analysis below with a grain of salt or two ;)
 
+(am subscribed to LKML/netdev, but not the bpf list, so please keep me 
+CCed if discussion moves there! apologies if too many people are CCed 
+here, feel free to trim down to relevant people/lists)
 
+many distros do their own tracking of kernel <-> module ABI (usually 
+these checks use Module.symvers and some combination of lists/symbols/.. 
+to skip/ignore[0]).
 
-Applied to for-linus-5.16c
+depending on detected changes, a kernel update can either
+- bump ABI, resulting in a new kernel/modules package that is installed 
+  next to the current one
+- keep ABI, resulting in an updated kernel/modules package that is 
+  installed over/instead of the current one
 
+the former case is obviously not an issue, since the modules and vmlinux 
+image shipped in that (set of) package(s) match. but in the later case 
+of updated, compatible kernel image + modules with unchanged ABI
+(which is important, as it allows shipping fixed modules that are 
+loadable for a compatible, older, booted kernel image), the following is 
+possible:
+- install kernel+modules with ABI 1
+- boot kernel with ABI 1
+- install ABI-compatible upgrade (e.g. a security fix)
+- load module
+- BTF validation fails, because the base_btf (loaded at boot time) and 
+  the offsets in the module's .BTF section (loaded at module load time) 
+  aren't matching
 
--boris
+of course the validation might also not fail but the parsed BTF info 
+might be bogus, or the base_btf might be similar enough that validation 
+passes and the parsed BTF data is correct.
+
+in our case the symptoms look like this (exact details vary with kernel 
+builds/modules, but likely not relevant):
+
+Nov 24 11:39:11 host kernel: BPF:         type_id=7 bits_offset=0
+Nov 24 11:39:11 host kernel: BPF:
+Nov 24 11:39:11 host kernel: BPF:Invalid name
+Nov 24 11:39:11 host kernel: BPF:
+Nov 24 11:39:11 host kernel: failed to validate module [overlay] BTF: -22
+
+where the booted kernel and the (attempted to get) loaded module are not 
+from the same build, but the Module.symvers is matching and loading 
+should thus work. adding some more debug logging reveals that the root 
+cause is the module's BTF start_str_off being, well, off, since it's derived 
+from vmlinux' BTF/base_btf. if it is too big, the name/type lookups will 
+wrongly look in the base_btf, if it's too small, the name/type lookups 
+will be offset within the module or wrongly look inside the module when 
+they should look inside base_btf/vmlinux. in any case, random garbage is 
+the result, usually tripping up some validation check (e.g. the first 
+byte not being 0 when checking a name). but even if it's correct (old 
+and new vmlinux image have the same nr_types/hdr.str_len), there is no 
+guarantuee that the offsets into base_btf are pointing at the right 
+stuff.
+
+example with debug logging patched in, note the garbled names, and 
+offset slightly below the (wrong) start_str_off:
+
+----8<----
+
+BPF:magic: 0xeb9f
+
+BPF:version: 1
+
+BPF:flags: 0x0
+
+BPF:hdr_len: 24
+
+BPF:type_off: 0
+
+BPF:type_len: 9264
+
+BPF:str_off: 9264
+
+BPF:str_len: 5511
+
+BPF:btf_total_size: 14799
+
+BPF:[106314] STRUCT rimary_device
+BPF:size=56 vlen=14
+BPF:
+
+BPF:offset at call: 1915394
+BPF:offset too small, choosing base_btf: 1915397
+
+BPF:offset after base_btf: 1915394
+
+BPF:     ce type_id=49 bits_offset=0
+BPF:
+
+BPF:offset at call: 1915403
+BPF:offset after base_btf: 6
+
+BPF:     nfig type_id=49 bits_offset=64
+BPF:
+
+BPF:offset at call: 1915412
+BPF:offset after base_btf: 15
+
+BPF:     rdir type_id=49 bits_offset=128
+BPF:
+
+BPF:offset at call: 768428
+BPF:offset too small, choosing base_btf: 1915397
+
+BPF:offset after base_btf: 768428
+
+BPF:     _dio type_id=56 bits_offset=192
+BPF:
+
+BPF:offset at call: 1915420
+BPF:offset after base_btf: 23
+
+BPF:     erdir type_id=56 bits_offset=200
+BPF:
+
+BPF:offset at call: 1915433
+BPF:offset after base_btf: 36
+
+BPF:first char wrong - 0
+
+BPF:      type_id=56 bits_offset=208
+BPF:
+BPF:Invalid name STRUCT MEMBER (name offset 1915433)
+BPF:
+
+failed to validate module [overlay] BTF: -22
+
+---->8----
+
+also note how it's only after a few botched entries that a check 
+actually trips up - not sure what the impliciations for crafted BTF info 
+are, but might be worthy a closer look by someone more knowledgable as 
+well..
+
+it seems to me this can be solved on the distro/user side by tracking 
+vmlinux BTF infos as part of the ABI tracking (how stable are those 
+compared to the existing interfaces making up the kernel <-> module 
+ABI/Module.symvers? does this effectively mean bumping ABI for any 
+change anyway?) or by disabling CONFIG_DEBUG_INFO_BTF_MODULES.
+
+on the kernel/libbpf side it could maybe be solved by storing a hash of 
+the base_btf data used to generate the split BTF-sections inside the 
+modules, and skip BTF loading/validating if another base_btf is 
+currently loaded (so BTF is best-effort, if the booted kernel and the 
+module are matching it works, if not module loading works but no BTF 
+support). this might be a good safe-guard for split-BTF in general?
+
+I'd appreciate input on how to proceed (we were recently hit by this in 
+a downstream Debian derivative, and will disable BTF info for modules as 
+an interim measure).
+
+thanks!
+
+0: e.g., Debian's: https://salsa.debian.org/kernel-team/linux/-/blob/master/debian/bin/abiupdate.py
 
