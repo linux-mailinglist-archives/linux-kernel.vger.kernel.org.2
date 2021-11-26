@@ -2,70 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF5F45EB86
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:27:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 344AF45EB8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:28:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376799AbhKZKaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 05:30:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38878 "EHLO
+        id S1376882AbhKZKbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 05:31:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377182AbhKZK2g (ORCPT
+        with ESMTP id S1377238AbhKZK3T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 05:28:36 -0500
+        Fri, 26 Nov 2021 05:29:19 -0500
 Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3912EC06137A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:16:18 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id x131so8463401pfc.12
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:16:18 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1012C0619DF
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:16:24 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id o4so8454321pfp.13
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:16:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=uR4m6ifObxFLSv5+D5ccFLNsJTzVIwm+L+AspgH/sbc=;
-        b=qXF+IVQG0dJL20dypSXsR7QCpiBBUUokf55xups/pCWC57wVk96LvlWYtF7HO7/33x
-         0nD4RWmsdQKB7MhOFv0/5MQWwtLwfH1egAFss0Vhm6DUEZBSYEhcIozKZezOGcfvmU2k
-         oItWpZIpgLPLLBJU25qcT1VATc/HRjsSZHQXotHNhoHTLQBGktfULgXlttgTRAwOC/UK
-         OBsCQ777Iy9lKxyzZDDQLMM21dPZsBVufhbFaJlOQdHC5AG4J3gPDYo/0sY32HUyt5Nu
-         aUYIhNsZgofh1K79bXAlbpVvb44V20rNahEMjZtF8Exm6C80cYP9fFP9RIG/q0hCmsPU
-         05bg==
+        bh=ati8q/LBZzDODk8RGw1XQap3HyVh8p9LlNnhait1s/w=;
+        b=PM1IBoamIcYoeP4OWRO/EnMYTaJcbYLSAW8g/GoJp3Yb5OExP0D9d5Ws9Q60F6dI7f
+         L0CO8WuB77XLmcMKDks284Z1YWHfx0MSkN9TWLRtuZEEu97Bsf/xKUdyPsGsQSwbPlR4
+         6vmBmjG3BhecKINMPTNxY3lcLVOS3SxeLrZFRry8nKC5WHKZce+BeJj6b4sEmnoqqJmi
+         ZZg4rlRcwxXlcWfC5P7FtFepo6ACYjBsWiRqWUnRQVpZMu3VISUjSygr2Qj9wkydeaAy
+         65Y/C2lclnpNBPaULYYfJNSWgmmUYhBgF9uoHWM2kVC3B58yIDLP1V4gR6pRxh3J4OTc
+         6q1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uR4m6ifObxFLSv5+D5ccFLNsJTzVIwm+L+AspgH/sbc=;
-        b=HN5RBBkTpEUGGThXBRLLHpQKRiQG4cC7CGIFxYbIcrCzrA++cQhfDMVdC3DG/52JRi
-         W5+kLkkzkq/xIrxSODtNz6HSzjx0EoM2XA1q7/rV6FbFaKGSL77xJr3DaKyQxCxLs5S7
-         gKsp4Zex4d5KcEXtiTODN/HaOQiQygkiFkCbmgxgmr8H4+2/Jc4a8dygi1KKgUMdbGnN
-         paMTfQeapv6SwxjQKv1QL5uZf/cC6Oz40fT7EAIVbaaCdF400h6+R0OCz0vrEVh/2DUC
-         J7teuGb2wr56AawG59Mo/b0St8O96l6kAa3LxpaIrzPbUeoWM1Ll3ZD1WJs3roejGiMT
-         ueZw==
-X-Gm-Message-State: AOAM532mLekfMXMq9B2R1bCO1hcesOcox5hNxC/gF1gOmEcQUkBC+azA
-        8/TwzZGDz/rLRGUPWnIN9xm5eZ2htMA=
-X-Google-Smtp-Source: ABdhPJzhVJHtxlOgjrvlNxgXLaEVYHgPHS2gbT4d9cPSFAS5bXRfpqQIYg8bOxrUZn/FIPsIUwwaHQ==
-X-Received: by 2002:a05:6a00:234a:b0:49f:c0f7:f474 with SMTP id j10-20020a056a00234a00b0049fc0f7f474mr20107522pfj.64.1637921777599;
-        Fri, 26 Nov 2021 02:16:17 -0800 (PST)
+        bh=ati8q/LBZzDODk8RGw1XQap3HyVh8p9LlNnhait1s/w=;
+        b=aqgLKnTzC7NT+00BN5cxS7YxPXpNDiGGLjUKS5Ba9v6EnDNA0/aiw1CdDmlrXPxoya
+         TZQ7GxBzygLEUxn3zXp1PL1ALqpISkmH/s/dbs1chEz+zryqmPNs3hyHCnjc2Km6fHDU
+         zIPTknNalvFSZ8mgjH9IcswME3z0HfdpY5aJURDSaH10mJ3iiftprSydH2hCim4jc6g3
+         VH6yRHo7gCRy5R9ruVYLaC3j8+zgkmR1U1b2wIvE96jquyjW65THhaSpeNbysyzlxPes
+         PWv9HzNyP/+HahlohXgl1VGQ4+gwselcQAD7C2mnXJdyb8HNBgHHMxNC5yI9Tx9TRY3R
+         /Y7w==
+X-Gm-Message-State: AOAM533j++eCot29ZZHWvMTwz8CYd7v4KjZrs7ss6xTjda1wd1BNLaQT
+        XBW4hkDXBD73lFHPa6Xjep7HEj0bvEI=
+X-Google-Smtp-Source: ABdhPJyXqRiwSM753sQj3Okr+QjfJS/VMany0tmek9lRDpEi9OoH0TobvHWc8ArCdmrWJS+nAe7pQw==
+X-Received: by 2002:a63:155:: with SMTP id 82mr6699495pgb.485.1637921784177;
+        Fri, 26 Nov 2021 02:16:24 -0800 (PST)
 Received: from localhost ([47.251.3.230])
-        by smtp.gmail.com with ESMTPSA id ot18sm6082432pjb.14.2021.11.26.02.16.16
+        by smtp.gmail.com with ESMTPSA id o134sm5931322pfg.1.2021.11.26.02.16.23
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 26 Nov 2021 02:16:17 -0800 (PST)
+        Fri, 26 Nov 2021 02:16:23 -0800 (PST)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
-        Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <jgross@suse.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: [PATCH V6 41/49] x86/nmi: Use C entry code
-Date:   Fri, 26 Nov 2021 18:12:01 +0800
-Message-Id: <20211126101209.8613-42-jiangshanlai@gmail.com>
+        Joerg Roedel <jroedel@suse.de>
+Subject: [PATCH V6 42/49] x86/entry: Add a C macro to define the function body for IST in .entry.text with an error code
+Date:   Fri, 26 Nov 2021 18:12:02 +0800
+Message-Id: <20211126101209.8613-43-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20211126101209.8613-1-jiangshanlai@gmail.com>
 References: <20211126101209.8613-1-jiangshanlai@gmail.com>
@@ -77,86 +71,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Use DEFINE_IDTENTRY_IST_ENTRY to emit C entry function and use the function
-directly in entry_64.S.
+Add DEFINE_IDTENTRY_IST_ENTRY_ERRORCODE() macro to define C code to
+implement the ASM code which calls paranoid_entry(), modify orig_ax,
+cfunc(), paranoid_exit() in series for IST exceptions with an error code.
+
+Not functional difference intended.
 
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/entry/entry_64.S       | 17 ++---------------
- arch/x86/include/asm/idtentry.h |  5 ++++-
- arch/x86/kernel/Makefile        |  1 +
- 3 files changed, 7 insertions(+), 16 deletions(-)
+ arch/x86/include/asm/idtentry.h | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index ac05cbf894f5..cc552e23d691 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -1306,21 +1306,8 @@ end_repeat_nmi:
- 	PUSH_AND_CLEAR_REGS
- 	ENCODE_FRAME_POINTER
- 
--	/*
--	 * Use paranoid_entry to handle SWAPGS and CR3.
--	 */
--	call	paranoid_entry
--	UNWIND_HINT_REGS
--
--	movq	%rsp, %rdi
--	movq	$-1, %rsi
--	call	exc_nmi
--
--	/*
--	 * Use paranoid_exit to handle SWAPGS and CR3, but no need to use
--	 * restore_regs_and_return_to_kernel as we must handle nested NMI.
--	 */
--	call	paranoid_exit
-+	movq	%rsp, %rdi		/* pt_regs pointer */
-+	call	ist_exc_nmi
- 
- 	POP_REGS
- 
 diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index 737fbbe19d84..b65cb61aafdc 100644
+index b65cb61aafdc..46b2ef021992 100644
 --- a/arch/x86/include/asm/idtentry.h
 +++ b/arch/x86/include/asm/idtentry.h
-@@ -372,6 +372,8 @@ __visible __entry_text void ist_##func(struct pt_regs *regs)		\
- #define DEFINE_IDTENTRY_NOIST(func)					\
- 	DEFINE_IDTENTRY_RAW(noist_##func)
+@@ -351,6 +351,22 @@ __visible __entry_text void ist_##func(struct pt_regs *regs)		\
+ 	ist_paranoid_exit(cr3, gsbase);					\
+ }
  
-+#define DEFINE_IDTENTRY_NMI		DEFINE_IDTENTRY_IST
-+
- #define DECLARE_IDTENTRY_MCE		DECLARE_IDTENTRY_IST
- #define DEFINE_IDTENTRY_MCE		DEFINE_IDTENTRY_IST
- #define DEFINE_IDTENTRY_MCE_USER	DEFINE_IDTENTRY_NOIST
-@@ -421,6 +423,8 @@ __visible __entry_text void ist_##func(struct pt_regs *regs)		\
- 
- #else	/* CONFIG_X86_64 */
- 
-+#define DEFINE_IDTENTRY_NMI		DEFINE_IDTENTRY_RAW
++/**
++ * DEFINE_IDTENTRY_IST_ENTRY_ERRORCODE - Emit __entry_text code for IST
++ *					 entry points with an error code
++ * @func:	Function name of the entry point
++ */
++#define DEFINE_IDTENTRY_IST_ENTRY_ERRORCODE(func)			\
++__visible __entry_text void ist_##func(struct pt_regs *regs)		\
++{									\
++	unsigned long cr3, gsbase, error_code = regs->orig_ax;		\
++									\
++	ist_paranoid_entry(&cr3, &gsbase);				\
++	regs->orig_ax = -1;	/* no syscall to restart */		\
++	func(regs, error_code);						\
++	ist_paranoid_exit(cr3, gsbase);					\
++}
 +
  /**
-  * DECLARE_IDTENTRY_DF - Declare functions for double fault 32bit variant
-  * @vector:	Vector number (ignored for C)
-@@ -452,7 +456,6 @@ __visible noinstr void func(struct pt_regs *regs,			\
- 
- /* C-Code mapping */
- #define DECLARE_IDTENTRY_NMI		DECLARE_IDTENTRY_RAW
--#define DEFINE_IDTENTRY_NMI		DEFINE_IDTENTRY_RAW
- 
- #else /* !__ASSEMBLY__ */
- 
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index 8ac45801ba8b..28815c2e6cb2 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -51,6 +51,7 @@ KCOV_INSTRUMENT		:= n
- CFLAGS_head$(BITS).o	+= -fno-stack-protector
- CFLAGS_cc_platform.o	+= -fno-stack-protector
- CFLAGS_traps.o		+= -fno-stack-protector
-+CFLAGS_nmi.o		+= -fno-stack-protector
- 
- CFLAGS_irq.o := -I $(srctree)/$(src)/../include/asm/trace
- 
+  * DEFINE_IDTENTRY_IST - Emit code for IST entry points
+  * @func:	Function name of the entry point
 -- 
 2.19.1.6.gb485710b
 
