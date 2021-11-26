@@ -2,45 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8EA45F398
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 19:14:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F198845F4C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 19:38:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236540AbhKZSR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 13:17:56 -0500
-Received: from lizzard.sbs.de ([194.138.37.39]:59450 "EHLO lizzard.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229929AbhKZSPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 13:15:45 -0500
-Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 1AQIC5RD019147
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Nov 2021 19:12:05 +0100
-Received: from md1za8fc.ad001.siemens.net ([139.22.47.90])
-        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 1AQIC4ie019339;
-        Fri, 26 Nov 2021 19:12:04 +0100
-Date:   Fri, 26 Nov 2021 19:12:03 +0100
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>, Enrico Weigelt <lkml@metux.net>
-Subject: Re: [PATCH v4 2/4] leds: simatic-ipc-leds: add new driver for
- Siemens Industial PCs
-Message-ID: <20211126191203.663e0d90@md1za8fc.ad001.siemens.net>
-In-Reply-To: <CAHp75VcD0FQuG_AToNkVHHD9e6WV6=18P4U0cSi0qzD3FL=ssw@mail.gmail.com>
-References: <20211126141027.16161-1-henning.schild@siemens.com>
-        <20211126141027.16161-3-henning.schild@siemens.com>
-        <CAHp75VcD0FQuG_AToNkVHHD9e6WV6=18P4U0cSi0qzD3FL=ssw@mail.gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S241773AbhKZSmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 13:42:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243806AbhKZSkA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 13:40:00 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BCD9C0613FE;
+        Fri, 26 Nov 2021 10:12:55 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 94DC7B82869;
+        Fri, 26 Nov 2021 18:12:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6D37C93056;
+        Fri, 26 Nov 2021 18:12:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637950373;
+        bh=lTa9Y0/ejMx8gFkjVpdlFhYxyZgVE6QzlU94i0kFQO0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=NyubaV9eW/86kaB3aZ6mMSaT0WYPJDu1achGQOmCZt5Z4KThvbIoKl+ocvlOfyTKM
+         eB6OV0S7Wn2poiasMX1LViieDuxtamikmB4RSMRnMJPJSUQGYE8JpwkSKvwetUDBIW
+         qq0Fts150EygbAIXXpfyVRZ7b5Y9iZN51IlELlZzB1sZ+0D03IntttNOP4nTIV+PqW
+         btz4q2QBakRxp8n0zZLHkczQR6goONCgledGaxtr0PHOGPgxUXTHD3iFyaj5QYPQ0T
+         2i8Mi9tlsl8xA67W2TMQxETi5K3lOyNr9KXtxedJWLRQx7SZc3/OUp2ztqw3QQUfRl
+         nXeth8X9jeS1w==
+Date:   Fri, 26 Nov 2021 10:12:51 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     <davem@davemloft.net>, <robh+dt@kernel.org>,
+        <UNGLinuxDriver@microchip.com>, <p.zabel@pengutronix.de>,
+        <linux@armlinux.org.uk>, <andrew@lunn.ch>,
+        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v4 3/6] net: lan966x: add port module support
+Message-ID: <20211126101251.3dceb6f2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211126090540.3550913-4-horatiu.vultur@microchip.com>
+References: <20211126090540.3550913-1-horatiu.vultur@microchip.com>
+        <20211126090540.3550913-4-horatiu.vultur@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -48,38 +52,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Fri, 26 Nov 2021 17:02:00 +0200
-schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
+On Fri, 26 Nov 2021 10:05:37 +0100 Horatiu Vultur wrote:
+> This patch adds support for netdev and phylink in the switch. The
+> injection + extraction is register based. This will be replaced with DMA
+> accees.
+> 
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 
-> On Fri, Nov 26, 2021 at 4:10 PM Henning Schild
-> <henning.schild@siemens.com> wrote:
-> >
-> > This driver adds initial support for several devices from Siemens.
-> > It is based on a platform driver introduced in an earlier commit.  
-> 
-> ...
-> 
-> > +static struct simatic_ipc_led simatic_ipc_leds_mem[] = {
-> > +       {0x500 + 0x1A0, "red:" LED_FUNCTION_STATUS "-1"},
-> > +       {0x500 + 0x1A8, "green:" LED_FUNCTION_STATUS "-1"},
-> > +       {0x500 + 0x1C8, "red:" LED_FUNCTION_STATUS "-2"},
-> > +       {0x500 + 0x1D0, "green:" LED_FUNCTION_STATUS "-2"},
-> > +       {0x500 + 0x1E0, "red:" LED_FUNCTION_STATUS "-3"},
-> > +       {0x500 + 0x198, "green:" LED_FUNCTION_STATUS "-3"},
-> > +       { }
-> > +};  
-> 
-> Like I said, this is not okay.
-> 
-> Why can't you simply enable the pinctrl driver and use it?
+Clang sees issues here:
 
-I propose we set up a call, that might help clearing up the situation.
-If you agree please send me an email and possibly propose a time-slot.
-I would take it from there and send you a meeting link.
-
-regards,
-Henning
-
-> 
-> 
-
+drivers/net/ethernet/microchip/lan966x/lan966x_main.c:409:8: warning: variable 'sz' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+                       if (err != 4)
+                           ^~~~~~~~
+drivers/net/ethernet/microchip/lan966x/lan966x_main.c:469:7: note: uninitialized use occurs here
+               if (sz < 0 || err)
+                   ^~
+drivers/net/ethernet/microchip/lan966x/lan966x_main.c:409:4: note: remove the 'if' if its condition is always false
+                       if (err != 4)
+                       ^~~~~~~~~~~~~
+drivers/net/ethernet/microchip/lan966x/lan966x_main.c:403:9: note: initialize the variable 'sz' to silence this warning
+               int sz, buf_len;
+                     ^
+                      = 0
