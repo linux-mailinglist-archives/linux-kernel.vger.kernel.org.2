@@ -2,136 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1F945F2C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 18:17:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7428545F2CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 18:20:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238430AbhKZRU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 12:20:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21138 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239864AbhKZRSz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 12:18:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637946942;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JjbjPQPAvqdhPGFRDSb1vU4+b5m/8f/mEnd8iBTapH8=;
-        b=AQ5/5+ohS4nzjbAJf7RLkAT3Yck5RumCjuBZoCOuzN0gT83u/bEWrQw7JgdBcQvKa35U9c
-        cBnMYQwUEW/pcbvrDfdAhOA5E6JpaTkFU2Txd+4zPMQG8JR7hU80iDhIiHcrp/wdmvWBId
-        i4IoY1WVJzqWGqlkuBElEnj7v8CqaoU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-458-syuTy5jrOh6XMcxzUSLANA-1; Fri, 26 Nov 2021 12:15:41 -0500
-X-MC-Unique: syuTy5jrOh6XMcxzUSLANA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0112E1006AAA;
-        Fri, 26 Nov 2021 17:15:40 +0000 (UTC)
-Received: from t480s.redhat.com (unknown [10.39.193.226])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3BB065D9C0;
-        Fri, 26 Nov 2021 17:15:38 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        borntraeger@de.ibm.com, hca@linux.ibm.com, imbrenda@linux.ibm.com,
-        David Hildenbrand <david@redhat.com>
-Subject: [PATCH for 4.14-stable] s390/mm: validate VMA in PGSTE manipulation functions
-Date:   Fri, 26 Nov 2021 18:15:36 +0100
-Message-Id: <20211126171536.22963-1-david@redhat.com>
-In-Reply-To: <16371715631177@kroah.com>
-References: <16371715631177@kroah.com>
+        id S235046AbhKZRXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 12:23:39 -0500
+Received: from foss.arm.com ([217.140.110.172]:35924 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230473AbhKZRVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 12:21:38 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BADA911D4;
+        Fri, 26 Nov 2021 09:18:24 -0800 (PST)
+Received: from ubiquitous (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B88683F7B4;
+        Fri, 26 Nov 2021 09:18:23 -0800 (PST)
+Date:   Fri, 26 Nov 2021 17:18:17 +0000
+From:   Vincent Donnefort <vincent.donnefort@arm.com>
+To:     Valentin Schneider <Valentin.Schneider@arm.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>, peterz@infradead.org,
+        mingo@redhat.com, linux-kernel@vger.kernel.org,
+        mgorman@techsingularity.net, dietmar.eggemann@arm.com
+Subject: Re: [PATCH] sched/fair: Fix detection of per-CPU kthreads waking a
+ task
+Message-ID: <20211126171817.GA3798214@ubiquitous>
+References: <20211124154239.3191366-1-vincent.donnefort@arm.com>
+ <CAKfTPtDX8sOfguZhJt5QV3j5D_JetcgncuF2w+uLa0XDk7UXkw@mail.gmail.com>
+ <8735nkcwov.mognet@arm.com>
+ <CAKfTPtDPskVdEd-KQ_cwe-R_zVFPQOgdbk9x+3eD12pKs8fGFw@mail.gmail.com>
+ <87zgpsb6de.mognet@arm.com>
+ <CAKfTPtCnusWJXJLDEudQ_q8MWaZYbPJK-QjAbBYWFW8Nw-J+Ww@mail.gmail.com>
+ <87sfvjavqk.mognet@arm.com>
+ <CAKfTPtC4iXXaptm9+2bHvX2E3xAWU4M3xN0ZuwpFQ1RyXAyxyA@mail.gmail.com>
+ <87pmqmc16f.mognet@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87pmqmc16f.mognet@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit fe3d10024073f06f04c74b9674bd71ccc1d787cf upstream.
+On Fri, Nov 26, 2021 at 04:49:12PM +0000, Valentin Schneider wrote:
+> On 26/11/21 15:40, Vincent Guittot wrote:
+> > On Fri, 26 Nov 2021 at 14:32, Valentin Schneider
+> > <Valentin.Schneider@arm.com> wrote:
+> >>         /*
+> >> -        * Allow a per-cpu kthread to stack with the wakee if the
+> >> -        * kworker thread and the tasks previous CPUs are the same.
+> >> -        * The assumption is that the wakee queued work for the
+> >> -        * per-cpu kthread that is now complete and the wakeup is
+> >> -        * essentially a sync wakeup. An obvious example of this
+> >> +        * Allow a per-cpu kthread to stack with the wakee if the kworker thread
+> >> +        * and the tasks previous CPUs are the same.  The assumption is that the
+> >> +        * wakee queued work for the per-cpu kthread that is now complete and
+> >> +        * the wakeup is essentially a sync wakeup. An obvious example of this
+> >>          * pattern is IO completions.
+> >> +        *
+> >> +        * Ensure the wakeup is issued by the kthread itself, and don't match
+> >> +        * against the idle task because that could override the
+> >> +        * available_idle_cpu(target) check done higher up.
+> >>          */
+> >> -       if (is_per_cpu_kthread(current) &&
+> >> +       if (is_per_cpu_kthread(current) && !is_idle_task(current) &&
+> >
+> > still i don't see the need of !is_idle_task(current)
+> >
+> 
+> Admittedly, belts and braces. The existing condition checks rq->nr_running <= 1
+> which can lead to coscheduling when the wakeup is issued by the idle task
+> (or even if rq->nr_running == 0, you can have rq->ttwu_pending without
+> having sent an IPI due to polling). Essentially this overrides the first
+> check in sis() that uses idle_cpu(target) (prev == smp_processor_id() ==
+> target).
+> 
+> I couldn't prove such wakeups can happen right now, but if/when they do
+> (AIUI it would just take someone to add a wake_up_process() down some
+> smp_call_function() callback) then we'll need the above. If you're still
+> not convinced by now, I won't push it further.
 
-We should not walk/touch page tables outside of VMA boundaries when
-holding only the mmap sem in read mode. Evil user space can modify the
-VMA layout just before this function runs and e.g., trigger races with
-page table removal code since commit dd2283f2605e ("mm: mmap: zap pages
-with read mmap_sem in munmap"). gfn_to_hva() will only translate using
-KVM memory regions, but won't validate the VMA.
+From a quick experiment, even with the asym_fits_capacity(), I can trigger
+the following:
 
-Further, we should not allocate page tables outside of VMA boundaries: if
-evil user space decides to map hugetlbfs to these ranges, bad things will
-happen because we suddenly have PTE or PMD page tables where we
-shouldn't have them.
+[    0.118855] select_idle_sibling: wakee=kthreadd:2 nr_cpus_allowed=8 current=swapper/0:1 in_task=1
+[    0.128214] select_idle_sibling: wakee=rcu_gp:3 nr_cpus_allowed=8 current=swapper/0:1 in_task=1
+[    0.137327] select_idle_sibling: wakee=rcu_par_gp:4 nr_cpus_allowed=8 current=swapper/0:1 in_task=1
+[    0.147221] select_idle_sibling: wakee=kworker/u16:0:7 nr_cpus_allowed=8 current=swapper/0:1 in_task=1
+[    0.156994] select_idle_sibling: wakee=mm_percpu_wq:8 nr_cpus_allowed=8 current=swapper/0:1 in_task=1
+[    0.171943] select_idle_sibling: wakee=rcu_sched:10 nr_cpus_allowed=8 current=swapper/0:1 in_task=1
 
-Similarly, we have to check if we suddenly find a hugetlbfs VMA, before
-calling get_locked_pte().
+So the in_task() condition doesn't appear to be enough to filter wakeups
+while we have the swapper as a current.
 
-Fixes: 2d42f9477320 ("s390/kvm: Add PGSTE manipulation functions")
-Signed-off-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
-Link: https://lore.kernel.org/r/20210909162248.14969-4-david@redhat.com
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- arch/s390/mm/pgtable.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/arch/s390/mm/pgtable.c b/arch/s390/mm/pgtable.c
-index ae677f814bc0..aa6b9487c8bb 100644
---- a/arch/s390/mm/pgtable.c
-+++ b/arch/s390/mm/pgtable.c
-@@ -896,6 +896,7 @@ EXPORT_SYMBOL(get_guest_storage_key);
- int pgste_perform_essa(struct mm_struct *mm, unsigned long hva, int orc,
- 			unsigned long *oldpte, unsigned long *oldpgste)
- {
-+	struct vm_area_struct *vma;
- 	unsigned long pgstev;
- 	spinlock_t *ptl;
- 	pgste_t pgste;
-@@ -905,6 +906,10 @@ int pgste_perform_essa(struct mm_struct *mm, unsigned long hva, int orc,
- 	WARN_ON_ONCE(orc > ESSA_MAX);
- 	if (unlikely(orc > ESSA_MAX))
- 		return -EINVAL;
-+
-+	vma = find_vma(mm, hva);
-+	if (!vma || hva < vma->vm_start || is_vm_hugetlb_page(vma))
-+		return -EFAULT;
- 	ptep = get_locked_pte(mm, hva, &ptl);
- 	if (unlikely(!ptep))
- 		return -EFAULT;
-@@ -997,10 +1002,14 @@ EXPORT_SYMBOL(pgste_perform_essa);
- int set_pgste_bits(struct mm_struct *mm, unsigned long hva,
- 			unsigned long bits, unsigned long value)
- {
-+	struct vm_area_struct *vma;
- 	spinlock_t *ptl;
- 	pgste_t new;
- 	pte_t *ptep;
- 
-+	vma = find_vma(mm, hva);
-+	if (!vma || hva < vma->vm_start || is_vm_hugetlb_page(vma))
-+		return -EFAULT;
- 	ptep = get_locked_pte(mm, hva, &ptl);
- 	if (unlikely(!ptep))
- 		return -EFAULT;
-@@ -1025,9 +1034,13 @@ EXPORT_SYMBOL(set_pgste_bits);
-  */
- int get_pgste(struct mm_struct *mm, unsigned long hva, unsigned long *pgstep)
- {
-+	struct vm_area_struct *vma;
- 	spinlock_t *ptl;
- 	pte_t *ptep;
- 
-+	vma = find_vma(mm, hva);
-+	if (!vma || hva < vma->vm_start || is_vm_hugetlb_page(vma))
-+		return -EFAULT;
- 	ptep = get_locked_pte(mm, hva, &ptl);
- 	if (unlikely(!ptep))
- 		return -EFAULT;
--- 
-2.31.1
-
+> 
+> >
+> >> +           in_task() &&
+> >>             prev == smp_processor_id() &&
+> >>             this_rq()->nr_running <= 1) {
+> >>                 return prev;
+> >>
