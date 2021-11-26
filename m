@@ -2,61 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E76F45F6F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 23:43:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4477545F6F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 23:50:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245452AbhKZWqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 17:46:47 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:54198 "EHLO vps0.lunn.ch"
+        id S234015AbhKZWxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 17:53:14 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:54208 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244913AbhKZWoq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 17:44:46 -0500
+        id S239549AbhKZWvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 17:51:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=vEWXtK/tCpHD2+pJugCQLUUK33UZEve/ofl63XMeAdc=; b=RM
-        FSoXI9di9trA7ThP1nIIuSSrfXHzeFd0dlG7ZfheKhkNFvdc91Dl385NXx2w7OEnVylBwuLAvGWza
-        OwGYC+k32HpbKPu9rzxTos0D2+SpojiYD6zPTjx25WhhCoIy1i+JnH+VflxdWu1rFRKpihVl04Z4P
-        DDX2WNXg2N5Z+QI=;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:To:From:Date:From:Sender:Reply-To:Subject:Date:
+        Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=L0jL/JDF3mZatKYXvhswt5OjSKQ39TiN08Rrl5nIFCs=; b=Gf9nbyq4kEILLJ1Qbhs6/h/5X6
+        gnDTUoaqg+UO/tWYpMbIuDN1c0V8Z8AgbeyH2dwvusnYmjPfeDWNVhIB1Yw4XzY5wKpOW/T87T8Rl
+        IXcv4m+5lqjsNIHKRLYw+Bl2f+aefYRc6GAuIWTvsKjEPSaK7RebWrb27BZuBpoCz990=;
 Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
         (envelope-from <andrew@lunn.ch>)
-        id 1mqjuI-00EjY5-3G; Fri, 26 Nov 2021 23:41:26 +0100
-Date:   Fri, 26 Nov 2021 23:41:26 +0100
+        id 1mqk0Z-00EjZD-N8; Fri, 26 Nov 2021 23:47:55 +0100
+Date:   Fri, 26 Nov 2021 23:47:55 +0100
 From:   Andrew Lunn <andrew@lunn.ch>
-To:     =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Denis Kirjanov <dkirjanov@suse.de>,
-        Julian Wiedmann <jwi@linux.ibm.com>
-Subject: Re: [PATCH net-next v3 1/4] dt-bindings: net: mscc,vsc7514-switch:
- convert txt bindings to yaml
-Message-ID: <YaFiljIjC6gkScSi@lunn.ch>
-References: <20211126172739.329098-1-clement.leger@bootlin.com>
- <20211126172739.329098-2-clement.leger@bootlin.com>
+To:     wsa@kernel.org, broonie@kernel.org, robh+dt@kernel.org,
+        linux-i2c@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Patrice Chotard <patrice.chotard@foss.st.com>
+Subject: Re: [RFC] sti: Conflict in node name for an IP supporting both I2C
+ and SPI
+Message-ID: <YaFkG85DHMMRiD7O@lunn.ch>
+References: <20211125210428.GA27075@gnbcxl0045.gnb.st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211126172739.329098-2-clement.leger@bootlin.com>
+In-Reply-To: <20211125210428.GA27075@gnbcxl0045.gnb.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 06:27:36PM +0100, Clément Léger wrote:
-> Convert existing txt bindings to yaml format. Additionally, add bindings
-> for FDMA support and phy-mode property.
+On Thu, Nov 25, 2021 at 10:04:28PM +0100, Alain Volmat wrote:
+> Hello,
+> 
+> in the STi platform [1], the I2C and SPI controllers are handled by the
+> same IP, which can be configured in either one or the other mode.
+> This leads to warnings during the DT build and I was wondering if you could
+> give me some hints about how such situation should be handled since this
+> concern DT warnings but also bindings and YAML.
+> 
+> In the SoC DT (dtsi), for each IP, there are 2 entries:
+> 
+> One for the I2C mode (implemented by the driver i2c/busses/i2c-st.c)
+>                 i2c@9840000 {
+>                         compatible = "st,comms-ssc4-i2c";
+>                         interrupts = <GIC_SPI 112 IRQ_TYPE_LEVEL_HIGH>;
+>                         reg = <0x9840000 0x110>;
+>                         clocks = <&clk_s_c0_flexgen CLK_EXT2F_A9>;
+>                         clock-names = "ssc";
+>                         clock-frequency = <400000>;
+>                         pinctrl-names = "default";
+>                         pinctrl-0 = <&pinctrl_i2c0_default>;
+>                         #address-cells = <1>;
+>                         #size-cells = <0>;
+> 
+>                         status = "disabled";
+>                 };
+> 
+> One for the SPI mode (implemented by the driver spi/spi-st-ssc4.c)
+>                 spi@9840000 {
+>                         compatible = "st,comms-ssc4-spi";
+>                         reg = <0x9840000 0x110>;
+>                         interrupts = <GIC_SPI 112 IRQ_TYPE_LEVEL_HIGH>;
+>                         clocks = <&clk_s_c0_flexgen CLK_EXT2F_A9>;
+>                         clock-names = "ssc";
+>                         pinctrl-0 = <&pinctrl_spi0_default>;
+>                         pinctrl-names = "default";
+>                         #address-cells = <1>;
+>                         #size-cells = <0>;
+> 
+>                         status = "disabled";
+>                 };
+> 
+> So basically, there are 2 nodes, one for each mode, and enabling one or the
+> other mode is done within the board DT.
+> Since the address is the same, this obviously leads to warning during the build
+> of the DT.
+> 
+> arch/arm/boot/dts/stih407-family.dtsi:363.15-376.5: Warning (unique_unit_address): /soc/i2c@9840000: duplicate unit-address (also used in node /soc/spi@9840000)
 
-Whenever i see 'additionally' i think a patch is doing two things, and
-it should probably be two or more patches. Do these needs to be
-combined into one patch?
+How about making the compiler look at the status value. So long as
+only zero or one is enabled, it should not be an issue. If you have
+two or more nodes enabled for an address, then you want a warning or
+error.
 
-    Andrew
+     Andrew
