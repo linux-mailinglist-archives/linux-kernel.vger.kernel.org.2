@@ -2,226 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12BD845E398
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 01:09:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA99C45E39A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 01:09:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351103AbhKZAMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 19:12:21 -0500
-Received: from mga18.intel.com ([134.134.136.126]:51352 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238885AbhKZAKU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 19:10:20 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="222451025"
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="222451025"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 16:05:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="675381567"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 25 Nov 2021 16:05:57 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqOkW-00077J-8L; Fri, 26 Nov 2021 00:05:56 +0000
-Date:   Fri, 26 Nov 2021 08:05:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Fangzhi Zuo <Jerry.Zuo@amd.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>
-Subject: drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link.c:3187:16:
- warning: no previous prototype for 'dc_link_update_sst_payload'
-Message-ID: <202111260725.FgSyDs9i-lkp@intel.com>
+        id S1351796AbhKZAMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 19:12:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238091AbhKZAKs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 19:10:48 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ADC5C06175A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 16:06:05 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id t26so19847337lfk.9
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 16:06:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gFiDE23LtSP8Xw8ZCiJ3tYxoqVMmHqaafglT7gNk0Lo=;
+        b=dyoxbiQIKR8IWogmRA1l3tmsX/gdu9NDn/gmpqTqE8nEj70fpPUyoWAv4mOqe2eOZM
+         +Y148UCLu2suLHpQZ3JU6rRxR7KBgQ9WEaeWo+Jl4yk3wUiKlOUmUTo5FbPXZ5wKlKVS
+         S1p/kY9ivOnrhJtYnqXjbVZafd9+da5AvdcFbJTiXbwfBozCNR1ucsH1Xy918zkFI89I
+         dBJ5vnpzuWDftg4xqUCXFSWFd/SZlqAag8QOn2nLsH9xvt5M0tdKw+N6/LF3wA+KHjHd
+         Wl+21ujthzkrdjDYDri1/zTOshdMd7S5xDMM5thqlvh/Fkv8bRJUaUNArFJKfqQZAraJ
+         xjTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gFiDE23LtSP8Xw8ZCiJ3tYxoqVMmHqaafglT7gNk0Lo=;
+        b=WeXlYzvl+XX437+kwfMMTQRhynu7VJSg5UAD9VfAHXXrjHv/csCA/GvW+Re4G4zcmW
+         6cdfeLQAbyAAGkWmShoKWwbPA9orfb3046jvO2ppA+daXil6hQTpDCSTIwhWzPRcDHO2
+         5kh5hRU+YwI+FEeIHloixec2XiOkxtxRLPmSYoq0U+rADD0TDAjCCcgzvsTzFMDdFZJ0
+         UdYOszby5g/M1iC9CI4vFtaC5OLlYOg4Xo+pd6tY+MYurXcaAl5PM1ShJ5vt7ip2Dau9
+         1R5IPKM0XONvZfIDpP616RzbrVKIAdhQN99LEJErdfn55MOpktQd9J1+VyKOWCRf0DDp
+         RSBw==
+X-Gm-Message-State: AOAM533VRRSTvtFiwnSCTHmTkeXfooCfsYFVT2vtXzzhLHA3Cwcp+m3p
+        6sLQh/ZxSN88qZt9meex82OoEg==
+X-Google-Smtp-Source: ABdhPJxg1zQpTb19QmrH/PpXgKZ/pbr0V52ar3ywQRcg1DU+Jr+Q5rMxHAIY6ot/xtVGZLDntjaETQ==
+X-Received: by 2002:a05:6512:228a:: with SMTP id f10mr26077082lfu.463.1637885163433;
+        Thu, 25 Nov 2021 16:06:03 -0800 (PST)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id be25sm358109ljb.114.2021.11.25.16.06.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Nov 2021 16:06:03 -0800 (PST)
+Subject: Re: [PATCH] drm/msm: Initialize MDSS irq domain at probe time
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, robdclark@gmail.com
+Cc:     sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
+        maxime@cerno.tech, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        jami.kettunen@somainline.org
+References: <20211125150947.354076-1-angelogioacchino.delregno@collabora.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <32cdade5-1487-9182-e939-4d93f8a27ad6@linaro.org>
+Date:   Fri, 26 Nov 2021 03:06:02 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211125150947.354076-1-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   8ced7ca3570333998ad2088d5a6275701970e28e
-commit: f01ee019586220c86f238263a4fbde6e72085e11 drm/amd/display: Add DP 2.0 SST DC Support
-date:   3 months ago
-config: powerpc64-buildonly-randconfig-r004-20211026 (https://download.01.org/0day-ci/archive/20211126/202111260725.FgSyDs9i-lkp@intel.com/config)
-compiler: powerpc64-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f01ee019586220c86f238263a4fbde6e72085e11
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout f01ee019586220c86f238263a4fbde6e72085e11
-        # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=powerpc 
+On 25/11/2021 18:09, AngeloGioacchino Del Regno wrote:
+> Since commit 8f59ee9a570c ("drm/msm/dsi: Adjust probe order"), the
+> DSI host gets initialized earlier, but this caused unability to probe
+> the entire stack of components because they all depend on interrupts
+> coming from the main `mdss` node (mdp5, or dpu1).
+> 
+> To fix this issue, also anticipate probing mdp5 or dpu1 by initializing
+> them at msm_pdev_probe() time: this will make sure that we add the
+> required interrupt controller mapping before dsi and/or other components
+> try to initialize, finally satisfying the dependency.
+> 
+> While at it, also change the allocation of msm_drm_private to use the
+> devm variant of kzalloc().
+> 
+> Fixes: 8f59ee9a570c ("drm/msm/dsi: Adjust probe order")
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Another issue (or a pack of issues):
+Now the msm_drm_init() is unbalanced with msm_drm_uninit(). Bits of code 
+(putting the drm dev, removing the IRQ domain, etc) have to be called 
+now from the msm_pdev_remove() function rather than from the unbind path.
 
-All warnings (new ones prefixed by >>):
+The following changes fix the observed issues here, however additional 
+care should be taken.
 
->> drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link.c:3187:16: warning: no previous prototype for 'dc_link_update_sst_payload' [-Wmissing-prototypes]
-    3187 | enum dc_status dc_link_update_sst_payload(struct pipe_ctx *pipe_ctx, bool allocate)
-         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~
+diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+index 5a92417d21d0..0abb16256b61 100644
+--- a/drivers/gpu/drm/msm/msm_drv.c
++++ b/drivers/gpu/drm/msm/msm_drv.c
+@@ -342,7 +342,6 @@ static int msm_drm_uninit(struct device *dev)
+         struct drm_device *ddev = platform_get_drvdata(pdev);
+         struct msm_drm_private *priv = ddev->dev_private;
+         struct msm_kms *kms = priv->kms;
+-       struct msm_mdss *mdss = priv->mdss;
+         int i;
+
+         /*
+@@ -402,14 +401,7 @@ static int msm_drm_uninit(struct device *dev)
+
+         component_unbind_all(dev, ddev);
+
+-       if (mdss && mdss->funcs)
+-               mdss->funcs->destroy(ddev);
+-
+-       ddev->dev_private = NULL;
+-       drm_dev_put(ddev);
+-
+         destroy_workqueue(priv->wq);
+-       kfree(priv);
+
+         return 0;
+  }
+@@ -515,7 +507,6 @@ static int msm_drm_init(struct device *dev, const
+         struct drm_device *ddev = platform_get_drvdata(pdev);
+         struct msm_drm_private *priv = ddev->dev_private;
+         struct msm_kms *kms = priv->kms;
+-       struct msm_mdss *mdss = priv->mdss;
+         int ret, i;
+
+         priv->wq = alloc_ordered_workqueue("msm", 0);
+@@ -538,12 +529,12 @@ static int msm_drm_init(struct device *dev, const
+
+         ret = msm_init_vram(ddev);
+         if (ret)
+-               goto err_destroy_mdss;
++               return ret;
+
+         /* Bind all our sub-components: */
+         ret = component_bind_all(dev, ddev);
+         if (ret)
+-               goto err_destroy_mdss;
++               return ret;
+
+         dma_set_max_seg_size(dev, UINT_MAX);
+
+@@ -649,10 +640,6 @@ static int msm_drm_init(struct device *dev, const
+  err_msm_uninit:
+         msm_drm_uninit(dev);
+         return ret;
+-err_destroy_mdss:
+-       if (mdss && mdss->funcs)
+-               mdss->funcs->destroy(ddev);
+-       return ret;
+  }
+
+  /*
+@@ -1424,9 +1411,20 @@ static int msm_pdev_probe(struct platform_device
+
+  static int msm_pdev_remove(struct platform_device *pdev)
+  {
++       struct drm_device *ddev = platform_get_drvdata(pdev);
++       struct msm_drm_private *priv = ddev->dev_private;
++       struct msm_mdss *mdss = priv->mdss;
++
+         component_master_del(&pdev->dev, &msm_drm_ops);
++
+         of_platform_depopulate(&pdev->dev);
+
++       if (mdss && mdss->funcs)
++               mdss->funcs->destroy(ddev);
++
++       ddev->dev_private = NULL;
++       drm_dev_put(ddev);
++
+         return 0;
+  }
 
 
-vim +/dc_link_update_sst_payload +3187 drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link.c
 
-  3133	
-  3134	static void update_mst_stream_alloc_table(
-  3135		struct dc_link *link,
-  3136		struct stream_encoder *stream_enc,
-  3137		const struct dp_mst_stream_allocation_table *proposed_table)
-  3138	{
-  3139		struct link_mst_stream_allocation work_table[MAX_CONTROLLER_NUM] = {
-  3140				{ 0 } };
-  3141		struct link_mst_stream_allocation *dc_alloc;
-  3142	
-  3143		int i;
-  3144		int j;
-  3145	
-  3146		/* if DRM proposed_table has more than one new payload */
-  3147		ASSERT(proposed_table->stream_count -
-  3148				link->mst_stream_alloc_table.stream_count < 2);
-  3149	
-  3150		/* copy proposed_table to link, add stream encoder */
-  3151		for (i = 0; i < proposed_table->stream_count; i++) {
-  3152	
-  3153			for (j = 0; j < link->mst_stream_alloc_table.stream_count; j++) {
-  3154				dc_alloc =
-  3155				&link->mst_stream_alloc_table.stream_allocations[j];
-  3156	
-  3157				if (dc_alloc->vcp_id ==
-  3158					proposed_table->stream_allocations[i].vcp_id) {
-  3159	
-  3160					work_table[i] = *dc_alloc;
-  3161					work_table[i].slot_count = proposed_table->stream_allocations[i].slot_count;
-  3162					break; /* exit j loop */
-  3163				}
-  3164			}
-  3165	
-  3166			/* new vcp_id */
-  3167			if (j == link->mst_stream_alloc_table.stream_count) {
-  3168				work_table[i].vcp_id =
-  3169					proposed_table->stream_allocations[i].vcp_id;
-  3170				work_table[i].slot_count =
-  3171					proposed_table->stream_allocations[i].slot_count;
-  3172				work_table[i].stream_enc = stream_enc;
-  3173			}
-  3174		}
-  3175	
-  3176		/* update link->mst_stream_alloc_table with work_table */
-  3177		link->mst_stream_alloc_table.stream_count =
-  3178				proposed_table->stream_count;
-  3179		for (i = 0; i < MAX_CONTROLLER_NUM; i++)
-  3180			link->mst_stream_alloc_table.stream_allocations[i] =
-  3181					work_table[i];
-  3182	}
-  3183	#if defined(CONFIG_DRM_AMD_DC_DCN)
-  3184	/*
-  3185	 * Payload allocation/deallocation for SST introduced in DP2.0
-  3186	 */
-> 3187	enum dc_status dc_link_update_sst_payload(struct pipe_ctx *pipe_ctx, bool allocate)
-  3188	{
-  3189		struct dc_stream_state *stream = pipe_ctx->stream;
-  3190		struct dc_link *link = stream->link;
-  3191		struct hpo_dp_link_encoder *hpo_dp_link_encoder = link->hpo_dp_link_enc;
-  3192		struct hpo_dp_stream_encoder *hpo_dp_stream_encoder = pipe_ctx->stream_res.hpo_dp_stream_enc;
-  3193		struct link_mst_stream_allocation_table proposed_table = {0};
-  3194		struct fixed31_32 avg_time_slots_per_mtp;
-  3195		DC_LOGGER_INIT(link->ctx->logger);
-  3196	
-  3197		/* slot X.Y for SST payload deallocate */
-  3198		if (!allocate) {
-  3199			avg_time_slots_per_mtp = dc_fixpt_from_int(0);
-  3200	
-  3201			DC_LOG_DP2("SST Update Payload: set_throttled_vcp_size slot X.Y for SST stream"
-  3202					"X: %d "
-  3203					"Y: %d",
-  3204					dc_fixpt_floor(
-  3205						avg_time_slots_per_mtp),
-  3206					dc_fixpt_ceil(
-  3207						dc_fixpt_shl(
-  3208							dc_fixpt_sub_int(
-  3209								avg_time_slots_per_mtp,
-  3210								dc_fixpt_floor(
-  3211										avg_time_slots_per_mtp)),
-  3212							26)));
-  3213	
-  3214			hpo_dp_link_encoder->funcs->set_throttled_vcp_size(
-  3215					hpo_dp_link_encoder,
-  3216					hpo_dp_stream_encoder->inst,
-  3217					avg_time_slots_per_mtp);
-  3218		}
-  3219	
-  3220		/* calculate VC payload and update branch with new payload allocation table*/
-  3221		if (!dpcd_write_128b_132b_sst_payload_allocation_table(
-  3222				stream,
-  3223				link,
-  3224				&proposed_table,
-  3225				allocate)) {
-  3226			DC_LOG_ERROR("SST Update Payload: Failed to update "
-  3227							"allocation table for "
-  3228							"pipe idx: %d\n",
-  3229							pipe_ctx->pipe_idx);
-  3230		}
-  3231	
-  3232		proposed_table.stream_allocations[0].hpo_dp_stream_enc = hpo_dp_stream_encoder;
-  3233	
-  3234		ASSERT(proposed_table.stream_count == 1);
-  3235	
-  3236		//TODO - DP2.0 Logging: Instead of hpo_dp_stream_enc pointer, log instance id
-  3237		DC_LOG_DP2("SST Update Payload: hpo_dp_stream_enc: %p      "
-  3238			"vcp_id: %d      "
-  3239			"slot_count: %d\n",
-  3240			(void *) proposed_table.stream_allocations[0].hpo_dp_stream_enc,
-  3241			proposed_table.stream_allocations[0].vcp_id,
-  3242			proposed_table.stream_allocations[0].slot_count);
-  3243	
-  3244		/* program DP source TX for payload */
-  3245		hpo_dp_link_encoder->funcs->update_stream_allocation_table(
-  3246				hpo_dp_link_encoder,
-  3247				&proposed_table);
-  3248	
-  3249		/* poll for ACT handled */
-  3250		if (!dpcd_poll_for_allocation_change_trigger(link)) {
-  3251			// Failures will result in blackscreen and errors logged
-  3252			BREAK_TO_DEBUGGER();
-  3253		}
-  3254	
-  3255		/* slot X.Y for SST payload allocate */
-  3256		if (allocate) {
-  3257			avg_time_slots_per_mtp = calculate_sst_avg_time_slots_per_mtp(stream, link);
-  3258	
-  3259			DC_LOG_DP2("SST Update Payload: "
-  3260					"slot.X: %d      "
-  3261					"slot.Y: %d",
-  3262					dc_fixpt_floor(
-  3263						avg_time_slots_per_mtp),
-  3264					dc_fixpt_ceil(
-  3265						dc_fixpt_shl(
-  3266							dc_fixpt_sub_int(
-  3267								avg_time_slots_per_mtp,
-  3268								dc_fixpt_floor(
-  3269										avg_time_slots_per_mtp)),
-  3270							26)));
-  3271	
-  3272			hpo_dp_link_encoder->funcs->set_throttled_vcp_size(
-  3273					hpo_dp_link_encoder,
-  3274					hpo_dp_stream_encoder->inst,
-  3275					avg_time_slots_per_mtp);
-  3276		}
-  3277	
-  3278		/* Always return DC_OK.
-  3279		 * If part of sequence fails, log failure(s) and show blackscreen
-  3280		 */
-  3281		return DC_OK;
-  3282	}
-  3283	#endif
-  3284	
+> ---
+>   drivers/gpu/drm/msm/msm_drv.c | 81 ++++++++++++++++-------------------
+>   1 file changed, 38 insertions(+), 43 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+> index 7936e8d498dd..790acf4993c0 100644
+> --- a/drivers/gpu/drm/msm/msm_drv.c
+> +++ b/drivers/gpu/drm/msm/msm_drv.c
+> @@ -512,45 +512,12 @@ static int msm_init_vram(struct drm_device *dev)
+>   static int msm_drm_init(struct device *dev, const struct drm_driver *drv)
+>   {
+>   	struct platform_device *pdev = to_platform_device(dev);
+> -	struct drm_device *ddev;
+> -	struct msm_drm_private *priv;
+> -	struct msm_kms *kms;
+> -	struct msm_mdss *mdss;
+> +	struct drm_device *ddev = platform_get_drvdata(pdev);
+> +	struct msm_drm_private *priv = ddev->dev_private;
+> +	struct msm_kms *kms = priv->kms;
+> +	struct msm_mdss *mdss = priv->mdss;
+>   	int ret, i;
+>   
+> -	ddev = drm_dev_alloc(drv, dev);
+> -	if (IS_ERR(ddev)) {
+> -		DRM_DEV_ERROR(dev, "failed to allocate drm_device\n");
+> -		return PTR_ERR(ddev);
+> -	}
+> -
+> -	platform_set_drvdata(pdev, ddev);
+> -
+> -	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+> -	if (!priv) {
+> -		ret = -ENOMEM;
+> -		goto err_put_drm_dev;
+> -	}
+> -
+> -	ddev->dev_private = priv;
+> -	priv->dev = ddev;
+> -
+> -	switch (get_mdp_ver(pdev)) {
+> -	case KMS_MDP5:
+> -		ret = mdp5_mdss_init(ddev);
+> -		break;
+> -	case KMS_DPU:
+> -		ret = dpu_mdss_init(ddev);
+> -		break;
+> -	default:
+> -		ret = 0;
+> -		break;
+> -	}
+> -	if (ret)
+> -		goto err_free_priv;
+> -
+> -	mdss = priv->mdss;
+> -
+>   	priv->wq = alloc_ordered_workqueue("msm", 0);
+>   	priv->hangcheck_period = DRM_MSM_HANGCHECK_DEFAULT_PERIOD;
+>   
+> @@ -685,11 +652,6 @@ static int msm_drm_init(struct device *dev, const struct drm_driver *drv)
+>   err_destroy_mdss:
+>   	if (mdss && mdss->funcs)
+>   		mdss->funcs->destroy(ddev);
+> -err_free_priv:
+> -	kfree(priv);
+> -err_put_drm_dev:
+> -	drm_dev_put(ddev);
+> -	platform_set_drvdata(pdev, NULL);
+>   	return ret;
+>   }
+>   
+> @@ -1382,12 +1344,42 @@ static const struct component_master_ops msm_drm_ops = {
+>   static int msm_pdev_probe(struct platform_device *pdev)
+>   {
+>   	struct component_match *match = NULL;
+> +	struct msm_drm_private *priv;
+> +	struct drm_device *ddev;
+>   	int ret;
+>   
+> +	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	ddev = drm_dev_alloc(&msm_driver, &pdev->dev);
+> +	if (IS_ERR(ddev)) {
+> +		DRM_DEV_ERROR(&pdev->dev, "failed to allocate drm_device\n");
+> +		return PTR_ERR(ddev);
+> +	}
+> +
+> +	platform_set_drvdata(pdev, ddev);
+> +	ddev->dev_private = priv;
+> +	priv->dev = ddev;
+> +
+> +	switch (get_mdp_ver(pdev)) {
+> +	case KMS_MDP5:
+> +		ret = mdp5_mdss_init(ddev);
+> +		break;
+> +	case KMS_DPU:
+> +		ret = dpu_mdss_init(ddev);
+> +		break;
+> +	default:
+> +		ret = 0;
+> +		break;
+> +	}
+> +	if (ret)
+> +		goto err_put_drm_dev;
+> +
+>   	if (get_mdp_ver(pdev)) {
+>   		ret = add_display_components(pdev, &match);
+>   		if (ret)
+> -			return ret;
+> +			goto fail;
+>   	}
+>   
+>   	ret = add_gpu_components(&pdev->dev, &match);
+> @@ -1409,6 +1401,9 @@ static int msm_pdev_probe(struct platform_device *pdev)
+>   
+>   fail:
+>   	of_platform_depopulate(&pdev->dev);
+> +err_put_drm_dev:
+> +	drm_dev_put(ddev);
+> +	platform_set_drvdata(pdev, NULL);
+>   	return ret;
+>   }
+>   
+> 
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+-- 
+With best wishes
+Dmitry
