@@ -2,93 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F52145E843
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:09:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC5445E855
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:15:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359216AbhKZHM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 02:12:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52242 "EHLO
+        id S1359175AbhKZHSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 02:18:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359115AbhKZHKp (ORCPT
+        with ESMTP id S1352886AbhKZHQo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 02:10:45 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB0CC06175E
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 23:05:42 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id j6-20020a17090a588600b001a78a5ce46aso9325508pji.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 23:05:42 -0800 (PST)
+        Fri, 26 Nov 2021 02:16:44 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACFCBC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 23:13:10 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id l28-20020a25b31c000000b005c27dd4987bso9428222ybj.18
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 23:13:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=n3D0/obh+8GDy4NXpRzCcn/wksmLWSbTBh0aXEdpFCE=;
-        b=ro65tUWhtJIjuY3swffGValIXVWIqHNXfKUfHp6mfXD/qpjHD8haXq/JoIP1128yZ/
-         pKHxuCfKO1FA97DbbhPsAJMvo5PBi849ReGu+CMvsVN2wKS0sqZeZksRofWbJSSLXagf
-         hLwgkmhp4qsgqXLAFzToo6OTpEP7gRa61NbJ4IGX5RxuEvUFr/tBKAVus0MUmZgqzppY
-         i3F83POY6HFMfSkeh+PFcLDGGR7paYJm0WllNH7X6zsTdp/O5fr55HmugPfOCEDuzRwi
-         D8WW1qNC2lSG+Zaj4UIWB7frSCoegqIrZ7g7US5rkl8aAAEc1isV0PjrXFDiouj/zDk/
-         8TAQ==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=W8hS1aIz252p/mMAVTvx9qDScElm2mCtCgsM5bMoDEk=;
+        b=LtNaVZTVTBAxfs2FCwbd1IbM2oYejVO8saSuKjZwaKdsFsd/5e8cjS31/FErDyX2OJ
+         vK40XcqfAe5++itK3t7bQ9k9xOF2xEatZWiwTV7W7r6XcYBAL3VIB3+ezGuns9n9RXjK
+         eQTrDSFOm/47+6afws4MwbOv55vtblxBZVEnY+LNDtw4A/2LuoYp29L0HA/91gIasRcP
+         4P8ZKM4scKYbjW6rsBzekXUtIoYFCdSvcsJoPV7ew9avb3l0G6w7ZinMuVyHD32l7kRi
+         FfWVrbOxX0G3qqhKRgSoU1W3avNh1PsFxuDyHEXGketLoLlplkTGLtLDFGyEmeaEsfVP
+         Y8sA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=n3D0/obh+8GDy4NXpRzCcn/wksmLWSbTBh0aXEdpFCE=;
-        b=stQiDyBXXij4N44lsNRW+dict3AfHpth6h8jxWdV1Zkdc5wLjpjZ3l7RZi7V2FLmdS
-         ntYXagAF/DLPYZeZ/qPdwX6UCcWtUAxhv8XNcwOZN2uK+H//oeyWuhWGqTBS2vgiFluP
-         YMW3NCd+RX7YAsrC+0MSmxOdvIfMx0sJKEAtCe6ifvGdXXfzqKjx2jJhFR9VJWQJnD2t
-         cDOXFPVfxvhufSWULCxrJeHaIBZ+xWmEcIux8J3sMz83zFycGy2XjDbzoJyS7QUVpxZU
-         pqJaTAm/z97IFbQ7SfcbRrMoqIUmK+4+AbKSr4N8ZWrQm9NSn6qHXHWgiQ4z7FjZ14Dv
-         PkWA==
-X-Gm-Message-State: AOAM531qz7loVZAcb6XQNCuEKuDF9YWgH6avYH5/qX763OxPTFUeTU/d
-        xCif4jeq9is2FVMrZX1A8vZNEwbLalcE
-X-Google-Smtp-Source: ABdhPJzKiBbRjTyDR5yzChLw+2o8Qnzvqhbx4YlFIRRMZU1zRnuU71MH9eWlM8kSdLOW1ntVb7tH5Q==
-X-Received: by 2002:a17:902:dacb:b0:141:e931:3b49 with SMTP id q11-20020a170902dacb00b00141e9313b49mr35342773plx.45.1637910342291;
-        Thu, 25 Nov 2021 23:05:42 -0800 (PST)
-Received: from localhost.localdomain ([117.215.117.247])
-        by smtp.gmail.com with ESMTPSA id d12sm4042104pgf.19.2021.11.25.23.05.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 23:05:42 -0800 (PST)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 6/6] ARM: dts: qcom: sdx55-t55: Enable IPA
-Date:   Fri, 26 Nov 2021 12:35:20 +0530
-Message-Id: <20211126070520.28979-7-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211126070520.28979-1-manivannan.sadhasivam@linaro.org>
-References: <20211126070520.28979-1-manivannan.sadhasivam@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=W8hS1aIz252p/mMAVTvx9qDScElm2mCtCgsM5bMoDEk=;
+        b=iuLmYLETRvvzxUpy+bbs73DzJU9ihFooHkCBs+lq2GVCIwLx72MHsLbdlkvQ2Dg3Du
+         07Xg8YQHXce2jR3jNUnAYHf5j4re7hRPwtqNjW9+4Wg+195CxzSHfAqDAHqQ4XqGkrxy
+         EME0M8CYnF+F1OR+dKDjy6/w8mzWw7Gkb53JKhTSmiJ9zh+bXI5bLBMnsM6m1dtcr/R2
+         3QiT/EoFxSmheu5AGnXrqhv5/yKB3/YzcK1Rm373yuBH/hE3jg1hjiMDJIrSVb83uBrg
+         tg2x3+STfKzrS2Ym9ut9AtiMEcqfqwQwznFvSZtVxz7lkyXPXpm6ErF/DmIKYY3QDO36
+         xaMQ==
+X-Gm-Message-State: AOAM5311NAU9fOtK3dTHdaKOa+NVHllWG/Bs/pyYa53d+XcHk8RHPL/B
+        f2g4R8cr/g8IxtsuXNz4R3maVR2JMJu2
+X-Google-Smtp-Source: ABdhPJyMhAlET7BZdwEfgs2s181EBLy1PpYEzdwf1yfnsLaCeGL40f4p8cmXJrPvHAP2UI8xq9+bWPWE4QGW
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:cdec:1c24:b91d:377e])
+ (user=irogers job=sendgmr) by 2002:a5b:b91:: with SMTP id l17mr12092261ybq.198.1637910789950;
+ Thu, 25 Nov 2021 23:13:09 -0800 (PST)
+Date:   Thu, 25 Nov 2021 23:13:05 -0800
+Message-Id: <20211126071305.3733878-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+Subject: [RFC PATCH] perf pmu-events: Don't lower case MetricExpr
+From:   Ian Rogers <irogers@google.com>
+To:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     eranian@google.com, Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable IP Accelerator (IPA) on Thundercomm T55 board for getting data
-connectivity from modem.
+This patch changes MetricExpr to be written out in the same case. This
+enables events in metrics to use modifiers like 'G' which currently
+yield parse errors when made lower case. To keep tests passing the
+literal #smt_on is compared in a non-case sensitive way - #SMT_on is
+present in at least SkylakeX metrics.
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+This patch is on top of:
+https://lore.kernel.org/lkml/20211124001231.3277836-1-irogers@google.com/
+
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- arch/arm/boot/dts/qcom-sdx55-t55.dts | 6 ++++++
- 1 file changed, 6 insertions(+)
+ tools/perf/pmu-events/jevents.c | 2 --
+ tools/perf/util/expr.c          | 2 +-
+ 2 files changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/qcom-sdx55-t55.dts b/arch/arm/boot/dts/qcom-sdx55-t55.dts
-index 2ffcd085904d..7ed8feb99afb 100644
---- a/arch/arm/boot/dts/qcom-sdx55-t55.dts
-+++ b/arch/arm/boot/dts/qcom-sdx55-t55.dts
-@@ -236,6 +236,12 @@ &blsp1_uart3 {
- 	status = "ok";
- };
+diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
+index 2e7c4153875b..1a57c3f81dd4 100644
+--- a/tools/perf/pmu-events/jevents.c
++++ b/tools/perf/pmu-events/jevents.c
+@@ -672,8 +672,6 @@ static int json_events(const char *fn,
+ 				addfield(map, &je.metric_constraint, "", "", val);
+ 			} else if (json_streq(map, field, "MetricExpr")) {
+ 				addfield(map, &je.metric_expr, "", "", val);
+-				for (s = je.metric_expr; *s; s++)
+-					*s = tolower(*s);
+ 			} else if (json_streq(map, field, "ArchStdEvent")) {
+ 				addfield(map, &arch_std, "", "", val);
+ 				for (s = arch_std; *s; s++)
+diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
+index cdbab4f959fe..5cd6b9ff2489 100644
+--- a/tools/perf/util/expr.c
++++ b/tools/perf/util/expr.c
+@@ -397,7 +397,7 @@ double expr__get_literal(const char *literal)
+ 	static struct cpu_topology *topology;
+ 	double result = NAN;
  
-+&ipa {
-+	status = "okay";
-+
-+	memory-region = <&ipa_fw_mem>;
-+};
-+
- &qpic_bam {
- 	status = "ok";
- };
+-	if (!strcmp("#smt_on", literal)) {
++	if (!strcasecmp("#smt_on", literal)) {
+ 		result =  smt_on() > 0 ? 1.0 : 0.0;
+ 		goto out;
+ 	}
 -- 
-2.25.1
+2.34.0.rc2.393.gf8c9666880-goog
 
