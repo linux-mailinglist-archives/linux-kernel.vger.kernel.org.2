@@ -2,249 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5EE145F29A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 18:04:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B87EA45F2AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 18:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239265AbhKZRHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 12:07:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40794 "EHLO
+        id S240465AbhKZROl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 12:14:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235046AbhKZRFy (ORCPT
+        with ESMTP id S240301AbhKZRMk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 12:05:54 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F6CC08E79C;
-        Fri, 26 Nov 2021 08:37:49 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id gf14-20020a17090ac7ce00b001a7a2a0b5c3so10212825pjb.5;
-        Fri, 26 Nov 2021 08:37:49 -0800 (PST)
+        Fri, 26 Nov 2021 12:12:40 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6086BC061377;
+        Fri, 26 Nov 2021 08:43:10 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id x6so41117002edr.5;
+        Fri, 26 Nov 2021 08:43:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/vKm1CxYbts6nABVaLd/zRVQVpVAmzYXaTKpsj2nLiw=;
-        b=p05gzud1UMKEAdOxXOsjxZKAFExt+JKxnUHEQ7tmby/UC7yjvGPE+4izpCTwrly+Mg
-         K+r0O1GaWS31oNNwSa6o9xWxx9Z5DbO7LtuGN96GIV/eYFQ5RlVI5m87eUpRVVLDUnO5
-         Ao9neVeb+/uMXkuW54LJdXQ15fJg/IxHHWmC4u0s27UoN5emAnTIQAYzy9PRO9pqNv2y
-         PgnQbZRRMCtJV1A/kMYx2NAUqpeDA3g1fA2MAf4l/gMsXly0+26R/ZBRKb2ZYc5mKYgl
-         t6AOBfuA3DrywIpryXct3xnPGsqelWDwb23mHkuyH2HW2BmAI1E6DqCYdxhIwoBQnKXa
-         rNVg==
+        bh=dVeISUeEVpHClnKkMQ0OE78WRtyIlTFqST8HoKpB/lg=;
+        b=DxdnNn4/6AD1BmHYf5TrT1sjjfs9xfvEnRKBa9v7vQ8FsQbzMPj/gIx3zzx7P667bw
+         gORGVioI7zFtG9UDXnwAx4Z+MyqSrBIj4BtAD+7nPt9FHDyVITXUDy5HDsREnnK9/wCK
+         ea00ohCzpkKNtaztZksg6IZK2BzZVLB1SHJalYy73zDE0SIaVjPWmZqiIZgigyQAg0Ev
+         Tn0Q3h6G7I7g99oVl6gnODMV0iZrF/JdDvVzP3L3WigN2d1LG9VRXSd3xyhEwlS8QaYo
+         yWOQUZDxIkpw+k03pmvvM3fLErMGtTiskLCbZwrwrJOcFwaEDDyR/UTlMIvBp7YIZXt1
+         imOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/vKm1CxYbts6nABVaLd/zRVQVpVAmzYXaTKpsj2nLiw=;
-        b=glhujR8Emaf0qzuCkVJCNZS/vioQXUp6YaGXsiEIh2cqUbdGtwxox1RleNbQBPA6AU
-         VwnuwLIvkbQ90DIFV1dBu4iPV5XtXCwI4MCmZK8dnhkcgBzJPEdmroFOcPbGPE0MQStp
-         0aroBmtPDd48uh6nO8036nLBAg+ht+JFkw8DNlTJrKzGzIeCdgvPDMqGAR3K2jjLYN3X
-         8asBEf5OW22PG98yJLDqcGNcLbNMYrjNze1s9K4Ho2CkDBghMDs0lx+q1RrYK3PIRl9y
-         BOlmnvNZix+0NBDBGP8w8Jx+Fz7xYkPu6OUeOFAF4w548QNkklJbLqsWkBFk6ctHb2VW
-         HY1Q==
-X-Gm-Message-State: AOAM533J0pfGtQzdmuRoGcIuQHTQ+TP+vud0nxhL7NDJcHIsrD3lt9W3
-        SfPx7HWE5XusDTiVU21wpSzj92sRzyxKzkpW8iE=
-X-Google-Smtp-Source: ABdhPJwtjIGX7rHmiHThe17Pj6usa4LD/lXxNnvz9UPg24qx6ivfFcHhVyA46l3lxLL3Xi6CtNIc3kdbB/BhN0CyM2g=
-X-Received: by 2002:a17:90b:4a50:: with SMTP id lb16mr16828957pjb.37.1637944668788;
- Fri, 26 Nov 2021 08:37:48 -0800 (PST)
+        bh=dVeISUeEVpHClnKkMQ0OE78WRtyIlTFqST8HoKpB/lg=;
+        b=7/3xNazpmrJAaIJHvqHh7NWXyKba/11wkMU00UFO+0jWUFwc8KXt7VVtiav6sHE2dS
+         oJAXAziTtxo75hnaFr2O5YAEkhnzhnjCn2BbMGXFC01XTtyEKak73ELJuySoXIWuSMLe
+         isfmDuv/qAeWAxo2KCuGJKqrr7fbAJGvjRbDOd/PkprN7Ckp9YVeB8GwfuneNy3B1jg5
+         EJCPSrPezubS5l3RrgqwaRH8NqPH/KEW6z1kP4co2VfEOl8+lRygEHctWIXof7vxvrmj
+         vskzQsbhlwPaxMtoo6jUuPp1A9M+hx15DJKlgvDplns5BVXDO228H3qxBrWZk2dUJl18
+         x4sQ==
+X-Gm-Message-State: AOAM5315x+082GXHH82z3kqsLnKwn9N+rEpRJgeZp0QFD3PfabC9LAVQ
+        iH6p9fakkAT3KHbRGtvsSg6JFx+jPpeQ/LRRo7c=
+X-Google-Smtp-Source: ABdhPJySPGwvu3kvPxM2wVnk62RJ8nPgqOlUHoeRsfwBzHAnR9RPDlEl9xHXphDzi/PCEDsHrfxYQXjqMnq1xYxUsPM=
+X-Received: by 2002:a17:907:7245:: with SMTP id ds5mr29560062ejc.206.1637944988863;
+ Fri, 26 Nov 2021 08:43:08 -0800 (PST)
 MIME-Version: 1.0
-References: <20210903045456.83301-1-kyeongdon.kim@lge.com>
-In-Reply-To: <20210903045456.83301-1-kyeongdon.kim@lge.com>
-From:   Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Date:   Fri, 26 Nov 2021 17:37:32 +0100
-Message-ID: <CAPybu_10kUFE02QewKd7Lf3CVrJa5y4ogPfptViUfWzTh0W_qg@mail.gmail.com>
-Subject: Re: [PATCH v2] media: uvcvideo: use dynamic allocation for uvc_copy_op
-To:     Kyeongdon Kim <kyeongdon.kim@lge.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ricardo Ribalda <ribalda@chromium.org>
+References: <ba543ae4-3a71-13fe-fa82-600ac37eaf5a@linutronix.de>
+ <20211105141319.GA16456@hoboy.vegasvil.org> <20211105142833.nv56zd5bqrkyjepd@skbuf>
+ <20211106001804.GA24062@hoboy.vegasvil.org> <20211106003606.qvfkitgyzoutznlw@skbuf>
+ <20211107140534.GB18693@hoboy.vegasvil.org> <20211107142703.tid4l4onr6y2gxic@skbuf>
+ <20211108144824.GD7170@hoboy.vegasvil.org> <20211125170518.socgptqrhrds2vl3@skbuf>
+ <87r1b3nw93.fsf@kurt> <20211126163108.GA27081@hoboy.vegasvil.org>
+In-Reply-To: <20211126163108.GA27081@hoboy.vegasvil.org>
+From:   Vladimir Oltean <olteanv@gmail.com>
+Date:   Fri, 26 Nov 2021 18:42:57 +0200
+Message-ID: <CA+h21hq=6eMrCJ=TS+zdrxHhuxcmVFLU0hzGmhLXUGFU-vLhPg@mail.gmail.com>
+Subject: Re: [PATCH 7/7] net: dsa: b53: Expose PTP timestamping ioctls to userspace
+To:     Richard Cochran <richardcochran@gmail.com>
+Cc:     Kurt Kanzenbach <kurt@linutronix.de>,
+        Martin Kaistra <martin.kaistra@linutronix.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kyeongdon
+On Fri, 26 Nov 2021 at 18:31, Richard Cochran <richardcochran@gmail.com> wrote:
+>
+> On Fri, Nov 26, 2021 at 09:42:32AM +0100, Kurt Kanzenbach wrote:
+> > On Thu Nov 25 2021, Vladimir Oltean wrote:
+> > > Richard, when the request is PTP_V2_EVENT and the response is
+> > > PTP_V2_L2_EVENT, is that an upgrade or a downgrade?
+> >
+> > It is a downgrade, isn't it?
+>
+> Yes.  "Any kind of PTP Event" is a superset of "Any Layer-2 Event".
+>
+> When userland asks for "any kind", then it wants to run PTP over IPv4,
+> IPv6, or Layer2, maybe even more than one at the same time.  If the
+> driver changes that to Layer2 only, then the PTP possibilities have
+> been downgraded.
 
-I fail to understand why your approach is faster than the original one.
-
-Is it because of the alignment of struct uvc_copy_op copy_operations ?
-
-Thanks!
-
-On Fri, Sep 3, 2021 at 6:56 AM Kyeongdon Kim <kyeongdon.kim@lge.com> wrote:
->
-> There are some issues to handle frame throughput with camera devices
->
-> Using devices:
-> - Logitech Webcam
-> - Intel(R) RealSense(TM) Depth Camera
->
-> To improve efficiency, and maximise throughput,
-> use dynamic allocation for uvc_copy_op.
->
-> Change from struct uvc_copy_op copy_operations[UVC_MAX_PACKETS];
-> to struct uvc_copy_op *copy_operations;
->
-> Now, only tested bulk video options.
->
-> On test device & own debug log to check frame duration(us),
-> refer to test result the below:
->
-> Use copy_operations[UVC_MAX_PACKETS]
-> [UVC] Check time duration(us) : 54732 / 66000
-> [UVC] Check time duration(us) : 57452 / 66000
-> [UVC] Check time duration(us) : 57413 / 66000
-> [UVC] Check time duration(us) : 56713 / 66000
-> [UVC] Check time duration(us) : 57967 / 66000
->
-> Use *copy_operations
-> [UVC] Check time duration(us) : 30804 / 66000
-> [UVC] Check time duration(us) : 38642 / 66000
-> [UVC] Check time duration(us) : 26011 / 66000
-> [UVC] Check time duration(us) : 30116 / 66000
-> [UVC] Check time duration(us) : 29265 / 66000
->
-> Signed-off-by: Kyeongdon Kim <kyeongdon.kim@lge.com>
-> ---
->  drivers/media/usb/uvc/uvc_video.c | 55 ++++++++++++++++++++++++++++++++++++---
->  drivers/media/usb/uvc/uvcvideo.h  |  3 ++-
->  2 files changed, 54 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> index e164646..3a7c131 100644
-> --- a/drivers/media/usb/uvc/uvc_video.c
-> +++ b/drivers/media/usb/uvc/uvc_video.c
-> @@ -1614,6 +1614,36 @@ static void uvc_video_complete(struct urb *urb)
->         queue_work(stream->async_wq, &uvc_urb->work);
->  }
->
-> +static void uvc_free_urb_cop(struct uvc_streaming *stream)
-> +{
-> +       struct uvc_urb *uvc_urb;
-> +
-> +       for_each_uvc_urb(uvc_urb, stream) {
-> +               if (uvc_urb->copy_operations) {
-> +                       kfree(uvc_urb->copy_operations);
-> +                       uvc_urb->copy_operations = NULL;
-> +               }
-> +       }
-> +}
-> +
-> +static int uvc_alloc_urb_cop(struct uvc_streaming *stream, gfp_t gfp_flags)
-> +{
-> +       int max_packet = stream->urb_max_packets;
-> +       struct uvc_urb *uvc_urb;
-> +
-> +       for_each_uvc_urb(uvc_urb, stream) {
-> +               uvc_urb->copy_operations
-> +                               = kcalloc(max_packet, sizeof(struct uvc_copy_op), gfp_flags);
-> +               if (uvc_urb->copy_operations == NULL)
-> +                       goto error;
-> +       }
-> +       return 0;
-> +error:
-> +       uvc_free_urb_cop(stream);
-> +
-> +       return -ENOMEM;
-> +}
-> +
->  /*
->   * Free transfer buffers.
->   */
-> @@ -1687,8 +1717,8 @@ static int uvc_alloc_urb_buffers(struct uvc_streaming *stream,
->          * payloads across multiple URBs.
->          */
->         npackets = DIV_ROUND_UP(size, psize);
-> -       if (npackets > UVC_MAX_PACKETS)
-> -               npackets = UVC_MAX_PACKETS;
-> +       if (npackets > stream->urb_max_packets)
-> +               npackets = stream->urb_max_packets;
->
->         /* Retry allocations until one succeed. */
->         for (; npackets > 1; npackets /= 2) {
-> @@ -1744,8 +1774,10 @@ static void uvc_video_stop_transfer(struct uvc_streaming *stream,
->                 uvc_urb->urb = NULL;
->         }
->
-> -       if (free_buffers)
-> +       if (free_buffers) {
->                 uvc_free_urb_buffers(stream);
-> +               uvc_free_urb_cop(stream);
-> +       }
->  }
->
->  /*
-> @@ -1790,10 +1822,18 @@ static int uvc_init_video_isoc(struct uvc_streaming *stream,
->         psize = uvc_endpoint_max_bpi(stream->dev->udev, ep);
->         size = stream->ctrl.dwMaxVideoFrameSize;
->
-> +       stream->urb_max_packets = UVC_MAX_PACKETS;
-> +
->         npackets = uvc_alloc_urb_buffers(stream, size, psize, gfp_flags);
->         if (npackets == 0)
->                 return -ENOMEM;
->
-> +       if (uvc_alloc_urb_cop(stream, gfp_flags) != 0) {
-> +               uvc_dbg(stream->dev, VIDEO,
-> +                               "Failed to init URBs copy operations.\n");
-> +               return -ENOMEM;
-> +       }
-> +
->         size = npackets * psize;
->
->         for_each_uvc_urb(uvc_urb, stream) {
-> @@ -1842,11 +1882,18 @@ static int uvc_init_video_bulk(struct uvc_streaming *stream,
->         psize = usb_endpoint_maxp(&ep->desc);
->         size = stream->ctrl.dwMaxPayloadTransferSize;
->         stream->bulk.max_payload_size = size;
-> +       stream->urb_max_packets = DIV_ROUND_UP(size, psize);
->
->         npackets = uvc_alloc_urb_buffers(stream, size, psize, gfp_flags);
->         if (npackets == 0)
->                 return -ENOMEM;
->
-> +       if (uvc_alloc_urb_cop(stream, gfp_flags) != 0) {
-> +               uvc_dbg(stream->dev, VIDEO,
-> +                               "Failed to init URBs copy operations.\n");
-> +               return -ENOMEM;
-> +       }
-> +
->         size = npackets * psize;
->
->         if (usb_endpoint_dir_in(&ep->desc))
-> @@ -2147,6 +2194,8 @@ int uvc_video_init(struct uvc_streaming *stream)
->                 }
->         }
->
-> +       stream->urb_max_packets = UVC_MAX_PACKETS;
-> +
->         /* Prepare asynchronous work items. */
->         for_each_uvc_urb(uvc_urb, stream)
->                 INIT_WORK(&uvc_urb->work, uvc_video_copy_data_work);
-> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> index cce5e38..00cf6c9 100644
-> --- a/drivers/media/usb/uvc/uvcvideo.h
-> +++ b/drivers/media/usb/uvc/uvcvideo.h
-> @@ -561,7 +561,7 @@ struct uvc_urb {
->         struct sg_table *sgt;
->
->         unsigned int async_operations;
-> -       struct uvc_copy_op copy_operations[UVC_MAX_PACKETS];
-> +       struct uvc_copy_op *copy_operations;
->         struct work_struct work;
->  };
->
-> @@ -616,6 +616,7 @@ struct uvc_streaming {
->
->         struct uvc_urb uvc_urb[UVC_URBS];
->         unsigned int urb_size;
-> +       unsigned int urb_max_packets;
->
->         u32 sequence;
->         u8 last_fid;
-> --
-> 2.10.2
->
-
-
--- 
-Ricardo Ribalda
+Well, when I said that it's essentially the same pattern, this is what
+I was talking about. The b53 driver downgrades everything and the
+kitchen sink to HWTSTAMP_FILTER_PTP_V2_L2_EVENT, the ocelot driver to
+HWTSTAMP_FILTER_PTP_V2_EVENT, and both are buggy for the same reason.
+I don't see why you mention that there is an important difference
+between HWTSTAMP_FILTER_PTP_V2_L2_EVENT and
+HWTSTAMP_FILTER_PTP_V2_EVENT. I know there is, but the _pattern_ is
+the same.
+I'm still missing something obvious, aren't I?
