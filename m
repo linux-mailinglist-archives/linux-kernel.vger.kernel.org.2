@@ -2,132 +2,412 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3479D45F084
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:20:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C50C45F0B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:28:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378009AbhKZPX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 10:23:29 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:38446 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378018AbhKZPV2 (ORCPT
+        id S1354713AbhKZPb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 10:31:58 -0500
+Received: from sin.source.kernel.org ([145.40.73.55]:40460 "EHLO
+        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354576AbhKZP3z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 10:21:28 -0500
-X-Greylist: delayed 2675 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Nov 2021 10:21:26 EST
+        Fri, 26 Nov 2021 10:29:55 -0500
+X-Greylist: delayed 445 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Nov 2021 10:29:55 EST
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C80CE62280;
-        Fri, 26 Nov 2021 15:18:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E064C53FC1;
-        Fri, 26 Nov 2021 15:18:12 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 94AF6CE2075
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 15:19:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D520C93056;
+        Fri, 26 Nov 2021 15:19:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637939892;
-        bh=KqLeMrkFcEUdBWWY9yYV30jYMt3Gtp2Y9CSAIt/EtuE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=sjHwDtzSvrTgRRpHhwrx7gKq2r7mtdZYVYeWY8849BtrLMReLQ8P0J05Piagq7KOs
-         o1+Sd4QdFwnX683gEr/SZI6f96x7ShEanwPo5Lb4p6m+RcH4oFH3GeC+zu4iYVnijE
-         vPT0Wc+Bno3Als49CjwCU/Fh2sIpOlOagXu2MMtLaLvV9Yvqh0jB9p7y9SZJR6pFMy
-         YLXWAZ2KrcZJDxegeOoV1vjYRQkQ0NCeJ7yluU4ZwlcQyiBT+ndE4jdFEBGEBeh+Vf
-         rcV/T49sJCDQIYbbiJyNz9piESOsLSjAG3lX7MTD7OzgWOO2geo25nv9aLXwEZAPOH
-         bpcGO6XfY8WJg==
-Received: by mail-wm1-f54.google.com with SMTP id g191-20020a1c9dc8000000b0032fbf912885so7028205wme.4;
-        Fri, 26 Nov 2021 07:18:12 -0800 (PST)
-X-Gm-Message-State: AOAM530/4yzP+VALA8oC5BSU1+o0nscnRN2JucJxXWkw0ymfcS6fn3fb
-        BlukxqWym51z0HZqK8y5n0XORlrTU6ZJ6g/L9BY=
-X-Google-Smtp-Source: ABdhPJzIbjg+Owk4hwlM6I0zZ86kIhnx52S92JKWkcDH00LeUrnkgXZJiSde8mO2+m3DNJxz2fCgVwqDq+nvLCgrMxk=
-X-Received: by 2002:a7b:c007:: with SMTP id c7mr16367114wmb.82.1637939890403;
- Fri, 26 Nov 2021 07:18:10 -0800 (PST)
-MIME-Version: 1.0
-References: <20211126143329.2689618-1-arnd@kernel.org> <CAHmME9rotnZRzqeD43FJmSX6-i2CwvUVpXHrFkLGt+qVVdxK7A@mail.gmail.com>
-In-Reply-To: <CAHmME9rotnZRzqeD43FJmSX6-i2CwvUVpXHrFkLGt+qVVdxK7A@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 26 Nov 2021 16:17:54 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2KfmmGDbVHULWevB0hv71P2oi2ZCHEAqT=8dQfa0=cqQ@mail.gmail.com>
-Message-ID: <CAK8P3a2KfmmGDbVHULWevB0hv71P2oi2ZCHEAqT=8dQfa0=cqQ@mail.gmail.com>
-Subject: Re: [PATCH] crypto: siphash - use _unaligned version by default
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jean-Philippe Aumasson <jeanphilippe.aumasson@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+        s=k20201202; t=1637939949;
+        bh=zMRexxUDXrXbkyqqQl4Ki21LvRd8du2CKM0f0HdaByc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tRMMI7fUuOZEmvseSQbKclEi9BWX0emLKJmcC5a/qXq2YYhyjn2mqV8VeFa7GZG7T
+         LMZ7T8zqB0d1GZpCE5JBAE7V6KyW+ywEKadGa3ElHLjI3mp/wz8c+ANUQnGvlZpOOE
+         j1RcK3XUX+8q0HdbtisKgeYpF1bTv+xZf/fZrGqvMEhdzbP5w1QVAVOfKmhbDXBugz
+         eq4D9GYhP180zhR7VThcEIQL5fSmb6NaovEk9V9xMFr4/fuamULwD3v2u608E91Vrf
+         coTr23dm1O8JYZe6HIDPTLS/nOh1eeFjMO6DCf2MIzNyu+C1/tog0fVICe6/h+KtzJ
+         V+AVW27mXOKmA==
+Date:   Sat, 27 Nov 2021 00:19:05 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Jeff Xie <xiehuan09@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, mingo@redhat.com,
+        Tom Zanussi <zanussi@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH v5 2/4] trace/objtrace: get the value of the object
+Message-Id: <20211127001905.22f521e44f4e89c78dc03e8c@kernel.org>
+In-Reply-To: <CAEr6+EAjtk2TA5bDP7-D=VhwwXzL2Pq172NCbr7XnNT9ynPpow@mail.gmail.com>
+References: <20211113120632.94754-1-xiehuan09@gmail.com>
+        <20211113120632.94754-2-xiehuan09@gmail.com>
+        <20211119230118.2f8689d630817cb103161402@kernel.org>
+        <CAEr6+EAcfhF15vsYrkBWsjZEFe=LZ4ZfbgPM2BC9sGpweofEfA@mail.gmail.com>
+        <CAEr6+EAjtk2TA5bDP7-D=VhwwXzL2Pq172NCbr7XnNT9ynPpow@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 4:03 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
->
-> Hi Arnd,
->
-> It looks like Ard's old patch never got picked up so you're dusting it
-> off. It looks like you're doing two things here -- moving from an
-> ifndef to a much nicer IS_ENABLED, and changing the logic a bit. In
-> trying to understand the logic part, I changed this in my buffer:
+Hello Jeff,
 
-I actually found the issue independently and came up with this patch
-before Ard pointed me to his patch, I mainly took the description of the
-problem from him, as his explanation was already well written.
+On Fri, 26 Nov 2021 21:47:24 +0800
+Jeff Xie <xiehuan09@gmail.com> wrote:
 
-> -#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
-> -       if (!IS_ALIGNED((unsigned long)data, HSIPHASH_ALIGNMENT))
-> +       if (IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) ||
-> +           !IS_ALIGNED((unsigned long)data, HSIPHASH_ALIGNMENT))
->                 return __hsiphash_unaligned(data, len, key);
->         return ___hsiphash_aligned(data, len, key);
->
-> into this:
->
-> -       if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) &&
-> -           !IS_ALIGNED((unsigned long)data, HSIPHASH_ALIGNMENT))
-> +       if (IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) ||
-> +           !IS_ALIGNED((unsigned long)data, HSIPHASH_ALIGNMENT))
->                 return __hsiphash_unaligned(data, len, key);
->         return ___hsiphash_aligned(data, len, key);
->
-> This way I can actually think about what's happening here.
->
-> So with the old one, we use the faster aligned version if *either* the
-> CPU has efficient unaligned access OR the bytes are statically known
-> to be aligned. This seems sensible.
->
-> On the new one, we use the faster aligned version if *both* the bytes
-> are statically known to be aligned (ok) AND the CPU doesn't actually
-> support efficient unaligned accesses (?). This seems kind of weird.
+> Hi Masami,
+> 
+> On Mon, Nov 22, 2021 at 1:15 AM Jeff Xie <xiehuan09@gmail.com> wrote:
+> >
+> > Hi Masami,
+> >
+> > On Fri, Nov 19, 2021 at 10:01 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > >
+> > > Hi Jeff,
+> > >
+> > > On Sat, 13 Nov 2021 20:06:30 +0800
+> > > Jeff Xie <xiehuan09@gmail.com> wrote:
+> > >
+> > > Please describe here what feature this patch adds.
+> > > How to use, and new syntax, etc.
+> > >
+> > > BTW, the syntax for this value trace is a bit confusing.
+> > >
+> > > objtrace:add:OFFS(OBJ):TYPE[:COUNT]
+> > >
+> > > This trace "OBJ", but from the user point of view, this seems to trace
+> > > "OFFS(OBJ)".
+> > >
+> > > I rather like make it optional and split from OBJ as below;
+> > >
+> > > objtrace:add:OBJ[,OFFS:TYPE][:COUNT]
+> 
+> I have been thinking about this place for a long time, would it be
+> better if it like below?
+> objtrace:add:OBJ[,OFFS][:TYPE][:COUNT]
+> 
+> If the user does not specify the type, the default type will be u64.
 
-Yes, this is intentional. The point is that __hsiphash_unaligned() is
-the portable version that works with any alignment on any architecture,
-while __hsiphash_aligned() is either identical, or may only be called
-with aligned data. Passing an unaligned pointer into this function triggers
-undefined behavior in C99, which is how it broke on armv7, but in fact
-any compiler might optimize this function based on "knowing" that
-the lower address bits are zero.
+u64 or ulong? In kprobe event, I chose ulong (u32 for 32bit arch and
+u64 for 64bit arch). If the object or the data at offs is a pointer,
+it is better to use appropriate type for each arch.
 
-> It also means that CPUs with fast aligned accesses wind up calling the
-> slower code path in some cases. Is your supposition that the compiler
-> will always optimize the slow codepath to the fast one if the CPU it's
-> compiling for supports that? Have you tested this on all platforms?
+Thank you,
 
-I have not tested this specific patch on all platforms, but I did
-extensive testing of the get_unaligned()/put_unaligned() helpers
-in my rewrite earlier this year[1], making sure that these are NOPs
-on all the important architectures, and that they prevent the use
-of trapping ldrd/ldm instructions on ARMv6/ARMv7.
 
-> Would it make sense to instead just fix clang-13? Or even to just get
-> rid of CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS for armv6 or undef
-> CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS for armv6 just in this file or
-> maybe less messy, split CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS into
-> two ifdefs that more sense for our usage?
 
-Clang is actually doing the right thing here, it may be considered a missed
-optimization that gcc uses two loads instead of a combined ldm or ldrd ;-)
+> 
+> > >
+> > > (Note that the part braced by [] is optional.)
+> >
+> > Thank you for your suggestion, it does seem clearer, I will modify it like this.
+> >
+> > > Thank you,
+> > >
+> > > > Signed-off-by: Jeff Xie <xiehuan09@gmail.com>
+> > > > ---
+> > > >  kernel/trace/trace_entries.h |   5 +-
+> > > >  kernel/trace/trace_object.c  | 121 +++++++++++++++++++++++++++++------
+> > > >  kernel/trace/trace_output.c  |   6 +-
+> > > >  3 files changed, 107 insertions(+), 25 deletions(-)
+> > > >
+> > > > diff --git a/kernel/trace/trace_entries.h b/kernel/trace/trace_entries.h
+> > > > index bb120d9498a9..2407c45a568c 100644
+> > > > --- a/kernel/trace/trace_entries.h
+> > > > +++ b/kernel/trace/trace_entries.h
+> > > > @@ -413,8 +413,9 @@ FTRACE_ENTRY(object, trace_object_entry,
+> > > >               __field(        unsigned long,          ip              )
+> > > >               __field(        unsigned long,          parent_ip       )
+> > > >               __field(        unsigned long,          object          )
+> > > > +             __field(        unsigned long,          value           )
+> > > >       ),
+> > > >
+> > > > -     F_printk(" %ps <-- %ps object:%lx\n",
+> > > > -              (void *)__entry->ip, (void *)__entry->parent_ip, __entry->object)
+> > > > +     F_printk(" %ps <-- %ps object:%lx value:%lx\n", (void *)__entry->ip,
+> > > > +            (void *)__entry->parent_ip, __entry->object, __entry->value)
+> > > >  );
+> > > > diff --git a/kernel/trace/trace_object.c b/kernel/trace/trace_object.c
+> > > > index 69465c2ffb7e..14993f7d0e5a 100644
+> > > > --- a/kernel/trace/trace_object.c
+> > > > +++ b/kernel/trace/trace_object.c
+> > > > @@ -11,14 +11,25 @@
+> > > >
+> > > >  static DEFINE_PER_CPU(atomic_t, trace_object_event_disable);
+> > > >  static struct trace_event_file event_trace_file;
+> > > > -static const int max_args_num = 6;
+> > > >  static const int max_obj_pool = 10;
+> > > >  static atomic_t trace_object_ref;
+> > > >  static int exit_trace_object(void);
+> > > >  static int init_trace_object(void);
+> > > >
+> > > > +struct objtrace_trigger_data {
+> > > > +     struct ftrace_event_field *field;
+> > > > +     long offset;
+> > > > +     int type_size;
+> > > > +};
+> > > > +
+> > > > +struct objtrace_fetch_type {
+> > > > +     char *name;
+> > > > +     int type_size;
+> > > > +};
+> > > > +
+> > > >  struct object_instance {
+> > > >       void *object;
+> > > > +     int obj_type_size;
+> > > >       struct freelist_node freelist;
+> > > >  };
+> > > >
+> > > > @@ -59,8 +70,7 @@ static bool object_empty(void)
+> > > >       return ret;
+> > > >  }
+> > > >
+> > > > -
+> > > > -static void set_trace_object(void *obj)
+> > > > +static void set_trace_object(void *obj, int type_size)
+> > > >  {
+> > > >       struct freelist_node *fn;
+> > > >       struct object_instance *ins;
+> > > > @@ -79,6 +89,7 @@ static void set_trace_object(void *obj)
+> > > >
+> > > >       ins = container_of(fn, struct object_instance, freelist);
+> > > >       ins->object = obj;
+> > > > +     ins->obj_type_size = type_size;
+> > > >
+> > > >       freelist_add(&ins->freelist, &obj_pool->customer_freelist);
+> > > >       atomic_inc(&obj_pool->nobject);
+> > > > @@ -135,7 +146,7 @@ static int init_object_pool(void)
+> > > >  }
+> > > >
+> > > >  static void submit_trace_object(unsigned long ip, unsigned long parent_ip,
+> > > > -                              unsigned long object)
+> > > > +                              unsigned long object, unsigned long value)
+> > > >  {
+> > > >
+> > > >       struct trace_buffer *buffer;
+> > > > @@ -152,6 +163,7 @@ static void submit_trace_object(unsigned long ip, unsigned long parent_ip,
+> > > >       entry->ip                       = ip;
+> > > >       entry->parent_ip                = parent_ip;
+> > > >       entry->object                   = object;
+> > > > +     entry->value                    = value;
+> > > >
+> > > >       event_trigger_unlock_commit(&event_trace_file, buffer, event,
+> > > >               entry, pc);
+> > > > @@ -161,10 +173,11 @@ static void
+> > > >  trace_object_events_call(unsigned long ip, unsigned long parent_ip,
+> > > >               struct ftrace_ops *op, struct ftrace_regs *fregs)
+> > > >  {
+> > > > -     struct pt_regs *pt_regs = ftrace_get_regs(fregs);
+> > > > -     unsigned long obj;
+> > > > +     struct freelist_node *node;
+> > > > +     struct object_instance *inst;
+> > > > +     unsigned long val = 0;
+> > > >       long disabled;
+> > > > -     int cpu, n;
+> > > > +     int cpu;
+> > > >
+> > > >       preempt_disable_notrace();
+> > > >
+> > > > @@ -177,10 +190,14 @@ trace_object_events_call(unsigned long ip, unsigned long parent_ip,
+> > > >       if (object_empty())
+> > > >               goto out;
+> > > >
+> > > > -     for (n = 0; n < max_args_num; n++) {
+> > > > -             obj = regs_get_kernel_argument(pt_regs, n);
+> > > > -             if (object_exist((void *)obj))
+> > > > -                     submit_trace_object(ip, parent_ip, obj);
+> > > > +     node = obj_pool->customer_freelist.head;
+> > > > +
+> > > > +     while (node) {
+> > > > +             inst = container_of(node, struct object_instance, freelist);
+> > > > +             if (copy_from_kernel_nofault(&val, inst->object, inst->obj_type_size))
+> > > > +                     goto out;
+> > > > +             submit_trace_object(ip, parent_ip, (unsigned long)inst->object, val);
+> > > > +             node = node->next;
+> > > >       }
+> > > >
+> > > >  out:
+> > > > @@ -198,12 +215,14 @@ trace_object_trigger(struct event_trigger_data *data,
+> > > >                  struct trace_buffer *buffer,  void *rec,
+> > > >                  struct ring_buffer_event *event)
+> > > >  {
+> > > > +     struct objtrace_trigger_data *obj_data = data->private_data;
+> > > > +     struct ftrace_event_field *field;
+> > > > +     void *obj, *val = NULL;
+> > > >
+> > > > -     struct ftrace_event_field *field = data->private_data;
+> > > > -     void *obj = NULL;
+> > > > -
+> > > > -     memcpy(&obj, rec + field->offset, sizeof(obj));
+> > > > -     set_trace_object(obj);
+> > > > +     field = obj_data->field;
+> > > > +     memcpy(&val, rec + field->offset, sizeof(val));
+> > > > +     obj = val + obj_data->offset;
+> > > > +     set_trace_object(obj, obj_data->type_size);
+> > > >  }
+> > > >
+> > > >  static void
+> > > > @@ -350,6 +369,22 @@ static void unregister_object_trigger(char *glob, struct event_trigger_ops *ops,
+> > > >       }
+> > > >  }
+> > > >
+> > > > +static const struct objtrace_fetch_type objtrace_fetch_types[] = {
+> > > > +     {"u8", 1},
+> > > > +     {"s8", 1},
+> > > > +     {"x8", 1},
+> > > > +     {"u16", 2},
+> > > > +     {"s16", 2},
+> > > > +     {"x16", 2},
+> > > > +     {"u32", 4},
+> > > > +     {"s32", 4},
+> > > > +     {"x32", 4},
+> > > > +     {"u64", 8},
+> > > > +     {"s64", 8},
+> > > > +     {"x64", 8},
+> > > > +     {}
+> > > > +};
+> > > > +
+> > > >  static int
+> > > >  event_object_trigger_callback(struct event_command *cmd_ops,
+> > > >                      struct trace_event_file *file,
+> > > > @@ -357,13 +392,15 @@ event_object_trigger_callback(struct event_command *cmd_ops,
+> > > >  {
+> > > >       struct event_trigger_data *trigger_data;
+> > > >       struct event_trigger_ops *trigger_ops;
+> > > > +     struct objtrace_trigger_data *obj_data;
+> > > >       struct trace_event_call *call;
+> > > >       struct ftrace_event_field *field;
+> > > >       char *objtrace_cmd;
+> > > > +     long offset = 0;
+> > > >       char *trigger = NULL;
+> > > > -     char *arg;
+> > > > +     char *arg, *type, *tr, *tr_end;
+> > > >       char *number;
+> > > > -     int ret;
+> > > > +     int ret, i, type_size = 0;
+> > > >
+> > > >       ret = -EINVAL;
+> > > >       if (!param)
+> > > > @@ -386,6 +423,38 @@ event_object_trigger_callback(struct event_command *cmd_ops,
+> > > >       arg = strsep(&trigger, ":");
+> > > >       if (!arg)
+> > > >               goto out;
+> > > > +
+> > > > +     tr = strchr(arg, '(');
+> > > > +     /* now force to get the value of the val. */
+> > > > +     if (!tr)
+> > > > +             goto out;
+> > > > +     tr_end = strchr(tr, ')');
+> > > > +     if (!tr_end)
+> > > > +             goto out;
+> > > > +     *tr++ = '\0';
+> > > > +     *tr_end = '\0';
+> > > > +     ret = kstrtol(arg, 0, &offset);
+> > > > +     if (ret)
+> > > > +             goto out;
+> > > > +     arg = tr;
+> > > > +     ret = -EINVAL;
+> > > > +     if (!trigger)
+> > > > +             goto out;
+> > > > +
+> > > > +     type = strsep(&trigger, ":");
+> > > > +     if (!type)
+> > > > +             goto out;
+> > > > +     for (i = 0; objtrace_fetch_types[i].name; i++) {
+> > > > +             if (strcmp(objtrace_fetch_types[i].name, type) == 0) {
+> > > > +                     type_size = objtrace_fetch_types[i].type_size;
+> > > > +                     break;
+> > > > +             }
+> > > > +     }
+> > > > +
+> > > > +     if (type_size == 0)
+> > > > +             goto out;
+> > > > +
+> > > > +
+> > > >       call = file->event_call;
+> > > >       field = trace_find_event_field(call, arg);
+> > > >       if (!field)
+> > > > @@ -394,19 +463,30 @@ event_object_trigger_callback(struct event_command *cmd_ops,
+> > > >       trigger_ops = cmd_ops->get_trigger_ops(cmd, trigger);
+> > > >
+> > > >       ret = -ENOMEM;
+> > > > +     obj_data = kzalloc(sizeof(*obj_data), GFP_KERNEL);
+> > > > +     if (!obj_data)
+> > > > +             goto out;
+> > > > +
+> > > > +     obj_data->field = field;
+> > > > +     obj_data->offset = offset;
+> > > > +     obj_data->type_size = type_size;
+> > > > +
+> > > >       trigger_data = kzalloc(sizeof(*trigger_data), GFP_KERNEL);
+> > > > -     if (!trigger_data)
+> > > > +     if (!trigger_data) {
+> > > > +             kfree(obj_data);
+> > > >               goto out;
+> > > > +     }
+> > > >
+> > > >       trigger_data->count = -1;
+> > > >       trigger_data->ops = trigger_ops;
+> > > >       trigger_data->cmd_ops = cmd_ops;
+> > > > -     trigger_data->private_data = field;
+> > > > +     trigger_data->private_data = obj_data;
+> > > >       INIT_LIST_HEAD(&trigger_data->list);
+> > > >       INIT_LIST_HEAD(&trigger_data->named_list);
+> > > >
+> > > >       if (glob[0] == '!') {
+> > > >               cmd_ops->unreg(glob+1, trigger_ops, trigger_data, file);
+> > > > +             kfree(obj_data);
+> > > >               kfree(trigger_data);
+> > > >               ret = 0;
+> > > >               goto out;
+> > > > @@ -461,6 +541,7 @@ event_object_trigger_callback(struct event_command *cmd_ops,
+> > > >   out_free:
+> > > >       if (cmd_ops->set_filter)
+> > > >               cmd_ops->set_filter(NULL, trigger_data, NULL);
+> > > > +     kfree(obj_data);
+> > > >       kfree(trigger_data);
+> > > >       goto out;
+> > > >  }
+> > > > diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+> > > > index 76ca560af693..c8c427c23127 100644
+> > > > --- a/kernel/trace/trace_output.c
+> > > > +++ b/kernel/trace/trace_output.c
+> > > > @@ -1562,6 +1562,7 @@ static enum print_line_t trace_object_print(struct trace_iterator *iter, int fla
+> > > >       trace_assign_type(field, iter->ent);
+> > > >       print_fn_trace(s, field->ip, field->parent_ip, flags);
+> > > >       trace_seq_printf(s, " object:0x%lx", field->object);
+> > > > +     trace_seq_printf(s, " value:0x%lx", field->value);
+> > > >       trace_seq_putc(s, '\n');
+> > > >
+> > > >       return trace_handle_return(s);
+> > > > @@ -1574,9 +1575,8 @@ static enum print_line_t trace_object_raw(struct trace_iterator *iter, int flags
+> > > >
+> > > >       trace_assign_type(field, iter->ent);
+> > > >
+> > > > -     trace_seq_printf(&iter->seq, "%lx %lx\n",
+> > > > -                      field->ip,
+> > > > -                      field->parent_ip);
+> > > > +     trace_seq_printf(&iter->seq, "%lx %lx %lx %lx\n", field->ip,
+> > > > +                     field->parent_ip, field->object, field->value);
+> > > >
+> > > >       return trace_handle_return(&iter->seq);
+> > > >  }
+> > > > --
+> > > > 2.25.1
+> > > >
+> > >
+> > >
+> > > --
+> > > Masami Hiramatsu <mhiramat@kernel.org>
+> >
+> > Thanks,
+> > ---
+> > JeffXie
+> 
+> ---
+> JeffXie
 
-FWIW, the bug that we saw in the decompressor relying on data alignment on x86
-earlier this year only happened on gcc.
 
-      Arnd
-
-[1] https://lkml.org/lkml/2021/5/7/775
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
