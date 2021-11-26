@@ -2,86 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A2E45E6E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 05:33:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B27A45E6CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 05:22:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358705AbhKZEfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 23:35:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358221AbhKZEdq (ORCPT
+        id S1358042AbhKZEZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 23:25:44 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:37447 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352028AbhKZEXk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 23:33:46 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B6EC06139C;
-        Thu, 25 Nov 2021 20:18:34 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id u74so16486802oie.8;
-        Thu, 25 Nov 2021 20:18:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wufeo9wAAG7/tdiBRSS366cjw40GcsJfcKHAdCGDRX0=;
-        b=QuCHLfjjwtCycealnFaQKqjABj8/NJEcfzk8CroiVNBehfWxcFSMkydvslVle3uyCS
-         IHpkDYb2UlsEdY+4mh6diAmGZDG6I7dDn6/6V4PB2Jye5zA/b753U/qksh0U2vaVOYzF
-         eJq9wae5YS6MrmGuhWzturIRyS3vscCCZZUtaqSvJhuEfbNj1PSMu2COa3qj1WIf4yVt
-         PDd5GnTDCYgMRpaqp8yJpQiF7/zNLCrB1xFa0Nv4fXg3knxQxsbFhfaTjA+3sh9SGLAG
-         u665XBbjuM8GmvthlfZGzW7OKDBmNRh4KGOLC7c39AtdA9TyQeM8R5YLpi3BCrtggMj8
-         LdRw==
+        Thu, 25 Nov 2021 23:23:40 -0500
+Received: by mail-il1-f197.google.com with SMTP id d2-20020a056e02214200b0029e6bb73635so10611598ilv.4
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 20:20:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=wufeo9wAAG7/tdiBRSS366cjw40GcsJfcKHAdCGDRX0=;
-        b=uuQmW3cdTB/59p3xM+knW98YYhrIj8nN0pExDgoOvNlYZWmBZa5NvXWA7wtfEaeKI1
-         q9B8KO5H6GIWKEYExm33NvQH7XMKTCgNzd+OKu+XNMEW4unuMQs3zgQ4IlR8tC/7LZs8
-         DTb58pbDIF8ygUGywjo2DCq1bjtHHAkkNvymUMzMU4ACrcXKwHR1uNBPxKvAgFRgvINk
-         vTTYk1uQormgL1mWyrHgc9NipdzN1v99DPFMRD5+VK/o40jOv0lTSile1byurOgtty00
-         m+RYlBSN8vbX+qDXvujGYd75o4dBef+yPzWIh1pK1gyOALrAw74oK0JSZIYe6RifiMlF
-         H1gg==
-X-Gm-Message-State: AOAM532Km3ntvtUGDWyIaEgpeu87xqFVE6PSdO1Xmot4tlgMVw/pP4aF
-        UMJ0X0Qi7pWSSKrKZrO4iAsFXib9ou0=
-X-Google-Smtp-Source: ABdhPJwm6P+AjhcSP9mqBVgziUmKkzJ9Jn3laLID7pURE5t1Mh+8aFnNjngnCMR3wEJB0yXhdh5jcw==
-X-Received: by 2002:aca:af42:: with SMTP id y63mr20597221oie.167.1637900313581;
-        Thu, 25 Nov 2021 20:18:33 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w18sm844285otm.1.2021.11.25.20.18.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 20:18:33 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 25 Nov 2021 20:18:32 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 000/100] 5.4.162-rc2 review
-Message-ID: <20211126041832.GA1376528@roeck-us.net>
-References: <20211125092028.153766171@linuxfoundation.org>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=iDo2YE1P0V4UvagSeNAWE7aLeLcYy2LwCFQUzfvdNwY=;
+        b=RgaG1emqBDlsDmqMCkR+bH9AjGRjmEkMAjwc8biy2Qp3Pfj6LSxT6bwlJagezJ1kzY
+         HO5scXpNV7jYDKB94RDLwNOgl5CsbLdorcTXgmUeodADwswRyYSkWks0MIT5e2t7eT3X
+         BLGNuA1izQ0fLh3L++eu2oExxkNaiqmfjam9Tj1/8fAmM2KOUNh1hd7ZiAip4ENxcPOb
+         /n6yFtUqzIDyzr3nbWu47+vAxb+fUqEh+nQ4LMUZ3C0J44ngDnKLVwC2XX3ogiQ7rz4F
+         kZszf1IfU53Ulc9SPeuY9a1t/JkyjR/5I6uDeo9kIwZymJxUNaC3POrE0/AiaFkFpsBs
+         r7FQ==
+X-Gm-Message-State: AOAM530QzObRpXjvyJTAGWz+a/SFEB64Psq1LDNw70nrtEuoUSCHLR88
+        lWBKmchCkN3LrZynX2Q4aOUG9MCG+OoXru3RUNP54J3+/OL6
+X-Google-Smtp-Source: ABdhPJw9B/j4yQX6juojIIaPZgm9fEGZAYOMyRAI6QZnmayGTvKfIbhoWkKCpg/7gH9IkHyaP9RyhMvgnJ7q1bFvWlGJTQFV9J+L
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211125092028.153766171@linuxfoundation.org>
+X-Received: by 2002:a05:6e02:114f:: with SMTP id o15mr27695772ill.307.1637900428223;
+ Thu, 25 Nov 2021 20:20:28 -0800 (PST)
+Date:   Thu, 25 Nov 2021 20:20:28 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000033acbf05d1a969aa@google.com>
+Subject: [syzbot] WARNING: kmalloc bug in bpf
+From:   syzbot <syzbot+cecf5b7071a0dfb76530@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 10:23:51AM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.162 release.
-> There are 100 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 27 Nov 2021 09:20:07 +0000.
-> Anything received after that time might be too late.
-> 
+Hello,
 
-Build results:
-	total: 157 pass: 157 fail: 0
-Qemu test results:
-	total: 446 pass: 446 fail: 0
+syzbot found the following issue on:
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+HEAD commit:    e4f7ac90c2b0 selftests/bpf: Mix legacy (maps) and modern (..
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=17418e09b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a262045c4c15a9e0
+dashboard link: https://syzkaller.appspot.com/bug?extid=cecf5b7071a0dfb76530
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-Guenter
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+cecf5b7071a0dfb76530@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 372 at mm/util.c:597 kvmalloc_node+0x111/0x120 mm/util.c:597
+Modules linked in:
+CPU: 1 PID: 372 Comm: syz-executor.4 Not tainted 5.15.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:kvmalloc_node+0x111/0x120 mm/util.c:597
+Code: 01 00 00 00 4c 89 e7 e8 7d f7 0c 00 49 89 c5 e9 69 ff ff ff e8 60 20 d1 ff 41 89 ed 41 81 cd 00 20 01 00 eb 95 e8 4f 20 d1 ff <0f> 0b e9 4c ff ff ff 0f 1f 84 00 00 00 00 00 55 48 89 fd 53 e8 36
+RSP: 0018:ffffc90002bf7c98 EFLAGS: 00010216
+RAX: 00000000000000ec RBX: 1ffff9200057ef9f RCX: ffffc9000ac63000
+RDX: 0000000000040000 RSI: ffffffff81a6a621 RDI: 0000000000000003
+RBP: 0000000000102cc0 R08: 000000007fffffff R09: 00000000ffffffff
+R10: ffffffff81a6a5de R11: 0000000000000000 R12: 00000000ffff9aaa
+R13: 0000000000000000 R14: 00000000ffffffff R15: 0000000000000000
+FS:  00007f05f2573700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2f424000 CR3: 0000000027d2c000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ kvmalloc include/linux/slab.h:741 [inline]
+ map_lookup_elem kernel/bpf/syscall.c:1090 [inline]
+ __sys_bpf+0x3a5b/0x5f00 kernel/bpf/syscall.c:4603
+ __do_sys_bpf kernel/bpf/syscall.c:4722 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:4720 [inline]
+ __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4720
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f05f4ffdae9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f05f2573188 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007f05f5110f60 RCX: 00007f05f4ffdae9
+RDX: 0000000000000020 RSI: 0000000020000100 RDI: 0000000000000001
+RBP: 00007f05f5057f6d R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fffa4b9a31f R14: 00007f05f2573300 R15: 0000000000022000
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
