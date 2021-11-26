@@ -2,84 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D099045F15F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:12:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DF745F160
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:12:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378333AbhKZQPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:15:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57210 "EHLO
+        id S1378360AbhKZQPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:15:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378134AbhKZQNm (ORCPT
+        with ESMTP id S1378343AbhKZQNm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 26 Nov 2021 11:13:42 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C0BC061397;
-        Fri, 26 Nov 2021 08:02:21 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id g14so40776436edb.8;
-        Fri, 26 Nov 2021 08:02:21 -0800 (PST)
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA353C061396;
+        Fri, 26 Nov 2021 08:02:15 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id h16-20020a9d7990000000b0055c7ae44dd2so14521079otm.10;
+        Fri, 26 Nov 2021 08:02:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=myqzowoy6VgYIDOrHd/LfS2qrNQNfPA8OZoTCY9iRLs=;
-        b=eWMa8/Zz/lsgGtgQQJRo+PL2P/cdc+hDYyB1vW32kPmybARSeE8xncVLmPmf0huuhP
-         yo5zRaqiI2ynENTTxf+JF1ZL/Y/MeWSakDo8r8MyUl1+eNG/YbFDnOzgwmXF3wFHG1Zu
-         JJJa8zwrknLq0gdu3vHmyR9yhJbu1pESUyvkBnxDZAX1WGU3imGiUQizhU265kv8WQX7
-         +RDzzmlr92dQwuS12mSMPoS3iuBNXTZfyhiLcFmhvJRDhdJy9SebJ0wDdSrET/9Jw2G3
-         lmai8hpaoYCx+E70EsdueCyEMhWYS5ejuyuhcsA3ZeXirnH4Fx4IR/icc/dGSQD9c8Xd
-         pcNw==
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PbeEnRWON9pb9nGRnrDkYtKRKVz+bBqeqfOhcC0/LMY=;
+        b=QlJ9BT79vV+UgbBLPVB9SHqwpuKF958qe/4Mo/aARVO9cwjFiv/Uw2PK81fwi8831u
+         Kip3tKmilWiTExI1OXx7XUqnowj7MjbDU8c22FkUt5c4bOr2jJtcjkKaYB3w7oBuwHPP
+         G7tS/FN5o7g8VZ4NO4BPxVFPv5Yv8SYiAX4yDHAdYoZgaG1h6KsW8PC+ritaYArqGSzm
+         hXjEbnx2+wi117uh94SJkoqMIZOFZ3UaHFzldYRjpbkAm4bg4cY5HTDh5zEs2pOjLzkG
+         uGTntQHgts3Y2ky15w5GgWss37Lqggj8cl8c5y60WWmXoI4upgPFMjHam7LRlTgKoNje
+         cF/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=myqzowoy6VgYIDOrHd/LfS2qrNQNfPA8OZoTCY9iRLs=;
-        b=T7Rxcpl4PReio3hxbkNAntwmi19Ovhip3eJlOiqXmCUgdzDyUvvPNDlbuE07b/abj/
-         yzv0epCP3WTOSNv7dRCNfcbETaiuckoTiFl3LQrlDuuEcti8CF/iQDNSZPcJpLZTjSX4
-         +qPLMshk8sfxU8ICmWfWQUhkon24TOsYhg8ovUNYbLvee2uG2X7Uw2hPs/CzsNXr49TH
-         fXMecHvd+WbjNfGxhF9EeNOPNMgBmTY0MCBFc1TtirPaug9oICnnG67NlBQQB5MfDT53
-         erfAFUhLaDQjZYRAhOeTvin1XSPUd07N1VxxaWXQUbEfRUzXBy5VnUn1v4D0nSsimclR
-         JhzA==
-X-Gm-Message-State: AOAM5303aT/8vq264E9GIMBLl1z3+P89qUf7pxvDxU3ouwH+Z0LgtqtN
-        6RfXfoYtFdkqn1AIVLmqoOqT7zDhPks7xv/47C8=
-X-Google-Smtp-Source: ABdhPJxMFKzU0ZBFiuPaG5N/Xdix8OJOg9d03E2V2yUqffNnXenZz8yRtGFjZPojSKTDG6nnP4wBszblacn7FSeYifY=
-X-Received: by 2002:a05:6402:291:: with SMTP id l17mr49109749edv.242.1637942539875;
- Fri, 26 Nov 2021 08:02:19 -0800 (PST)
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PbeEnRWON9pb9nGRnrDkYtKRKVz+bBqeqfOhcC0/LMY=;
+        b=s0+eRKuz3H2AtRX5dGGrCJq8JeiAhS0Nysm+6NSwx8IGqVwW9mcarcQpMB0MPn/9ew
+         IV73+M1PHH+VEGlLEWCWV+PL9YJmuzqqyEbFW8fDFP60hzhpA6sWeLAqpzd4rvKVNd7K
+         bTvf8GUwFdZyuBu/9OVowFUv91o433yNHA06FGatxsFT/3EKlyjvFpDHcbR8rM2Z4BOX
+         EJq+cM+zjr6NefMbzVJAtxk/5OXawZMTu/CSuR/PixphG/xvhXwQLDV40Ly2K7dqumnd
+         cDnknCZmVbUuNv2Ue6+ZyDDQ749WAY0wj7Eh3xKovFd25yoUH2ZSUV0IClbl/hTcquOV
+         O6Cg==
+X-Gm-Message-State: AOAM531dn5RrnmFCA+SjHjQ66flrOes92adY1oCUcaiemsWL2DsfZZC9
+        6Oh8unatM5CRmoHc/4fN660=
+X-Google-Smtp-Source: ABdhPJwV1CDUTlflKha7g6Adxid3NIOO8qLf9lChHNmx1HWiM56hDEuK98fgA+qincEt48HzMVN2XQ==
+X-Received: by 2002:a05:6830:169a:: with SMTP id k26mr29165571otr.64.1637942535128;
+        Fri, 26 Nov 2021 08:02:15 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r11sm1132492oth.48.2021.11.26.08.02.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Nov 2021 08:02:14 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v4 0/4] add device drivers for Siemens Industrial PCs
+To:     Henning Schild <henning.schild@siemens.com>,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-watchdog@vger.kernel.org
+Cc:     Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Enrico Weigelt <lkml@metux.net>
+References: <20211126141027.16161-1-henning.schild@siemens.com>
+ <20211126163410.2806de5f@md1za8fc.ad001.siemens.net>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <a1a6c43d-401c-19f1-9773-696402974f6b@roeck-us.net>
+Date:   Fri, 26 Nov 2021 08:02:11 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211115084203.56478-1-tony@atomide.com>
-In-Reply-To: <20211115084203.56478-1-tony@atomide.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 26 Nov 2021 18:01:43 +0200
-Message-ID: <CAHp75VfzqvHY53hfKqub3WoT1Zm7vhXbwDTrbHOTMGnU7gcNEA@mail.gmail.com>
-Subject: Re: [PATCHv4 0/7] Serial port generic PM to fix 8250 PM
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211126163410.2806de5f@md1za8fc.ad001.siemens.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 10:43 AM Tony Lindgren <tony@atomide.com> wrote:
->
-> Hi,
->
-> Here are v4 patches for serial port generic PM. The scope has now expanded
-> a bit from the earlier attempts to get rid of pm_runtime_irq_safe() for
-> the 8250_omap driver. I've now picked up three patches from Andy's earlier
-> generic serial port PM series.
+On 11/26/21 7:34 AM, Henning Schild wrote:
+> Hi all,
+> 
+> in p3 not too much was left open so i hope this might be the last and
+> might be quick.
+> 
+> The two points that have been open where:
+>   1 wish to split wdt driver into two
+>   2 wish to use pinctrl for LEDs/WDT
+> 
+> 1 was ignored for now. We can split later when we add more devices. It
+> remains unclear if splitting is the way to go when more devices come.
 
-Johan, do you have any objections / comments on the series? Otherwise
-I think it's good to go next week next revision (as kbuild bot
-complained about minor warning).
+The code is already quite messy, in part because memory regions are
+declared locally and not passed through the parent device as they should.
+I don't see how splitting the driver into multiple drivers would improve
+the situation. The platform code claims to be inspired by the lpc_ich
+driver. Maybe it should take a real example from that and pass version
+or variant specific details through platform data instead of maintaining
+it in the watchdog driver.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Guenter
