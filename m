@@ -2,153 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 264CB4600CE
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 18:58:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 251D1460099
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 18:40:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355823AbhK0SBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 13:01:41 -0500
-Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17218 "EHLO
-        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1355896AbhK0R7k (ORCPT
+        id S1355768AbhK0Rnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 12:43:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233014AbhK0Rlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 12:59:40 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1637932178; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=YCD9Qy/t2w3SG/dzfftvb30u8EtAqWFB0/v7Gz5mdsDG1lqyu9jplrgieI983y96ACu3TkHCX8b01GKHM55T/OU6FAQ8dcNYRTmnarjSbxT9g2a5aVINpvv7DC7wRJoXwqz59IREFqMDrvFpKNhVagDKOIiykKK/0ZcWsa3ukFE=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1637932178; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
-        bh=DKINIDnMGkMKeLcTBYO3BxCbPU2T+QmP00nUmcd3ZJM=; 
-        b=Er6e0/lkmSRSDyV226mD5NFNTE/ZyV1j6Sg4apZ8oYShb5o7o/EuMxFx6NPd3wIaEr3a34zyjqlEa5amf7z0Elcsdj/6FjwkhpNuytXuHv6z29aHOZgioU8SOVfHCs4LkJrbOdseCedcLEQLiSxbsKHOHOML12KgAWoPIAlxFoU=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1637932178;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=DKINIDnMGkMKeLcTBYO3BxCbPU2T+QmP00nUmcd3ZJM=;
-        b=TSAddY81PkFDLj1aC2Geq5A7DpzYXqjiqX2cd1JiU6+p8vo+ip6IQL0AJwqYzL8q
-        SL/EUFY7eXLVgpH6U+sChP4Mp9AvTMG1SmkiGP7ZB/e4e59TCqEV3ypRXpjFSaUYX4Q
-        jlj9W1EHKYPABmA1E5luDrb6We20clxMVRqlY6V0=
-Received: from mail.baihui.com by mx.zoho.com.cn
-        with SMTP id 163793217656496.81082384691524; Fri, 26 Nov 2021 21:09:36 +0800 (CST)
-Date:   Fri, 26 Nov 2021 21:09:36 +0800
-From:   Chengguang Xu <cgxu519@mykernel.net>
-Reply-To: cgxu519@mykernel.net
-To:     "Jan Kara" <jack@suse.cz>
-Cc:     "miklos" <miklos@szeredi.hu>, "amir73il" <amir73il@gmail.com>,
-        "linux-unionfs" <linux-unionfs@vger.kernel.org>,
-        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "Chengguang Xu" <charliecgxu@tencent.com>,
-        "ronyjin" <ronyjin@tencent.com>
-Message-ID: <17d5c5d9498.134e725b210976.7805957202314611987@mykernel.net>
-In-Reply-To: <20211126091430.GC13004@quack2.suse.cz>
-References: <20211122030038.1938875-1-cgxu519@mykernel.net>
- <20211122030038.1938875-4-cgxu519@mykernel.net> <20211126091430.GC13004@quack2.suse.cz>
-Subject: Re: [RFC PATCH V6 3/7] ovl: implement overlayfs' own ->write_inode
- operation
+        Sat, 27 Nov 2021 12:41:55 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED7EC061574;
+        Sat, 27 Nov 2021 09:38:40 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id r138so11160159pgr.13;
+        Sat, 27 Nov 2021 09:38:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KXHOYE2DGpHKJjVyUDHRjV9NmlxJIMrpXm3uC4olpKs=;
+        b=migdmGkkMQ3km3OtfvhJRC6bNOuIX0tVx5umTvyla6Sgyuy8cswRVmq9bunpQrcztu
+         /GKRaMViJuH252Ix3WWZC7GrOS3AM8bQ025Y+rV/lvu6+Ri5JAollWd+SmbYZwz9HdYJ
+         FpUZFrYxgNAfD0kdYMte22h/MNWJcEbK3MvzSOOgX6gU1yGYb0dGMt1YkTSn+7xjdnsq
+         gLulWpF+ZmqeJ9eHZkiufDlEZcZPAyP08buPOBADEHAPIEQIbDGvEiOLkBOdAucy0ks/
+         BjjxxrNu3wmKbMo54oK91ZgzS9LPXf1GuRZf/tf2YddPlmwn0utJo5xxCDqXdId5cvEF
+         u0lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KXHOYE2DGpHKJjVyUDHRjV9NmlxJIMrpXm3uC4olpKs=;
+        b=3hjDLtfrIlcJk1iekKNdAdVV7SvpuylC8wODwwwptuo8fhdFXVfNSf/XAxLkbL2lJm
+         bDCfQLodSfPFlXpJh0j95DeMJlb2Zf4SqUEdxuuDu1t1BbcI4mxPm5ugQm7TNltR4IPy
+         2t6MJKNQQdsa5Tg4RWBUNRF5CjJYZepCAOTL2ftPKNjKG8pMY31a3CSTc+81MTzUDLNb
+         SAuTglc1Xm1P8TltxD3iMBDqbIxWgpDtCI/i56MQroxhy60JB3/iXW0nECl6vQZekYIF
+         yKpAzbFCIYjYS+oDqruzbCOoVvrY5tJsoaLToSlZlLx6N8sh8cvgrVlUzTdUTnsrwc9P
+         zZTw==
+X-Gm-Message-State: AOAM532mTukkqEMQE3WHlc+w5l93XUkvvpH7tNXmmsZ32DEb4sySmGjg
+        r7cd23lWK5fNTRQmlBY/MP3SNP8W9VEaAQ==
+X-Google-Smtp-Source: ABdhPJyKFHji3KirT7hXrnmGoSamfC1s0BzrGR92mwf9Vt7W9b45eWnhICptB24UDv8sKxtjB7LBzQ==
+X-Received: by 2002:a05:6a00:2151:b0:4a2:5c9a:f0a9 with SMTP id o17-20020a056a00215100b004a25c9af0a9mr29308241pfk.39.1638034719529;
+        Sat, 27 Nov 2021 09:38:39 -0800 (PST)
+Received: from 7YHHR73.igp.broadcom.net (70-36-60-214.dyn.novuscom.net. [70.36.60.214])
+        by smtp.gmail.com with ESMTPSA id t19sm8051776pgn.7.2021.11.27.09.38.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Nov 2021 09:38:39 -0800 (PST)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Nilesh Javali <njavali@marvell.com>,
+        Manish Rangankar <mrangankar@marvell.com>,
+        GR-QLogic-Storage-Upstream@marvell.com (supporter:QLOGIC QL41xxx ISCSI
+        DRIVER), "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org (open list:QLOGIC QL41xxx ISCSI DRIVER)
+Subject: [PATCH v2 0/2] scsi: qedi: Couple of warning fixes
+Date:   Fri, 26 Nov 2021 12:17:06 -0800
+Message-Id: <20211126201708.27140-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Importance: Medium
-User-Agent: ZohoCN Mail
-X-Mailer: ZohoCN Mail
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=BA=94, 2021-11-26 17:14:30 Jan Kara <=
-jack@suse.cz> =E6=92=B0=E5=86=99 ----
- > On Mon 22-11-21 11:00:34, Chengguang Xu wrote:
- > > From: Chengguang Xu <charliecgxu@tencent.com>
- > >=20
- > > Sync dirty data and meta of upper inode in overlayfs' ->write_inode()
- > > and redirty overlayfs' inode.
- > >=20
- > > Signed-off-by: Chengguang Xu <charliecgxu@tencent.com>
- >=20
- > Looks good. I'm still not 100% convinced keeping inodes dirty all the ti=
-me
- > will not fire back in excessive writeback activity (e.g. flush worker wi=
-ll
- > traverse the list of all dirty inodes every 30 seconds and try to write
- > them) but I guess we can start with this and if people complain, dirtine=
-ss
- > handling can be improved.=20
+These warnings started to show up after enabling PCI on BMIPS (32-bit
+MIPS architecture) and were reported by the kbuild robot.
 
-Hi Jan,
+I don't know whether they are technically correct, in particular the
+unused 'page' variable might be unveiling a genuine bug whereby it
+should have been used. Please review.
 
-Thanks for the review and suggestion.
+Changes in v2:
 
+- added Acked-by to patch #1
+- changed SYSFS_FLAG_FW_SEL_BOOT to contain the typecasting and not
+  change the way it is formatted before sysfs printing
 
-Thanks,
-Chengguang
+Florian Fainelli (2):
+  scsi: qedi: Remove set but unused 'page' variable
+  scsi: qedi: Fix SYSFS_FLAG_FW_SEL_BOOT formatting
 
+ drivers/scsi/qedi/qedi.h      | 2 +-
+ drivers/scsi/qedi/qedi_main.c | 3 ---
+ 2 files changed, 1 insertion(+), 4 deletions(-)
 
+-- 
+2.25.1
 
- > So feel free to add:
- >=20
- > Reviewed-by: Jan Kara <jack@suse.cz>
- >=20
- >                                 Honza
- >=20
- > > ---
- > >  fs/overlayfs/super.c | 21 +++++++++++++++++++++
- > >  1 file changed, 21 insertions(+)
- > >=20
- > > diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
- > > index 18a12088a37b..12acf0ec7395 100644
- > > --- a/fs/overlayfs/super.c
- > > +++ b/fs/overlayfs/super.c
- > > @@ -15,6 +15,7 @@
- > >  #include <linux/seq_file.h>
- > >  #include <linux/posix_acl_xattr.h>
- > >  #include <linux/exportfs.h>
- > > +#include <linux/writeback.h>
- > >  #include "overlayfs.h"
- > > =20
- > >  MODULE_AUTHOR("Miklos Szeredi <miklos@szeredi.hu>");
- > > @@ -406,12 +407,32 @@ static int ovl_remount(struct super_block *sb, i=
-nt *flags, char *data)
- > >      return ret;
- > >  }
- > > =20
- > > +static int ovl_write_inode(struct inode *inode,
- > > +               struct writeback_control *wbc)
- > > +{
- > > +    struct ovl_fs *ofs =3D inode->i_sb->s_fs_info;
- > > +    struct inode *upper_inode =3D ovl_inode_upper(inode);
- > > +    int ret =3D 0;
- > > +
- > > +    if (!upper_inode)
- > > +        return 0;
- > > +
- > > +    if (!ovl_should_sync(ofs))
- > > +        return 0;
- > > +
- > > +    ret =3D write_inode_now(upper_inode, wbc->sync_mode =3D=3D WB_SYN=
-C_ALL);
- > > +    mark_inode_dirty(inode);
- > > +
- > > +    return ret;
- > > +}
- > > +
- > >  static const struct super_operations ovl_super_operations =3D {
- > >      .alloc_inode    =3D ovl_alloc_inode,
- > >      .free_inode    =3D ovl_free_inode,
- > >      .destroy_inode    =3D ovl_destroy_inode,
- > >      .drop_inode    =3D generic_delete_inode,
- > >      .put_super    =3D ovl_put_super,
- > > +    .write_inode    =3D ovl_write_inode,
- > >      .sync_fs    =3D ovl_sync_fs,
- > >      .statfs        =3D ovl_statfs,
- > >      .show_options    =3D ovl_show_options,
- > > --=20
- > > 2.27.0
- > >=20
- > >=20
- > --=20
- > Jan Kara <jack@suse.com>
- > SUSE Labs, CR
- >=20
