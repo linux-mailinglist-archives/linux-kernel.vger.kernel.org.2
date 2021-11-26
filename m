@@ -2,112 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC5445E855
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:15:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B4B45E85D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:16:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359175AbhKZHSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 02:18:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53538 "EHLO
+        id S1359228AbhKZHUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 02:20:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352886AbhKZHQo (ORCPT
+        with ESMTP id S1359104AbhKZHSE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 02:16:44 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACFCBC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 23:13:10 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id l28-20020a25b31c000000b005c27dd4987bso9428222ybj.18
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 23:13:10 -0800 (PST)
+        Fri, 26 Nov 2021 02:18:04 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 153B1C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 23:14:52 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id g14so34859252edb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 23:14:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=W8hS1aIz252p/mMAVTvx9qDScElm2mCtCgsM5bMoDEk=;
-        b=LtNaVZTVTBAxfs2FCwbd1IbM2oYejVO8saSuKjZwaKdsFsd/5e8cjS31/FErDyX2OJ
-         vK40XcqfAe5++itK3t7bQ9k9xOF2xEatZWiwTV7W7r6XcYBAL3VIB3+ezGuns9n9RXjK
-         eQTrDSFOm/47+6afws4MwbOv55vtblxBZVEnY+LNDtw4A/2LuoYp29L0HA/91gIasRcP
-         4P8ZKM4scKYbjW6rsBzekXUtIoYFCdSvcsJoPV7ew9avb3l0G6w7ZinMuVyHD32l7kRi
-         FfWVrbOxX0G3qqhKRgSoU1W3avNh1PsFxuDyHEXGketLoLlplkTGLtLDFGyEmeaEsfVP
-         Y8sA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=PGZaZsF4EEc9XJ4D4bs2n2YA93FNTJvPRvvwgPjhqc4=;
+        b=W/k2gqxv+jtRh0g+zQiB9dCNWO2wF6PR0H4q5yR1KylyrnUTGOA7SU5a6j9OBV/7YD
+         co7yD5YIwVCfU+QuiG4N6Ph7q7QQVH3EPIl+HE7WqhS5sawelTaizu4+x9Hj1g6+OMy2
+         nH/dBe68Hu03OhuLvnjjeAGncmjTaGbzwotecVyuJhfyo/LzscaWI7IQ8V9DCX5kSyO1
+         wHIfn9NvXI3649vbCg8QhKwYzkOzO07qmFYLPmSE1Om3NmlbiOKWRrvz+Als/2uWorVL
+         CCzy8NJPYg3Mc3uf9NvYpnr+MFj52nCMcakQgdDM9gVW58GyGJrIapbUMhJkxl2idKhw
+         es2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=W8hS1aIz252p/mMAVTvx9qDScElm2mCtCgsM5bMoDEk=;
-        b=iuLmYLETRvvzxUpy+bbs73DzJU9ihFooHkCBs+lq2GVCIwLx72MHsLbdlkvQ2Dg3Du
-         07Xg8YQHXce2jR3jNUnAYHf5j4re7hRPwtqNjW9+4Wg+195CxzSHfAqDAHqQ4XqGkrxy
-         EME0M8CYnF+F1OR+dKDjy6/w8mzWw7Gkb53JKhTSmiJ9zh+bXI5bLBMnsM6m1dtcr/R2
-         3QiT/EoFxSmheu5AGnXrqhv5/yKB3/YzcK1Rm373yuBH/hE3jg1hjiMDJIrSVb83uBrg
-         tg2x3+STfKzrS2Ym9ut9AtiMEcqfqwQwznFvSZtVxz7lkyXPXpm6ErF/DmIKYY3QDO36
-         xaMQ==
-X-Gm-Message-State: AOAM5311NAU9fOtK3dTHdaKOa+NVHllWG/Bs/pyYa53d+XcHk8RHPL/B
-        f2g4R8cr/g8IxtsuXNz4R3maVR2JMJu2
-X-Google-Smtp-Source: ABdhPJyMhAlET7BZdwEfgs2s181EBLy1PpYEzdwf1yfnsLaCeGL40f4p8cmXJrPvHAP2UI8xq9+bWPWE4QGW
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:cdec:1c24:b91d:377e])
- (user=irogers job=sendgmr) by 2002:a5b:b91:: with SMTP id l17mr12092261ybq.198.1637910789950;
- Thu, 25 Nov 2021 23:13:09 -0800 (PST)
-Date:   Thu, 25 Nov 2021 23:13:05 -0800
-Message-Id: <20211126071305.3733878-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [RFC PATCH] perf pmu-events: Don't lower case MetricExpr
-From:   Ian Rogers <irogers@google.com>
-To:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     eranian@google.com, Ian Rogers <irogers@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PGZaZsF4EEc9XJ4D4bs2n2YA93FNTJvPRvvwgPjhqc4=;
+        b=LQSk5/n8jI/iItXXzOX0yfQXwR/AhXQXZi6NitoZl6/L3kqNXAxpFNznAqkcAjtaJJ
+         XRr52YkEV/Q3zwzb4w2mUJyiKTEkW2ghahflvVWIxd5qFctm1Vs+xQxksrJa4k4sFWoY
+         4eZurYGy8I6KkWgGzy+IGTJW4KO4qF/uQUBTECbqpwfDffY9hbvTdlVuKKco+pBD25WK
+         /CfDD7zgTyYbDcmDDh0AJE8We2VcvZIykMkLBHRGYuh5RhsRDRmxY1KiKvpEkZBXpDpk
+         JAIgDmnoiO5XsvHQX0YBgK/foYJp4AerXdAZOVwToCX9jbtbSo15BNJExFb+n8qNKHqt
+         1oFw==
+X-Gm-Message-State: AOAM533/JorUW9WUTa1B6OG7ZHaZEylhcILJq9qkxyaHnvRr6z5vAwH+
+        lWjscsiCVsdB5yFWXbh3VfahW58QkSavM2ik//ffHg==
+X-Google-Smtp-Source: ABdhPJwfYTlvO8igc642vud2krop4us0/PqOfA9T8jWGOjB2R791aI2P3dPIDSLeLf4KVyhkmS3kZ5EWcjxelnCUzZc=
+X-Received: by 2002:a05:6402:4312:: with SMTP id m18mr44459592edc.273.1637910890442;
+ Thu, 25 Nov 2021 23:14:50 -0800 (PST)
+MIME-Version: 1.0
+References: <20211125160544.661624121@linuxfoundation.org>
+In-Reply-To: <20211125160544.661624121@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 26 Nov 2021 12:44:39 +0530
+Message-ID: <CA+G9fYszi_Onb4tOJWnjyFyLqyKoHupiF+5TTWjJJeYCzcH4pg@mail.gmail.com>
+Subject: Re: [PATCH 4.19 000/320] 4.19.218-rc3 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch changes MetricExpr to be written out in the same case. This
-enables events in metrics to use modifiers like 'G' which currently
-yield parse errors when made lower case. To keep tests passing the
-literal #smt_on is compared in a non-case sensitive way - #SMT_on is
-present in at least SkylakeX metrics.
+On Thu, 25 Nov 2021 at 21:38, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.218 release.
+> There are 320 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 27 Nov 2021 16:05:05 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.218-rc3.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-This patch is on top of:
-https://lore.kernel.org/lkml/20211124001231.3277836-1-irogers@google.com/
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/pmu-events/jevents.c | 2 --
- tools/perf/util/expr.c          | 2 +-
- 2 files changed, 1 insertion(+), 3 deletions(-)
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-index 2e7c4153875b..1a57c3f81dd4 100644
---- a/tools/perf/pmu-events/jevents.c
-+++ b/tools/perf/pmu-events/jevents.c
-@@ -672,8 +672,6 @@ static int json_events(const char *fn,
- 				addfield(map, &je.metric_constraint, "", "", val);
- 			} else if (json_streq(map, field, "MetricExpr")) {
- 				addfield(map, &je.metric_expr, "", "", val);
--				for (s = je.metric_expr; *s; s++)
--					*s = tolower(*s);
- 			} else if (json_streq(map, field, "ArchStdEvent")) {
- 				addfield(map, &arch_std, "", "", val);
- 				for (s = arch_std; *s; s++)
-diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
-index cdbab4f959fe..5cd6b9ff2489 100644
---- a/tools/perf/util/expr.c
-+++ b/tools/perf/util/expr.c
-@@ -397,7 +397,7 @@ double expr__get_literal(const char *literal)
- 	static struct cpu_topology *topology;
- 	double result = NAN;
- 
--	if (!strcmp("#smt_on", literal)) {
-+	if (!strcasecmp("#smt_on", literal)) {
- 		result =  smt_on() > 0 ? 1.0 : 0.0;
- 		goto out;
- 	}
--- 
-2.34.0.rc2.393.gf8c9666880-goog
+## Build
+* kernel: 4.19.218-rc3
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-4.19.y
+* git commit: 616d1abb623837b0f3740984b9209ce6d488c24f
+* git describe: v4.19.217-321-g616d1abb6238
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
+.217-321-g616d1abb6238
 
+## No regressions (compared to v4.19.217-323-ge179aa5db430)
+
+## Fixes (compared to v4.19.217-323-ge179aa5db430)
+
+## Test result summary
+total: 76935, pass: 62199, fail: 752, skip: 12436, xfail: 1548
+
+## Build Summary
+* arm: 130 total, 130 passed, 0 failed
+* arm64: 35 total, 35 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 19 total, 19 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 26 total, 26 passed, 0 failed
+* s390: 12 total, 12 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 22 total, 22 passed, 0 failed
+
+## Test suites summary
+* fwts
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
