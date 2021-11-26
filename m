@@ -2,70 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E5245F273
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:49:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 914BF45F276
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:50:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234562AbhKZQw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:52:27 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:56223 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232820AbhKZQuW (ORCPT
+        id S238882AbhKZQxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:53:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24757 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239797AbhKZQvU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:50:22 -0500
-Received: by mail-io1-f71.google.com with SMTP id y74-20020a6bc84d000000b005e700290338so12154430iof.22
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 08:47:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=E3SZU77OvG0V43pQYfeC1jMV8oQXDfgfTFhN98Th00Y=;
-        b=WDPAFPjOW0s9Rq1nxx32ulge4jOxjxUrapJDozuOut7yJfgAijaV237gBihaGsBLKH
-         i4otHf2s5jcJZjIuJxiTtwrqsLhOCIQIKCoDEf9acJFGzosM2yrmgCaDS93miy0cRGZM
-         F+HzK0ku5fttooz4G2/NkoCJR/TDbuSX3dChUWopCBcwfuy5UCoVrcdz+gSbgaCBLKSZ
-         qbwqiVnGmHgpsJ2J9XTv7qpd2sNlfiNDPDj6vBUcJ65o/xG0h1P4FU1eoWLxH2jPGXUp
-         0MWJlSoAvs5yHbRJA9pk0creQXEwsR39E9xwfC1XTxJvRzsCTqH+3fFyAwpjNpZM41Ky
-         gZsg==
-X-Gm-Message-State: AOAM530ERWE4r6TITf9gyoDgFcH/JUtDaBc9ujFDcYQUufd80pxRl8d8
-        l0yn2t7endEB3rgrZJ1rK4YFVquDRnNPg+VizXT3K31otrEb
-X-Google-Smtp-Source: ABdhPJxa08KUq2MMDJ1aTzNQi/UsWNU0/4EepC/SG32d6AnThd3Chiw0oY+CcomOpKqgzD1VRBsYBUGPiOmiTWCB1LYJXM42xT0m
+        Fri, 26 Nov 2021 11:51:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637945287;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Grbamj1Ui2RVl3b5MpDYwaWCz8FlCD80yhTd0RjsQF4=;
+        b=XsxaeGhZr6sIrQc6wTPI8LeYrxyKpAOeAJ0YTA4Aydb0rLrr6RDUz9B7lMbir4f8F4wHNQ
+        kFNJ7RK1ROlhJJTdx2FL17imWn9eLOjZiQgCONNKNCn23Bm+GgxFtSN7tLJZ55sNsGB1ZF
+        mn9cq7k8wLqOQWoyFja4bBOiov5utsM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-348-CQIPzT1JN5O5Ca3KNBBfGA-1; Fri, 26 Nov 2021 11:48:02 -0500
+X-MC-Unique: CQIPzT1JN5O5Ca3KNBBfGA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 521EE819015;
+        Fri, 26 Nov 2021 16:48:01 +0000 (UTC)
+Received: from steredhat.redhat.com (unknown [10.39.193.110])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D0866604CC;
+        Fri, 26 Nov 2021 16:47:54 +0000 (UTC)
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     virtualization@lists.linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Parav Pandit <parav@nvidia.com>
+Subject: [PATCH v2 0/2] vdpa: add driver_override support and sysfs ABI documentation
+Date:   Fri, 26 Nov 2021 17:47:51 +0100
+Message-Id: <20211126164753.181829-1-sgarzare@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2103:: with SMTP id n3mr43636451jaj.25.1637945229555;
- Fri, 26 Nov 2021 08:47:09 -0800 (PST)
-Date:   Fri, 26 Nov 2021 08:47:09 -0800
-In-Reply-To: <0000000000000a389a05ac5a9864@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000091c45705d1b3d7ea@google.com>
-Subject: Re: [syzbot] KASAN: null-ptr-deref Write in l2cap_chan_put
-From:   syzbot <syzbot+452e9465a3b2817fa4c2@syzkaller.appspotmail.com>
-To:     anant.thazhemadam@gmail.com, bobo.shaobowang@huawei.com,
-        cobranza@ingcoecuador.com, davem@davemloft.net, ducheng2@gmail.com,
-        johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luiz.von.dentz@intel.com, marcel@holtmann.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+The first patch adds missing documentation of sysfs ABI for vDPA bus
+and the second adds driver_override support (the code is the same of v1,
+so I left Jason A-b tag).
 
-commit 1bff51ea59a9afb67d2dd78518ab0582a54a472c
-Author: Wang ShaoBo <bobo.shaobowang@huawei.com>
-Date:   Wed Sep 1 00:35:37 2021 +0000
+v2:
+- added preliminary commit to document pre-existing sysfs ABI for vDPA bus
+- added `driver_override` documentation in Documentation/ABI/testing/sysfs-bus-vdpa
 
-    Bluetooth: fix use-after-free error in lock_sock_nested()
+v1: https://lore.kernel.org/virtualization/20211104161729.258294-1-sgarzare@redhat.com/
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=141cfa45b00000
-start commit:   c70672d8d316 Merge tag 's390-5.9-5' of git://git.kernel.or..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bd46548257448703
-dashboard link: https://syzkaller.appspot.com/bug?extid=452e9465a3b2817fa4c2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=152f31f9900000
+Thanks,
+Stefano
 
-If the result looks correct, please mark the issue as fixed by replying with:
+Stefano Garzarella (2):
+  docs: document sysfs ABI for vDPA bus
+  vdpa: add driver_override support
 
-#syz fix: Bluetooth: fix use-after-free error in lock_sock_nested()
+ include/linux/vdpa.h                     |  2 +
+ drivers/vdpa/vdpa.c                      | 74 ++++++++++++++++++++++++
+ Documentation/ABI/testing/sysfs-bus-vdpa | 57 ++++++++++++++++++
+ MAINTAINERS                              |  1 +
+ 4 files changed, 134 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-vdpa
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+-- 
+2.31.1
+
