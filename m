@@ -2,242 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9746645EAA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 10:44:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E05DC45EAB7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 10:49:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376418AbhKZJrv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 26 Nov 2021 04:47:51 -0500
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:49451 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376270AbhKZJpt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 04:45:49 -0500
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 600F0240012;
-        Fri, 26 Nov 2021 09:42:32 +0000 (UTC)
-Date:   Fri, 26 Nov 2021 10:42:31 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Roger Quadros <rogerq@kernel.org>
-Cc:     richard@nod.at, vigneshr@ti.com, kishon@ti.com, nm@ti.com,
-        tony@atomide.com, linux-mtd@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] mtd: nand: omap2: Add support for NAND Controller
- on AM64 SoC
-Message-ID: <20211126104231.7cc43149@xps13>
-In-Reply-To: <e52141a6-96fc-97d6-95d7-3e26276fbac3@kernel.org>
-References: <20211123103609.14063-1-rogerq@kernel.org>
-        <20211123103609.14063-5-rogerq@kernel.org>
-        <20211124131552.6b9bc506@xps13>
-        <e52141a6-96fc-97d6-95d7-3e26276fbac3@kernel.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1376547AbhKZJwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 04:52:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44466 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229505AbhKZJux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 04:50:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27138610CA;
+        Fri, 26 Nov 2021 09:47:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637920061;
+        bh=RmPE7rdsieIifKFC/2nZXzuK2s8nnr82tj6/PHry4Qo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=c/lDHTmQHwvSOh6AakQdNa6DGTUsQ42KJCtqCS62fTP8B4lo3zDaTh2qbGNUhV7dN
+         uSrdTydmu7zWMSs4LJkRh5e8lsly1E+151lx68FXJlMh9xRKEmrswLP6LWYwFw0xzp
+         4wSRTful9VQ07xDWjGHDSREAbG2Cb1TOyFKT9WF1+Rbp7jXZtrLpNDYoF04EuPSk/3
+         K2bHvMC9QxveOOJiDQwPDPOGsWvi+uZJXCG6jnVNtvm47OIGgGbSGB405D8gGo6Y+Y
+         0Cj/YzCrAQofxf4tA6fOT7gj8nHnbnLTGq0jH2otzL8f9kWwmlruI7lzyezORJ0FOu
+         aGFPNZvP8crSA==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mqXpB-0008HL-NS; Fri, 26 Nov 2021 10:47:22 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Maarten Brock <m.brock@vanmierlo.com>, stable@vger.kernel.org,
+        Karoly Pados <pados@pados.hu>
+Subject: [PATCH] USB: serial: cp210x: fix CP2105 GPIO registration
+Date:   Fri, 26 Nov 2021 10:43:48 +0100
+Message-Id: <20211126094348.31698-1-johan@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Roger,
+When generalising GPIO support and adding support for CP2102N, the GPIO
+registration for some CP2105 devices accidentally broke. Specifically,
+when all the pins of a port are in "modem" mode, and thus unavailable
+for GPIO use, the GPIO chip would now be registered without having
+initialised the number of GPIO lines. This would in turn be rejected by
+gpiolib and some errors messages would be printed (but importantly probe
+would still succeed).
 
-rogerq@kernel.org wrote on Thu, 25 Nov 2021 16:12:01 +0200:
+Fix this by initialising the number of GPIO lines before registering the
+GPIO chip.
 
-> Hi Miquel,
-> 
-> On 24/11/2021 14:15, Miquel Raynal wrote:
-> > Hi Roger,
-> > 
-> > rogerq@kernel.org wrote on Tue, 23 Nov 2021 12:36:09 +0200:
-> >   
-> >> AM64 SoC has an issue which prevents proper 8-bit and 16-bit
-> >> reads from GPMC. We are limited to do 32-bit reads only.  
-> > 
-> > First, thanks for this series!  
-> 
-> No problem. Just my job :)
-> 
-> >   
-> >> Force 32-bit only reads on affected platforms.
-> >>  
-> > 
-> > Please change the commit title prefix to: "mtd: rawnand: omap2:" in
-> > patch 2, 3, 4.  
-> 
-> OK.
-> 
-> >    
-> >> Signed-off-by: Roger Quadros <rogerq@kernel.org>
-> >> ---
-> >>  drivers/mtd/nand/raw/omap2.c | 35 +++++++++++++++++++++++++++++++++++
-> >>  1 file changed, 35 insertions(+)
-> >>
-> >> diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
-> >> index f1fc146e09b9..d952de771b35 100644
-> >> --- a/drivers/mtd/nand/raw/omap2.c
-> >> +++ b/drivers/mtd/nand/raw/omap2.c
-> >> @@ -28,6 +28,7 @@
-> >>  
-> >>  #include <linux/omap-gpmc.h>
-> >>  #include <linux/platform_data/mtd-nand-omap2.h>
-> >> +#include <linux/sys_soc.h>
-> >>  
-> >>  #define	DRIVER_NAME	"omap2-nand"
-> >>  #define	OMAP_NAND_TIMEOUT_MS	5000
-> >> @@ -181,6 +182,7 @@ struct omap_nand_info {
-> >>  	void (*data_out)(struct nand_chip *chip,
-> >>  			 const void *buf, unsigned int len,
-> >>  			 bool force_8bit);
-> >> +	bool force_32bit;  
-> > 
-> > I believe we should have a driver capability instead of something in
-> > the info structure. You can save the value here as well in the probe if
-> > you want, but I would like this limitation to be tied to the
-> > compatible.  
-> 
-> I will discuss about this at the end.
-> >   
-> >>  };
-> >>  
-> >>  static inline struct omap_nand_info *mtd_to_omap(struct mtd_info *mtd)
-> >> @@ -2070,6 +2072,25 @@ static void omap_nand_data_in(struct nand_chip *chip, void *buf,
-> >>  	struct omap_nand_info *info = mtd_to_omap(nand_to_mtd(chip));
-> >>  	u32 alignment = ((uintptr_t)buf | len) & 3;
-> >>  
-> >> +	if (info->force_32bit) {  
-> > 
-> > I am a little bit bothered by this limitation. The force8_bit flag does
-> > not require the driver to read only 8-bits of the fifo register, it
-> > actually requires to use only the first 8-bits of the NAND bus (which
-> > can also be 16-bit wide). The older implementation just limited the
-> > number of bits reads to be 8 with ioread8, which seems to be a fine
-> > solution but would require more accesses than using ioread16 (or
-> > ioread32) when reading more than 1 byte on platforms with only 8-bit
-> > busses.  
-> 
-> I didn't understand the purpose of force8_bit flag. 
+Note that as for the other device types, and as when all CP2105 pins are
+muxed for LED function, the GPIO chip is registered also when no pins
+are available for GPIO use.
 
-Only access the lowest byte on the bus. This is only needed for
-meta-data reads (like status reads or ids) where the upper byte would
-be a duplicate.
+Reported-by: Maarten Brock <m.brock@vanmierlo.com>
+Link: https://lore.kernel.org/r/5eb560c81d2ea1a2b4602a92d9f48a89@vanmierlo.com
+Fixes: c8acfe0aadbe ("USB: serial: cp210x: implement GPIO support for CP2102N")
+Cc: stable@vger.kernel.org      # 4.19
+Cc: Karoly Pados <pados@pados.hu>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ drivers/usb/serial/cp210x.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-> How should the driver/controller behave if we get a data_in() call with len 8 and force8_bit flag set?
-> 
-> e.g. if 16-bit NAND ID area contains (little-endian) 2c d3 d0 a6 66 45 67 a3 4f 4e 46 49 ab ef 90 d3
-> what should data_in(len = 8, force_8_bit = 1) return in buffer?
-> 
-> Based on what you said earlier my guess is it should return 2c d0 66 67 4f 46 ab 90?
+diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
+index 7705328034ca..8a60c0d56863 100644
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -1635,6 +1635,8 @@ static int cp2105_gpioconf_init(struct usb_serial *serial)
+ 
+ 	/*  2 banks of GPIO - One for the pins taken from each serial port */
+ 	if (intf_num == 0) {
++		priv->gc.ngpio = 2;
++
+ 		if (mode.eci == CP210X_PIN_MODE_MODEM) {
+ 			/* mark all GPIOs of this interface as reserved */
+ 			priv->gpio_altfunc = 0xff;
+@@ -1645,8 +1647,9 @@ static int cp2105_gpioconf_init(struct usb_serial *serial)
+ 		priv->gpio_pushpull = (u8)((le16_to_cpu(config.gpio_mode) &
+ 						CP210X_ECI_GPIO_MODE_MASK) >>
+ 						CP210X_ECI_GPIO_MODE_OFFSET);
+-		priv->gc.ngpio = 2;
+ 	} else if (intf_num == 1) {
++		priv->gc.ngpio = 3;
++
+ 		if (mode.sci == CP210X_PIN_MODE_MODEM) {
+ 			/* mark all GPIOs of this interface as reserved */
+ 			priv->gpio_altfunc = 0xff;
+@@ -1657,7 +1660,6 @@ static int cp2105_gpioconf_init(struct usb_serial *serial)
+ 		priv->gpio_pushpull = (u8)((le16_to_cpu(config.gpio_mode) &
+ 						CP210X_SCI_GPIO_MODE_MASK) >>
+ 						CP210X_SCI_GPIO_MODE_OFFSET);
+-		priv->gc.ngpio = 3;
+ 	} else {
+ 		return -ENODEV;
+ 	}
+-- 
+2.32.0
 
-If on a 16-bit bus, you would receive 2c 2c d3 d3 d0 d0 a6 a6 etc and
-of course that's not what you want.
-
-> > My point here is that:
-> > 1- the limited controllers cannot be used with a 16-bit bus
-> > 2- non-limited controllers can use ioread16 if the bus width is 8-bits  
-> 
-> Sorry, I did not understand this either. The TI GPMC controller has a configuration setting where we
-> set the NAND device bus width (8-bit or 16-bit). Then it automatically converts ioread16 or
-> ioread32 to appropriate number of 8-bit accesses or 16-bit accesses to the NAND chip.
-
-Ok great, in this case you should configure the bus width depending
-on the actual used width (8 or 16 bits). When an 8-bit access is
-requested with force_8bit, you should ensure the buswidth is changed
-to 8 and then use ioread8/16/32 as you wish and then return the bus
-back into its default state.
-
-> 
-> > 
-> > I guess it's fine not to change the logic to avoid breaking boards so
-> > we can just ignore [2] but I belive we should check chip->options &
-> > NAND_BUSWIDTH_16 in ->attach_chip() and refuse probing if this flag is
-> > set.
-> >   
-> >> +		u32 val;
-> >> +		int left;
-> >> +		u8 *ptr;
-> >> +
-> >> +		ioread32_rep(info->fifo, buf, len >> 2);
-> >> +		left = len & 0x3;
-> >> +		if (left) {
-> >> +			val = ioread32(info->fifo);
-> >> +			ptr = (u8 *)(buf + (len - left));
-> >> +			while (left--) {
-> >> +				*ptr++ = val & 0xff;
-> >> +				val >>= 8;
-> >> +			}
-> >> +		}
-> >> +
-> >> +		return;
-> >> +	}
-> >> +
-> >>  	if (force_8bit || (alignment & 1))
-> >>  		ioread8_rep(info->fifo, buf, len);
-> >>  	else if (alignment & 3)
-> >> @@ -2169,8 +2190,15 @@ static const struct nand_controller_ops omap_nand_controller_ops = {
-> >>  static struct nand_controller omap_gpmc_controller;
-> >>  static bool omap_gpmc_controller_initialized;
-> >>  
-> >> +static const struct of_device_id omap_nand_ids[];
-> >> +  
-> > 
-> > I believe this change should be dropped.
-> >   
-> >>  static int omap_nand_probe(struct platform_device *pdev)
-> >>  {
-> >> +	const struct soc_device_attribute k3_soc_devices[] = {
-> >> +		{ .family = "AM64X", .revision = "SR1.0" },
-> >> +		{ /* sentinel */ }
-> >> +	};
-> >> +
-> >>  	struct omap_nand_info		*info;
-> >>  	struct mtd_info			*mtd;
-> >>  	struct nand_chip		*nand_chip;
-> >> @@ -2186,6 +2214,12 @@ static int omap_nand_probe(struct platform_device *pdev)
-> >>  
-> >>  	info->pdev = pdev;
-> >>  
-> >> +	/* Some SoC's have 32-bit at least, read limitation */
-> >> +	if (soc_device_match(k3_soc_devices)) {
-> >> +		dev_info(&pdev->dev, "force 32-bit\n");
-> >> +		info->force_32bit = true;
-> >> +	}
-> >> +  
-> > 
-> > As suggested above, just adding a capability structure tied to the
-> > compatible string and retrieved with of_device_get_match_data() should
-> > be enough and replace this manual tree research.  
-> 
-> The trouble comes when TI updates the silicon revision to "SR2.0" and that has the issue fixed
-> but still uses the same compatible. So compatible string by itself is not sufficient to identify
-> the troubled devices. soc_device_match() was the easiest way to address this.
-
-This is precisely what compatibles are for, I believe we should declare
-the necessary additional compatibles and fix the device trees that are
-wrong.
-
-> >>  	err = omap_get_dt_info(dev, info);
-> >>  	if (err)
-> >>  		return err;
-> >> @@ -2286,6 +2320,7 @@ static int omap_nand_remove(struct platform_device *pdev)
-> >>  
-> >>  static const struct of_device_id omap_nand_ids[] = {
-> >>  	{ .compatible = "ti,omap2-nand", },
-> >> +	{ .compatible = "ti,am64-nand", },
-> >>  	{},
-> >>  };
-> >>  MODULE_DEVICE_TABLE(of, omap_nand_ids);  
-> > 
-> > The conversion to exec_op looks fine otherwise :)  
-> 
-> Thanks :)
-> 
-> > 
-> > Thanks,
-> > Miquèl
-> >   
-> 
-> cheers,
-> -roger
-
-
-Thanks,
-Miquèl
