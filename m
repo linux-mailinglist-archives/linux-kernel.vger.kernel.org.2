@@ -2,98 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC2E845EADB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 10:57:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BD145EAE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 10:59:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376588AbhKZKAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 05:00:51 -0500
-Received: from mga11.intel.com ([192.55.52.93]:24727 "EHLO mga11.intel.com"
+        id S1376639AbhKZKCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 05:02:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237197AbhKZJ6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 04:58:50 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="233133716"
-X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
-   d="scan'208";a="233133716"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 01:55:37 -0800
-X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
-   d="scan'208";a="675508802"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 01:55:36 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mqXx7-00Ak2s-Qh;
-        Fri, 26 Nov 2021 11:55:33 +0200
-Date:   Fri, 26 Nov 2021 11:55:33 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     lianzhi chang <changlianzhi@uniontech.com>
-Cc:     linux-kernel@vger.kernel.org, dmitry.torokhov@gmail.com,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org, 282827961@qq.com
-Subject: Re: [PATCH v15] tty: Fix the keyboard led light display problem
-Message-ID: <YaCvFYyBljlQRKth@smile.fi.intel.com>
-References: <20211126024423.17218-1-changlianzhi@uniontech.com>
+        id S1376511AbhKZKAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 05:00:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFF0961107;
+        Fri, 26 Nov 2021 09:56:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637920618;
+        bh=9OYvcTu2WIu2aXhWr8kWuQT0PFnfR4TkpO1CH3AtbD0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g2JQapHHHBm5no9/x+I9vIg33t2GSTLnZFhZ7KJRqcgAS9DiUh461OXljhVdI9OnT
+         9X+q8ekYjhRZ54xsFrRQG2gOEiPsjfJMaHybxzwLgLtmEZqlhaJLfvHy6o8KtbLT00
+         AyQNaqAH5ToLTLUkmupRxR7S4xfy831s6eyZy01s=
+Date:   Fri, 26 Nov 2021 10:56:54 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Maarten Brock <m.brock@vanmierlo.com>, stable@vger.kernel.org,
+        Karoly Pados <pados@pados.hu>
+Subject: Re: [PATCH] USB: serial: cp210x: fix CP2105 GPIO registration
+Message-ID: <YaCvZl2W4ZkrVPX+@kroah.com>
+References: <20211126094348.31698-1-johan@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211126024423.17218-1-changlianzhi@uniontech.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20211126094348.31698-1-johan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 10:44:23AM +0800, lianzhi chang wrote:
-> When the desktop and tty switch mutually, the led state of the
-> keyboard may be inconsistent with the state of the keyboard lock.
-> This is because the desktop environment (Xorg, etc.) is bound to
-> a tty, and the kb->kbdmode attribute of this tty is set to VC_OFF.
-> This leads to the fact that in the desktop environment, the bound
-> tty will not set the keyboard light state, so in the current tty
-> scene, the values of ledstate and kb->ledflagstate are always 0.
-> This leads to two situations: (1) When switching from the desktop
-> to another tty, the code inside VT still compares ledstate with
-> the kb->ledflagstate of the next tty. If they are equal, then
-> after the switch is completed, The keyboard light will maintain
-> the state of the previous desktop settings, and the state of the
-> keyboard lock may be inconsistent; (2) When switching from another
-> tty to the desktop, according to the code logic, it may still
-> trigger the desktop bound tty to set the keyboard light state.
-> After the switch is completed, the keyboard light is forcibly
-> turned off. I think in this case, the tty should not set the
-> keyboard light, and give control to Xorg etc. to handle it.
-> The current modification judges the value of kb->kbdmode.
-> In some modes, when switching VT, the current tty keyboard
-> light status is forcibly issued. And when switching to the
-> desktop, the tty no longer sets the keyboard light.
+On Fri, Nov 26, 2021 at 10:43:48AM +0100, Johan Hovold wrote:
+> When generalising GPIO support and adding support for CP2102N, the GPIO
+> registration for some CP2105 devices accidentally broke. Specifically,
+> when all the pins of a port are in "modem" mode, and thus unavailable
+> for GPIO use, the GPIO chip would now be registered without having
+> initialised the number of GPIO lines. This would in turn be rejected by
+> gpiolib and some errors messages would be printed (but importantly probe
+> would still succeed).
 > 
-> Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
-
-> Suggested-by: dmitry.torokhov <dmitry.torokhov@gmail.com>
-
-I guess I have told you at least a couple of times that the format of these
-lines should follow the pattern, where it's "Real Name <real@email.com>".
-I truly believe there is no guy with _real_ name "dmitry.torochov".
-
-...
-
->  /*
->   * Notifier list for console keyboard events
-
-(1)
-
-> @@ -412,9 +413,20 @@ static void do_compute_shiftstate(void)
->  /* We still have to export this method to vt.c */
->  void vt_set_leds_compute_shiftstate(void)
->  {
-
-> +	/* When switching VT, according to the value of kb->kbdmode,
-> +	 * judge whether it is necessary to force the keyboard light
-> +	 * state to be issued.
-> +	 */
-
-Is it too hard to be consistent? See (1).
-
--- 
-With Best Regards,
-Andy Shevchenko
+> Fix this by initialising the number of GPIO lines before registering the
+> GPIO chip.
+> 
+> Note that as for the other device types, and as when all CP2105 pins are
+> muxed for LED function, the GPIO chip is registered also when no pins
+> are available for GPIO use.
+> 
+> Reported-by: Maarten Brock <m.brock@vanmierlo.com>
+> Link: https://lore.kernel.org/r/5eb560c81d2ea1a2b4602a92d9f48a89@vanmierlo.com
+> Fixes: c8acfe0aadbe ("USB: serial: cp210x: implement GPIO support for CP2102N")
+> Cc: stable@vger.kernel.org      # 4.19
+> Cc: Karoly Pados <pados@pados.hu>
+> Signed-off-by: Johan Hovold <johan@kernel.org>
 
 
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
