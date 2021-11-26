@@ -2,264 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5FEF45EC45
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:12:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC2E45EC51
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:16:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237913AbhKZLPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 06:15:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233163AbhKZLNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 06:13:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75FD56108E;
-        Fri, 26 Nov 2021 11:10:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637925021;
-        bh=lGsIf27IbHfcOgsGFIGU9JUA1H2hVkUBJnwjrWuszu8=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=CGJORNk3tOcKW3OSKYXXsCb83LlB9glF+QxujQNEmvNZjMdpOiIS7tvfweSO/Tjp+
-         Oe6XMTHki2nZnufKvxr0xPeHuyiRZ3wdHp0DZX8FP506/mbtiCPjza/Geylmc9F7Dd
-         +iDBb3fBHwNyEviNGJEIFuVSiQ+VuJeZ9IAPNsnkqMXB0jchFhui3WPlS47CI4ZPvo
-         +Lfep70oohklOzR/QK/JRdz4ZjfpkTbcMOrtdIlgtQahcVfWajzdYIaXt+a1X4gQOG
-         q5m/Aq/Wx8FyJk+2heiqXkRZqxG8whieXmZnRNDdq2/JY3A+MavZ7NJwGVLh2X8UI1
-         0jwheky+kKaaQ==
-Subject: Re: [PATCH 4/4] mtd: nand: omap2: Add support for NAND Controller on
- AM64 SoC
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Nishanth Menon <nm@ti.com>
-Cc:     richard@nod.at, vigneshr@ti.com, kishon@ti.com, tony@atomide.com,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-References: <20211123103609.14063-1-rogerq@kernel.org>
- <20211123103609.14063-5-rogerq@kernel.org> <20211124131552.6b9bc506@xps13>
- <e52141a6-96fc-97d6-95d7-3e26276fbac3@kernel.org>
- <20211126104231.7cc43149@xps13>
-From:   Roger Quadros <rogerq@kernel.org>
-Message-ID: <917ac002-9d4b-237d-94f3-bcd05f481f39@kernel.org>
-Date:   Fri, 26 Nov 2021 13:10:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <20211126104231.7cc43149@xps13>
-Content-Type: text/plain; charset=utf-8
+        id S234938AbhKZLTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 06:19:50 -0500
+Received: from mail-eopbgr150043.outbound.protection.outlook.com ([40.107.15.43]:37607
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233163AbhKZLRs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 06:17:48 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l8QgS2Y0TOKsDoaK8osed+PbqeJ99dEdN2k75BfLKBSJa9DT0nwER6s+1AtHPk6aNI1f/oDs5dKtiEqDx2swk+1VDgt/J1z7JxVAM2ujvTw1LKqR34lu50LwusylDJz6AKqV7RxB2veaJk54Pw33LtaOJ8B6mfirKyakunwNFF2HNogsZHSXwHuuXeCqc495IR9eCrjvmJ6gJy2SqbFSeWWTxo9dHfTILdJKRFl+6ncv+mL+LHZkTXjpR1deHL4vJncDRxJb7t8HgKlInyRN+LCZfmaT2GodBpTa78wjyNMZYrTpcJMEoAM33OOR98wKdOledhJYrX6s27g7yyo5XQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ndPL6kLd6QfQZt4KOXJDn2blP7WokA+fFhp7kwKi4rc=;
+ b=FUd7z+W+Jj2FYlus9kMk8F2XOiVo6w0Jyk0HqYEzho0O1l7WHLL1tYK08SwbpnTbEr5Zhh8oqMyjXuRmbSN57ggKYPER4svn82//cn+0Upqr8ZxEx56ohbLtMsxauSi7pxxWVxT7+hVQ7X5T+rx2+FhpGxQWS2hPKumCkASPIUCabdZvLjKNVDDCK6xfICT9jZK5oCo7oIw6OJpYheVr35j4mpBdlHwrOSEde61PyW6IMBmf7Zhav+H5vhnSM5pKwqGkpfJpx+870+LSGMFhGOPkXGjglfeRxBsz51SIlOI+zYTXUbP63ylXDS0E+x5XEqNaKSFL0M8HGkI7aEDtkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=diasemi.com; dmarc=pass action=none header.from=diasemi.com;
+ dkim=pass header.d=diasemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ndPL6kLd6QfQZt4KOXJDn2blP7WokA+fFhp7kwKi4rc=;
+ b=0fuBfJ9O+YKhQnyjjhFnQYM+BYjC9EYGFeisqxHADmWrKQbF/uRY9ThwNgFWcpyeLNQyLIl3dTh4xUzHexaHQIrQWKrRk5+DMl9fZttpKtwL4oNIMv7FFQptxPE97/7Hbl4HHaFaY2CFOgYXrxY6dCjU8gS9DhehLYstoSrAECI=
+Received: from DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:255::23)
+ by DB9PR10MB4683.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:250::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.15; Fri, 26 Nov
+ 2021 11:14:32 +0000
+Received: from DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::852d:c54f:8414:3276]) by DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::852d:c54f:8414:3276%3]) with mapi id 15.20.4734.020; Fri, 26 Nov 2021
+ 11:14:32 +0000
+From:   Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+To:     Nikita Shubin <nikita.shubin@maquefel.me>,
+        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+CC:     David Abdurachmanov <david.abdurachmanov@sifive.com>,
+        Support Opensource <Support.Opensource@diasemi.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2] rtc: da9063: add as wakeup source
+Thread-Topic: [PATCH v2] rtc: da9063: add as wakeup source
+Thread-Index: AQHX4HNzUIS5EGphikWduNMlpOwuLawRLClQgARdmYCAAAoNYIAACoAAgAAOSTA=
+Date:   Fri, 26 Nov 2021 11:14:32 +0000
+Message-ID: <DB9PR10MB46522773A37F67052B6BECE180639@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+References: <20211123140604.21655-1-nikita.shubin@maquefel.me>
+        <DB9PR10MB465224854946DABA0F75515980609@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+        <20211126120935.188e672a@redslave.neermore.group>
+        <DB9PR10MB465287595152C33A43FDBCDA80639@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+ <20211126132308.7b265f17@redslave.neermore.group>
+In-Reply-To: <20211126132308.7b265f17@redslave.neermore.group>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=diasemi.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: aeadbef6-0f75-41fd-b01e-08d9b0cdec07
+x-ms-traffictypediagnostic: DB9PR10MB4683:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-microsoft-antispam-prvs: <DB9PR10MB46837DFCFF610BC5F4F9A93DA7639@DB9PR10MB4683.EURPRD10.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: plAJ20N/ig+S6UA8l2uAi056OVobt2B3CQtAh5txqVqcki0/Mb/2LcOyaBsgvgGM2BARBmaQNKXHCr8S773/8fn/5CWYQekTZk8ja+FZfeK40yJ24bKOMq80mYWmriE4OSi6ZsyluMdRKlBWV8T5dAOCsuU5jiWc8hTlXrdOCs7SujvrfVsUJ6g/INg4XbXr2nnr7YaCOzABzt+oWMwzmEgh6j5YhntJX3crwxlRjVLnlUU50TKgybw1YpJwEY+hBymWhajkJSqkEtbWmBITjnGENI/g6DJ/xKGw5UovV/I5HxqXozneQkyR0h54SzqznoD8yzP2dOVjLT4X70OrIg4pqZhJrrmMqfWfB3XfC4cQ1pg9+m9g36FXqMn3qUu35P265pxRSckn2yNntuckpaYbuLPe1vfWTO3rcVR9DRxIHg3YB37UweMQQnp3Rt9PvpKYQo6O+wH02LpHhHtNB7vxrY+cqJ5E7zqFisew4PIaVq52d2f77dcGx+7w4Kg++QBG8wv5jU0LVWcMh66aYC2pcc5VVaAoLbPXUBGYvdcGJ8b/GAWxtSt/dT1ct6BoVGsM3fNyMsFyteNYXecksT2MGNIZ/GVFUnhKOGKN0RmczHYn7mPH+MYu2dq1WWqqLskkZfwQSzmiQZjARihZBfEozuyWEc0ufQi1ibuDgFJC5fd5rVP37aRItUGSPBi0e4w4iLMiVOrVBHF6mmyqJw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(2906002)(66476007)(122000001)(33656002)(55236004)(71200400001)(8936002)(38100700002)(508600001)(53546011)(66556008)(55016003)(83380400001)(38070700005)(7696005)(8676002)(9686003)(86362001)(54906003)(76116006)(66946007)(66446008)(52536014)(6506007)(26005)(64756008)(316002)(5660300002)(4326008)(110136005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?JAQTQo1NVouedsUJoRQqjxrBlBvtfYtGwx0/Sf1th0JCFryfoFmIamZwXWqI?=
+ =?us-ascii?Q?sj5njTXSEJ7fAlrJ1RR7niUZJJu/OFhkZYksf2T+JLL0fgO728ywoYSQJ5k9?=
+ =?us-ascii?Q?RFOHgGCV2z2dkixu3Cyij3sdfq0LHE+MFekiQGHDe7dHnJZfwlphjtWrThtG?=
+ =?us-ascii?Q?sgf42hzUqxFfev1qvICC/ttrAxkjmz06S4DGrwM43CH62f5osmrRUBR/lyUA?=
+ =?us-ascii?Q?TFA71n5l7ApT8ISAknboqKZDmoGjaICUzMXWeicSHyfdq8VwuQ/ltwYgK7zm?=
+ =?us-ascii?Q?EodGPGhCF7g0Im8o1rHhzPXrv6acyNdCbGBtz30fSPCSj6NeWPQEBRZ8bXco?=
+ =?us-ascii?Q?RR7aGAJKFv6TXKjkPFudZER77Pmy9X8HiR/tjwWnZ8o1woGRyc46FX/u1ue/?=
+ =?us-ascii?Q?t+ncGp+gDTEO8dD5QbBBXUWmzabWHaRXH+eKbpvqNDAk8GPZ+cTbS9PGFlER?=
+ =?us-ascii?Q?z+G4XVwb9omIEhXhGduxS55a0et/RLEer9XpkTBtVHzm+1E+IBQCAFbYbJyU?=
+ =?us-ascii?Q?mQSnCDoKeyT61+NHi05y/9qLhDZ+jewu8Ul06uhe5SKgJ0FBJhzagYOwv5in?=
+ =?us-ascii?Q?VCIxrvbsQxEXPpbDxCgDr7MR9xQA4jYD7vVs/PWlANQIDBGUd0IqEzVwMbM8?=
+ =?us-ascii?Q?04SRgwfS5cUPgAwN1hBfMJyUrE+FEE0lQXcWdeEOELaNBA9V1uSLKSiWpyhi?=
+ =?us-ascii?Q?A52qPayhMFdH6edEkLOkUTDyuahVFmNO2KERZ8pjx+m7A9o8u19Sgy72yNRP?=
+ =?us-ascii?Q?0BTrSuMrr39jCBtLbQ0sOe1jWjtI79EEEidLHXdjv9IrLFGlbb6R2d0esLzX?=
+ =?us-ascii?Q?xrLxLgrykvLNFztArxzT1vzbOs1JsCzXw5jH7u2okjwQlqC7fZSlfCQ7OfZW?=
+ =?us-ascii?Q?YWQauesrVAV0RzfL4DtkA+w6Eyo6vG0GTIQbpI0C8luVjJFqjEa6P8coW5nW?=
+ =?us-ascii?Q?+p1P5fNGSbuT0oSnFFf28WPQicLaS81tCFZOVld2/QlWDO3yushnRbnwPUvB?=
+ =?us-ascii?Q?Bj95jsZXrD4O5IjUUgpJPILviH36b2mc812m5537alNaP52mY3GPb3bXplgi?=
+ =?us-ascii?Q?F3abiR8zMyUn1NX6mvri6qnC9XHGCeIuVZaLibG7M3nTDIAC9TJvTYu0/8GZ?=
+ =?us-ascii?Q?ZOU1kpRmVoYbaUhTquRtuIH1ad2cG3zdLc8FYOoKDfidttplfO+pO2NCptWG?=
+ =?us-ascii?Q?ONaaXCS63EWLyhVKhaL0E1KnBoQzYdg97GPY6cuq64RuToEzPFqcIbYPDtws?=
+ =?us-ascii?Q?aqHfGpwEhUlmtDDkD9BHapNr54OnnR2e0HA+RRRLb4fGIHu1zqrxo6EKdPE0?=
+ =?us-ascii?Q?GA8J2ql6OsrNBCw0t6G1xjtr33bgbHVfoIw1pDkJHv0f/c/ejYtPLC+4Eusg?=
+ =?us-ascii?Q?xMKQwCN+s9v/Ay/HCNx1oSMeD/koeWPKPZ6qm6HQj2X4foq2BOmxsU3f5h2/?=
+ =?us-ascii?Q?iSO/Xb6MHcf6bdTGN+0GbrDl8c6iVeIGPQrluEPRJpkKlAF7nPKa4Hh7dE0r?=
+ =?us-ascii?Q?hDE9XoryCWbcPrPP93xkK82knxOPdzlmY135LDBX2qnzkbLuATDLrODOxGRx?=
+ =?us-ascii?Q?iB7MLKU7a/CrhevmcPpA/xd3hEmUbHdM+VMmQh78J73MwcGcTReOzhnJ82rC?=
+ =?us-ascii?Q?yIgkKaR/mlQ0Pvci4xECo9JRgNghqJZkidET3aRFmRdsp3LTkwYgtINVDDPH?=
+ =?us-ascii?Q?Um/64Q=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: diasemi.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: aeadbef6-0f75-41fd-b01e-08d9b0cdec07
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Nov 2021 11:14:32.2734
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: MJ2w25DBsmjkxJ/5khIMCHq4q2TPn/jsNrc40rf0vDT5KICyc++3YYjIXaVkP37JOtH+RTGQ/QPpUcYW+6wqcBDKASTjiCZVftj5blRVI2A=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR10MB4683
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Rob and DT list
+On 26 November 2021 10:23, Nikita Shubin wrote:
 
-Miques & Nishanth,
+> > Thanks for the detailed response; it helped a lot. Having reviewed
+> > the core code along with your description I know understand what's
+> > happening here. Basically marking as 'wakeup-source' is simply a
+> > means to expose the sysfs attribute to user-space.
+> >
+> > Yes I think in the commit message you should be clear that there's a
+> > need to access the sys attribute 'wakealarm' in the RTC core and
+> > clarify exactly why there is that need. Your commit log should be
+> > good enough so that if anyone else needs to look at this later they
+> > completely understand the intention behind the change.
+> >
+> > By the way, I assume the functionality you're looking for could also
+> > have been achieved through using the /dev/rtcX instance for DA9063?
+>=20
+> Thank you for pointing this out, indeed i missed that obvious thing.
+>=20
+> We can also simply set alarm via rtcwake, even if CONFIG_PM is off:
+>=20
+> rtcwake -m no -s 60
+>=20
+> Now i am not sure we should make changes to da9063-rtc driver - what do
+> you think ?
 
-On 26/11/2021 11:42, Miquel Raynal wrote:
-> Hi Roger,
-> 
-> rogerq@kernel.org wrote on Thu, 25 Nov 2021 16:12:01 +0200:
-> 
->> Hi Miquel,
->>
->> On 24/11/2021 14:15, Miquel Raynal wrote:
->>> Hi Roger,
->>>
->>> rogerq@kernel.org wrote on Tue, 23 Nov 2021 12:36:09 +0200:
->>>   
->>>> AM64 SoC has an issue which prevents proper 8-bit and 16-bit
->>>> reads from GPMC. We are limited to do 32-bit reads only.  
->>>
->>> First, thanks for this series!  
->>
->> No problem. Just my job :)
->>
->>>   
->>>> Force 32-bit only reads on affected platforms.
->>>>  
->>>
->>> Please change the commit title prefix to: "mtd: rawnand: omap2:" in
->>> patch 2, 3, 4.  
->>
->> OK.
->>
->>>    
->>>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
->>>> ---
->>>>  drivers/mtd/nand/raw/omap2.c | 35 +++++++++++++++++++++++++++++++++++
->>>>  1 file changed, 35 insertions(+)
->>>>
->>>> diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
->>>> index f1fc146e09b9..d952de771b35 100644
->>>> --- a/drivers/mtd/nand/raw/omap2.c
->>>> +++ b/drivers/mtd/nand/raw/omap2.c
->>>> @@ -28,6 +28,7 @@
->>>>  
->>>>  #include <linux/omap-gpmc.h>
->>>>  #include <linux/platform_data/mtd-nand-omap2.h>
->>>> +#include <linux/sys_soc.h>
->>>>  
->>>>  #define	DRIVER_NAME	"omap2-nand"
->>>>  #define	OMAP_NAND_TIMEOUT_MS	5000
->>>> @@ -181,6 +182,7 @@ struct omap_nand_info {
->>>>  	void (*data_out)(struct nand_chip *chip,
->>>>  			 const void *buf, unsigned int len,
->>>>  			 bool force_8bit);
->>>> +	bool force_32bit;  
->>>
->>> I believe we should have a driver capability instead of something in
->>> the info structure. You can save the value here as well in the probe if
->>> you want, but I would like this limitation to be tied to the
->>> compatible.  
->>
->> I will discuss about this at the end.
->>>   
->>>>  };
->>>>  
->>>>  static inline struct omap_nand_info *mtd_to_omap(struct mtd_info *mtd)
->>>> @@ -2070,6 +2072,25 @@ static void omap_nand_data_in(struct nand_chip *chip, void *buf,
->>>>  	struct omap_nand_info *info = mtd_to_omap(nand_to_mtd(chip));
->>>>  	u32 alignment = ((uintptr_t)buf | len) & 3;
->>>>  
->>>> +	if (info->force_32bit) {  
->>>
->>> I am a little bit bothered by this limitation. The force8_bit flag does
->>> not require the driver to read only 8-bits of the fifo register, it
->>> actually requires to use only the first 8-bits of the NAND bus (which
->>> can also be 16-bit wide). The older implementation just limited the
->>> number of bits reads to be 8 with ioread8, which seems to be a fine
->>> solution but would require more accesses than using ioread16 (or
->>> ioread32) when reading more than 1 byte on platforms with only 8-bit
->>> busses.  
->>
->> I didn't understand the purpose of force8_bit flag. 
-> 
-> Only access the lowest byte on the bus. This is only needed for
-> meta-data reads (like status reads or ids) where the upper byte would
-> be a duplicate.
-> 
->> How should the driver/controller behave if we get a data_in() call with len 8 and force8_bit flag set?
->>
->> e.g. if 16-bit NAND ID area contains (little-endian) 2c d3 d0 a6 66 45 67 a3 4f 4e 46 49 ab ef 90 d3
->> what should data_in(len = 8, force_8_bit = 1) return in buffer?
->>
->> Based on what you said earlier my guess is it should return 2c d0 66 67 4f 46 ab 90?
-> 
-> If on a 16-bit bus, you would receive 2c 2c d3 d3 d0 d0 a6 a6 etc and
-> of course that's not what you want.
-> 
->>> My point here is that:
->>> 1- the limited controllers cannot be used with a 16-bit bus
->>> 2- non-limited controllers can use ioread16 if the bus width is 8-bits  
->>
->> Sorry, I did not understand this either. The TI GPMC controller has a configuration setting where we
->> set the NAND device bus width (8-bit or 16-bit). Then it automatically converts ioread16 or
->> ioread32 to appropriate number of 8-bit accesses or 16-bit accesses to the NAND chip.
-> 
-> Ok great, in this case you should configure the bus width depending
-> on the actual used width (8 or 16 bits). When an 8-bit access is
-> requested with force_8bit, you should ensure the buswidth is changed
-> to 8 and then use ioread8/16/32 as you wish and then return the bus
-> back into its default state.
-> 
-
-OK. I will try this out. Thanks for the tip.
-
->>
->>>
->>> I guess it's fine not to change the logic to avoid breaking boards so
->>> we can just ignore [2] but I belive we should check chip->options &
->>> NAND_BUSWIDTH_16 in ->attach_chip() and refuse probing if this flag is
->>> set.
->>>   
->>>> +		u32 val;
->>>> +		int left;
->>>> +		u8 *ptr;
->>>> +
->>>> +		ioread32_rep(info->fifo, buf, len >> 2);
->>>> +		left = len & 0x3;
->>>> +		if (left) {
->>>> +			val = ioread32(info->fifo);
->>>> +			ptr = (u8 *)(buf + (len - left));
->>>> +			while (left--) {
->>>> +				*ptr++ = val & 0xff;
->>>> +				val >>= 8;
->>>> +			}
->>>> +		}
->>>> +
->>>> +		return;
->>>> +	}
->>>> +
->>>>  	if (force_8bit || (alignment & 1))
->>>>  		ioread8_rep(info->fifo, buf, len);
->>>>  	else if (alignment & 3)
->>>> @@ -2169,8 +2190,15 @@ static const struct nand_controller_ops omap_nand_controller_ops = {
->>>>  static struct nand_controller omap_gpmc_controller;
->>>>  static bool omap_gpmc_controller_initialized;
->>>>  
->>>> +static const struct of_device_id omap_nand_ids[];
->>>> +  
->>>
->>> I believe this change should be dropped.
->>>   
->>>>  static int omap_nand_probe(struct platform_device *pdev)
->>>>  {
->>>> +	const struct soc_device_attribute k3_soc_devices[] = {
->>>> +		{ .family = "AM64X", .revision = "SR1.0" },
->>>> +		{ /* sentinel */ }
->>>> +	};
->>>> +
->>>>  	struct omap_nand_info		*info;
->>>>  	struct mtd_info			*mtd;
->>>>  	struct nand_chip		*nand_chip;
->>>> @@ -2186,6 +2214,12 @@ static int omap_nand_probe(struct platform_device *pdev)
->>>>  
->>>>  	info->pdev = pdev;
->>>>  
->>>> +	/* Some SoC's have 32-bit at least, read limitation */
->>>> +	if (soc_device_match(k3_soc_devices)) {
->>>> +		dev_info(&pdev->dev, "force 32-bit\n");
->>>> +		info->force_32bit = true;
->>>> +	}
->>>> +  
->>>
->>> As suggested above, just adding a capability structure tied to the
->>> compatible string and retrieved with of_device_get_match_data() should
->>> be enough and replace this manual tree research.  
->>
->> The trouble comes when TI updates the silicon revision to "SR2.0" and that has the issue fixed
->> but still uses the same compatible. So compatible string by itself is not sufficient to identify
->> the troubled devices. soc_device_match() was the easiest way to address this.
-> 
-> This is precisely what compatibles are for, I believe we should declare
-> the necessary additional compatibles and fix the device trees that are
-> wrong.
-
-AFAIK TI SoCs don't have different compatibles for different revisions of the same SoC.
-My understanding is that the SoC is the same so compatible shouldn't change. Just that there were some
-hardware fixes and some quirks may not be needed anymore.
-
-Nishanth,
-
-Could you please chime in on why SoC revisions can't use different compatibles?
-
-> 
->>>>  	err = omap_get_dt_info(dev, info);
->>>>  	if (err)
->>>>  		return err;
->>>> @@ -2286,6 +2320,7 @@ static int omap_nand_remove(struct platform_device *pdev)
->>>>  
->>>>  static const struct of_device_id omap_nand_ids[] = {
->>>>  	{ .compatible = "ti,omap2-nand", },
->>>> +	{ .compatible = "ti,am64-nand", },
->>>>  	{},
->>>>  };
->>>>  MODULE_DEVICE_TABLE(of, omap_nand_ids);  
->>>
->>> The conversion to exec_op looks fine otherwise :)  
->>
->> Thanks :)
->>
-
-<snip>
-
-cheers,
--roger
+I think the change is still valid from what I can tell. Just be clear on in=
+tent
+in the commit log of the patch. :)
