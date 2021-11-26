@@ -2,110 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6638D45E762
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 06:27:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7EC45E766
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 06:30:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358686AbhKZFad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 00:30:33 -0500
-Received: from mga07.intel.com ([134.134.136.100]:15446 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237891AbhKZF21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 00:28:27 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="299015876"
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="299015876"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 21:25:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="675444871"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 25 Nov 2021 21:25:13 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqTjU-0007X9-QX; Fri, 26 Nov 2021 05:25:12 +0000
-Date:   Fri, 26 Nov 2021 13:24:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- b1b6b42a35e79233ba57bc9a3613afecf2ef2da5
-Message-ID: <61a06fa8.ZCvHSABAqF4RSrBC%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1345462AbhKZFd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 00:33:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344125AbhKZFb6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 00:31:58 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B4AC06173E
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 21:28:45 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id g17so17101765ybe.13
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 21:28:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HOkzClK58L9KFyLkDZDvUq7JA9AjBI1vkUpVIs5Rlsg=;
+        b=B0JqtRcEypAzvY+/FM3GtMs2SwDR+GugrIk8bVkoNM8K1SXCzGgpqib7ZKYvMRokOT
+         R7rz30b3vH3LuUCWsuZ30dnc5ypEcFBH/RHBLRg/jhHYLSzYPQrDlmOJQUsTvTMbLkdG
+         rdfNiBkHFY6qfxgyOufYCuh2cT0tXkHbpLaUoNb2LJbfq7h0P9ayQekBkBwXXSdRa2lx
+         22+GNhjntd6sbnAUGECSlq8O2Kjf5MQ3K0OAxa+iyMQ4LnrJeKKabu4/NEh/zFY6ZyEa
+         i4eIW/j0LurHx4C6iixxyeoCrQ0JUkAZoUE47b3HaV6Pw/X9zB79+6VZhCHmIDVCXOrD
+         dJzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HOkzClK58L9KFyLkDZDvUq7JA9AjBI1vkUpVIs5Rlsg=;
+        b=qAaJgUXkX7lI2g+nvmDUa2cfbMRyMoC2DxkUMOrY+veWij7flDCf6l15Qo6xNh+7I0
+         DH43K4yYdv3jgaaf++n8DbsHKvvM3za6z/RVNi0Zx49LrgymZT+mvNGYaNUSmZdYn95G
+         vIqbDW39YI8N9ZZ3JbYhSX1XrufKcV8RxRsmwkiQex3HOwLG/oar3Li7myMHrONeaUIF
+         Mq3sJoF/8DTsp2FS7WVVM/N7KcKukvfuScbUT4IHz4gTG0E7gqoOrC7d8puu4qXMFJA1
+         ftLZXOxcWu3DR4bsWltdnCqjS1rrEUVwmF0pNHHF/K4RW36Owz0I1xldGiCo9D7at9Eg
+         5L9A==
+X-Gm-Message-State: AOAM530HEby5K04RnqFJN2Wa2m3ZQXFxeObzNpk0XR/OtZa5pupH3ZkU
+        VomMtPL8KKyiXB1wAZZFtTA1gVJ/WLWscjQLs+oHJddhGBu7DCh9
+X-Google-Smtp-Source: ABdhPJygl7k2S9FnANNO921zXArJzimRsOoLhvbPSNF1JaMRnN+OGWNFXRtd2+C/4j064rocKveYj1sFW4kdl40ybCo=
+X-Received: by 2002:a05:6902:72f:: with SMTP id l15mr12655859ybt.279.1637904525080;
+ Thu, 25 Nov 2021 21:28:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20211125090635.23508-1-colin.i.king@gmail.com>
+In-Reply-To: <20211125090635.23508-1-colin.i.king@gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 26 Nov 2021 13:28:06 +0800
+Message-ID: <CAMZfGtWJM_HqtTsiaNB5n6sC0P5EYyHpSOBoZvDS5SCHaUarbA@mail.gmail.com>
+Subject: Re: [PATCH][next] hugetlb: Fix spelling mistake "hierarichal" -> "hierarchical"
+To:     Colin Ian King <colin.i.king@googlemail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: b1b6b42a35e79233ba57bc9a3613afecf2ef2da5  Merge branch 'locking/core'
+On Thu, Nov 25, 2021 at 5:16 PM Colin Ian King
+<colin.i.king@googlemail.com> wrote:
+>
+> There is a spelling mistake in a literal string and a comment. Fix them.
+>
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 
-elapsed time: 1133m
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 
-configs tested: 54
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20211125
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-h8300                            allyesconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                                defconfig
-i386                              debian-10.3
-sparc                               defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-powerpc                          allyesconfig
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks.
