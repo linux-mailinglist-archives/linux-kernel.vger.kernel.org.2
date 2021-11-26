@@ -2,50 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B5345E769
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 06:32:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB27145E76C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 06:33:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343903AbhKZFfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 00:35:55 -0500
-Received: from verein.lst.de ([213.95.11.211]:44672 "EHLO verein.lst.de"
+        id S1352451AbhKZFg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 00:36:28 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:57146 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235633AbhKZFdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 00:33:54 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 61A1B68AFE; Fri, 26 Nov 2021 06:30:38 +0100 (CET)
-Date:   Fri, 26 Nov 2021 06:30:38 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Ming Lei <ming.lei@redhat.com>
-Subject: Re: linux-next: manual merge of the block tree with Linus' tree
-Message-ID: <20211126053038.GA21893@lst.de>
-References: <20211126103857.50628410@canb.auug.org.au>
+        id S1351992AbhKZFe1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 00:34:27 -0500
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1mqTpE-0008Qm-3U; Fri, 26 Nov 2021 13:31:08 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1mqTpB-0004YK-E4; Fri, 26 Nov 2021 13:31:05 +0800
+Date:   Fri, 26 Nov 2021 13:31:05 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Nicolai Stange <nstange@suse.de>
+Cc:     Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Torsten Duwe <duwe@suse.de>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] crypto: DRBG - improve 'nopr' reseeding
+Message-ID: <20211126053105.GA17477@gondor.apana.org.au>
+References: <20211115141809.11420-1-nstange@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211126103857.50628410@canb.auug.org.au>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20211115141809.11420-1-nstange@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 10:38:57AM +1100, Stephen Rothwell wrote:
+On Mon, Nov 15, 2021 at 03:18:03PM +0100, Nicolai Stange wrote:
 > Hi all,
 > 
-> Today's linux-next merge of the block tree got a conflict in:
+> v1 can be found here:
 > 
->   block/bdev.c
+>   https://lore.kernel.org/r/20211025092525.12805-1-nstange@suse.de
 > 
-> between commit:
+> The changes between v1 and v2 are summarized below.
 > 
->   efcf5932230b ("block: avoid to touch unloaded module instance when opening bdev")
 > 
-> from Linus' tree and commit:
+> Cover letter reproduced 1:1 from v1:
 > 
->   a1525fbf1d76 ("block: remove the GENHD_FL_HIDDEN check in blkdev_get_no_open")
+> This patchset aims at (hopefully) improving the DRBG code related to
+> reseeding from get_random_bytes() a bit:
+> - Replace the asynchronous random_ready_callback based DRBG reseeding
+>   logic with a synchronous solution leveraging rng_is_initialized(). This
+>   move simplifies the code IMO and, as a side-effect, would enable DRBG
+>   users to rely on wait_for_random_bytes() to sync properly with
+>   drbg_generate(), if desired. Implemented by patches 1-5/6.
+> - Make the 'nopr' DRBGs to reseed themselves every 5min from
+>   get_random_bytes(). This achieves at least kind of a partial prediction
+>   resistance over the time domain at almost no extra cost. Implemented
+>   by patch 6/6, the preceding patches in this series are a prerequisite
+>   for this.
 > 
+> Tested with and without fips_enabled in a x86_64 VM, both with
+> random.trust_cpu=on and off. As confirmed with a couple of debugging
+> printks() (added for testing only, not included in this series), DRBGs
+> have been instantiated with and without rng_is_initialized() evaluating
+> to true each during my tests and the patched DRBG reseeding code worked as
+> intended in either case.
+> 
+> Applies to current herbert/cryptodev-2.6.git master.
+> 
+> 
+> Changes between v1 and v2:
+> - 4/6: remove redundant goto statement, spotted by Stephan.
+> 
+> For the unmodified rest, I added Stephan's Reviewed-bys he granted in
+> reply to v1.
+> 
+> Many thanks for your comments and remarks!
+> 
+> Nicolai
+> 
+> Nicolai Stange (6):
+>   crypto: DRBG - prepare for more fine-grained tracking of seeding state
+>   crypto: DRBG - track whether DRBG was seeded with
+>     !rng_is_initialized()
+>   crypto: DRBG - move dynamic ->reseed_threshold adjustments to
+>     __drbg_seed()
+>   crypto: DRBG - make reseeding from get_random_bytes() synchronous
+>   crypto: DRBG - make drbg_prepare_hrng() handle jent instantiation
+>     errors
+>   crypto: DRBG - reseed 'nopr' drbgs periodically from
+>     get_random_bytes()
+> 
+>  crypto/drbg.c         | 143 +++++++++++++++++++++---------------------
+>  include/crypto/drbg.h |  11 +++-
+>  2 files changed, 80 insertions(+), 74 deletions(-)
 
-The merge looks good, thanks.
+All applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
