@@ -2,226 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD41345EEE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:12:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 717FA45EEFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:18:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240121AbhKZNPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 08:15:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46192 "EHLO
+        id S244340AbhKZNVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 08:21:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244879AbhKZNNg (ORCPT
+        with ESMTP id S235464AbhKZNTb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 08:13:36 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E22FEC07E5DE
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 04:32:05 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id y13so38185477edd.13
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 04:32:05 -0800 (PST)
+        Fri, 26 Nov 2021 08:19:31 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EDEFC08E897;
+        Fri, 26 Nov 2021 04:35:23 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id c32so24005277lfv.4;
+        Fri, 26 Nov 2021 04:35:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7Gg+XXVZNrLBBVntnTolw3hvoN478VyLwPpdFxyOmu0=;
-        b=PTIP0akFlP40ZrW8RxgMNXc8MM/G8IAYZ0BswprolylFnVUGRNNhO4RZ6ie+WxD4sA
-         scdyGMdEKibTw4cA9jHUsW9tXxKlb2JQJXbh1i8bekgSaHtTg5YZiJAHk7T1ntYNIQp7
-         XbI5sTE1S5fIoNqqyZUgqVWodmf7ttxzI8H/qQMPWyEdqvQ6wpcO5UxGPy4ryR/CRQ/2
-         QooP//+MNh08GkqwmXzSVjFLYuOd59qPZxAkWtgxdBpqEG7lh+Ki+RSI50f+G1kvYmAI
-         LM7/KMzj4aTGhwgjy1+CAHtl9Wdd77Ucn53dff2XggduzBiMkTA0IdSXFAkGpoOgApHy
-         AOtw==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:content-language:to:cc
+         :references:from:subject:in-reply-to:content-transfer-encoding;
+        bh=jqeuCZHzeT66ujUYaqAxXooaJuks6pu0YjEfTL9/Z7c=;
+        b=BTcgSMd6YVmVcYLI28V7t1qPSaE77PJuacsBKncVV2l+O+OqB2BxcVjK6eLHQxxVJb
+         YSgltEogTQfdqN84xc7P68wde1lzAjWxEuDLXDq5a5LQbL/nSy/XQFrHr15ImIbBzNnh
+         B+ggVsywLJfepddvhblS9KXXKWzx+igsO7W1JrNTpL0Jg1PY/lW/JS+a+puPn89XSBfu
+         e2aDD3TjMHcDwqw6D8ES6nEqZ/lb4HrnZFAptSEfSOrTP4p0KJs4jSBnQ4C5FJ0KHoR7
+         ov9/N96ySXVseIRAtg+XfCGPpp2JreItc7qxjVbxQCmfw0wLeAhWwmX7NQjCgbrfDot8
+         qn5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7Gg+XXVZNrLBBVntnTolw3hvoN478VyLwPpdFxyOmu0=;
-        b=OKrusI8Mz4ZoJf5SjhcH1/Ja17AkHfST+LVTNaps/E1x0sHaR0HFx2/BuVxddKLWes
-         AxIV2pFMu9x+S1AUfx7VhGUeAVYyECauKC2rraXLWCaR+HJPKWrck7KHn0CT+foRRrcw
-         VhOgfEgavsXIC3wKPQOudHYFOmizGPTjdNHI7P+6PJ47FdVYVJ/Omfg+jjN8TWUVLvX6
-         hohU0nVtVbgePKl9tvGKXRIvDXpg2g9Yga55hu0WpGICdBvB+vpt0XFsJYTUP/pTJCiW
-         jBcoT88ZdNlEE9YFhHNJoPA6QXktzdftZC7mcpxQ1a7JDo2UYf1dh/ffC/ti97Vo5PLY
-         uedg==
-X-Gm-Message-State: AOAM531YRjDvdhrGo9sdnOqOi98Kqm59VoSJ7xyXEJGk7OI8tQ9PacLR
-        aT6VtQgwrUoT4/axoc6fqufOhBhxnffp8rixGE/0GQ==
-X-Google-Smtp-Source: ABdhPJzTydUvGDpiE1q1Robn1euHf4qffYyCTSqMkuO23VlfxCbqJt1HB2mXf/yR2HI94W2QBuFfab7tspfrdMKnvUw=
-X-Received: by 2002:a05:6402:14f:: with SMTP id s15mr3109391edu.118.1637929924230;
- Fri, 26 Nov 2021 04:32:04 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:subject:in-reply-to
+         :content-transfer-encoding;
+        bh=jqeuCZHzeT66ujUYaqAxXooaJuks6pu0YjEfTL9/Z7c=;
+        b=n3xrorW0x5i1iQy2GxL3GkbnqOiJpWW1G1tMKkWmxQDQ2Mj1Y3s5aGgBeJqjBLQDHR
+         jSog9Gfy2nynmHNiNyy1WFZRtw5X3iE11jbAtfqH/EzqHkgtr2ATHpy8r4SdvwCDFGSn
+         Uopf+TNZPpkB1hfz3veh3QYhUs7Hx+QPGNG+BuvVb3+HA2BhklUAL6kmfHVpsGk6ffNn
+         K/6BokEf8irUmcLTxP+QgOeipEFr4Egrunpxu3K+DqYHbCk8qYA04MK0A04f3gBKYp+c
+         DxVMAV84VZh1tBroQ12eVYwqbFckR2T1Gj26VW0kZahkJOpK8aixZD06aCjI7vSlFusn
+         nYkg==
+X-Gm-Message-State: AOAM532ib8JuEKQiCVr2h/kRnpQftkFfc5eKV5FVKQWDT1I3JfbBxfn3
+        amHlKXne/5ltUfQJRle5P1E=
+X-Google-Smtp-Source: ABdhPJwO6IDiKlprHADj4orVmMF5Vnpj3QD/0XIGqV0vnGOhn3o4aDHxhVIQX5G6/NALqpAv6VkPqA==
+X-Received: by 2002:a05:6512:2618:: with SMTP id bt24mr28715100lfb.46.1637930121494;
+        Fri, 26 Nov 2021 04:35:21 -0800 (PST)
+Received: from ?IPV6:2001:14ba:16ee:fa00::4? (dc73szyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16ee:fa00::4])
+        by smtp.gmail.com with ESMTPSA id n7sm495101lfu.116.2021.11.26.04.35.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Nov 2021 04:35:20 -0800 (PST)
+Message-ID: <28df4678-345b-78e0-06f0-1fdcbaff455d@gmail.com>
+Date:   Fri, 26 Nov 2021 14:35:18 +0200
 MIME-Version: 1.0
-References: <20211125160515.184659981@linuxfoundation.org>
-In-Reply-To: <20211125160515.184659981@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 26 Nov 2021 18:01:52 +0530
-Message-ID: <CA+G9fYvRKt_0-N1t2FarojBEOwNhwJMxnqsKBzk5TEy9SKwipg@mail.gmail.com>
-Subject: Re: [PATCH 4.9 000/204] 4.9.291-rc3 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Content-Language: en-US
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        "rostokus@gmail.com" <rostokus@gmail.com>,
+        "fan.chen@mediatek.com" <fan.chen@mediatek.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "Mutanen, Mikko" <Mikko.Mutanen@fi.rohmeurope.com>
+References: <cover.1637061794.git.matti.vaittinen@fi.rohmeurope.com>
+ <6123f62ac44e6513a498d15034a4b6b22abe5f5b.1637061794.git.matti.vaittinen@fi.rohmeurope.com>
+ <CACRpkdbKeW+pJ8SZ0fPD+9kEtgHgi2A9U=f6XyKTHogKU-9F9g@mail.gmail.com>
+ <7b34e88f-54f3-6d0a-293e-b2b411d1c5c2@fi.rohmeurope.com>
+ <676253b9-ff69-7891-1f26-a8b5bb5a421b@fi.rohmeurope.com>
+From:   Matti Vaittinen <mazziesaccount@gmail.com>
+Subject: Re: [RFC PATCH v3 3/9] power: supply: Support DT originated
+ temperature-capacity tables
+In-Reply-To: <676253b9-ff69-7891-1f26-a8b5bb5a421b@fi.rohmeurope.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Nov 2021 at 21:38, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.9.291 release.
-> There are 204 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 27 Nov 2021 16:04:49 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.9.291-rc3.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.9.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 11/26/21 13:56, Vaittinen, Matti wrote:
+> Hi dee Ho again,
+> 
+> On 11/18/21 08:11, Matti Vaittinen wrote:
+>> Hi Linus,
+>>
+>> On 11/18/21 04:10, Linus Walleij wrote:
+>>> On Tue, Nov 16, 2021 at 1:26 PM Matti Vaittinen
+>>> <matti.vaittinen@fi.rohmeurope.com> wrote:
+>>>
+>>>> Support obtaining the "capacity degradation by temperature" - tables
+>>>> from device-tree to batinfo.
+>>>>
+>>>> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+>>>
+>>> Same questions as on the binding patch.
+>>>
+>>> If we already support different degradation by temperature tables,
+>>> why do we need a second mechanism for the same thing?
+>>
+>> Thanks for bringing this up. As I said, I didn't notice that we could
+>> indeed use the CAP-OCV tables for different temperatures to bring in
+>> this information :) I see certain benefit from the possibility of not
+>> requiring to measure the OCV at different temperatures - but it may not
+>> be meaningful. As I replied to your patch 1/9 review - I need to (try
+>> to) do some more research...
+> 
+> 
+> I don't see providing OCV tables at different temperature gives the
+> degradation of battery capacity. Whoah. A big thought for Friday.
+> 
+> We get the OCV => SOC correspondance at different temperatures. I
+> however don't see how this gives the OCV => energy relation.
 
+After reading what I wrote even I didn't know what I tried to say. Well, 
+I think I tried to explain that I don't see how we can use this 
+information to do any estimation what the Coulomb Counter reading 
+represent at the given temperature. This is what the 
+temperature-degradation tables aim to give us.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+  As far as I
+> know both the OCV and the 'amount of uAhs battery is able to store' are
+> impacted by temperature change. This means, seeing the OCV => SOC at
+> different temperatures does not tell us what is the impact of
+> temperature to the OCV, and what is the impact to SOC.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+I think I tried to say that these curves don't help us to tell how many 
+uAhs we have in battery with different temperatures when battery is 
+empty, or half full or, ... Again, what we would like to know is what 
+SOC our CC value represents - and use OCV to just adjust this further 
+(or in some cases to correct the CC value using OCV - if we can trust 
+the battery to be properly relaxed).
 
-## Build
-* kernel: 4.9.291-rc3
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-4.9.y
-* git commit: 54bc9d253e82bcebc83659627f196a0a8890a558
-* git describe: v4.9.290-205-g54bc9d253e82
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
-90-205-g54bc9d253e82
+Hope this did clarify. Afraid it didn't :)
 
-## No regressions (compared to v4.9.290-205-gd6aa2271168c)
+Best Regards
+	-- Matti Vaittinen
 
-## No fixes (compared to v4.9.290-205-gd6aa2271168c)
-
-
-## Test result summary
-total: 77977, pass: 61660, fail: 627, skip: 13435, xfail: 2255
-
-## Build Summary
-* arm: 130 total, 130 passed, 0 failed
-* arm64: 32 total, 32 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 19 total, 19 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 22 total, 22 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 19 total, 19 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
