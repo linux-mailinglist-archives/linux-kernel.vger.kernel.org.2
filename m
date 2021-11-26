@@ -2,115 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0434C45E919
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:18:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45D4345E922
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:18:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359319AbhKZIV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 03:21:26 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:50424 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353557AbhKZITZ (ORCPT
+        id S1359467AbhKZIVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 03:21:41 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:32850 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1359405AbhKZIT0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 03:19:25 -0500
+        Fri, 26 Nov 2021 03:19:26 -0500
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 3B69B21923;
+        by smtp-out2.suse.de (Postfix) with ESMTP id 64DC91FDFC;
         Fri, 26 Nov 2021 08:16:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1637914572; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=d074oInTejkFXY9rgF+E9NUJOneyB+3TLDkZb0cvCJU=;
-        b=R1giVOXL1xA5GgHDbfcDSwJLhdCUrzPHQ548xav41aXTPtM2eEPbEpcmcGPcMPnzUKPy8h
-        HmjjV6HcEavGr6l2kfJfp6l+y+PZtaYepMlYQoqxXS12bwsGfpC3R2nfQZyWOxdJFXgmv6
-        ry8XoGEw8NcZ/Ln3w1CB0eywO6A7GPA=
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Be2kuENAcavmlOAOK3SaCCqy1zjgpweT8BXH+ebtWCQ=;
+        b=eNZiUu7bOv+apncL/QxJijs0b61sPtvQ9RB9qYFQGP12HNDyBK+/25Wmv21p2cNIQkeQHO
+        CIDKCgv1oIv2OkPIZQFzzH66+m782uDTdjxIxPtd1n/9voAje3W/wiHX+1ROAt6gVAqid0
+        OQzlmON/ol4O+/Il2KfeZ/tB2078OEc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1637914572;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=d074oInTejkFXY9rgF+E9NUJOneyB+3TLDkZb0cvCJU=;
-        b=qc5PNXxMVOVu27nkiAE/0lWiXFVTWo2FKDfLrn3Ykwwr5D8vV0Cc2zewYWfcMbSV56KRJK
-        bw1ajoh+9JsqtPAA==
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Be2kuENAcavmlOAOK3SaCCqy1zjgpweT8BXH+ebtWCQ=;
+        b=I2xEmEp90mSmXap0YoyVZcJ7io3mLLeeqkCrM/Y794yH3RHCDG7vaZ6KNcfuyvFXWp6LVT
+        nOPw/l+ssxTHJQBQ==
 Received: from localhost.localdomain (unknown [10.100.208.98])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 1152DA3B81;
+        by relay2.suse.de (Postfix) with ESMTPS id 3EBA2A3B83;
         Fri, 26 Nov 2021 08:16:12 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 00/23] tty: documentation revamp
-Date:   Fri, 26 Nov 2021 09:15:48 +0100
-Message-Id: <20211126081611.11001-1-jslaby@suse.cz>
+Subject: [PATCH 01/23] tty: finish kernel-doc of tty_struct members
+Date:   Fri, 26 Nov 2021 09:15:49 +0100
+Message-Id: <20211126081611.11001-2-jslaby@suse.cz>
 X-Mailer: git-send-email 2.34.0
+In-Reply-To: <20211126081611.11001-1-jslaby@suse.cz>
+References: <20211126081611.11001-1-jslaby@suse.cz>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds/updates:
-1) kernel-doc documentation for most exported functions, and
-2) adds a chapter to Documentation/tty to glue it all together.
+There are already pieces of kernel-doc documentation for struct
+tty_struct in tty.h. Finish the documentation for the members which were
+undocumented yet.
 
-I think it's a good base for further improvements. It deduplicates
-and unify multiple documentation files.
+It also includes tuning the already existing pieces like flow and ctrl,
+especially adding highlights to them.
 
-Jiri Slaby (23):
-  tty: finish kernel-doc of tty_struct members
-  tty: add kernel-doc for tty_port
-  tty: add kernel-doc for tty_driver
-  tty: add kernel-doc for tty_operations
-  tty: add kernel-doc for tty_port_operations
-  tty: add kernel-doc for tty_ldisc_ops
-  tty: combine tty_operations triple docs into kernel-doc
-  tty: combine tty_ldisc_ops docs into kernel-doc
-  tty: reformat tty_struct::flags into kernel-doc
-  tty: reformat TTY_DRIVER_ flags into kernel-doc
-  tty: reformat kernel-doc in tty_port.c
-  tty: reformat kernel-doc in tty_io.c
-  tty: reformat kernel-doc in tty_ldisc.c
-  tty: reformat kernel-doc in tty_buffer.c
-  tty: fix kernel-doc in n_tty.c
-  tty: reformat kernel-doc in n_tty.c
-  tty: add kernel-doc for more tty_driver functions
-  tty: add kernel-doc for more tty_port functions
-  tty: move tty_ldisc docs to new Documentation/tty/
-  tty: make tty_ldisc docs up-to-date
-  tty: more kernel-doc for tty_ldisc
-  tty: add kernel-doc for tty_standard_install
-  Documentation: add TTY chapter
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+---
+ include/linux/tty.h | 79 ++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 64 insertions(+), 15 deletions(-)
 
- Documentation/driver-api/serial/index.rst |   1 -
- Documentation/driver-api/serial/tty.rst   | 328 --------
- Documentation/index.rst                   |   1 +
- Documentation/tty/index.rst               |  63 ++
- Documentation/tty/n_tty.rst               |  22 +
- Documentation/tty/tty_buffer.rst          |  46 ++
- Documentation/tty/tty_driver.rst          | 128 ++++
- Documentation/tty/tty_internals.rst       |  31 +
- Documentation/tty/tty_ldisc.rst           |  85 +++
- Documentation/tty/tty_port.rst            |  70 ++
- Documentation/tty/tty_struct.rst          |  81 ++
- drivers/tty/n_tty.c                       | 688 ++++++++---------
- drivers/tty/tty_buffer.c                  | 251 +++---
- drivers/tty/tty_io.c                      | 889 +++++++++++-----------
- drivers/tty/tty_ldisc.c                   | 292 ++++---
- drivers/tty/tty_port.c                    | 223 ++++--
- include/linux/tty.h                       | 153 +++-
- include/linux/tty_driver.h                | 572 ++++++++------
- include/linux/tty_ldisc.h                 | 278 +++----
- include/linux/tty_port.h                  | 131 ++--
- 20 files changed, 2408 insertions(+), 1925 deletions(-)
- delete mode 100644 Documentation/driver-api/serial/tty.rst
- create mode 100644 Documentation/tty/index.rst
- create mode 100644 Documentation/tty/n_tty.rst
- create mode 100644 Documentation/tty/tty_buffer.rst
- create mode 100644 Documentation/tty/tty_driver.rst
- create mode 100644 Documentation/tty/tty_internals.rst
- create mode 100644 Documentation/tty/tty_ldisc.rst
- create mode 100644 Documentation/tty/tty_port.rst
- create mode 100644 Documentation/tty/tty_struct.rst
-
+diff --git a/include/linux/tty.h b/include/linux/tty.h
+index 5dbd7c5afac7..da49ad9be281 100644
+--- a/include/linux/tty.h
++++ b/include/linux/tty.h
+@@ -122,33 +122,84 @@ struct tty_operations;
+ /**
+  * struct tty_struct - state associated with a tty while open
+  *
+- * @flow.lock: lock for flow members
+- * @flow.stopped: tty stopped/started by tty_stop/tty_start
+- * @flow.tco_stopped: tty stopped/started by TCOOFF/TCOON ioctls (it has
+- *		      precedense over @flow.stopped)
++ * @magic: magic value set early in @alloc_tty_struct to %TTY_MAGIC, for
++ *	   debugging purposes
++ * @kref: reference counting by tty_kref_get() and tty_kref_put(), reaching zero
++ *	  frees the structure
++ * @dev: class device or %NULL (e.g. ptys, serdev)
++ * @driver: &struct tty_driver operating this tty
++ * @ops: &struct tty_operations of @driver for this tty (open, close, etc.)
++ * @index: index of this tty (e.g. to construct @name like tty12)
++ * @ldisc_sem: protects line discipline changes (@ldisc) -- lock tty not pty
++ * @ldisc: the current line discipline for this tty (n_tty by default)
++ * @atomic_write_lock: protects against concurrent writers, i.e. locks
++ *		       @write_cnt, @write_buf and similar
++ * @legacy_mutex: leftover from history (BKL -> BTM -> @legacy_mutex),
++ *		  protecting several operations on this tty
++ * @throttle_mutex: protects against concurrent tty_throttle_safe() and
++ *		    tty_unthrottle_safe() (but not tty_unthrottle())
++ * @termios_rwsem: protects @termios and @termios_locked
++ * @winsize_mutex: protects @winsize
++ * @termios: termios for the current tty, copied from/to @driver.termios
++ * @termios_locked: locked termios (by %TIOCGLCKTRMIOS and %TIOCSLCKTRMIOS
++ *		    ioctls)
++ * @name: name of the tty constructed by tty_line_name() (e.g. ttyS3)
++ * @flags: bitwise OR of %TTY_THROTTLED, %TTY_IO_ERROR, ...
++ * @count: count of open processes, reaching zero cancels all the work for
++ *	   this tty and drops a @kref too (but does not free this tty)
++ * @winsize: size of the terminal "window" (cf. @winsize_mutex)
++ * @flow: flow settings grouped together, see also @flow.unused
++ * @flow.lock: lock for @flow members
++ * @flow.stopped: tty stopped/started by stop_tty()/start_tty()
++ * @flow.tco_stopped: tty stopped/started by %TCOOFF/%TCOON ioctls (it has
++ *		      precedence over @flow.stopped)
+  * @flow.unused: alignment for Alpha, so that no members other than @flow.* are
+  *		 modified by the same 64b word store. The @flow's __aligned is
+  *		 there for the very same reason.
+- * @ctrl.lock: lock for ctrl members
++ * @ctrl: control settings grouped together, see also @ctrl.unused
++ * @ctrl.lock: lock for @ctrl members
+  * @ctrl.pgrp: process group of this tty (setpgrp(2))
+  * @ctrl.session: session of this tty (setsid(2)). Writes are protected by both
+- *		  @ctrl.lock and legacy mutex, readers must use at least one of
++ *		  @ctrl.lock and @legacy_mutex, readers must use at least one of
+  *		  them.
+- * @ctrl.pktstatus: packet mode status (bitwise OR of TIOCPKT_* constants)
++ * @ctrl.pktstatus: packet mode status (bitwise OR of %TIOCPKT_ constants)
+  * @ctrl.packet: packet mode enabled
++ * @ctrl.unused: alignment for Alpha, see @flow.unused for explanation
++ * @hw_stopped: not controlled by the tty layer, under @driver's control for CTS
++ *		handling
++ * @receive_room: bytes permitted to feed to @ldisc without any being lost
++ * @flow_change: controls behavior of throttling, see tty_throttle_safe() and
++ *		 tty_unthrottle_safe()
++ * @link: link to another pty (master -> slave and vice versa)
++ * @fasync: state for %O_ASYNC (for %SIGIO); managed by fasync_helper()
++ * @write_wait: concurrent writers are waiting in this queue until they are
++ *		allowed to write
++ * @read_wait: readers wait for data in this queue
++ * @hangup_work: normally a work to perform a hangup (do_tty_hangup()); while
++ *		 freeing the tty, (re)used to release_one_tty()
++ * @disc_data: pointer to @ldisc's private data (e.g. to &struct n_tty_data)
++ * @driver_data: pointer to @driver's private data (e.g. &struct uart_state)
++ * @files_lock:	protects @tty_files list
++ * @tty_files: list of (re)openers of this tty (i.e. linked &struct
++ *	       tty_file_private)
++ * @closing: when set during close, n_tty processes only START & STOP chars
++ * @write_buf: temporary buffer used during tty_write() to copy user data to
++ * @write_cnt: count of bytes written in tty_write() to @write_buf
++ * @SAK_work: if the tty has a pending do_SAK, it is queued here
++ * @port: persistent storage for this device (i.e. &struct tty_port)
+  *
+  * All of the state associated with a tty while the tty is open. Persistent
+- * storage for tty devices is referenced here as @port in struct tty_port.
++ * storage for tty devices is referenced here as @port and is documented in
++ * &struct tty_port.
+  */
+ struct tty_struct {
+ 	int	magic;
+ 	struct kref kref;
+-	struct device *dev;	/* class device or NULL (e.g. ptys, serdev) */
++	struct device *dev;
+ 	struct tty_driver *driver;
+ 	const struct tty_operations *ops;
+ 	int index;
+ 
+-	/* Protects ldisc changes: Lock tty not pty */
+ 	struct ld_semaphore ldisc_sem;
+ 	struct tty_ldisc *ldisc;
+ 
+@@ -157,12 +208,11 @@ struct tty_struct {
+ 	struct mutex throttle_mutex;
+ 	struct rw_semaphore termios_rwsem;
+ 	struct mutex winsize_mutex;
+-	/* Termios values are protected by the termios rwsem */
+ 	struct ktermios termios, termios_locked;
+ 	char name[64];
+ 	unsigned long flags;
+ 	int count;
+-	struct winsize winsize;		/* winsize_mutex */
++	struct winsize winsize;
+ 
+ 	struct {
+ 		spinlock_t lock;
+@@ -181,7 +231,7 @@ struct tty_struct {
+ 	} __aligned(sizeof(unsigned long)) ctrl;
+ 
+ 	int hw_stopped;
+-	unsigned int receive_room;	/* Bytes free for queue */
++	unsigned int receive_room;
+ 	int flow_change;
+ 
+ 	struct tty_struct *link;
+@@ -191,7 +241,7 @@ struct tty_struct {
+ 	struct work_struct hangup_work;
+ 	void *disc_data;
+ 	void *driver_data;
+-	spinlock_t files_lock;		/* protects tty_files list */
++	spinlock_t files_lock;
+ 	struct list_head tty_files;
+ 
+ #define N_TTY_BUF_SIZE 4096
+@@ -199,7 +249,6 @@ struct tty_struct {
+ 	int closing;
+ 	unsigned char *write_buf;
+ 	int write_cnt;
+-	/* If the tty has a pending do_SAK, queue it here - akpm */
+ 	struct work_struct SAK_work;
+ 	struct tty_port *port;
+ } __randomize_layout;
 -- 
 2.34.0
 
