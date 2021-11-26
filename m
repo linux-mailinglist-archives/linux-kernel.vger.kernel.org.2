@@ -2,73 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E537C45F198
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:17:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 490F045F19F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:19:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378278AbhKZQU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:20:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:22442 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1378280AbhKZQS4 (ORCPT
+        id S1378348AbhKZQWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:22:51 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:30048 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235743AbhKZQUt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:18:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637943342;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jIwlzQg5mrM5RLNTyqo8wjzNsYTDLGVsq/ojfDTmyas=;
-        b=Qmq1cBSZcgCTeGpw5IPNS0MgGApbz7W77vtVkFfKRaR4CSLRgk3KSSHf7L8sZBRt1pMAAZ
-        fyv09trAoqJOZLau2O5T/wzmlU41czTE4+Knncum+QRG1ADjhE6e1wkYgb/8u2NKvm3A9I
-        mNC5NjSv8w+fl74k+OpW61A1FDIO/FA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-401-nxWDWnimNVij76QKU5574A-1; Fri, 26 Nov 2021 11:15:37 -0500
-X-MC-Unique: nxWDWnimNVij76QKU5574A-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5AE0D1006AA1;
-        Fri, 26 Nov 2021 16:15:35 +0000 (UTC)
-Received: from [10.39.195.16] (unknown [10.39.195.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 84381604CC;
-        Fri, 26 Nov 2021 16:15:32 +0000 (UTC)
-Message-ID: <9545cab7-6365-b20d-fc05-82ace6368661@redhat.com>
-Date:   Fri, 26 Nov 2021 17:15:31 +0100
+        Fri, 26 Nov 2021 11:20:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637943362;
+    s=strato-dkim-0002; d=chronox.de;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=vOlwVp8xFow1jZY5Q+b8GlcSPjy9Js3pFWCymHaTE2A=;
+    b=EHwSNeXberIlexXc+km6egqG3AQnRxo4M2DzwVHT9h8aOlGqNGA1x28rYWWyLwLF4D
+    KZ3CCb4e/bUOKsreUbCm2sDxucaxhmtNGHimIS2ftGETMuML1DdWFxq3+B+o9JLozBMp
+    hiBgqbayasa6cfi0BZnOy1BTLr0rG8kWPpHa+Z9in38thMbw1fCJtRl2hCbR3kksoLpX
+    u9fZ2/g0VRoWspS3KgxRD45jQ6lG/WwsnZvD89oHeT/8x3XhTaV4NrcUdbXhdYRENRRy
+    Xl1KYwlBsWpWYMlv+Hp/Fwgk5Zi6csYmDAyI8HvXQBt4kXTuJX9aqmtXUCxjF2bAMjvm
+    n/+Q==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaIPScDPs="
+X-RZG-CLASS-ID: mo00
+Received: from tauon.chronox.de
+    by smtp.strato.de (RZmta 47.34.10 DYNA|AUTH)
+    with ESMTPSA id 006230xAQGFxFM2
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Fri, 26 Nov 2021 17:15:59 +0100 (CET)
+From:   Stephan Mueller <smueller@chronox.de>
+To:     Simo Sorce <simo@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>, Tso Ted <tytso@mit.edu>,
+        linux-crypto@vger.kernel.org, Willy Tarreau <w@1wt.eu>,
+        Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andy Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Petr Tesarik <ptesarik@suse.cz>,
+        John Haxby <john.haxby@oracle.com>,
+        Alexander Lobakin <alobakin@mailbox.org>,
+        Jirka Hladky <jhladky@redhat.com>
+Subject: Re: [PATCH v43 01/15] Linux Random Number Generator
+Date:   Fri, 26 Nov 2021 17:15:59 +0100
+Message-ID: <22137816.pfsBpAd9cS@tauon.chronox.de>
+In-Reply-To: <YaEA0fyowmFlDfmK@kroah.com>
+References: <2036923.9o76ZdvQCi@positron.chronox.de> <56d2da397bb53f71c0354b102c3b40940e9b4eda.camel@redhat.com> <YaEA0fyowmFlDfmK@kroah.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 3/4] KVM: selftests: Add EXTRA_CFLAGS in top-level
- Makefile
-Content-Language: en-US
-To:     Anup Patel <anup.patel@wdc.com>, Shuah Khan <shuah@kernel.org>,
-        Atish Patra <atishp@atishpatra.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Anup Patel <anup@brainfault.org>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20211126154020.342924-1-anup.patel@wdc.com>
- <20211126154020.342924-4-anup.patel@wdc.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211126154020.342924-4-anup.patel@wdc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/26/21 16:40, Anup Patel wrote:
-> We add EXTRA_CFLAGS to the common CFLAGS of top-level Makefile
-> which will allow users to pass additional compile-time flags such
-> as "-static".
+Am Freitag, 26. November 2021, 16:44:17 CET schrieb Greg Kroah-Hartman:
 
-Is this just for debugging?  I cannot understand if it's used in patch 4.
+Hi Greg,
 
-Paolo
+> On Mon, Nov 22, 2021 at 09:59:01AM -0500, Simo Sorce wrote:
+> > Jason,
+> > have you previously produced a list of reasoned concerns with this
+> > patchset and direction?
+> > 
+> > This specific email is not really useful to me to understand the
+> > concerns as it does not contain actionable suggestion or critique.
+> > 
+> > I personally find the direction fine, and with my distribution hat on I
+> > can say that FIPS is essential for us and any design must include an
+> > option to be FIPS certifiable.
+> > 
+> > As NIST keeps improving their testing capabilities and rigorous
+> > cryptographic design of the CSPRNGs as well as entropy sources the
+> > kernel must also adapt.
+> > 
+> > Stephan is providing a path forward, and I haven't seen any other
+> > proposal, let alone code, that provide improvements in this area.
+> > I am pretty sure the design can be improved if there is detailed and
+> > actionable feedback on what to change.
+> > 
+> > I hope the path forward can be one of collaboration rather then mere
+> > opposition.
+> 
+> Replacement of the existing code to cut over to the new one is not
+> collaboration, it's the exact opposite.
+> 
+> Submitting patches to the existing codebase to implement the
+> "requirements" is the proper way forward, why has that never been done.
+
+It has been attempted by Nikolai Stange without avail - no comments were 
+received, let alone it was integrated.
+> 
+> Remember, evolution is the correct way of kernel development, not
+> intelligent design :)
+> 
+> thanks,
+> 
+> greg k-h
+
+
+Ciao
+Stephan
+
 
