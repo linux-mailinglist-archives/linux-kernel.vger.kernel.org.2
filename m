@@ -2,81 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2161645F1D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:26:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEBB245F1DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:27:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354387AbhKZQ3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:29:34 -0500
-Received: from outbound-smtp03.blacknight.com ([81.17.249.16]:49571 "EHLO
-        outbound-smtp03.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238131AbhKZQ1c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:27:32 -0500
-Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
-        by outbound-smtp03.blacknight.com (Postfix) with ESMTPS id D4153C0D59
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 16:24:18 +0000 (GMT)
-Received: (qmail 24859 invoked from network); 26 Nov 2021 16:24:18 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 26 Nov 2021 16:24:18 -0000
-Date:   Fri, 26 Nov 2021 16:24:16 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Alexey Avramov <hakavlad@inbox.lv>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org, mhocko@suse.com,
-        vbabka@suse.cz, neilb@suse.de, akpm@linux-foundation.org,
-        corbet@lwn.net, riel@surriel.com, hannes@cmpxchg.org,
-        david@fromorbit.com, willy@infradead.org, hdanton@sina.com,
-        penguin-kernel@i-love.sakura.ne.jp, oleksandr@natalenko.name,
-        kernel@xanmod.org, michael@michaellarabel.com, aros@gmx.com,
-        hakavlad@gmail.com
-Subject: Re: mm: 5.16 regression: reclaim_throttle leads to stall in near-OOM
- conditions
-Message-ID: <20211126162416.GK3366@techsingularity.net>
-References: <20211124011954.7cab9bb4@mail.inbox.lv>
- <20211124103550.GE3366@techsingularity.net>
- <20211124195449.33f31e7f@mail.inbox.lv>
- <20211124115007.GG3366@techsingularity.net>
- <20211124214443.5c179d34@mail.inbox.lv>
- <20211124143303.GH3366@techsingularity.net>
- <20211127010631.4e33a432@mail.inbox.lv>
+        id S1378405AbhKZQaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:30:20 -0500
+Received: from pegase2.c-s.fr ([93.17.235.10]:55117 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231970AbhKZQ2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 11:28:19 -0500
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4J10TF2KRXz9sSM;
+        Fri, 26 Nov 2021 17:25:05 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id gUCo4gl_1BVF; Fri, 26 Nov 2021 17:25:05 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4J10TF1RBWz9sSL;
+        Fri, 26 Nov 2021 17:25:05 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 214D88B781;
+        Fri, 26 Nov 2021 17:25:05 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id pKQRMnP2DWp8; Fri, 26 Nov 2021 17:25:05 +0100 (CET)
+Received: from [192.168.204.6] (unknown [192.168.204.6])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 565248B763;
+        Fri, 26 Nov 2021 17:25:04 +0100 (CET)
+Message-ID: <90ea33c6-2e93-ea19-3052-90e15979578f@csgroup.eu>
+Date:   Fri, 26 Nov 2021 17:25:04 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20211127010631.4e33a432@mail.inbox.lv>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH] powerpc: mm: radix_tlb: rearrange the if-else block
+Content-Language: fr-FR
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Anders Roxell <anders.roxell@linaro.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, llvm@lists.linux.dev,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+References: <20211125154406.470082-1-anders.roxell@linaro.org>
+ <6b1e51a8-2f4d-2024-df90-a35c926d7a30@csgroup.eu>
+ <CAK8P3a0n_n+PnfYmAdS9923yheLqYXRp8=65hKf9abLCRAX8ig@mail.gmail.com>
+ <YaEBTbjGyUBmISGK@archlinux-ax161>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+In-Reply-To: <YaEBTbjGyUBmISGK@archlinux-ax161>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 27, 2021 at 01:06:31AM +0900, Alexey Avramov wrote:
-> >Please let me know if this version works any better
+
+
+Le 26/11/2021 à 16:46, Nathan Chancellor a écrit :
+> On Fri, Nov 26, 2021 at 02:59:29PM +0100, Arnd Bergmann wrote:
+>> On Fri, Nov 26, 2021 at 2:43 PM Christophe Leroy
+>> <christophe.leroy@csgroup.eu> wrote:
+>>> Le 25/11/2021 à 16:44, Anders Roxell a écrit :
+>>> Can't you fix CLANG instead :) ?
+>>>
+>>> Or just add an else to the IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) that
+>>> sets hstart and hend to 0 ?
+>>
+>> That doesn't sound any less risky than duplicating the code, it can lead to
+>> incorrect changes just as easily if a patch ends up actually flushing at the
+>> wrong address, and the compiler fails to complain because of the bogus
+>> initialization.
+>>
+>>> Or just put hstart and hend calculation outside the IS_ENABLED() ? After
+>>> all GCC should drop the calculation when not used.
+>>
+>> I like this one. I'm still unsure how clang can get so confused about whether
+>> the variables are initialized or not, usually it handles this much better than
+>> gcc. My best guess is that one of the memory clobbers makes it conclude
+>> that 'hflush' can be true when it gets written to by an inline asm.
 > 
-> It's better, but not the same as 5.15.
+> As far as I am aware, clang's analysis does not evaluate variables when
+> generating a control flow graph and using that for static analysis:
 > 
-> Sometimes stall is short, sometimes is long (3 `tail /dev/zero` test):
+> https://godbolt.org/z/PdGxoq9j7
 > 
+> Based on the control flow graph, it knows that hstart and hend are
+> uninitialized because IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) gets
+> expanded to 0 by the preprocessor but it does not seem like it can piece
+> together that hflush's value of false is only changed to true under the
+> now 'if (0) {' branch, meaning that all the calls to __tlbiel_va_range()
+> never get evaluated. That may or may not be easy to fix in clang but we
+> run into issues like this so infrequently.
+> 
+> At any rate, the below diff works for me.
+> 
+> Cheers,
+> Nathan
+> 
+> diff --git a/arch/powerpc/mm/book3s64/radix_tlb.c b/arch/powerpc/mm/book3s64/radix_tlb.c
+> index 7724af19ed7e..156a631df976 100644
+> --- a/arch/powerpc/mm/book3s64/radix_tlb.c
+> +++ b/arch/powerpc/mm/book3s64/radix_tlb.c
+> @@ -1174,12 +1174,10 @@ static inline void __radix__flush_tlb_range(struct mm_struct *mm,
+>   		bool hflush = false;
+>   		unsigned long hstart, hend;
+>   
+> -		if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
+> -			hstart = (start + PMD_SIZE - 1) & PMD_MASK;
+> -			hend = end & PMD_MASK;
+> -			if (hstart < hend)
+> -				hflush = true;
+> -		}
+> +		hstart = (start + PMD_SIZE - 1) & PMD_MASK;
+> +		hend = end & PMD_MASK;
+> +		if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) && hstart < hend)
+> +			hflush = true;
 
-It's somewhat expected. If the system is able to make some sort of
-progress and kswapd is active, it'll throttle until progress is
-impossible. It'll be somewhat variable how long it can keep making
-progress be it discarding page cache or writing to swap but it'll only
-OOM when the system is truly OOM.
+Yes I like that much better.
 
-Might be worth trying the patch below on top. It will delay throttling
-for longer with the caveat that CPU usage due to reclaim when very low
-on memory may be excessive.
+Maybe even better with
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 176ddd28df21..167ea4f324a8 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -3404,8 +3404,8 @@ static void consider_reclaim_throttle(pg_data_t *pgdat, struct scan_control *sc)
- 	if (current_is_kswapd())
- 		return;
- 
--	/* Throttle if making no progress at high prioities. */
--	if (sc->priority < DEF_PRIORITY - 2 && !sc->nr_reclaimed)
-+	/* Throttle if making no progress at high priority. */
-+	if (sc->priority == 1 && !sc->nr_reclaimed)
- 		reclaim_throttle(pgdat, VMSCAN_THROTTLE_NOPROGRESS);
- }
+	hflush = IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) && hstart < hend;
 
+(And remove default false value at declaration).
+
+>   
+>   		if (type == FLUSH_TYPE_LOCAL) {
+>   			asm volatile("ptesync": : :"memory");
+> 
