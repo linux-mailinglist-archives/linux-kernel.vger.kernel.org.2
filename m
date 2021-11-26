@@ -2,128 +2,443 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B185F45EB89
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:28:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B585945EBD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376841AbhKZKbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 05:31:17 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:35062 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1377229AbhKZK3Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 05:29:16 -0500
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AQALNMb003409;
-        Fri, 26 Nov 2021 11:25:31 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=dbwGfIwnUU/8KIQMSbt8DZOHk6GsjPaWZ736Ald/Wn8=;
- b=Z8HoQGniG4HFI+CncknYRDT1NE32SATiqwbJ9fiZToFiMRRCkGNjUK08Cyd55X+Qdl13
- rC2YuJy0WHbJKk2WjAT2IJGIDxbqhXPEM+U+Ae7BUxqkHoegh/O9cStSfNQjJozxsNZ2
- qArwUdqAkr4gpVTOXfxl+1J7Mqwg6RCiwDu+g7VJRI5FZRLPzDBE2I8sMqwtv4XVKvY4
- bv5yaKMJOsKoV7hLa8wpd2hF7sktJQ58aaXEhrmcN3A339xFPklnQrlU7BBXCTu/KrX7
- WomZvZxPYEc9ULWqkzwdt5hGPVatG9OZXcRiL4r3Hab949H7OkNeYULb894UAphueMqm Jw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3cjqsk9ywf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Nov 2021 11:25:31 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6F18710002A;
-        Fri, 26 Nov 2021 11:25:30 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1EEEB222C80;
-        Fri, 26 Nov 2021 11:25:30 +0100 (CET)
-Received: from lmecxl0577.lme.st.com (10.75.127.47) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.26; Fri, 26 Nov
- 2021 11:25:28 +0100
-Subject: Re: [PATCH v2 1/4] ASoC: dt-bindings: stm32: i2s: add
- audio-graph-card port
-To:     Rob Herring <robh@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Olivier Moysan <olivier.moysan@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        <fabrice.gasnier@foss.st.com>, <alain.volmat@foss.st.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        <alsa-devel@alsa-project.org>, <amelie.delaunay@foss.st.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Mark Brown <broonie@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <devicetree@vger.kernel.org>, <arnaud.pouliquen@foss.st.com>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20211125144053.774-1-olivier.moysan@foss.st.com>
- <20211125144053.774-2-olivier.moysan@foss.st.com>
- <1637875562.357461.2858318.nullmailer@robh.at.kernel.org>
-From:   Olivier MOYSAN <olivier.moysan@foss.st.com>
-Message-ID: <237f56b3-0597-2526-a182-f1fbdd327338@foss.st.com>
-Date:   Fri, 26 Nov 2021 11:25:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S1377012AbhKZKmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 05:42:53 -0500
+Received: from mga04.intel.com ([192.55.52.120]:37659 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231465AbhKZKkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 05:40:52 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="234376762"
+X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
+   d="scan'208";a="234376762"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 02:26:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
+   d="scan'208";a="598479317"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 26 Nov 2021 02:26:25 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqYQy-0007xh-8E; Fri, 26 Nov 2021 10:26:24 +0000
+Date:   Fri, 26 Nov 2021 18:25:52 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Alex Deucher <alexander.deucher@amd.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Zhan Liu <zhan.liu@amd.com>
+Subject: drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn201/dcn201_clk_mgr.c:79:6:
+ warning: no previous prototype for 'dcn201_update_clocks_vbios'
+Message-ID: <202111261849.eWkLFshd-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1637875562.357461.2858318.nullmailer@robh.at.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-26_03,2021-11-25_02,2020-04-07_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Hi Alex,
 
-On 11/25/21 10:26 PM, Rob Herring wrote:
-> On Thu, 25 Nov 2021 15:40:50 +0100, Olivier Moysan wrote:
->> The STM2 I2S DAI can be connected via the audio-graph-card.
->> Add port entry into the bindings.
->>
->> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
->> ---
->>   Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml | 5 +++++
->>   1 file changed, 5 insertions(+)
->>
-> 
-> Running 'make dtbs_check' with the schema in this patch gives the
-> following warnings. Consider if they are expected or the schema is
-> incorrect. These may not be new warnings.
-> 
-> Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-> This will change in the future.
-> 
-> Full log is available here: https://patchwork.ozlabs.org/patch/1559750
-> 
-> 
-> audio-controller@4000b000: 'port' does not match any of the regexes: '^port@[0-9]', 'pinctrl-[0-9]+'
-> 	arch/arm/boot/dts/stm32mp157a-dk1.dt.yaml
-> 	arch/arm/boot/dts/stm32mp157c-dk2.dt.yaml
-> 
+First bad commit (maybe != root cause):
 
-This warning is not a new one.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   a4849f6000e29235a2707f22e39da6b897bb9543
+commit: 519607a2f7798decb9c891a4f706aaf780f5a677 drm/amdgpu/display: fold DRM_AMD_DC_DCN201 into DRM_AMD_DC_DCN
+date:   8 weeks ago
+config: powerpc64-buildonly-randconfig-r004-20211026 (https://download.01.org/0day-ci/archive/20211126/202111261849.eWkLFshd-lkp@intel.com/config)
+compiler: powerpc64-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=519607a2f7798decb9c891a4f706aaf780f5a677
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout 519607a2f7798decb9c891a4f706aaf780f5a677
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=powerpc 
 
-The i2s2 node in stm32mp15xx-dkx.dtsi would require the following binding:
-port:
-	$ref: audio-graph-port.yaml#
-	unevaluatedProperties: false
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-However the spi binding requires to introduce a unit address:
-patternProperties:
-   '^port@[0-9]':
-     $ref: audio-graph-port.yaml#
-     unevaluatedProperties: false
+All warnings (new ones prefixed by >>):
 
-The warning can be removed by re-ordering the bindings patches in the 
-serie, as "additionalProperties: true" makes the check more tolerant on 
-extra properties.
-The patch "ASoC: dt-bindings: stm32: i2s: add audio-graph-card port" can 
-even be merely dropped.
-So, I suggest to resend the serie without audio-graph-card patch.
+>> drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn201/dcn201_clk_mgr.c:79:6: warning: no previous prototype for 'dcn201_update_clocks_vbios' [-Wmissing-prototypes]
+      79 | void dcn201_update_clocks_vbios(struct clk_mgr *clk_mgr,
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn201/dcn201_clk_mgr.c: In function 'dcn201_update_clocks':
+   drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn201/dcn201_clk_mgr.c:134:14: warning: variable 'enter_display_off' set but not used [-Wunused-but-set-variable]
+     134 |         bool enter_display_off = false;
+         |              ^~~~~~~~~~~~~~~~~
+   In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn201/dcn201_clk_mgr.c:38:
+   At top level:
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:129:29: warning: 'UVD0_BASE' defined but not used [-Wunused-const-variable=]
+     129 | static const struct IP_BASE UVD0_BASE            ={ { { { 0x00007800, 0x00007E00, 0, 0, 0 } },
+         |                             ^~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:123:29: warning: 'UMC0_BASE' defined but not used [-Wunused-const-variable=]
+     123 | static const struct IP_BASE UMC0_BASE            ={ { { { 0x00014000, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:117:29: warning: 'THM_BASE' defined but not used [-Wunused-const-variable=]
+     117 | static const struct IP_BASE THM_BASE            ={ { { { 0x00016600, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:111:29: warning: 'SMUIO_BASE' defined but not used [-Wunused-const-variable=]
+     111 | static const struct IP_BASE SMUIO_BASE            ={ { { { 0x00016800, 0x00016A00, 0, 0, 0 } },
+         |                             ^~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:105:29: warning: 'OSSSYS_BASE' defined but not used [-Wunused-const-variable=]
+     105 | static const struct IP_BASE OSSSYS_BASE            ={ { { { 0x000010A0, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:99:29: warning: 'NBIO_BASE' defined but not used [-Wunused-const-variable=]
+      99 | static const struct IP_BASE NBIO_BASE            ={ { { { 0x00000000, 0x00000014, 0x00000D20, 0x00010400, 0 } },
+         |                             ^~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:93:29: warning: 'MP1_BASE' defined but not used [-Wunused-const-variable=]
+      93 | static const struct IP_BASE MP1_BASE            ={ { { { 0x00016000, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:87:29: warning: 'MP0_BASE' defined but not used [-Wunused-const-variable=]
+      87 | static const struct IP_BASE MP0_BASE            ={ { { { 0x00016000, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:81:29: warning: 'MMHUB_BASE' defined but not used [-Wunused-const-variable=]
+      81 | static const struct IP_BASE MMHUB_BASE            ={ { { { 0x0001A000, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:75:29: warning: 'HDP_BASE' defined but not used [-Wunused-const-variable=]
+      75 | static const struct IP_BASE HDP_BASE            ={ { { { 0x00000F20, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:69:29: warning: 'GC_BASE' defined but not used [-Wunused-const-variable=]
+      69 | static const struct IP_BASE GC_BASE            ={ { { { 0x00001260, 0x0000A000, 0, 0, 0 } },
+         |                             ^~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:63:29: warning: 'FUSE_BASE' defined but not used [-Wunused-const-variable=]
+      63 | static const struct IP_BASE FUSE_BASE            ={ { { { 0x00017400, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:57:29: warning: 'DMU_BASE' defined but not used [-Wunused-const-variable=]
+      57 | static const struct IP_BASE DMU_BASE            ={ { { { 0x00000012, 0x000000C0, 0x000034C0, 0x00009000, 0 } },
+         |                             ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:51:29: warning: 'DF_BASE' defined but not used [-Wunused-const-variable=]
+      51 | static const struct IP_BASE DF_BASE            ={ { { { 0x00007000, 0, 0, 0, 0 } },
+         |                             ^~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:45:29: warning: 'CLK_BASE' defined but not used [-Wunused-const-variable=]
+      45 | static const struct IP_BASE CLK_BASE            ={ { { { 0x00016C00, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:39:29: warning: 'ATHUB_BASE' defined but not used [-Wunused-const-variable=]
+      39 | static const struct IP_BASE ATHUB_BASE            ={ { { { 0x00000C00, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~~~
+--
+>> drivers/gpu/drm/amd/amdgpu/../display/dc/irq/dcn201/irq_service_dcn201.c:42:20: warning: no previous prototype for 'to_dal_irq_source_dcn201' [-Wmissing-prototypes]
+      42 | enum dc_irq_source to_dal_irq_source_dcn201(
+         |                    ^~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/irq/dcn201/irq_service_dcn201.c:142:43: warning: 'dmub_outbox_irq_info_funcs' defined but not used [-Wunused-const-variable=]
+     142 | static const struct irq_source_info_funcs dmub_outbox_irq_info_funcs = {
+         |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/irq/dcn201/irq_service_dcn201.c:35:
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:129:29: warning: 'UVD0_BASE' defined but not used [-Wunused-const-variable=]
+     129 | static const struct IP_BASE UVD0_BASE            ={ { { { 0x00007800, 0x00007E00, 0, 0, 0 } },
+         |                             ^~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:123:29: warning: 'UMC0_BASE' defined but not used [-Wunused-const-variable=]
+     123 | static const struct IP_BASE UMC0_BASE            ={ { { { 0x00014000, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:117:29: warning: 'THM_BASE' defined but not used [-Wunused-const-variable=]
+     117 | static const struct IP_BASE THM_BASE            ={ { { { 0x00016600, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:111:29: warning: 'SMUIO_BASE' defined but not used [-Wunused-const-variable=]
+     111 | static const struct IP_BASE SMUIO_BASE            ={ { { { 0x00016800, 0x00016A00, 0, 0, 0 } },
+         |                             ^~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:105:29: warning: 'OSSSYS_BASE' defined but not used [-Wunused-const-variable=]
+     105 | static const struct IP_BASE OSSSYS_BASE            ={ { { { 0x000010A0, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:99:29: warning: 'NBIO_BASE' defined but not used [-Wunused-const-variable=]
+      99 | static const struct IP_BASE NBIO_BASE            ={ { { { 0x00000000, 0x00000014, 0x00000D20, 0x00010400, 0 } },
+         |                             ^~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:93:29: warning: 'MP1_BASE' defined but not used [-Wunused-const-variable=]
+      93 | static const struct IP_BASE MP1_BASE            ={ { { { 0x00016000, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:87:29: warning: 'MP0_BASE' defined but not used [-Wunused-const-variable=]
+      87 | static const struct IP_BASE MP0_BASE            ={ { { { 0x00016000, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:81:29: warning: 'MMHUB_BASE' defined but not used [-Wunused-const-variable=]
+      81 | static const struct IP_BASE MMHUB_BASE            ={ { { { 0x0001A000, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:75:29: warning: 'HDP_BASE' defined but not used [-Wunused-const-variable=]
+      75 | static const struct IP_BASE HDP_BASE            ={ { { { 0x00000F20, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:69:29: warning: 'GC_BASE' defined but not used [-Wunused-const-variable=]
+      69 | static const struct IP_BASE GC_BASE            ={ { { { 0x00001260, 0x0000A000, 0, 0, 0 } },
+         |                             ^~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:63:29: warning: 'FUSE_BASE' defined but not used [-Wunused-const-variable=]
+      63 | static const struct IP_BASE FUSE_BASE            ={ { { { 0x00017400, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:57:29: warning: 'DMU_BASE' defined but not used [-Wunused-const-variable=]
+      57 | static const struct IP_BASE DMU_BASE            ={ { { { 0x00000012, 0x000000C0, 0x000034C0, 0x00009000, 0 } },
+         |                             ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:51:29: warning: 'DF_BASE' defined but not used [-Wunused-const-variable=]
+      51 | static const struct IP_BASE DF_BASE            ={ { { { 0x00007000, 0, 0, 0, 0 } },
+         |                             ^~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:45:29: warning: 'CLK_BASE' defined but not used [-Wunused-const-variable=]
+      45 | static const struct IP_BASE CLK_BASE            ={ { { { 0x00016C00, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:39:29: warning: 'ATHUB_BASE' defined but not used [-Wunused-const-variable=]
+      39 | static const struct IP_BASE ATHUB_BASE            ={ { { { 0x00000C00, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~~~
+--
+>> drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_init.c:127:6: warning: no previous prototype for 'dcn201_hw_sequencer_construct' [-Wmissing-prototypes]
+     127 | void dcn201_hw_sequencer_construct(struct dc *dc)
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--
+         |         ^~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:514:9: note: in expansion of macro 'TG_COMMON_MASK_SH_LIST_DCN201'
+     514 |         TG_COMMON_MASK_SH_LIST_DCN201(_MASK)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dcn/dcn_2_0_3_sh_mask.h:14888:111: warning: initialized field overwritten [-Woverride-init]
+   14888 | #define OTG0_OTG_VUPDATE_KEEPOUT__OTG_MASTER_UPDATE_LOCK_VUPDATE_KEEPOUT_EN_MASK                              0x80000000L
+         |                                                                                                               ^~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_audio.h:45:23: note: in expansion of macro 'OTG0_OTG_VUPDATE_KEEPOUT__OTG_MASTER_UPDATE_LOCK_VUPDATE_KEEPOUT_EN_MASK'
+      45 |         .field_name = reg_name ## __ ## field_name ## post_fix
+         |                       ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_optc.h:55:9: note: in expansion of macro 'SF'
+      55 |         SF(OTG0_OTG_VUPDATE_KEEPOUT, OTG_MASTER_UPDATE_LOCK_VUPDATE_KEEPOUT_EN, mask_sh), \
+         |         ^~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:514:9: note: in expansion of macro 'TG_COMMON_MASK_SH_LIST_DCN201'
+     514 |         TG_COMMON_MASK_SH_LIST_DCN201(_MASK)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dcn/dcn_2_0_3_sh_mask.h:14888:111: note: (near initialization for 'tg_mask.OTG_MASTER_UPDATE_LOCK_VUPDATE_KEEPOUT_EN')
+   14888 | #define OTG0_OTG_VUPDATE_KEEPOUT__OTG_MASTER_UPDATE_LOCK_VUPDATE_KEEPOUT_EN_MASK                              0x80000000L
+         |                                                                                                               ^~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_audio.h:45:23: note: in expansion of macro 'OTG0_OTG_VUPDATE_KEEPOUT__OTG_MASTER_UPDATE_LOCK_VUPDATE_KEEPOUT_EN_MASK'
+      45 |         .field_name = reg_name ## __ ## field_name ## post_fix
+         |                       ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_optc.h:55:9: note: in expansion of macro 'SF'
+      55 |         SF(OTG0_OTG_VUPDATE_KEEPOUT, OTG_MASTER_UPDATE_LOCK_VUPDATE_KEEPOUT_EN, mask_sh), \
+         |         ^~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:514:9: note: in expansion of macro 'TG_COMMON_MASK_SH_LIST_DCN201'
+     514 |         TG_COMMON_MASK_SH_LIST_DCN201(_MASK)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dcn/dcn_2_0_3_sh_mask.h:14886:111: warning: initialized field overwritten [-Woverride-init]
+   14886 | #define OTG0_OTG_VUPDATE_KEEPOUT__MASTER_UPDATE_LOCK_VUPDATE_KEEPOUT_START_OFFSET_MASK                        0x0000FFFFL
+         |                                                                                                               ^~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_audio.h:45:23: note: in expansion of macro 'OTG0_OTG_VUPDATE_KEEPOUT__MASTER_UPDATE_LOCK_VUPDATE_KEEPOUT_START_OFFSET_MASK'
+      45 |         .field_name = reg_name ## __ ## field_name ## post_fix
+         |                       ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_optc.h:56:9: note: in expansion of macro 'SF'
+      56 |         SF(OTG0_OTG_VUPDATE_KEEPOUT, MASTER_UPDATE_LOCK_VUPDATE_KEEPOUT_START_OFFSET, mask_sh), \
+         |         ^~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:514:9: note: in expansion of macro 'TG_COMMON_MASK_SH_LIST_DCN201'
+     514 |         TG_COMMON_MASK_SH_LIST_DCN201(_MASK)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dcn/dcn_2_0_3_sh_mask.h:14886:111: note: (near initialization for 'tg_mask.MASTER_UPDATE_LOCK_VUPDATE_KEEPOUT_START_OFFSET')
+   14886 | #define OTG0_OTG_VUPDATE_KEEPOUT__MASTER_UPDATE_LOCK_VUPDATE_KEEPOUT_START_OFFSET_MASK                        0x0000FFFFL
+         |                                                                                                               ^~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_audio.h:45:23: note: in expansion of macro 'OTG0_OTG_VUPDATE_KEEPOUT__MASTER_UPDATE_LOCK_VUPDATE_KEEPOUT_START_OFFSET_MASK'
+      45 |         .field_name = reg_name ## __ ## field_name ## post_fix
+         |                       ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_optc.h:56:9: note: in expansion of macro 'SF'
+      56 |         SF(OTG0_OTG_VUPDATE_KEEPOUT, MASTER_UPDATE_LOCK_VUPDATE_KEEPOUT_START_OFFSET, mask_sh), \
+         |         ^~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:514:9: note: in expansion of macro 'TG_COMMON_MASK_SH_LIST_DCN201'
+     514 |         TG_COMMON_MASK_SH_LIST_DCN201(_MASK)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dcn/dcn_2_0_3_sh_mask.h:14887:111: warning: initialized field overwritten [-Woverride-init]
+   14887 | #define OTG0_OTG_VUPDATE_KEEPOUT__MASTER_UPDATE_LOCK_VUPDATE_KEEPOUT_END_OFFSET_MASK                          0x03FF0000L
+         |                                                                                                               ^~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_audio.h:45:23: note: in expansion of macro 'OTG0_OTG_VUPDATE_KEEPOUT__MASTER_UPDATE_LOCK_VUPDATE_KEEPOUT_END_OFFSET_MASK'
+      45 |         .field_name = reg_name ## __ ## field_name ## post_fix
+         |                       ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_optc.h:57:9: note: in expansion of macro 'SF'
+      57 |         SF(OTG0_OTG_VUPDATE_KEEPOUT, MASTER_UPDATE_LOCK_VUPDATE_KEEPOUT_END_OFFSET, mask_sh), \
+         |         ^~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:514:9: note: in expansion of macro 'TG_COMMON_MASK_SH_LIST_DCN201'
+     514 |         TG_COMMON_MASK_SH_LIST_DCN201(_MASK)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dcn/dcn_2_0_3_sh_mask.h:14887:111: note: (near initialization for 'tg_mask.MASTER_UPDATE_LOCK_VUPDATE_KEEPOUT_END_OFFSET')
+   14887 | #define OTG0_OTG_VUPDATE_KEEPOUT__MASTER_UPDATE_LOCK_VUPDATE_KEEPOUT_END_OFFSET_MASK                          0x03FF0000L
+         |                                                                                                               ^~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_audio.h:45:23: note: in expansion of macro 'OTG0_OTG_VUPDATE_KEEPOUT__MASTER_UPDATE_LOCK_VUPDATE_KEEPOUT_END_OFFSET_MASK'
+      45 |         .field_name = reg_name ## __ ## field_name ## post_fix
+         |                       ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_optc.h:57:9: note: in expansion of macro 'SF'
+      57 |         SF(OTG0_OTG_VUPDATE_KEEPOUT, MASTER_UPDATE_LOCK_VUPDATE_KEEPOUT_END_OFFSET, mask_sh), \
+         |         ^~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:514:9: note: in expansion of macro 'TG_COMMON_MASK_SH_LIST_DCN201'
+     514 |         TG_COMMON_MASK_SH_LIST_DCN201(_MASK)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dcn/dcn_2_0_3_sh_mask.h:15730:111: warning: initialized field overwritten [-Woverride-init]
+   15730 | #define DWB_SOURCE_SELECT__OPTC_DWB1_SOURCE_SELECT_MASK                                                       0x00000038L
+         |                                                                                                               ^~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_audio.h:45:23: note: in expansion of macro 'DWB_SOURCE_SELECT__OPTC_DWB1_SOURCE_SELECT_MASK'
+      45 |         .field_name = reg_name ## __ ## field_name ## post_fix
+         |                       ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_optc.h:68:9: note: in expansion of macro 'SF'
+      68 |         SF(DWB_SOURCE_SELECT, OPTC_DWB1_SOURCE_SELECT, mask_sh)
+         |         ^~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:514:9: note: in expansion of macro 'TG_COMMON_MASK_SH_LIST_DCN201'
+     514 |         TG_COMMON_MASK_SH_LIST_DCN201(_MASK)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dcn/dcn_2_0_3_sh_mask.h:15730:111: note: (near initialization for 'tg_mask.OPTC_DWB1_SOURCE_SELECT')
+   15730 | #define DWB_SOURCE_SELECT__OPTC_DWB1_SOURCE_SELECT_MASK                                                       0x00000038L
+         |                                                                                                               ^~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_audio.h:45:23: note: in expansion of macro 'DWB_SOURCE_SELECT__OPTC_DWB1_SOURCE_SELECT_MASK'
+      45 |         .field_name = reg_name ## __ ## field_name ## post_fix
+         |                       ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_optc.h:68:9: note: in expansion of macro 'SF'
+      68 |         SF(DWB_SOURCE_SELECT, OPTC_DWB1_SOURCE_SELECT, mask_sh)
+         |         ^~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:514:9: note: in expansion of macro 'TG_COMMON_MASK_SH_LIST_DCN201'
+     514 |         TG_COMMON_MASK_SH_LIST_DCN201(_MASK)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:675:17: warning: no previous prototype for 'dcn201_aux_engine_create' [-Wmissing-prototypes]
+     675 | struct dce_aux *dcn201_aux_engine_create(
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:709:20: warning: no previous prototype for 'dcn201_i2c_hw_create' [-Wmissing-prototypes]
+     709 | struct dce_i2c_hw *dcn201_i2c_hw_create(
+         |                    ^~~~~~~~~~~~~~~~~~~~
+>> drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:792:22: warning: no previous prototype for 'dcn201_link_encoder_create' [-Wmissing-prototypes]
+     792 | struct link_encoder *dcn201_link_encoder_create(
+         |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:814:22: warning: no previous prototype for 'dcn201_clock_source_create' [-Wmissing-prototypes]
+     814 | struct clock_source *dcn201_clock_source_create(
+         |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:61:
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:247:52: warning: initialized field overwritten [-Woverride-init]
+     247 | #define DMU_BASE__INST0_SEG2                       0x000034C0
+         |                                                    ^~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:247:25: note: in expansion of macro 'DMU_BASE__INST0_SEG2'
+     247 | #define BASE_INNER(seg) DMU_BASE__INST0_SEG ## seg
+         |                         ^~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:249:19: note: in expansion of macro 'BASE_INNER'
+     249 | #define BASE(seg) BASE_INNER(seg)
+         |                   ^~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:252:29: note: in expansion of macro 'BASE'
+     252 |                 .reg_name = BASE(mm ## reg_name ## _BASE_IDX) +  \
+         |                             ^~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_hwseq.h:178:9: note: in expansion of macro 'SR'
+     178 |         SR(DCFCLK_CNTL), \
+         |         ^~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_hwseq.h:349:9: note: in expansion of macro 'HWSEQ_DCN_REG_LIST'
+     349 |         HWSEQ_DCN_REG_LIST(), \
+         |         ^~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:870:17: note: in expansion of macro 'HWSEQ_DCN201_REG_LIST'
+     870 |                 HWSEQ_DCN201_REG_LIST()
+         |                 ^~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:247:52: note: (near initialization for 'hwseq_reg.DCFCLK_CNTL')
+     247 | #define DMU_BASE__INST0_SEG2                       0x000034C0
+         |                                                    ^~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:247:25: note: in expansion of macro 'DMU_BASE__INST0_SEG2'
+     247 | #define BASE_INNER(seg) DMU_BASE__INST0_SEG ## seg
+         |                         ^~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:249:19: note: in expansion of macro 'BASE_INNER'
+     249 | #define BASE(seg) BASE_INNER(seg)
+         |                   ^~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:252:29: note: in expansion of macro 'BASE'
+     252 |                 .reg_name = BASE(mm ## reg_name ## _BASE_IDX) +  \
+         |                             ^~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_hwseq.h:178:9: note: in expansion of macro 'SR'
+     178 |         SR(DCFCLK_CNTL), \
+         |         ^~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_hwseq.h:349:9: note: in expansion of macro 'HWSEQ_DCN_REG_LIST'
+     349 |         HWSEQ_DCN_REG_LIST(), \
+         |         ^~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:870:17: note: in expansion of macro 'HWSEQ_DCN201_REG_LIST'
+     870 |                 HWSEQ_DCN201_REG_LIST()
+         |                 ^~~~~~~~~~~~~~~~~~~~~
+>> drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:909:6: warning: no previous prototype for 'dcn201_clock_source_destroy' [-Wmissing-prototypes]
+     909 | void dcn201_clock_source_destroy(struct clock_source **clk_src)
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+   In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:61:
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:129:29: warning: 'UVD0_BASE' defined but not used [-Wunused-const-variable=]
+     129 | static const struct IP_BASE UVD0_BASE            ={ { { { 0x00007800, 0x00007E00, 0, 0, 0 } },
+         |                             ^~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:123:29: warning: 'UMC0_BASE' defined but not used [-Wunused-const-variable=]
+     123 | static const struct IP_BASE UMC0_BASE            ={ { { { 0x00014000, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:117:29: warning: 'THM_BASE' defined but not used [-Wunused-const-variable=]
+     117 | static const struct IP_BASE THM_BASE            ={ { { { 0x00016600, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:111:29: warning: 'SMUIO_BASE' defined but not used [-Wunused-const-variable=]
+     111 | static const struct IP_BASE SMUIO_BASE            ={ { { { 0x00016800, 0x00016A00, 0, 0, 0 } },
+         |                             ^~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:105:29: warning: 'OSSSYS_BASE' defined but not used [-Wunused-const-variable=]
+     105 | static const struct IP_BASE OSSSYS_BASE            ={ { { { 0x000010A0, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:99:29: warning: 'NBIO_BASE' defined but not used [-Wunused-const-variable=]
+      99 | static const struct IP_BASE NBIO_BASE            ={ { { { 0x00000000, 0x00000014, 0x00000D20, 0x00010400, 0 } },
+         |                             ^~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:93:29: warning: 'MP1_BASE' defined but not used [-Wunused-const-variable=]
+      93 | static const struct IP_BASE MP1_BASE            ={ { { { 0x00016000, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:87:29: warning: 'MP0_BASE' defined but not used [-Wunused-const-variable=]
+      87 | static const struct IP_BASE MP0_BASE            ={ { { { 0x00016000, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:81:29: warning: 'MMHUB_BASE' defined but not used [-Wunused-const-variable=]
+      81 | static const struct IP_BASE MMHUB_BASE            ={ { { { 0x0001A000, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:75:29: warning: 'HDP_BASE' defined but not used [-Wunused-const-variable=]
+      75 | static const struct IP_BASE HDP_BASE            ={ { { { 0x00000F20, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:69:29: warning: 'GC_BASE' defined but not used [-Wunused-const-variable=]
+      69 | static const struct IP_BASE GC_BASE            ={ { { { 0x00001260, 0x0000A000, 0, 0, 0 } },
+         |                             ^~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:63:29: warning: 'FUSE_BASE' defined but not used [-Wunused-const-variable=]
+      63 | static const struct IP_BASE FUSE_BASE            ={ { { { 0x00017400, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:57:29: warning: 'DMU_BASE' defined but not used [-Wunused-const-variable=]
+      57 | static const struct IP_BASE DMU_BASE            ={ { { { 0x00000012, 0x000000C0, 0x000034C0, 0x00009000, 0 } },
+         |                             ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:51:29: warning: 'DF_BASE' defined but not used [-Wunused-const-variable=]
+      51 | static const struct IP_BASE DF_BASE            ={ { { { 0x00007000, 0, 0, 0, 0 } },
+         |                             ^~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:45:29: warning: 'CLK_BASE' defined but not used [-Wunused-const-variable=]
+      45 | static const struct IP_BASE CLK_BASE            ={ { { { 0x00016C00, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../include/cyan_skillfish_ip_offset.h:39:29: warning: 'ATHUB_BASE' defined but not used [-Wunused-const-variable=]
+      39 | static const struct IP_BASE ATHUB_BASE            ={ { { { 0x00000C00, 0, 0, 0, 0 } },
+         |                             ^~~~~~~~~~
+..
 
-Does it sound too permissive to you ?
 
-Thanks
-Olivier
+vim +/dcn201_update_clocks_vbios +79 drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn201/dcn201_clk_mgr.c
+
+3f68c01be9a222 Zhan Liu 2021-09-25   78  
+3f68c01be9a222 Zhan Liu 2021-09-25  @79  void dcn201_update_clocks_vbios(struct clk_mgr *clk_mgr,
+3f68c01be9a222 Zhan Liu 2021-09-25   80  			struct dc_state *context,
+3f68c01be9a222 Zhan Liu 2021-09-25   81  			bool safe_to_lower)
+3f68c01be9a222 Zhan Liu 2021-09-25   82  {
+3f68c01be9a222 Zhan Liu 2021-09-25   83  	struct dc_clocks *new_clocks = &context->bw_ctx.bw.dcn.clk;
+3f68c01be9a222 Zhan Liu 2021-09-25   84  
+3f68c01be9a222 Zhan Liu 2021-09-25   85  	bool update_dppclk = false;
+3f68c01be9a222 Zhan Liu 2021-09-25   86  	bool update_dispclk = false;
+3f68c01be9a222 Zhan Liu 2021-09-25   87  
+3f68c01be9a222 Zhan Liu 2021-09-25   88  	if (should_set_clock(safe_to_lower, new_clocks->dppclk_khz, clk_mgr->clks.dppclk_khz)) {
+3f68c01be9a222 Zhan Liu 2021-09-25   89  		clk_mgr->clks.dppclk_khz = new_clocks->dppclk_khz;
+3f68c01be9a222 Zhan Liu 2021-09-25   90  		update_dppclk = true;
+3f68c01be9a222 Zhan Liu 2021-09-25   91  	}
+3f68c01be9a222 Zhan Liu 2021-09-25   92  
+3f68c01be9a222 Zhan Liu 2021-09-25   93  	if (should_set_clock(safe_to_lower, new_clocks->dispclk_khz, clk_mgr->clks.dispclk_khz)) {
+3f68c01be9a222 Zhan Liu 2021-09-25   94  		clk_mgr->clks.dispclk_khz = new_clocks->dispclk_khz;
+3f68c01be9a222 Zhan Liu 2021-09-25   95  		update_dispclk = true;
+3f68c01be9a222 Zhan Liu 2021-09-25   96  	}
+3f68c01be9a222 Zhan Liu 2021-09-25   97  
+3f68c01be9a222 Zhan Liu 2021-09-25   98  	if (update_dppclk || update_dispclk) {
+3f68c01be9a222 Zhan Liu 2021-09-25   99  		struct bp_set_dce_clock_parameters dce_clk_params;
+3f68c01be9a222 Zhan Liu 2021-09-25  100  		struct dc_bios *bp = clk_mgr->ctx->dc_bios;
+3f68c01be9a222 Zhan Liu 2021-09-25  101  
+3f68c01be9a222 Zhan Liu 2021-09-25  102  		if (update_dispclk) {
+3f68c01be9a222 Zhan Liu 2021-09-25  103  			memset(&dce_clk_params, 0, sizeof(dce_clk_params));
+3f68c01be9a222 Zhan Liu 2021-09-25  104  			dce_clk_params.target_clock_frequency = new_clocks->dispclk_khz;
+3f68c01be9a222 Zhan Liu 2021-09-25  105  			dce_clk_params.pll_id = CLOCK_SOURCE_ID_DFS;
+3f68c01be9a222 Zhan Liu 2021-09-25  106  			dce_clk_params.clock_type = DCECLOCK_TYPE_DISPLAY_CLOCK;
+3f68c01be9a222 Zhan Liu 2021-09-25  107  			bp->funcs->set_dce_clock(bp, &dce_clk_params);
+3f68c01be9a222 Zhan Liu 2021-09-25  108  		}
+3f68c01be9a222 Zhan Liu 2021-09-25  109  		/* currently there is no DCECLOCK_TYPE_DPPCLK type defined in VBIOS interface.
+3f68c01be9a222 Zhan Liu 2021-09-25  110  		 * vbios program DPPCLK to the same DispCLK limitation
+3f68c01be9a222 Zhan Liu 2021-09-25  111  		 */
+3f68c01be9a222 Zhan Liu 2021-09-25  112  	}
+3f68c01be9a222 Zhan Liu 2021-09-25  113  }
+3f68c01be9a222 Zhan Liu 2021-09-25  114  
+
+:::::: The code at line 79 was first introduced by commit
+:::::: 3f68c01be9a2227de1e190317fe34a6fb835a094 drm/amd/display: add cyan_skillfish display support
+
+:::::: TO: Zhan Liu <zhan.liu@amd.com>
+:::::: CC: Alex Deucher <alexander.deucher@amd.com>
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
