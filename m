@@ -2,106 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C46C45E88D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D83F045E896
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:41:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353985AbhKZHmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 02:42:13 -0500
-Received: from mout.kundenserver.de ([217.72.192.74]:35271 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353785AbhKZHkM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 02:40:12 -0500
-Received: from mail-wr1-f50.google.com ([209.85.221.50]) by
- mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MDhth-1mjfNE1AfP-00Aldj; Fri, 26 Nov 2021 08:36:59 +0100
-Received: by mail-wr1-f50.google.com with SMTP id d24so16767234wra.0;
-        Thu, 25 Nov 2021 23:36:59 -0800 (PST)
-X-Gm-Message-State: AOAM532uLvDwSqnJJPhm3IpzqjnOI19vTLKJc3EPUtZ4+UrFqTyLTQ3p
-        CweDxlMhJs4wRj35qzhrL4EHNhVNwHn8YhycXu0=
-X-Google-Smtp-Source: ABdhPJxSj0rezcz4IfyWjfYsOWvMXGXNMnkGvFoWgiLLP3fW4pdm3tA67p68pITqojNXldDVfKE4N/+eM/LzDnTfLeI=
-X-Received: by 2002:a05:6000:110b:: with SMTP id z11mr12328335wrw.32.1637912218852;
- Thu, 25 Nov 2021 23:36:58 -0800 (PST)
+        id S1359285AbhKZHpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 02:45:01 -0500
+Received: from pegase2.c-s.fr ([93.17.235.10]:48253 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1359299AbhKZHnA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 02:43:00 -0500
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4J0mq711b1z9sSM;
+        Fri, 26 Nov 2021 08:39:47 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id PwVp3kA8u1IL; Fri, 26 Nov 2021 08:39:47 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4J0mq70CFlz9sS3;
+        Fri, 26 Nov 2021 08:39:47 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id EA8DB8B77D;
+        Fri, 26 Nov 2021 08:39:46 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id qMo3RkB0FNgG; Fri, 26 Nov 2021 08:39:46 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.204.6])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A110D8B763;
+        Fri, 26 Nov 2021 08:39:46 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 1AQ7ddvm428780
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Fri, 26 Nov 2021 08:39:39 +0100
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 1AQ7daHR428778;
+        Fri, 26 Nov 2021 08:39:36 +0100
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Sachin Sant <sachinp@linux.vnet.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: [PATCH] powerpc/code-patching: Relax verification of patchability
+Date:   Fri, 26 Nov 2021 08:39:23 +0100
+Message-Id: <68d7d57675e0963fe5e2c4b84b0cb2390c78638c.1637912333.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-References: <20211126060024.3290177-1-alistair.francis@opensource.wdc.com> <20211126060024.3290177-4-alistair.francis@opensource.wdc.com>
-In-Reply-To: <20211126060024.3290177-4-alistair.francis@opensource.wdc.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 26 Nov 2021 08:36:43 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3QT+hu-nPBn=nBMYO50Tn4qenLNox7qEAg33KUPtAXSg@mail.gmail.com>
-Message-ID: <CAK8P3a3QT+hu-nPBn=nBMYO50Tn4qenLNox7qEAg33KUPtAXSg@mail.gmail.com>
-Subject: Re: [PATCH v3 4/6] selftests: futex: Add support for 32-bit systems
- with 64-bit time_t
-To:     Alistair Francis <alistair.francis@opensource.wdc.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alistair Francis <alistair23@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alistair Francis <alistair.francis@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:yidijYki8m7Z5c3Wmn5yuCSxsj1OTWmNgnOXelDww7nBoWyNem2
- FQ5IXshkLlMQMsm+FAtacU/KYIBSSeJj9JUj65fxuJecGn1VW/LxCkQAaOTsLkrUs36dq+0
- eVRWnb7Z7Kz86LhtJDpJhxJLUuub68p05qtyKpd8EYN7HpUBK6OjHqgf5/AHOIUmCOSD2+V
- /Vc6ExNlhSSofIe+XOlDQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:oBRD5kkSWDw=:U0uUcwd592I2duZ3ubroZr
- +9cZDbnW1PaUD8W5JXci4rhmiDe1ySlAw1gdeFNkWkDfqCDYYQZtQ2N3XZ+DQEqyCY6+nngRV
- MqrFuFIs0nW9KbzaiIrUdwshupiqd2Vowk5QHnXj7LdZfG6N1+wMpwTV5fofJezXPA/c/WTlr
- M/CFdxr5kj6MT22LBGFPHkecVMS3UZFfV7yxxZlJYYOJFzgyUK2CbaePLMlcnIkY2lDO6eZI1
- hLhpO+5h9s/ngq+oz1Ou2HA1KgpTC4mZbKaBn6/BBBWI/vW4zVJgdcpWdz0xplksPiYPWUD4Q
- eq6mQn6yW5pIECsKe7nYX8g5UOIfZ9IN8/M8pwy2XIzR9+ql6KK1ezLQPFLezT7qgr5sUDFhv
- LYclgcATyTAwhqeHKIX9clqGujOkwqGUAxmI8YSFlHtMP2ZYg1YOGDGEE4z41htK5HZw9gJLn
- flxtQx3A6vg8k7qmrpksncQpi84Cyi7ghVr0LnsjQbt80wcTgklNfLCIxdwBKGxRfVuH7pd0Z
- RtLLwf8cN0tYVXvCEBKuRwTEDS8OniPsWSNaBXSYT6G0Ij0w0PKuOpk8TW2XhPCiV5RSnUDij
- CatFFLEa+WzmorKtUaweezEMX30EM+62VJ/dY9PaHR1NW7/e3fS1MI7+2a+yZ/g/joG4kp/iF
- YBqaY0So/m+IcH4PwRazuvliW7mzL5ViMPKSixtlFSf7SarGtqCPNgShI6169HbQ9gZU45ssh
- Z5ZqxUXyNWpgjG/3NnJ9Vki83RJKfOJKTghPqYWmu268PcmvA3Qhsrz9dHvFwvGS1X9EOsp6i
- 8wX5+GB0DLhZJiqKaFRvRaRqijjVSKwJavVtwsq2L0NopPalvU=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1637912362; l=1793; s=20211009; h=from:subject:message-id; bh=uH60GDNc5x57OmrWqmFlrPAq1iGxm4Gf783DcGypKvc=; b=GmcP09nvIVJNypv1zTf7MfA8mUoT2I0qz8rQ5QQuaVgZKz0tlf8kN7ew318Jw5FIiuar3phHZAcq /XuW2ppeCKeEjHUFSWwiAsbMvULWlYFKbi9tDheojeOGiGdndDqN
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 7:00 AM Alistair Francis
-<alistair.francis@opensource.wdc.com> wrote:
->
-> From: Alistair Francis <alistair.francis@wdc.com>
->
-> Using the new __kernel_futex_syscall*() functions let's add support for
-> 32-bit systems with a 64-bit time_t. We can just direclty call the
-> publically exposed __kernel_futex_syscall_timeout() and
-> __kernel_futex_syscall_nr_requeue() functions to do this.
->
-> Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
-> ---
->  tools/testing/selftests/futex/functional/futex_requeue_pi.c | 2 +-
->  tools/testing/selftests/futex/include/futextest.h           | 5 +++--
->  2 files changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/testing/selftests/futex/functional/futex_requeue_pi.c b/tools/testing/selftests/futex/functional/futex_requeue_pi.c
-> index 1ee5518ee6b7..d3673996fed4 100644
-> --- a/tools/testing/selftests/futex/functional/futex_requeue_pi.c
-> +++ b/tools/testing/selftests/futex/functional/futex_requeue_pi.c
-> @@ -294,7 +294,7 @@ int unit_test(int broadcast, long lock, int third_party_owner, long timeout_ns)
->                 secs = (ts.tv_nsec + timeout_ns) / 1000000000;
->                 ts.tv_nsec = ((int64_t)ts.tv_nsec + timeout_ns) % 1000000000;
->                 ts.tv_sec += secs;
-> -               info("ts.tv_sec  = %ld\n", ts.tv_sec);
-> +               info("ts.tv_sec  = %lld\n", ts.tv_sec);
->                 info("ts.tv_nsec = %ld\n", ts.tv_nsec);
->                 tsp = &ts;
->         }
+Commit 8b8a8f0ab3f5 ("powerpc/code-patching: Improve verification of
+patchability") introduced a stricter verification of the patched
+area by checking it is proper kernel text.
 
-I think this causes a warning on 64-bit builds now, you have to add a
-cast to 'long long'
-to make it work everywhere.
+But as least two usages of patch_instruction() fall outside:
+- Code patching selftests, which use stack and vmalloc space.
+- Ftrace
 
-         Arnd
+So for the time being, partially revert commit 8b8a8f0ab3f5 and add
+a onetime warning:
+
+  Running code patching self-tests ...
+  patch_instruction() called on invalid text address 0xe1011e58 from test_code_patching+0x34/0xd6c
+
+Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Fixes: 8b8a8f0ab3f5 ("powerpc/code-patching: Improve verification of patchability")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/lib/code-patching.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/arch/powerpc/lib/code-patching.c b/arch/powerpc/lib/code-patching.c
+index 1dd636a85cc1..c87eea773930 100644
+--- a/arch/powerpc/lib/code-patching.c
++++ b/arch/powerpc/lib/code-patching.c
+@@ -190,9 +190,13 @@ static int do_patch_instruction(u32 *addr, struct ppc_inst instr)
+ int patch_instruction(u32 *addr, struct ppc_inst instr)
+ {
+ 	/* Make sure we aren't patching a freed init section */
+-	if (!kernel_text_address((unsigned long)addr))
++	if (system_state >= SYSTEM_FREEING_INITMEM && init_section_contains(addr, 4))
+ 		return 0;
+ 
++	if (!kernel_text_address((unsigned long)addr))
++		pr_warn_once("%s() called on invalid text address 0x%p from %pS\n",
++			     __func__, addr, __builtin_return_address(0));
++
+ 	return do_patch_instruction(addr, instr);
+ }
+ NOKPROBE_SYMBOL(patch_instruction);
+-- 
+2.33.1
+
