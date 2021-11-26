@@ -2,360 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A484445EF8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:05:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B28B545EF97
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353488AbhKZOIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 09:08:23 -0500
-Received: from mga03.intel.com ([134.134.136.65]:44080 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237803AbhKZOGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 09:06:22 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="235607167"
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
-   d="scan'208";a="235607167"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 06:03:09 -0800
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
-   d="scan'208";a="498409922"
-Received: from oletychx-mobl.ger.corp.intel.com (HELO [10.252.50.138]) ([10.252.50.138])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 06:03:06 -0800
-Message-ID: <cc2c3e2c-6993-b742-53d6-c6078a3ced09@linux.intel.com>
-Date:   Fri, 26 Nov 2021 15:03:04 +0100
+        id S1377592AbhKZOMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 09:12:12 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:51284 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236190AbhKZOKL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 09:10:11 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 7BE081FD38;
+        Fri, 26 Nov 2021 14:06:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637935617; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sJa//bALhDjnLcw9oy0p5+f1aMnGtgYvTAX2/sbsreo=;
+        b=VrpzrAqvkXgaWsuCy1q3R2dJ66OyEj/8vUiOovjbL36hCUOWxE9BBio59XlN0W6VQOMMpT
+        3fXbhA4JHQJ66f+RaC3+1fMsAPb02bB3yZF6YZeIYfVUN6puAvoy79zi8+a9xTXGRl6GCv
+        1g9+msZ+19T4OYmv05W3cDJKdI4T7Yw=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 61A82A3B83;
+        Fri, 26 Nov 2021 14:06:57 +0000 (UTC)
+Date:   Fri, 26 Nov 2021 15:06:54 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Miroslav Benes <mbenes@suse.cz>
+Cc:     jpoimboe@redhat.com, jikos@kernel.org, joe.lawrence@redhat.com,
+        peterz@infradead.org, linux-kernel@vger.kernel.org,
+        live-patching@vger.kernel.org, shuah@kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 3/3] selftests/livepatch: Test of the API for specifying
+ functions to search for on a stack
+Message-ID: <YaDp/uVdBuIAIs71@alley>
+References: <20211119090327.12811-1-mbenes@suse.cz>
+ <20211119090327.12811-4-mbenes@suse.cz>
+ <YZ+gIa4dG2uPvSlY@alley>
+ <alpine.LSU.2.21.2111261010010.6268@pobox.suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.3.2
-Subject: Re: [PATCH v7 2/6] drm/sprd: add Unisoc's drm kms master
-Content-Language: en-US
-To:     Kevin Tang <kevin3.tang@gmail.com>, mripard@kernel.org,
-        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
-        robh+dt@kernel.org, mark.rutland@arm.com, pony1.wu@gmail.com
-Cc:     orsonzhai@gmail.com, zhang.lyra@gmail.com,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-References: <20211025093418.20545-1-kevin3.tang@gmail.com>
- <20211025093418.20545-3-kevin3.tang@gmail.com>
-From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-In-Reply-To: <20211025093418.20545-3-kevin3.tang@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.21.2111261010010.6268@pobox.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25-10-2021 11:34, Kevin Tang wrote:
-> Adds drm support for the Unisoc's display subsystem.
->
-> This is drm kms driver, this driver provides support for the
-> application framework in Android, Yocto and more.
->
-> Application framework can access Unisoc's display internal
-> peripherals through libdrm or libkms, it's test ok by modetest
-> (DRM/KMS test tool) and Android HWComposer.
->
-> Cc: Orson Zhai <orsonzhai@gmail.com>
-> Cc: Chunyan Zhang <zhang.lyra@gmail.com>
-> Signed-off-by: Kevin Tang <kevin.tang@unisoc.com>
->
-> v4:
->   - Move the devm_drm_dev_alloc to master_ops->bind function.
->   - The managed drmm_mode_config_init() it is no longer necessary for drivers to explicitly call drm_mode_config_cleanup, so delete it.
->
-> v5:
->   - Remove subdir-ccflgas-y for Makefile.
->   - Keep the selects sorted by alphabet for Kconfig.
-> ---
->  drivers/gpu/drm/Kconfig         |   2 +
->  drivers/gpu/drm/Makefile        |   1 +
->  drivers/gpu/drm/sprd/Kconfig    |  11 ++
->  drivers/gpu/drm/sprd/Makefile   |   3 +
->  drivers/gpu/drm/sprd/sprd_drm.c | 203 ++++++++++++++++++++++++++++++++
->  drivers/gpu/drm/sprd/sprd_drm.h |  16 +++
->  6 files changed, 236 insertions(+)
->  create mode 100644 drivers/gpu/drm/sprd/Kconfig
->  create mode 100644 drivers/gpu/drm/sprd/Makefile
->  create mode 100644 drivers/gpu/drm/sprd/sprd_drm.c
->  create mode 100644 drivers/gpu/drm/sprd/sprd_drm.h
->
-> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-> index 2a926d0de..8220be1b5 100644
-> --- a/drivers/gpu/drm/Kconfig
-> +++ b/drivers/gpu/drm/Kconfig
-> @@ -380,6 +380,8 @@ source "drivers/gpu/drm/xlnx/Kconfig"
->  
->  source "drivers/gpu/drm/gud/Kconfig"
->  
-> +source "drivers/gpu/drm/sprd/Kconfig"
-> +
->  config DRM_HYPERV
->  	tristate "DRM Support for Hyper-V synthetic video device"
->  	depends on DRM && PCI && MMU && HYPERV
-> diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
-> index 0dff40bb8..ec2756806 100644
-> --- a/drivers/gpu/drm/Makefile
-> +++ b/drivers/gpu/drm/Makefile
-> @@ -127,3 +127,4 @@ obj-$(CONFIG_DRM_TIDSS) += tidss/
->  obj-y			+= xlnx/
->  obj-y			+= gud/
->  obj-$(CONFIG_DRM_HYPERV) += hyperv/
-> +obj-$(CONFIG_DRM_SPRD) += sprd/
-> diff --git a/drivers/gpu/drm/sprd/Kconfig b/drivers/gpu/drm/sprd/Kconfig
-> new file mode 100644
-> index 000000000..726c3e76d
-> --- /dev/null
-> +++ b/drivers/gpu/drm/sprd/Kconfig
-> @@ -0,0 +1,11 @@
-> +config DRM_SPRD
-> +	tristate "DRM Support for Unisoc SoCs Platform"
-> +	depends on ARCH_SPRD || COMPILE_TEST
-> +	depends on DRM && OF
-> +	select DRM_GEM_CMA_HELPER
-> +	select DRM_KMS_CMA_HELPER
-> +	select DRM_KMS_HELPER
-> +	help
-> +	  Choose this option if you have a Unisoc chipset.
-> +	  If M is selected the module will be called sprd_drm.
-> +
-> diff --git a/drivers/gpu/drm/sprd/Makefile b/drivers/gpu/drm/sprd/Makefile
-> new file mode 100644
-> index 000000000..9850f00b8
-> --- /dev/null
-> +++ b/drivers/gpu/drm/sprd/Makefile
-> @@ -0,0 +1,3 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +obj-y := sprd_drm.o
-> diff --git a/drivers/gpu/drm/sprd/sprd_drm.c b/drivers/gpu/drm/sprd/sprd_drm.c
-> new file mode 100644
-> index 000000000..bb87f28f2
-> --- /dev/null
-> +++ b/drivers/gpu/drm/sprd/sprd_drm.c
-> @@ -0,0 +1,203 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2020 Unisoc Inc.
-> + */
-> +
-> +#include <linux/component.h>
-> +#include <linux/dma-mapping.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-> +#include <linux/of_graph.h>
-> +#include <linux/of_platform.h>
-> +
-> +#include <drm/drm_atomic_helper.h>
-> +#include <drm/drm_crtc_helper.h>
-> +#include <drm/drm_drv.h>
-> +#include <drm/drm_gem_cma_helper.h>
-> +#include <drm/drm_gem_framebuffer_helper.h>
-> +#include <drm/drm_of.h>
-> +#include <drm/drm_probe_helper.h>
-> +#include <drm/drm_vblank.h>
-> +
-> +#include "sprd_drm.h"
-> +
-> +#define DRIVER_NAME	"sprd"
-> +#define DRIVER_DESC	"Spreadtrum SoCs' DRM Driver"
-> +#define DRIVER_DATE	"20200201"
-> +#define DRIVER_MAJOR	1
-> +#define DRIVER_MINOR	0
-> +
-> +static const struct drm_mode_config_helper_funcs sprd_drm_mode_config_helper = {
-> +	.atomic_commit_tail = drm_atomic_helper_commit_tail_rpm,
-> +};
-> +
-> +static const struct drm_mode_config_funcs sprd_drm_mode_config_funcs = {
-> +	.fb_create = drm_gem_fb_create,
-> +	.atomic_check = drm_atomic_helper_check,
-> +	.atomic_commit = drm_atomic_helper_commit,
-> +};
-> +
-> +static void sprd_drm_mode_config_init(struct drm_device *drm)
-> +{
-> +	drm->mode_config.min_width = 0;
-> +	drm->mode_config.min_height = 0;
-> +	drm->mode_config.max_width = 8192;
-> +	drm->mode_config.max_height = 8192;
-> +	drm->mode_config.allow_fb_modifiers = true;
-> +
-> +	drm->mode_config.funcs = &sprd_drm_mode_config_funcs;
-> +	drm->mode_config.helper_private = &sprd_drm_mode_config_helper;
-> +}
-> +
-> +DEFINE_DRM_GEM_CMA_FOPS(sprd_drm_fops);
-> +
-> +static struct drm_driver sprd_drm_drv = {
-> +	.driver_features	= DRIVER_GEM | DRIVER_MODESET | DRIVER_ATOMIC,
-> +	.fops			= &sprd_drm_fops,
-> +
-> +	/* GEM Operations */
-> +	DRM_GEM_CMA_DRIVER_OPS,
-> +
-> +	.name			= DRIVER_NAME,
-> +	.desc			= DRIVER_DESC,
-> +	.date			= DRIVER_DATE,
-> +	.major			= DRIVER_MAJOR,
-> +	.minor			= DRIVER_MINOR,
-> +};
-> +
-> +static int sprd_drm_bind(struct device *dev)
-> +{
-> +	struct platform_device *pdev = to_platform_device(dev);
-> +	struct drm_device *drm;
-> +	struct sprd_drm *sprd;
-> +	int ret;
-> +
-> +	sprd = devm_drm_dev_alloc(dev, &sprd_drm_drv, struct sprd_drm, drm);
-> +	if (IS_ERR(sprd))
-> +		return PTR_ERR(sprd);
-> +
-> +	drm = &sprd->drm;
-> +	platform_set_drvdata(pdev, drm);
-> +
-> +	ret = drmm_mode_config_init(drm);
-> +	if (ret)
-> +		return ret;
-> +
-> +	sprd_drm_mode_config_init(drm);
-> +
-> +	/* bind and init sub drivers */
-> +	ret = component_bind_all(drm->dev, drm);
-> +	if (ret) {
-> +		drm_err(drm, "failed to bind all component.\n");
-> +		return ret;
-> +	}
-> +
-> +	/* vblank init */
-> +	ret = drm_vblank_init(drm, drm->mode_config.num_crtc);
-> +	if (ret) {
-> +		drm_err(drm, "failed to initialize vblank.\n");
-> +		goto err_unbind_all;
-> +	}
-> +
-> +	/* reset all the states of crtc/plane/encoder/connector */
-> +	drm_mode_config_reset(drm);
-> +
-> +	/* init kms poll for handling hpd */
-> +	drm_kms_helper_poll_init(drm);
-> +
-> +	ret = drm_dev_register(drm, 0);
-> +	if (ret < 0)
-> +		goto err_kms_helper_poll_fini;
-> +
-> +	return 0;
-> +
-> +err_kms_helper_poll_fini:
-> +	drm_kms_helper_poll_fini(drm);
-> +err_unbind_all:
-> +	component_unbind_all(drm->dev, drm);
-> +	return ret;
-> +}
-> +
-> +static void sprd_drm_unbind(struct device *dev)
-> +{
-> +	struct drm_device *drm = dev_get_drvdata(dev);
-> +
-> +	drm_dev_unregister(drm);
-> +
-> +	drm_kms_helper_poll_fini(drm);
-> +
-> +	component_unbind_all(drm->dev, drm);
-> +}
-> +
-> +static const struct component_master_ops drm_component_ops = {
-> +	.bind = sprd_drm_bind,
-> +	.unbind = sprd_drm_unbind,
-> +};
-> +
-> +static int compare_of(struct device *dev, void *data)
-> +{
-> +	return dev->of_node == data;
-> +}
-> +
-> +static int sprd_drm_probe(struct platform_device *pdev)
-> +{
-> +	return drm_of_component_probe(&pdev->dev, compare_of, &drm_component_ops);
-> +}
-> +
-> +static int sprd_drm_remove(struct platform_device *pdev)
-> +{
-> +	component_master_del(&pdev->dev, &drm_component_ops);
-> +	return 0;
-> +}
-> +
-> +static void sprd_drm_shutdown(struct platform_device *pdev)
-> +{
-> +	struct drm_device *drm = platform_get_drvdata(pdev);
-> +
-> +	if (!drm) {
-> +		drm_warn(drm, "drm device is not available, no shutdown\n");
-> +		return;
-> +	}
-> +
-> +	drm_atomic_helper_shutdown(drm);
-> +}
-> +
-> +static const struct of_device_id drm_match_table[] = {
-> +	{ .compatible = "sprd,display-subsystem", },
-> +	{ /* sentinel */ },
-> +};
-> +MODULE_DEVICE_TABLE(of, drm_match_table);
-> +
-> +static struct platform_driver sprd_drm_driver = {
-> +	.probe = sprd_drm_probe,
-> +	.remove = sprd_drm_remove,
-> +	.shutdown = sprd_drm_shutdown,
-> +	.driver = {
-> +		.name = "sprd-drm-drv",
-> +		.of_match_table = drm_match_table,
-> +	},
-> +};
-> +
-> +static struct platform_driver *sprd_drm_drivers[]  = {
-> +	&sprd_drm_driver,
-> +};
-> +
-> +static int __init sprd_drm_init(void)
-> +{
-> +	return platform_register_drivers(sprd_drm_drivers,
-> +					ARRAY_SIZE(sprd_drm_drivers));
-> +}
-> +
-> +static void __exit sprd_drm_exit(void)
-> +{
-> +	platform_unregister_drivers(sprd_drm_drivers,
-> +				    ARRAY_SIZE(sprd_drm_drivers));
-> +}
-> +
-> +module_init(sprd_drm_init);
-> +module_exit(sprd_drm_exit);
-> +
-> +MODULE_AUTHOR("Leon He <leon.he@unisoc.com>");
-> +MODULE_AUTHOR("Kevin Tang <kevin.tang@unisoc.com>");
-> +MODULE_DESCRIPTION("Unisoc DRM KMS Master Driver");
-> +MODULE_LICENSE("GPL v2");
-> diff --git a/drivers/gpu/drm/sprd/sprd_drm.h b/drivers/gpu/drm/sprd/sprd_drm.h
-> new file mode 100644
-> index 000000000..9781fd591
-> --- /dev/null
-> +++ b/drivers/gpu/drm/sprd/sprd_drm.h
-> @@ -0,0 +1,16 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2020 Unisoc Inc.
-> + */
-> +
-> +#ifndef _SPRD_DRM_H_
-> +#define _SPRD_DRM_H_
-> +
-> +#include <drm/drm_atomic.h>
-> +#include <drm/drm_print.h>
-> +
-> +struct sprd_drm {
-> +	struct drm_device drm;
-> +};
+On Fri 2021-11-26 10:20:54, Miroslav Benes wrote:
+> On Thu, 25 Nov 2021, Petr Mladek wrote:
+> 
+> > On Fri 2021-11-19 10:03:27, Miroslav Benes wrote:
+> > > Add a test for the API which allows the user to specify functions which
+> > > are then searched for on any tasks's stack during a transition process.
+> > > 
+> > The approach with debugfs is an interesting trick. Though, I slightly
+> > prefer using the scheduled work. The workqueue API looks less tricky
+> > to me than sysfs/debugfs API. Also it does not block the module
+> > in the init() callback[*]. But I might be biased.
+> 
+> It seemed to me that debugfs gave us more control over the process than 
+> workqueues, but I do not really care. Could you explain the blocking in 
+> the init callback? I do not follow.
 
-I've seen this in the patch adding sprd_plane too, are you planning to extend both structs?
+Good question about the blocking! Please, forget it. I am not sure
+why I thought that the module might get blocked in the module_init()
+script.
 
-~Maarten
 
+> > Anyway, it might make sense to use the same trick in both situations.
+> > It would make it easier to maintain the test modules.
+> 
+> True. So I will rewrite it to workqueues as you are proposing below.
+> 
+> > [*] There is actually a race in the workqueue approach. The module
+> > init() callback should wait until the work is really scheduled
+> > and sleeping. It might be achieved by similar hand-shake like
+> > with @block_transition variable. Or completion API might be
+> > even more elegant.
+> > 
+> > 
+> > > +	pr_info("%s exit\n", __func__);
+> > > +}
+> > > +
+> > > +static noinline void child2_function(void)
+> > > +{
+> > > +	pr_info("%s\n", __func__);
+> > > +}
+> > > +
+> > > +static noinline void parent_function(void)
+> > > +{
+> > > +	pr_info("%s enter\n", __func__);
+> > > +	child_function();
+> > > +	child2_function();
+> > 
+> > This would deserve some explanation what we try to simulate here
+> > and how it is achieved. It is not easy for me even with the background
+> > that I have freshly in my mind.
+> > 
+> > Also I think about more descriptive names ;-)
+> 
+> Hey, I thought it was self-explaining :). So, yes, I started with the 
+> example given in the .fixup thread, but it is not really tied to .cold 
+> section, jumps or whatever. The setup is just used to test a new API. 
+> Moreover, the .fixup example is just a one scenario the new API tries to 
+> solve.
+
+OK, single child() function should be enough for testing the behavior.
+We might sleep/wait in the parent().
+
+I think that I was confused by the two child() functions. It looked
+like sleeping in a child function was important. And the "same"
+name of the two children did not help much to understand and
+distinguish the purpose.
+
+> What you propose below, that is function names and comments, is a bit 
+> confusing for me. Especially if I did not know anything about the original 
+> issue (which will be the case in a couple of weeks when I forget 
+> everything).
+> 
+> So I think it I will stick to brevity unless you or someone else really 
+> insist.
+
+No, I do not resist on the complicated exmaple. When thinking about
+it, the easier test case the better. It should be enough to describe
+the real-life purpose of the API in the patch that introduces the API.
+
+> I can improve tests description in 
+> tools/testing/selftests/livepatch/test-func-stack.sh if it helps anything.
+
+Yes, please. I miss some top-level descriptions of the tested
+functionality, something like:
+
+# Tests for "bla bla" feature.
+# It allows to block transition of a process when it is running
+# parent() function and only the child() function is livepatched.
+
+# This test does not use the feature. The transition finishes even
+# before parent() exits.
+
+# In this test case, the livepatch is instructed to check also
+# parent() on stack. The transition must not finish before
+# parent() exists.
+
+It would be nice to have these high-level descriptions even in
+the test modules.
+
+Best Regards,
+Petr
