@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F204445E3F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 02:20:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E6CC45E53D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 03:39:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237959AbhKZBYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 20:24:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243791AbhKZBWI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 20:22:08 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F0CC06175D
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 17:17:30 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id n66so15767782oia.9
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 17:17:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Od+ySjjFhxRYMYxmCjjF/atFp38NKQiXX3R9mG25u1U=;
-        b=rlaNmopmdxpmRhI68bh9xfiePxM4NRw3sd2puoAGv1UUCg+x//QQ8mlRn0P0A97ELO
-         iLW82dW1jC90Tmmc52xSGvLME0s+tzAMwyt03JEhV7UREahtYafqdEiJ4/1djK+3ZePH
-         uWMa3sc+6hBmilVZjLOzJBl8VXh3yB36nwdq6nJPS0RHVqtWaX7KnYKmm/MhM8MYlFt/
-         U3u0Ve9k5/XkJQiAgklfCrkW9Dytey2eth/ItjPVL02L2oGvdxrDkxcoL1o2fp07MGIs
-         zBCfY3HNb7PiZEDIxSMSgU3zIKzQ8L6DcDq08NrKa7sakmt8i+vmUk7hqGhKQKu5vQCN
-         tXzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Od+ySjjFhxRYMYxmCjjF/atFp38NKQiXX3R9mG25u1U=;
-        b=26zlu94szwSJ93aSlvjBH31AsU3T6xjZ/r7bcoIPZ1ZRoql+hWPTeaLm8fjgOLo2vw
-         O80d9F0HRwZ9bKj/MfOQsV4TPydyXUrum/l2FdwuauKoVe3WrwV6SLtseIwGGSwE7yNi
-         NHmsjg+vc7FaKwcjhfIlgRbi4h9ZRQ4rp1ZDtwc8Iz9qJN4vs6E6/+5GIIO/My5DpoBS
-         rv+gtAx9QoNBQbrz3Z5739I3ow/wUKYvDGDsnKqe07eEqytvZLVYvpyKlZAAYnoeAGhv
-         mmv0l2cF30gO1jjWlWGqUc/NbRi/fCzSm51PGVdEthQ2kw8g3k6SSn5MkHxjP7alVxVD
-         bnvA==
-X-Gm-Message-State: AOAM531P5MJMElAa/ein+f224nhwFhC+TqumbAtkuYYSfJY9m2aDSjMn
-        LGtclgDV9J/YUH8YatsM0h2LunAoHcfafW00BeRWDg==
-X-Google-Smtp-Source: ABdhPJxN8xXtCL8trbzcImBq6BHkAMLjbBKtbeSeg2aMmb/JvoO7mh5sEnm3HadQxxajk60V9jJ8teZFmcZSZZ7yEEU=
-X-Received: by 2002:a05:6808:60e:: with SMTP id y14mr19809406oih.162.1637889449635;
- Thu, 25 Nov 2021 17:17:29 -0800 (PST)
+        id S1357939AbhKZCky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 21:40:54 -0500
+Received: from mga11.intel.com ([192.55.52.93]:31570 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241209AbhKZCiw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 21:38:52 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="233088571"
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="233088571"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 18:32:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="650866519"
+Received: from devel-wwang.sh.intel.com ([10.239.48.106])
+  by fmsmga001.fm.intel.com with ESMTP; 25 Nov 2021 18:32:21 -0800
+From:   Wei Wang <wei.w.wang@intel.com>
+To:     mst@redhat.com, stefanha@redhat.com, sgarzare@redhat.com,
+        davem@davemloft.net, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Cc:     Wei Wang <wei.w.wang@intel.com>
+Subject: [PATCH v2] virtio/vsock: fix the transport to work with VMADDR_CID_ANY
+Date:   Thu, 25 Nov 2021 20:18:23 -0500
+Message-Id: <20211126011823.1760-1-wei.w.wang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211108214148.9724-1-shreeya.patel@collabora.com>
- <YYp8JzxfLK2u0fU4@arch-x1c3> <87tugdxkj6.fsf@collabora.com> <d7d8bd97-3c12-bf04-a0ad-e0f391158d01@collabora.com>
-In-Reply-To: <d7d8bd97-3c12-bf04-a0ad-e0f391158d01@collabora.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 26 Nov 2021 02:17:17 +0100
-Message-ID: <CACRpkdbPKW10YrzCPKPiJpPTAPPBSiV9CUiJgvasozOfjNbUKg@mail.gmail.com>
-Subject: Re: [PATCH] gpio: Initialize gc->irq.domain before setting gc->to_irq
-To:     Shreeya Patel <shreeya.patel@collabora.com>
-Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        andy.shevchenko@gmail.com, sebastian.reichel@collabora.com,
-        brgl@bgdev.pl, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        Emil Velikov <emil.velikov@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 11:56 AM Shreeya Patel
-<shreeya.patel@collabora.com> wrote:
-> On 16/11/21 1:23 am, Gabriel Krisman Bertazi wrote:
-> > Emil Velikov <emil.velikov@collabora.com> writes:
+The VMADDR_CID_ANY flag used by a socket means that the socket isn't bound
+to any specific CID. For example, a host vsock server may want to be bound
+with VMADDR_CID_ANY, so that a guest vsock client can connect to the host
+server with CID=VMADDR_CID_HOST (i.e. 2), and meanwhile, a host vsock
+client can connect to the same local server with CID=VMADDR_CID_LOCAL
+(i.e. 1).
 
-> >> Hi Shreeya, all,
-> >>
-> >> On 2021/11/09, Shreeya Patel wrote:
-> >>> There is a race in registering of gc->irq.domain when
-> >>> probing the I2C driver.
-> >>> This sometimes leads to a Kernel NULL pointer dereference
-> >>> in gpiochip_to_irq function which uses the domain variable.
-> >>>
-> >>> To avoid this issue, set gc->to_irq after domain is
-> >>> initialized. This will make sure whenever gpiochip_to_irq
-> >>> is called, it has domain already initialized.
-> >>>
-> >> What is stopping the next developer to moving the assignment to the
-> >> incorrect place? Aka should we add an inline comment about this?
-> > I agree with Emil.  The patch seems like a workaround that doesn't
-> > really solve the underlying issue.  I'm not familiar with this code, but
-> > it seems that gc is missing a lock during this initialization, to prevent
-> > it from exposing a partially initialized gc->irq.
->
-> I do not see any locking mechanism used for protecting the use of gc
-> members before they are
-> initialized. We faced a very similar problem with gc->to_irq as well
-> where we had to return EPROBE_DEFER until it was initialized and ready
-> to be used.
->
-> Linus, do you have any suggestion on what would be the correct way to
-> fix this issue of race in registration of gc members?
+The current implementation sets the destination socket's svm_cid to a
+fixed CID value after the first client's connection, which isn't an
+expected operation. For example, if the guest client first connects to the
+host server, the server's svm_cid gets set to VMADDR_CID_HOST, then other
+host clients won't be able to connect to the server anymore.
 
-Not really, we just haven't faced the issue until now because it is only
-now that people have actually added all these devlinks and deferred
-probing and what not that actually starts to stress the system and
-now that results in it being less stable, right?
+Reproduce steps:
+1. Run the host server:
+   socat VSOCK-LISTEN:1234,fork -
+2. Run a guest client to connect to the host server:
+   socat - VSOCK-CONNECT:2:1234
+3. Run a host client to connect to the host server:
+   socat - VSOCK-CONNECT:1:1234
 
-How do other subsystems do it?
+Without this patch, step 3. above fails to connect, and socat complains
+"socat[1720] E connect(5, AF=40 cid:1 port:1234, 16): Connection
+reset by peer".
+With this patch, the above works well.
 
-Yours,
-Linus Walleij
+Fixes: c0cfa2d8a788 ("vsock: add multi-transports support")
+Signed-off-by: Wei Wang <wei.w.wang@intel.com>
+---
+ net/vmw_vsock/virtio_transport_common.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+index 59ee1be5a6dd..ec2c2afbf0d0 100644
+--- a/net/vmw_vsock/virtio_transport_common.c
++++ b/net/vmw_vsock/virtio_transport_common.c
+@@ -1299,7 +1299,8 @@ void virtio_transport_recv_pkt(struct virtio_transport *t,
+ 	space_available = virtio_transport_space_update(sk, pkt);
+ 
+ 	/* Update CID in case it has changed after a transport reset event */
+-	vsk->local_addr.svm_cid = dst.svm_cid;
++	if (vsk->local_addr.svm_cid != VMADDR_CID_ANY)
++		vsk->local_addr.svm_cid = dst.svm_cid;
+ 
+ 	if (space_available)
+ 		sk->sk_write_space(sk);
+
+base-commit: 5f53fa508db098c9d372423a6dac31c8a5679cdf
+-- 
+2.25.1
+
