@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44AF645E948
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D18D45E944
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:21:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353448AbhKZIYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 03:24:34 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:33068 "EHLO
+        id S1359708AbhKZIYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 03:24:22 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:33066 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359378AbhKZIV2 (ORCPT
+        with ESMTP id S1359361AbhKZIV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 26 Nov 2021 03:21:28 -0500
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 065D11FE05;
+        by smtp-out2.suse.de (Postfix) with ESMTP id 2C2BB1FE06;
         Fri, 26 Nov 2021 08:16:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1637914576; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XTw1ArMDtSuaE6XFFrVD6FeD6liTw/lYEV3JL5Vkt3I=;
-        b=smo1bvLhVBdd1B8Rhu0CTakw38SsSV/6JqenBKZHdRQ7AKvuRYpqWcpb7lv6d+lqYXuykI
-        K0rP+z2cTB3zQnLxydto6Fe+5Ac+iRr+tAzYzCsBB6Bk+NQi4J08uwjcMzCEhHEPfdb3N9
-        phf4SnhjpNSReB+gWfydCqEmbUXazUc=
+        bh=hW4l7Gu6zB8opfdTwt/0692qTJre6msn2Uj5oNNr9HY=;
+        b=zLkrmASw6kp9gxELvL7mWSkXsNoJ2TdtClkEqsrUEC17yh+1ZPxGhSd/MeDSvYNhZkSy96
+        rtio3vTE1C1OmOOD9wyLRWf65hW+Bj1IIFXUOPTQHdCEFu2Pj3p/611UnXXpnhEwXR7Ddn
+        dtHBxrR8gjpae48vb6swNP9lWLa8NlE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1637914576;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XTw1ArMDtSuaE6XFFrVD6FeD6liTw/lYEV3JL5Vkt3I=;
-        b=wRE88E7GELvUv9+ahKBnp+i190Lau9aNIo4ZgFpg2MC4rLdr6dXT27Rh8n0Ni1cBybkmdN
-        ypCiQ0NSnL/HMFDw==
+        bh=hW4l7Gu6zB8opfdTwt/0692qTJre6msn2Uj5oNNr9HY=;
+        b=gsH5GZM0BIPUaHUGdkSX4DIyoFo/SnjRC0YD6kWSpIHcTiy+kPkiNqR3Qz8EqDAA558fuv
+        IPnyuUmRDD/HRJAQ==
 Received: from localhost.localdomain (unknown [10.100.208.98])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id D4CA6A3B83;
-        Fri, 26 Nov 2021 08:16:15 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTPS id 0D4FBA3B85;
+        Fri, 26 Nov 2021 08:16:16 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 18/23] tty: add kernel-doc for more tty_port functions
-Date:   Fri, 26 Nov 2021 09:16:06 +0100
-Message-Id: <20211126081611.11001-19-jslaby@suse.cz>
+Subject: [PATCH 19/23] tty: move tty_ldisc docs to new Documentation/tty/
+Date:   Fri, 26 Nov 2021 09:16:07 +0100
+Message-Id: <20211126081611.11001-20-jslaby@suse.cz>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211126081611.11001-1-jslaby@suse.cz>
 References: <20211126081611.11001-1-jslaby@suse.cz>
@@ -54,108 +54,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From the main tty_port functions, only tty_port_destroy() was
-documented. Document more of them, so that we can reference them in
-Documentation/ later in this series.
+Create a new directory in Documentation/ called tty. We will create more
+documents in it in the next patches, so let's have this one in the very
+same place.
+
+Change title accordingly and all the headers. This is the way what other
+documents look like in this directory in the next patches. So make this
+unified.
+
+And add a TOC.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/tty_port.c | 54 ++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 52 insertions(+), 2 deletions(-)
+ Documentation/driver-api/serial/index.rst     |  1 -
+ .../serial/tty.rst => tty/tty_ldisc.rst}      | 23 ++++++++-----------
+ 2 files changed, 10 insertions(+), 14 deletions(-)
+ rename Documentation/{driver-api/serial/tty.rst => tty/tty_ldisc.rst} (91%)
 
-diff --git a/drivers/tty/tty_port.c b/drivers/tty/tty_port.c
-index ebb441ee92d5..7709ce655f44 100644
---- a/drivers/tty/tty_port.c
-+++ b/drivers/tty/tty_port.c
-@@ -59,6 +59,15 @@ const struct tty_port_client_operations tty_port_default_client_ops = {
- };
- EXPORT_SYMBOL_GPL(tty_port_default_client_ops);
+diff --git a/Documentation/driver-api/serial/index.rst b/Documentation/driver-api/serial/index.rst
+index 8f7d7af3b90b..7eb21a695fc3 100644
+--- a/Documentation/driver-api/serial/index.rst
++++ b/Documentation/driver-api/serial/index.rst
+@@ -9,7 +9,6 @@ Support for Serial devices
  
-+/**
-+ * tty_port_init -- initialize tty_port
-+ * @port: tty_port to initialize
-+ *
-+ * Initializes the state of struct tty_port. When a port was initialized using
-+ * this function, one has to destroy the port by tty_port_destroy(). Either
-+ * indirectly by using &tty_port refcounting (tty_port_put()) or directly if
-+ * refcounting is not used.
-+ */
- void tty_port_init(struct tty_port *port)
- {
- 	memset(port, 0, sizeof(*port));
-@@ -267,6 +276,13 @@ static void tty_port_destructor(struct kref *kref)
- 		kfree(port);
- }
  
-+/**
-+ * tty_port_put -- drop a reference to tty_port
-+ * @port: port to drop a reference of (can be NULL)
-+ *
-+ * The final put will destroy and free up the @port using
-+ * @port->ops->destruct() hook, or using kfree() if not provided.
-+ */
- void tty_port_put(struct tty_port *port)
- {
- 	if (port)
-@@ -312,6 +328,16 @@ void tty_port_tty_set(struct tty_port *port, struct tty_struct *tty)
- }
- EXPORT_SYMBOL(tty_port_tty_set);
+     driver
+-    tty
  
-+/**
-+ * tty_port_shutdown - internal helper to shutdown the device
-+ * @port: tty port to be shut down
-+ * @tty: the associated tty
-+ *
-+ * It is used by tty_port_hangup() and tty_port_close(). Its task is to
-+ * shutdown the device if it was initialized (note consoles remain
-+ * functioning). It lowers DTR/RTS (if @tty has HUPCL set) and invokes
-+ * @port->ops->shutdown().
-+ */
- static void tty_port_shutdown(struct tty_port *port, struct tty_struct *tty)
- {
- 	mutex_lock(&port->mutex);
-@@ -559,7 +585,21 @@ static void tty_port_drain_delay(struct tty_port *port, struct tty_struct *tty)
- 	schedule_timeout_interruptible(timeout);
- }
+ Serial drivers
+ ==============
+diff --git a/Documentation/driver-api/serial/tty.rst b/Documentation/tty/tty_ldisc.rst
+similarity index 91%
+rename from Documentation/driver-api/serial/tty.rst
+rename to Documentation/tty/tty_ldisc.rst
+index 65f971e3aada..8e48ab72f965 100644
+--- a/Documentation/driver-api/serial/tty.rst
++++ b/Documentation/tty/tty_ldisc.rst
+@@ -1,13 +1,10 @@
+-=================
+-The Lockronomicon
+-=================
++.. SPDX-License-Identifier: GPL-2.0
  
--/* Caller holds tty lock. */
-+/**
-+ * tty_port_close_start - helper for tty->ops->close, part 1/2
-+ * @port: tty_port of the device
-+ * @tty: tty being closed
-+ * @filp: passed file pointer
-+ *
-+ * Decrements and checks open count. Flushes the port if this is the last
-+ * close. That means, dropping the data from the outpu buffer on the device and
-+ * waiting for sending logic to finish. The rest of close handling is performed
-+ * in tty_port_close_end().
-+ *
-+ * Locking: Caller holds tty lock.
-+ *
-+ * Return: 1 if this is the last close, otherwise 0
-+ */
- int tty_port_close_start(struct tty_port *port,
- 				struct tty_struct *tty, struct file *filp)
- {
-@@ -605,7 +645,17 @@ int tty_port_close_start(struct tty_port *port,
- }
- EXPORT_SYMBOL(tty_port_close_start);
+-Your guide to the ancient and twisted locking policies of the tty layer and
+-the warped logic behind them. Beware all ye who read on.
++===================
++TTY Line Discipline
++===================
  
--/* Caller holds tty lock */
-+/**
-+ * tty_port_close_end - helper for tty->ops->close, part 2/2
-+ * @port: tty_port of the device
-+ * @tty: tty being closed
-+ *
-+ * This is a continuation of the first part: tty_port_close_start(). This
-+ * should be called after turning off the device. It flushes the data from the
-+ * line discipline and delays the close by @port->close_delay.
-+ *
-+ * Locking: Caller holds tty lock.
-+ */
- void tty_port_close_end(struct tty_port *port, struct tty_struct *tty)
- {
- 	unsigned long flags;
+-
+-Line Discipline
+----------------
++.. contents:: :local:
+ 
+ Line disciplines are registered with tty_register_ldisc() passing the
+ discipline number and the ldisc structure. At the point of registration the
+@@ -33,25 +30,25 @@ counts the number of threads of execution within an ldisc method (plus those
+ about to enter and exit although this detail matters not).
+ 
+ Line Discipline Methods
+------------------------
++=======================
+ 
+ .. kernel-doc:: include/linux/tty_ldisc.h
+    :identifiers: tty_ldisc_ops
+ 
+ Driver Access
+-^^^^^^^^^^^^^
++=============
+ 
+ Line discipline methods can call the methods of the underlying hardware driver.
+ These are documented as a part of struct tty_operations.
+ 
+-Flags
+-^^^^^
++TTY Flags
++=========
+ 
+ Line discipline methods have access to :c:member:`tty_struct.flags` field. See
+ :doc:`tty_struct`.
+ 
+ Locking
+-^^^^^^^
++=======
+ 
+ Callers to the line discipline functions from the tty layer are required to
+ take line discipline locks. The same is true of calls from the driver side
 -- 
 2.34.0
 
