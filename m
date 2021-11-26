@@ -2,113 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E8045EFC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:18:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9A345EF37
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:34:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353541AbhKZOVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 09:21:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348631AbhKZOTl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 09:19:41 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39FE3C08EA7E
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 05:32:21 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id j18so5593244ljc.12
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 05:32:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BihJj1qpi6FzzYvrNJZtab4h849IlijBgKxFTqdVcok=;
-        b=lE+PYnpDr4XYfE0rLaRAQtWaz2Ks2mMu9n1rZVymx2rgHoJAITvz559plBVApGYtUZ
-         5INIqFHDmCIP9B/+nDcxBK28yZiP6c8COBl7Aa0hcA5X5B3jL+HCF+3qHnaEquoLrwdz
-         aMnCviANj/UutBT84isZSwj3tz8Yt4qD+Y2YOVWzf6D8AZL0xAr8lvG9Zn7JegsUqeU2
-         5mn9kTy0lPf34z/6whn0mN3eQcxWdds2i+mORvr6lTpxL161CTeKsZVkyTA8WKy0G6IN
-         tBGjA4e+W3F+K+thIQ7cHZRMFUNkf9qUb3Gpapa+HwOPMOXdnqeKS3cCoFqg6zJCgYUC
-         532w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BihJj1qpi6FzzYvrNJZtab4h849IlijBgKxFTqdVcok=;
-        b=7dztd8DzglB8sDydfDVz1eldJPJm3gWltRqvUlKJnEcZIM4kaw0HvwjgTskes35Toq
-         SP+KWzaJYcq97v1IMaaEWxhCX0UZeJnMxtK8GUn9PRVVsB15sJmU5muKvEQu3Lz3G2Wb
-         GWVIOkyDKn5EwiJwTKn50Swi14KoBu7XhqyFdaWOGqgEFBBJL+wv4x2NQxec4l4CRVLv
-         uu3Cow2WUmf1sB47IWtJI3KXy9lWDjrVmk90gmKo/lquJ8jZ754JLOZGu3LJfq312xyF
-         2eaZBvKvSz6RhfBx4EjB9S5B4ga9EYphsF25kFqXjbn4zYDzmbt/Yp+r6uItZvYsPmwh
-         EexQ==
-X-Gm-Message-State: AOAM530qKTBfJFQRw/H+5BXkuDrCCIrOdVLTN61mAhG8LSPxpsXZVxOH
-        /tapp1CNa8E4zrav0UN6TT3r6khjrUR3Xtv2en0sHLrgIMk=
-X-Google-Smtp-Source: ABdhPJzywiDDQKC6yFc3WwKw4jiKbh02+WUllDWYJLGKGv2knX9b5u54YH9Xh2KPDV4cD5Ewh2BWBkykMbYrS9LL70c=
-X-Received: by 2002:a2e:a22a:: with SMTP id i10mr31783402ljm.16.1637933539553;
- Fri, 26 Nov 2021 05:32:19 -0800 (PST)
+        id S1348618AbhKZNhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 08:37:41 -0500
+Received: from foss.arm.com ([217.140.110.172]:34014 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352433AbhKZNfk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 08:35:40 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3345311D4;
+        Fri, 26 Nov 2021 05:32:27 -0800 (PST)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 306713F66F;
+        Fri, 26 Nov 2021 05:32:26 -0800 (PST)
+From:   Valentin Schneider <Valentin.Schneider@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Vincent Donnefort <Vincent.Donnefort@arm.com>,
+        peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, mgorman@techsingularity.net,
+        dietmar.eggemann@arm.com
+Subject: Re: [PATCH] sched/fair: Fix detection of per-CPU kthreads waking a task
+In-Reply-To: <CAKfTPtCnusWJXJLDEudQ_q8MWaZYbPJK-QjAbBYWFW8Nw-J+Ww@mail.gmail.com>
+References: <20211124154239.3191366-1-vincent.donnefort@arm.com> <CAKfTPtDX8sOfguZhJt5QV3j5D_JetcgncuF2w+uLa0XDk7UXkw@mail.gmail.com> <8735nkcwov.mognet@arm.com> <CAKfTPtDPskVdEd-KQ_cwe-R_zVFPQOgdbk9x+3eD12pKs8fGFw@mail.gmail.com> <87zgpsb6de.mognet@arm.com> <CAKfTPtCnusWJXJLDEudQ_q8MWaZYbPJK-QjAbBYWFW8Nw-J+Ww@mail.gmail.com>
+Date:   Fri, 26 Nov 2021 13:32:03 +0000
+Message-ID: <87sfvjavqk.mognet@arm.com>
 MIME-Version: 1.0
-References: <20211124184603.3897245-1-john@metanate.com> <CAPDyKFr=ok3uKXS8bWtZPvyLOeA2cF_4Z2c7ROcoMfBF2G1uhA@mail.gmail.com>
-In-Reply-To: <CAPDyKFr=ok3uKXS8bWtZPvyLOeA2cF_4Z2c7ROcoMfBF2G1uhA@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 26 Nov 2021 14:31:43 +0100
-Message-ID: <CAPDyKFo8c51KR+1ju+WCp2xk7_uYKzS+_vBjWxnB7Y3zGYasFg@mail.gmail.com>
-Subject: Re: [PATCH 0/4] mmc: dw_mmc: start deprecating mshcN aliases
-To:     John Keeping <john@metanate.com>
-Cc:     linux-mmc@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 at 20:24, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+On 26/11/21 09:23, Vincent Guittot wrote:
+> On Thu, 25 Nov 2021 at 16:30, Valentin Schneider
+> <Valentin.Schneider@arm.com> wrote:
+>> On 25/11/21 14:23, Vincent Guittot wrote:
+>> > If we want to filter wakeup
+>> > generated by interrupt context while a per cpu kthread is running, it
+>> > would be better to fix all cases and test the running context like
+>> > this
+>> >
+>>
+>> I think that could make sense - though can the idle task issue wakeups in
+>> process context? If so that won't be sufficient. A quick audit tells me:
+>>
+>> o rcu_nocb_flush_deferred_wakeup() happens before calling into cpuidle
+>> o I didn't see any wakeup issued from the cpu_pm_notifier call chain
+>> o I'm not entirely sure about flush_smp_call_function_from_idle(). I found
+>>   this thing in RCU:
+>>
+>>   smp_call_function_single(cpu, rcu_exp_handler)
+>>
+>>     rcu_exp_handler()
+>>       rcu_report_exp_rdp()
+>>         rcu_report_exp_cpu_mult()
+>>           __rcu_report_exp_rnp()
+>>             swake_up_one()
+>>
+>> IIUC if set_nr_if_polling() then the smp_call won't send an IPI and should be
+>> handled in that flush_foo_from_idle() call.
 >
-> On Wed, 24 Nov 2021 at 19:46, John Keeping <john@metanate.com> wrote:
-> >
-> > This series is prompted by discussion on a previous patch set [1] but is
-> > a totally different approach and only a partial solution.
-> >
-> > With these patches, the dependency on the mshcN alias is totally removed
-> > from dw_mmc-hi3798cv200 and dw_mmc-rockchip and dw_mmc-exynos moves
-> > towards being able to consider the mshcN aliases deprecated.
-> >
-> > I haven't changed dw_mci_hi6220_caps here, although it looks like it's
-> > possible to apply MMC_CAP_CMD23 to all controllers there with no change
-> > in behaviour as the final entry is SDIO for which CMD23 is not
-> > applicable IIUC.  But I'm not familiar with that hardware and don't feel
-> > confident making that change.
-> >
-> > [1] https://lore.kernel.org/all/20211116190244.1417591-1-john@metanate.com/
-> >
-> > John Keeping (4):
-> >   mmc: dw_mmc: add common capabilities to replace caps
-> >   mmc: dw_mmc: hi3798cv200: use common_caps
-> >   mmc: dw_mmc: rockchip: use common_caps
-> >   mmc: dw_mmc: exynos: use common_caps
-> >
-> >  drivers/mmc/host/dw_mmc-exynos.c      |  9 +++++----
-> >  drivers/mmc/host/dw_mmc-hi3798cv200.c |  9 +--------
-> >  drivers/mmc/host/dw_mmc-rockchip.c    | 11 +----------
-> >  drivers/mmc/host/dw_mmc.c             |  3 +++
-> >  drivers/mmc/host/dw_mmc.h             |  3 +++
-> >  5 files changed, 13 insertions(+), 22 deletions(-)
-> >
-> > --
-> > 2.34.0
-> >
+> Aren't all these planned to wakeup on local cpu  ? so i don't  see any
+> real problem there
 >
-> This looks good to me, I intend to apply this later this week, unless
-> objections of course.
+
+Hm so other than boot time oddities I think that does end up with threads
+of an !UNBOUND (so pcpu) workqueue...
+
+>>
+>> I'd be tempted to stick your VincentD's conditions together, just to be
+>> safe...
 >
-> In the meantime, I will continue to look at what we can do to resolve
-> the exynos/k3 issues around this.
+> More than safe I would prefer that we fix the correct root cause
+> instead of hiding it
+>
 
-Let's consider additional changes to be on top of this, as this is
-certainly a nice step forward.
+I did play around a bit to see if this could be true when evaluating that
+is_per_cpu_kthread() condition:
 
-So, applied for next, thanks!
+  is_idle_task(current) && in_task() && p->nr_cpus_allowed > 1
 
-Kind regards
-Uffe
+but no luck so far. An in_task() check would appear sufficient, but how's
+this?
+
+---
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 884f29d07963..f45806b7f47a 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6390,14 +6390,18 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+ 		return prev;
+ 
+ 	/*
+-	 * Allow a per-cpu kthread to stack with the wakee if the
+-	 * kworker thread and the tasks previous CPUs are the same.
+-	 * The assumption is that the wakee queued work for the
+-	 * per-cpu kthread that is now complete and the wakeup is
+-	 * essentially a sync wakeup. An obvious example of this
++	 * Allow a per-cpu kthread to stack with the wakee if the kworker thread
++	 * and the tasks previous CPUs are the same.  The assumption is that the
++	 * wakee queued work for the per-cpu kthread that is now complete and
++	 * the wakeup is essentially a sync wakeup. An obvious example of this
+ 	 * pattern is IO completions.
++	 *
++	 * Ensure the wakeup is issued by the kthread itself, and don't match
++	 * against the idle task because that could override the
++	 * available_idle_cpu(target) check done higher up.
+ 	 */
+-	if (is_per_cpu_kthread(current) &&
++	if (is_per_cpu_kthread(current) && !is_idle_task(current) &&
++	    in_task() &&
+ 	    prev == smp_processor_id() &&
+ 	    this_rq()->nr_running <= 1) {
+ 		return prev;
+
