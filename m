@@ -2,338 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33DB145F4DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 19:42:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0289F45F4DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 19:43:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241124AbhKZSqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 13:46:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33518 "EHLO
+        id S244910AbhKZSqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 13:46:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241085AbhKZSn7 (ORCPT
+        with ESMTP id S238027AbhKZSoC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 13:43:59 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C30C08E750
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 10:15:40 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id v11so20336548wrw.10
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 10:15:40 -0800 (PST)
+        Fri, 26 Nov 2021 13:44:02 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FBBFC061397
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 10:16:42 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id z5so42295536edd.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 10:16:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LjJj8p/BSrU5O3goPsOyYlTedyF5oU9JMu9YZ6ROfY8=;
-        b=F6zcS+Lb4aKJUfKLTksy5gOJF7V9iKE5FS/u+OcNjTKXxgvNqhhikUYWBq9lBzzRbd
-         emVkJa3PaFOyuEmaeeEIY7H5ffSj/za8FEJzpL3XZ53I3/UXTDTI7k9AS4klc+sqBzmK
-         5+XFZgNg10LZavYwts0gDfxYi/zxsCBI8XXfPtvbeQQpj3YJuMnN76V1pdPsQ3oIu2aF
-         gfKSPZkaWtr7vnDyJ4AWyTDSNMrtUGlYqlC78hB79uNft+AUIpa2l8bhNzed3/TclALt
-         7f2u8hFDrcH5YKG1K0ZScitJTsPutl2iCOLWVCAal8u8Ji8AJbSXk2kt/O2p4ZIGjPpz
-         vI3g==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=bPBq6esMoTOYDubs7AvTlt6cnYaycdCJ0j5SVwERB7E=;
+        b=Ao0v6aOWCNXc9ezHiaLXmwBlJdaqJfse18LqI+fZnyjyD+yRwe/lVSxLILb3EiP86x
+         M0FVK2v8MgYEm98sKYZcvjYNPfdB9Qua8lQGOHL4JtgLDf+TIip3PtFNWK3gA0D77bs0
+         fAslNA1R/NNCpSFiXVbQYnySDT0KvF9MqxqFb3p6RROXGQgAxj9E9ognmdmiZ1knRXCE
+         tcyNZvfnQN7Wk7HoPzjIcBGlCFY2ShqFFcRkGlrJUfCR3M/z/u6c5ilRbnVQziag59ZQ
+         n4YbZoz4Sf2VNM39jrpYyKJ6EF5vWol8SRNaoonTqZj8KGjcad8M8/fRFej25SPnBqeD
+         iRjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LjJj8p/BSrU5O3goPsOyYlTedyF5oU9JMu9YZ6ROfY8=;
-        b=VKQCYQeqtXIE1oT/aYmAQPszlM+BO34Jhhc2wvj37LN7gdKg57cW1T9B7VI28n2fpd
-         HYbXjCG5mxJLmi2JfqdLiNpSnYlZMZBcwujtM38xno3wq1upqTHy0Pnk/KVuGOLw3txn
-         2DpW+oqazgvr+KaR7og7/nNiihw1sVtXDCfDqJgyR3oDn5XQm+ssVRsMGhrQp5p3miYR
-         Gb+Fw9NMDEeETt8DBycfEj7HgBcEPRVDPjC0+EfemDx2Wod1Q6DdhqePhBIQ/XaehfP4
-         qEbdfOIixjnG19v4P0k4NrHUfUdIz1G3MVInrSobTogLjNUxay37c/p1w50J/Q3/hbAx
-         E84w==
-X-Gm-Message-State: AOAM532NZaN8vQj8ihsKmv2JDFLOHXI+dVYej+Dos2TJlnkTd+a7zNT8
-        6znBQzLwoOXpV+nW9hLKgcnDtQ==
-X-Google-Smtp-Source: ABdhPJwqIP+ocgKm9+LNlL+lBAMCFcYLwLtIdQT7LV0+We4D4bbChufKijhZGTLsXGplklxCvO1Ncg==
-X-Received: by 2002:a5d:4909:: with SMTP id x9mr16300347wrq.313.1637950538602;
-        Fri, 26 Nov 2021 10:15:38 -0800 (PST)
-Received: from localhost.localdomain ([2a01:e34:ed2f:f020:70b:e5b5:f868:20cf])
-        by smtp.gmail.com with ESMTPSA id r83sm11744735wma.22.2021.11.26.10.15.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Nov 2021 10:15:38 -0800 (PST)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org
-Cc:     robh@kernel.org, arnd@linaro.org, heiko@sntech.de,
-        ulf.hansson@linaro.org, rjw@rjwysocki.net,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, lukasz.luba@arm.com,
-        Chanwoo Choi <cwchoi00@gmail.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@kernel.org>
-Subject: [PATCH v2 5/5] powercap/drivers/dtpm: Add dtpm devfreq with energy model support
-Date:   Fri, 26 Nov 2021 19:14:58 +0100
-Message-Id: <20211126181500.3404129-5-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211126181500.3404129-1-daniel.lezcano@linaro.org>
-References: <20211126181500.3404129-1-daniel.lezcano@linaro.org>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=bPBq6esMoTOYDubs7AvTlt6cnYaycdCJ0j5SVwERB7E=;
+        b=eGH5tKjfkRN3/nYkiHjNz1hBIQOQsDXMTvf/vTnR9xpvJXQCQWn2oFib9nrz1KhNDj
+         f66fHb/nDJxvBaVFVlb2BZa5w/MMZm84CD8QsCDTcFJB04qgLH/oWITd2jdREUC1jWms
+         8y28zr3KgFr8vrrQtJ/GvsTUnu5abH8K4NrfNaZ6pUITX4FIUxcKayMIjm7RzQ71XKCH
+         ja6kD3zVjWA3PQNaCgO2Lj9msWPAFsjuNLD6sF6BwZ/JZTkZCtYLXm+jo31XIQL+Lk4h
+         JIBn0ayqLvtYHUcjnuVY2JKPp/QwKuR7o1UaQMknykgIT/2g7F+bgC8FCkHDwl75+omI
+         uTwg==
+X-Gm-Message-State: AOAM533+P1VwsBqjZT7oclIKM280qJHwk7oy+ra4+T4U5I8JppM22y7a
+        z1TAbEO46mNLlNLtoXhy1MV82NUQxhRv8CiTjR4=
+X-Google-Smtp-Source: ABdhPJyq0BTMeRGkPUainkKcMx1U6JIlTzqQv6nlxx5BllpFEIqq9cZFCGkHGZ4Fcr4VpVGgQQD9jMFKIzBm2vs2o9c=
+X-Received: by 2002:a05:6402:3590:: with SMTP id y16mr49935165edc.343.1637950599441;
+ Fri, 26 Nov 2021 10:16:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a50:e1c9:0:0:0:0:0 with HTTP; Fri, 26 Nov 2021 10:16:38
+ -0800 (PST)
+Reply-To: jesspayne72@gmail.com
+From:   Jess Payne <payenalger@gmail.com>
+Date:   Fri, 26 Nov 2021 10:16:38 -0800
+Message-ID: <CALz=ZDZHK2mB9N4F8nNTV-V8DFAtS+MUA0OdbgRYtDqJj115Xg@mail.gmail.com>
+Subject: =?UTF-8?B?5oiR6ZyA6KaB5L2g55qE5biu5YqpIC8gSSBuZWVkIHlvdXIgYXNzaXN0YW5jZQ==?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the dtpm supports the CPUs via cpufreq and the energy
-model. This change provides the same for the device which supports
-devfreq.
-
-Each device supporting devfreq and having an energy model will be
-added to the hierarchy if the corresponding powerzone is described in
-the DT.
-
-The concept is the same as the cpufreq DTPM support: the QoS is used
-to aggregate the requests and the energy model gives the value of the
-instantaneous power consumption ponderated by the load of the device.
-
-Cc: Chanwoo Choi <cwchoi00@gmail.com>
-Cc: Lukasz Luba <lukasz.luba@arm.com>
-Cc: Kyungmin Park <kyungmin.park@samsung.com>
-Cc: MyungJoo Ham <myungjoo.ham@samsung.com>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
-   V1: Initial post
-   V2:
-     - Fixed missing prototype warning reported by lkp@
----
- drivers/powercap/Kconfig        |   7 ++
- drivers/powercap/Makefile       |   1 +
- drivers/powercap/dtpm_devfreq.c | 201 ++++++++++++++++++++++++++++++++
- 3 files changed, 209 insertions(+)
- create mode 100644 drivers/powercap/dtpm_devfreq.c
-
-diff --git a/drivers/powercap/Kconfig b/drivers/powercap/Kconfig
-index b1ca339957e3..515e3ceb3393 100644
---- a/drivers/powercap/Kconfig
-+++ b/drivers/powercap/Kconfig
-@@ -57,4 +57,11 @@ config DTPM_CPU
- 	help
- 	  This enables support for CPU power limitation based on
- 	  energy model.
-+
-+config DTPM_DEVFREQ
-+	bool "Add device power capping based on the energy model"
-+	depends on DTPM && ENERGY_MODEL
-+	help
-+	  This enables support for device power limitation based on
-+	  energy model.
- endif
-diff --git a/drivers/powercap/Makefile b/drivers/powercap/Makefile
-index fabcf388a8d3..494617cdad88 100644
---- a/drivers/powercap/Makefile
-+++ b/drivers/powercap/Makefile
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- obj-$(CONFIG_DTPM) += dtpm.o
- obj-$(CONFIG_DTPM_CPU) += dtpm_cpu.o
-+obj-$(CONFIG_DTPM_DEVFREQ) += dtpm_devfreq.o
- obj-$(CONFIG_POWERCAP)	+= powercap_sys.o
- obj-$(CONFIG_INTEL_RAPL_CORE) += intel_rapl_common.o
- obj-$(CONFIG_INTEL_RAPL) += intel_rapl_msr.o
-diff --git a/drivers/powercap/dtpm_devfreq.c b/drivers/powercap/dtpm_devfreq.c
-new file mode 100644
-index 000000000000..a1273eb54e80
---- /dev/null
-+++ b/drivers/powercap/dtpm_devfreq.c
-@@ -0,0 +1,201 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright 2021 Linaro Limited
-+ *
-+ * Author: Daniel Lezcano <daniel.lezcano@linaro.org>
-+ *
-+ * The devfreq device combined with the energy model and the load can
-+ * give an estimation of the power consumption as well as limiting the
-+ * power.
-+ *
-+ */
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <linux/cpumask.h>
-+#include <linux/devfreq.h>
-+#include <linux/dtpm.h>
-+#include <linux/energy_model.h>
-+#include <linux/of.h>
-+#include <linux/pm_qos.h>
-+#include <linux/slab.h>
-+#include <linux/units.h>
-+
-+struct dtpm_devfreq {
-+	struct dtpm dtpm;
-+	struct dev_pm_qos_request qos_req;
-+	struct devfreq *devfreq;
-+};
-+
-+static struct dtpm_devfreq *to_dtpm_devfreq(struct dtpm *dtpm)
-+{
-+	return container_of(dtpm, struct dtpm_devfreq, dtpm);
-+}
-+
-+static int update_pd_power_uw(struct dtpm *dtpm)
-+{
-+	struct dtpm_devfreq *dtpm_devfreq = to_dtpm_devfreq(dtpm);
-+	struct devfreq *devfreq = dtpm_devfreq->devfreq;
-+	struct device *dev = devfreq->dev.parent;
-+	struct em_perf_domain *pd = em_pd_get(dev);
-+
-+	dtpm->power_min = pd->table[0].power;
-+	dtpm->power_min *= MICROWATT_PER_MILLIWATT;
-+
-+	dtpm->power_max = pd->table[pd->nr_perf_states - 1].power;
-+	dtpm->power_max *= MICROWATT_PER_MILLIWATT;
-+
-+	return 0;
-+}
-+
-+static u64 set_pd_power_limit(struct dtpm *dtpm, u64 power_limit)
-+{
-+	struct dtpm_devfreq *dtpm_devfreq = to_dtpm_devfreq(dtpm);
-+	struct devfreq *devfreq = dtpm_devfreq->devfreq;
-+	struct device *dev = devfreq->dev.parent;
-+	struct em_perf_domain *pd = em_pd_get(dev);
-+	unsigned long freq;
-+	u64 power;
-+	int i;
-+
-+	for (i = 0; i < pd->nr_perf_states; i++) {
-+
-+		power = pd->table[i].power * MICROWATT_PER_MILLIWATT;
-+		if (power > power_limit)
-+			break;
-+	}
-+
-+	freq = pd->table[i - 1].frequency;
-+
-+	dev_pm_qos_update_request(&dtpm_devfreq->qos_req, freq);
-+
-+	power_limit = pd->table[i - 1].power * MICROWATT_PER_MILLIWATT;
-+
-+	return power_limit;
-+}
-+
-+static void _normalize_load(struct devfreq_dev_status *status)
-+{
-+	if (status->total_time > 0xfffff) {
-+		status->total_time >>= 10;
-+		status->busy_time >>= 10;
-+	}
-+
-+	status->busy_time <<= 10;
-+	status->busy_time /= status->total_time ? : 1;
-+
-+	status->busy_time = status->busy_time ? : 1;
-+	status->total_time = 1024;
-+}
-+
-+static u64 get_pd_power_uw(struct dtpm *dtpm)
-+{
-+	struct dtpm_devfreq *dtpm_devfreq = to_dtpm_devfreq(dtpm);
-+	struct devfreq *devfreq = dtpm_devfreq->devfreq;
-+	struct device *dev = devfreq->dev.parent;
-+	struct em_perf_domain *pd = em_pd_get(dev);
-+	struct devfreq_dev_status status;
-+	unsigned long freq;
-+	u64 power;
-+	int i;
-+
-+	mutex_lock(&devfreq->lock);
-+	status = devfreq->last_status;
-+	mutex_unlock(&devfreq->lock);
-+
-+	freq = DIV_ROUND_UP(status.current_frequency, HZ_PER_KHZ);
-+	_normalize_load(&status);
-+
-+	for (i = 0; i < pd->nr_perf_states; i++) {
-+
-+		if (pd->table[i].frequency < freq)
-+			continue;
-+
-+		power = pd->table[i].power * MICROWATT_PER_MILLIWATT;
-+		power *= status.busy_time;
-+		power >>= 10;
-+
-+		return power;
-+	}
-+
-+	return 0;
-+}
-+
-+static void pd_release(struct dtpm *dtpm)
-+{
-+	struct dtpm_devfreq *dtpm_devfreq = to_dtpm_devfreq(dtpm);
-+
-+	if (dev_pm_qos_request_active(&dtpm_devfreq->qos_req))
-+		dev_pm_qos_remove_request(&dtpm_devfreq->qos_req);
-+
-+	kfree(dtpm_devfreq);
-+}
-+
-+static struct dtpm_ops dtpm_ops = {
-+	.set_power_uw = set_pd_power_limit,
-+	.get_power_uw = get_pd_power_uw,
-+	.update_power_uw = update_pd_power_uw,
-+	.release = pd_release,
-+};
-+
-+static int __dtpm_devfreq_setup(struct devfreq *devfreq, struct dtpm *parent)
-+{
-+	struct device *dev = devfreq->dev.parent;
-+	struct dtpm_devfreq *dtpm_devfreq;
-+	struct em_perf_domain *pd;
-+	int ret = -ENOMEM;
-+
-+	pd = em_pd_get(dev);
-+	if (!pd) {
-+		ret = dev_pm_opp_of_register_em(dev, NULL);
-+		if (ret) {
-+			pr_err("No energy model available for '%s'\n", dev_name(dev));
-+			return -EINVAL;
-+		}
-+	}
-+
-+	dtpm_devfreq = kzalloc(sizeof(*dtpm_devfreq), GFP_KERNEL);
-+	if (!dtpm_devfreq)
-+		return -ENOMEM;
-+
-+	dtpm_init(&dtpm_devfreq->dtpm, &dtpm_ops);
-+
-+	dtpm_devfreq->devfreq = devfreq;
-+
-+	ret = dtpm_register(dev_name(dev), &dtpm_devfreq->dtpm, parent);
-+	if (ret) {
-+		pr_err("Failed to register '%s': %d\n", dev_name(dev), ret);
-+		goto out_dtpm_devfreq;
-+	}
-+
-+	ret = dev_pm_qos_add_request(dev, &dtpm_devfreq->qos_req,
-+				     DEV_PM_QOS_MAX_FREQUENCY,
-+				     PM_QOS_MAX_FREQUENCY_DEFAULT_VALUE);
-+	if (ret) {
-+		pr_err("Failed to add QoS request: %d\n", ret);
-+		goto out_dtpm_unregister;
-+	}
-+
-+	dtpm_update_power(&dtpm_devfreq->dtpm);
-+
-+	return 0;
-+
-+out_dtpm_unregister:
-+	dtpm_unregister(&dtpm_devfreq->dtpm);
-+out_dtpm_devfreq:
-+	kfree(dtpm_devfreq);
-+
-+	return ret;
-+}
-+
-+static int __init dtpm_devfreq_setup(struct dtpm *dtpm, struct device_node *np)
-+{
-+	struct devfreq *devfreq;
-+
-+	devfreq = devfreq_get_devfreq_by_node(np);
-+	if (IS_ERR(devfreq))
-+		return 0;
-+
-+	return __dtpm_devfreq_setup(devfreq, dtpm);
-+}
-+
-+DTPM_DECLARE(dtpm_dev, NULL, dtpm_devfreq_setup);
--- 
-2.25.1
-
+5oiR5biM5pyb5L2g6IO955CG6Kej6L+Z5p2h5L+h5oGv77yM5Zug5Li65oiR5q2j5Zyo5Yip55So
+57+76K+R57uZ5L2g5YaZ5L+h44CCDQoNCuaIkeaYr+adsOilv+S9qeaBqeS4reWjq+Wkq+S6uuOA
+gg0K5Zyo576O5Zu96ZmG5Yab55qE5Yab5LqL6YOo6Zeo44CC576O5Zu977yM5LiA5ZCN5Lit5aOr
+77yMMzIg5bKB77yM5oiR5Y2V6Lqr77yM5p2l6Ieq576O5Zu955Sw57qz6KW/5bee5YWL5Yip5aSr
+5YWw77yM55uu5YmN6am75omO5Zyo5Y+Z5Yip5Lqa77yM5LiO5oGQ5oCW5Li75LmJ5L2c5oiY44CC
+5oiR55qE5Y2V5L2N5piv56ysNOaKpOeQhumYn+esrDc4MuaXheS/nemanOiQpeOAgg0KDQrmiJHm
+mK/kuIDkuKrlhYXmu6HniLHlv4PjgIHor5rlrp7lkozmt7Hmg4XnmoTkurrvvIzlhbfmnInoia/l
+pb3nmoTlub3pu5jmhJ/vvIzmiJHllpzmrKLnu5Por4bmlrDmnIvlj4vlubbkuobop6Pku5bku6zn
+moTnlJ/mtLvmlrnlvI/vvIzmiJHllpzmrKLnnIvliLDlpKfmtbfnmoTms6LmtarlkozlsbHohInn
+moTnvo7kuL3ku6Xlj4rlpKfoh6rnhLbmiYDmi6XmnInnmoTkuIDliIfmj5DkvpvjgILlvojpq5jl
+hbTog73mm7TlpJrlnLDkuobop6PmgqjvvIzmiJHorqTkuLrmiJHku6zlj6/ku6Xlu7rnq4voia/l
+pb3nmoTllYbkuJrlj4vosIrjgIINCg0K5oiR5LiA55u05b6I5LiN5byA5b+D77yM5Zug5Li66L+Z
+5Lqb5bm05p2l55Sf5rS75a+55oiR5LiN5YWs5bmz77yb5oiR5aSx5Y675LqG54i25q+N77yM6YKj
+5bm05oiRIDIxDQrlsoHjgILmiJHniLbkurLlj6vkuZTlsJTCt+S9qeaBqe+8jOavjeS6suWPq+eO
+m+S4vcK35L2p5oGp44CC5rKh5pyJ5Lq65biu5Yqp5oiR77yM5L2G5b6I6auY5YW05oiR57uI5LqO
+5Zyo576O5Yab5Lit5om+5Yiw5LqG6Ieq5bex44CCDQoNCuaIkee7k+WpmueUn+S6huWtqeWtkO+8
+jOS9huS7luatu+S6hu+8jOS4jeS5heaIkeS4iOWkq+W8gOWni+asuumql+aIke+8jOaJgOS7peaI
+keS4jeW+l+S4jeaUvuW8g+WpmuWnu+OAgg0KDQrmiJHkuZ/lvojlubjov5DvvIzlnKjmiJHnmoTl
+m73lrrbjgIHnvo7lm73lkozlj5nliKnkuprov5nph4zvvIzmi6XmnInmiJHnlJ/mtLvkuK3pnIDo
+poHnmoTkuIDliIfvvIzkvYbmsqHmnInkurrnu5nmiJHlu7rorq7jgILmiJHpnIDopoHkuIDkuKro
+r5rlrp7nmoTkurrmnaXkv6Hku7vvvIzku5bkuZ/kvJrlsLHlpoLkvZXmipXotYTlkJHmiJHmj5Dk
+vpvlu7rorq7jgILlm6DkuLrmiJHmmK/miJHniLbmr43lnKjku5bku6zljrvkuJbliY3nlJ/kuIvn
+moTllK/kuIDlpbPlranjgIINCg0K5oiR5LiN6K6k6K+G5L2g5pys5Lq677yM5L2G5oiR6K6k5Li6
+5pyJ5LiA5Liq5YC85b6X5L+h6LWW55qE5aW95Lq677yM5LuW5Y+v5Lul5bu656uL55yf5q2j55qE
+5L+h5Lu75ZKM6Imv5aW955qE5ZWG5Lia5Y+L6LCK77yM5aaC5p6c5L2g55yf55qE5pyJ5LiA5Liq
+6K+a5a6e55qE5ZCN5a2X77yM5oiR5Lmf5pyJ5LiA5Lqb5Lic6KW/6KaB5ZKM5L2g5YiG5Lqr55u4
+5L+h44CC5Zyo5L2g6Lqr5LiK77yM5Zug5Li65oiR6ZyA6KaB5L2g55qE5biu5Yqp44CC5oiR5oul
+5pyJ5oiR5Zyo5Y+Z5Yip5Lqa6L+Z6YeM6LWa5Yiw55qE5oC76aKd77yINTUwDQrkuIfnvo7lhYPv
+vInjgILmiJHkvJrlnKjkuIvkuIDlsIHnlLXlrZDpgq7ku7bkuK3lkYror4nkvaDmiJHmmK/lpoLk
+vZXlgZrliLDnmoTvvIzkuI3opoHmg4rmhYzvvIzku5bku6zmmK/ml6Dpo47pmannmoTvvIzmiJHo
+v5jlnKjkuI4gUmVkDQrmnInogZTns7vnmoTkurrpgZPkuLvkuYnljLvnlJ/nmoTluK7liqnkuIvl
+sIbov5nnrJTpkrHlrZjlhaXkuobpk7booYzjgILmiJHluIzmnJvmgqjlsIboh6rlt7HkvZzkuLrm
+iJHnmoTlj5fnm4rkurrmnaXmjqXmlLbln7rph5HlubblnKjmiJHlnKjov5nph4zlrozmiJDlkI7n
+oa7kv53lroPnmoTlronlhajlubbojrflvpfmiJHnmoTlhpvkuovpgJrooYzor4Hku6XlnKjmgqjn
+moTlm73lrrbkuI7mgqjkvJrpnaLvvJvkuI3opoHlrrPmgJXpk7booYzkvJrlsIbotYTph5HlrZjl
+gqjlnKgNCkFUTSBWSVNBIOWNoeS4re+8jOi/meWvueaIkeS7rOadpeivtOaYr+WuieWFqOS4lOW/
+q+aNt+eahOOAgg0KDQrnrJTorrA75oiR5LiN55+l6YGT5oiR5Lus6KaB5Zyo6L+Z6YeM5ZGG5aSa
+5LmF77yM5oiR55qE5ZG96L+Q77yM5Zug5Li65oiR5Zyo6L+Z6YeM5Lik5qyh54K45by56KKt5Ye7
+5Lit5bm45a2Y5LiL5p2l77yM6L+Z5a+86Ie05oiR5a+75om+5LiA5Liq5YC85b6X5L+h6LWW55qE
+5Lq65p2l5biu5Yqp5oiR5o6l5pS25ZKM5oqV6LWE5Z+66YeR77yM5Zug5Li65oiR5bCG5p2l5Yiw
+5L2g5Lus55qE5Zu95a625Ye66Lqr5oqV6LWE77yM5byA5aeL5paw55Sf5rS777yM5LiN5YaN5b2T
+5YW144CCDQoNCuWmguaenOaCqOaEv+aEj+iwqOaFjuWkhOeQhu+8jOivt+WbnuWkjeaIkeOAguaI
+keS8muWRiuivieS9oOS4i+S4gOatpeeahOa1geeoi++8jOW5tue7meS9oOWPkemAgeabtOWkmuWF
+s+S6juWfuumHkeWtmOWFpemTtuihjOeahOS/oeaBr+OAguS7peWPiumTtuihjOWwhuWmguS9leW4
+ruWKqeaIkeS7rOmAmui/hyBBVE0gVklTQQ0KQ0FSRCDlsIbotYTph5Hovaznp7vliLDmgqjnmoTl
+m73lrrYv5Zyw5Yy644CC5aaC5p6c5L2g5pyJ5YW06Laj77yM6K+35LiO5oiR6IGU57O744CCDQo=
