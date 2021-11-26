@@ -2,363 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA7645E703
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 06:05:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A87545E76A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 06:33:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230372AbhKZFIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 00:08:06 -0500
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:48182 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhKZFGG (ORCPT
+        id S1352334AbhKZFgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 00:36:23 -0500
+Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17215 "EHLO
+        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348982AbhKZFeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 00:06:06 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AQ52UWd001938;
-        Thu, 25 Nov 2021 23:02:30 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1637902950;
-        bh=vtLihy6KXBLz/x9adiVbfPw9OpRQBLTNDsKEKIlGduc=;
-        h=From:To:CC:Subject:Date;
-        b=QNjRt3FtOH7/CokUQT4itPeC6R/W1tZoBA7gDoeS2g8Ub5YHtpDwiOy97IMOKXirj
-         wCEi+AKUnAO98PByTsE49wg4qGm1xletxhnva8+MocxY3CCh+Re3El8uqf73uh7e7v
-         H0X7ovhFaToIFtIhI7PoGHHPn78//1O5l+ThJCnU=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AQ52UI2054195
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 25 Nov 2021 23:02:30 -0600
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 25
- Nov 2021 23:02:29 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Thu, 25 Nov 2021 23:02:29 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AQ52T3i031059;
-        Thu, 25 Nov 2021 23:02:29 -0600
-From:   Jayesh Choudhary <j-choudhary@ti.com>
-To:     <robh+dt@kernel.org>
-CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <j-choudhary@ti.com>,
-        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3] ASoC: dt-bindings: davinci-mcasp: convert McASP bindings to yaml schema
-Date:   Fri, 26 Nov 2021 10:32:28 +0530
-Message-ID: <20211126050228.6257-1-j-choudhary@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 26 Nov 2021 00:34:22 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1637903008; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=kTT6Em4JDS6/n2VGliGLaE9S+PknFWxGAUiJO4w9UcrhWM6NIlMzAx+PtzMv9HHDSNv2cP27qumLZNCOYVAznwtp8lXf6M/LqY/Gq/p/xzSUwgrV46aHdZiKMf+5JRO3Rs62wyy89VzmskC+loYa07G1bKLiqEwExGzYIzOszds=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1637903008; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
+        bh=e1fy8d/F7bO0bxbGs9DFbseWsVknlDYWORiYHfsGIf8=; 
+        b=D+d85SWg0ltZ94GnKtm7vV4/uUrRM6weqrb89FGTFtj4m89M2NfrXFUGJ9ojdiV/cZ7+gXsL/DBAa5KTV0Lqxv9KvyfNtzn2BrUtCvKpdzg8Gea5yYl3qHhHkcIcA/HcrdwmahOTG4+DUxHVrliJfPOrrOC6vMZtZRPBfJibA2Q=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1637903008;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=e1fy8d/F7bO0bxbGs9DFbseWsVknlDYWORiYHfsGIf8=;
+        b=Nl3r5ejY1FHl1ts5hqefnDJ9sJvZpsLJORZ3A4KioqoF7ibhdDL7ysWhdndMlvgk
+        bhsk/ZFNRmLwXCekMD84/SnA7kYzSfipuQe6dfXL/7ye+fUekX6MpcNkMD/JsBtfPKT
+        eXfIDlXUdRRy6lvszTi851IoRCvWRkSeoVID5kQk=
+Received: from mail.baihui.com by mx.zoho.com.cn
+        with SMTP id 163790300607680.6143952720198; Fri, 26 Nov 2021 13:03:26 +0800 (CST)
+Date:   Fri, 26 Nov 2021 13:03:26 +0800
+From:   Chengguang Xu <cgxu519@mykernel.net>
+Reply-To: cgxu519@mykernel.net
+To:     "Amir Goldstein" <amir73il@gmail.com>
+Cc:     "Miklos Szeredi" <miklos@szeredi.hu>, "Jan Kara" <jack@suse.cz>,
+        "overlayfs" <linux-unionfs@vger.kernel.org>,
+        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>,
+        "Chengguang Xu" <charliecgxu@tencent.com>
+Message-ID: <17d5aa0795d.fdfda4a49855.5158536783597235118@mykernel.net>
+In-Reply-To: <CAOQ4uxhrg=MAL7sArmP47oyF_QmhG-1b=srs30VNdiT-9s-P0w@mail.gmail.com>
+References: <20211122030038.1938875-1-cgxu519@mykernel.net> <20211122030038.1938875-8-cgxu519@mykernel.net> <CAOQ4uxhrg=MAL7sArmP47oyF_QmhG-1b=srs30VNdiT-9s-P0w@mail.gmail.com>
+Subject: Re: [RFC PATCH V6 7/7] ovl: implement containerized syncfs for
+ overlayfs
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Importance: Medium
+User-Agent: ZohoCN Mail
+X-Mailer: ZohoCN Mail
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the bindings for McASP controllers for TI SOCs
-from txt to YAML schema.
+ ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=80, 2021-11-22 15:40:59 Amir Golds=
+tein <amir73il@gmail.com> =E6=92=B0=E5=86=99 ----
+ > On Mon, Nov 22, 2021 at 5:01 AM Chengguang Xu <cgxu519@mykernel.net> wro=
+te:
+ > >
+ > > From: Chengguang Xu <charliecgxu@tencent.com>
+ > >
+ > > Now overlayfs can only sync own dirty inodes during syncfs,
+ > > so remove unnecessary sync_filesystem() on upper file system.
+ > >
+ > > Signed-off-by: Chengguang Xu <charliecgxu@tencent.com>
+ > > ---
+ > >  fs/overlayfs/super.c | 14 +++++---------
+ > >  1 file changed, 5 insertions(+), 9 deletions(-)
+ > >
+ > > diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
+ > > index ccffcd96491d..213b795a6a86 100644
+ > > --- a/fs/overlayfs/super.c
+ > > +++ b/fs/overlayfs/super.c
+ > > @@ -292,18 +292,14 @@ static int ovl_sync_fs(struct super_block *sb, i=
+nt wait)
+ > >         /*
+ > >          * Not called for sync(2) call or an emergency sync (SB_I_SKIP=
+_SYNC).
+ > >          * All the super blocks will be iterated, including upper_sb.
+ > > -        *
+ > > -        * If this is a syncfs(2) call, then we do need to call
+ > > -        * sync_filesystem() on upper_sb, but enough if we do it when =
+being
+ > > -        * called with wait =3D=3D 1.
+ > >          */
+ > > -       if (!wait)
+ > > -               return 0;
+ > > -
+ > >         upper_sb =3D ovl_upper_mnt(ofs)->mnt_sb;
+ > > -
+ > >         down_read(&upper_sb->s_umount);
+ > > -       ret =3D sync_filesystem(upper_sb);
+ > > +       if (wait)
+ > > +               wait_sb_inodes(upper_sb);
+ > > +       if (upper_sb->s_op->sync_fs)
+ > > +               upper_sb->s_op->sync_fs(upper_sb, wait);
+ > > +       ret =3D ovl_sync_upper_blockdev(upper_sb, wait);
+ >=20
+ > I think it will be cleaner to use a helper ovl_sync_upper_filesystem()
+ > with everything from  upper_sb =3D ... and a comment to explain that
+ > this is a variant of __sync_filesystem() where all the dirty inodes writ=
+e
+ > have already been started.
+ >=20
+=20
+I agree with you.=20
 
-Adds additional properties 'clocks', 'clock-names', 'power-domains',
-'#sound-dai-cells', 'num-serializer' and 'port' which were not there
-in the txt file.
-Adds 'dmas' and 'dma-names' in the example which were not there in
-the txt file.
-Changes 'interrupts' and 'interrupt-names' from optional to
-required properties.
-
-Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
----
-Changelog:
-v3:
-- removes maxItems from 'clock-names'
-
-v2:
-- changes the commit message
-- modifies the properties 'clocks', 'clock-names', 'dma-names',
-  'dmas', 'interrupts' and 'interrupt-names' according to the
-  arm SOCs
-- adds 'port' and 'num-serializer' as node properties
- 
- .../bindings/sound/davinci-mcasp-audio.txt    |  86 ---------
- .../bindings/sound/davinci-mcasp-audio.yaml   | 178 ++++++++++++++++++
- 2 files changed, 178 insertions(+), 86 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
- create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml
-
-diff --git a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
-deleted file mode 100644
-index bd863bd69501..000000000000
---- a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
-+++ /dev/null
-@@ -1,86 +0,0 @@
--Texas Instruments McASP controller
--
--Required properties:
--- compatible :
--	"ti,dm646x-mcasp-audio"	: for DM646x platforms
--	"ti,da830-mcasp-audio"	: for both DA830 & DA850 platforms
--	"ti,am33xx-mcasp-audio"	: for AM33xx platforms (AM33xx, AM43xx, TI81xx)
--	"ti,dra7-mcasp-audio"	: for DRA7xx platforms
--	"ti,omap4-mcasp-audio"	: for OMAP4
--
--- reg : Should contain reg specifiers for the entries in the reg-names property.
--- reg-names : Should contain:
--         * "mpu" for the main registers (required). For compatibility with
--           existing software, it is recommended this is the first entry.
--         * "dat" for separate data port register access (optional).
--- op-mode : I2S/DIT ops mode. 0 for I2S mode. 1 for DIT mode used for S/PDIF,
--  	    IEC60958-1, and AES-3 formats.
--- tdm-slots : Slots for TDM operation. Indicates number of channels transmitted
--  	      or received over one serializer.
--- serial-dir : A list of serializer configuration. Each entry is a number
--               indication for serializer pin direction.
--               (0 - INACTIVE, 1 - TX, 2 - RX)
--- dmas: two element list of DMA controller phandles and DMA request line
--        ordered pairs.
--- dma-names: identifier string for each DMA request line in the dmas property.
--	     These strings correspond 1:1 with the ordered pairs in dmas. The dma
--	     identifiers must be "rx" and "tx".
--
--Optional properties:
--
--- ti,hwmods : Must be "mcasp<n>", n is controller instance starting 0
--- tx-num-evt : FIFO levels.
--- rx-num-evt : FIFO levels.
--- dismod : Specify the drive on TX pin during inactive slots
--	0 : 3-state
--	2 : logic low
--	3 : logic high
--	Defaults to 'logic low' when the property is not present
--- sram-size-playback : size of sram to be allocated during playback
--- sram-size-capture  : size of sram to be allocated during capture
--- interrupts : Interrupt numbers for McASP
--- interrupt-names : Known interrupt names are "tx" and "rx"
--- pinctrl-0: Should specify pin control group used for this controller.
--- pinctrl-names: Should contain only one value - "default", for more details
--  		 please refer to pinctrl-bindings.txt
--- fck_parent : Should contain a valid clock name which will be used as parent
--	       for the McASP fck
--- auxclk-fs-ratio: When McASP is bus master indicates the ratio between AUCLK
--		   and FS rate if applicable:
--		   AUCLK rate = auxclk-fs-ratio * FS rate
--
--Optional GPIO support:
--If any McASP pin need to be used as GPIO then the McASP node must have:
--...
--  gpio-controller
--  #gpio-cells = <2>;
--...
--
--When requesting a GPIO, the first parameter is the PIN index in McASP_P*
--registers.
--For example to request the AXR2 pin of mcasp8:
--function-gpios = <&mcasp8 2 0>;
--
--Or to request the ACLKR pin of mcasp8:
--function-gpios = <&mcasp8 29 0>;
--
--For generic gpio information, please refer to bindings/gpio/gpio.txt
--
--Example:
--
--mcasp0: mcasp0@1d00000 {
--	compatible = "ti,da830-mcasp-audio";
--	reg = <0x100000 0x3000>;
--	reg-names "mpu";
--	interrupts = <82>, <83>;
--	interrupt-names = "tx", "rx";
--	op-mode = <0>;		/* MCASP_IIS_MODE */
--	tdm-slots = <2>;
--	serial-dir = <
--			0 0 0 0	/* 0: INACTIVE, 1: TX, 2: RX */
--			0 0 0 0
--			0 0 0 1
--			2 0 0 0 >;
--	tx-num-evt = <1>;
--	rx-num-evt = <1>;
--};
-diff --git a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml
-new file mode 100644
-index 000000000000..c4d3f56470bf
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml
-@@ -0,0 +1,178 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/davinci-mcasp-audio.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: McASP Controller for TI SoCs
-+
-+maintainers:
-+  - Jayesh Choudhary <j-choudhary@ti.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - ti,dm646x-mcasp-audio
-+      - ti,da830-mcasp-audio
-+      - ti,am33xx-mcasp-audio
-+      - ti,dra7-mcasp-audio
-+      - ti,omap4-mcasp-audio
-+
-+  reg:
-+    minItems: 1
-+    items:
-+      - description: main registers
-+      - description: data port register
-+
-+  reg-names:
-+    minItems: 1
-+    items:
-+      - const: mpu
-+      - const: dat
-+
-+  op-mode:
-+    description: I2S - 0 or DIT - 1 mode
-+    enum:
-+      - 0
-+      - 1
-+
-+  tdm-slots:
-+    maxItems: 1
-+
-+  serial-dir:
-+    description:
-+      A list of serializer configuration
-+      Entry is indication for serializer pin direction
-+      0 - Inactive, 1 - TX, 2 - RX
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    minItems: 1
-+    maxItems: 16
-+    items:
-+      minimum: 0
-+      maximum: 2
-+      default: 0
-+
-+  dmas:
-+    minItems: 1
-+    items:
-+      - description: transmission DMA channel
-+      - description: reception DMA channel
-+
-+  dma-names:
-+    minItems: 1
-+    items:
-+      - const: tx
-+      - const: rx
-+
-+  ti,hwmods:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description: Name of hwmod associated with McASP
-+    maxItems: 1
-+    deprecated: true
-+
-+  tx-num-evt:
-+    maxItems: 1
-+
-+  rx-num-evt:
-+    maxItems: 1
-+
-+  dismod:
-+    enum:
-+      - 0
-+      - 2
-+      - 3
-+    default: 2
-+
-+  sram-size-playback:
-+    maxItems: 1
-+
-+  sram-size-capture:
-+    maxItems: 1
-+
-+  interrupts:
-+    minItems: 1
-+    items:
-+      - description: TX FIFO interrupt
-+      - description: RX FIFO interrupt
-+
-+  interrupt-names:
-+    oneOf:
-+      - minItems: 1
-+        items:
-+          - const: tx
-+          - const: rx
-+      - const: common
-+
-+  fck_parent:
-+    description: parent clock for McASP fck
-+    maxItems: 1
-+
-+  auxclk-fs-ratio:
-+    description: ratio of AUCLK and FS if applicable
-+    maxItems: 1
-+
-+  gpio-controller: true
-+
-+  "#gpio-cells":
-+    const: 2
-+
-+  function-gpios:
-+    maxItems: 1
-+
-+  clocks:
-+    minItems: 1
-+    maxItems: 3
-+
-+  clock-names:
-+    minItems: 1
-+    items:
-+      - const: fck
-+      - const: ahclkx
-+      - const: ahclkr
-+
-+  power-domains:
-+    maxItems: 1
-+
-+  "#sound-dai-cells":
-+    const: 0
-+
-+  num-serializer:
-+    maxItems: 1
-+
-+  port:
-+    type: object
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - dmas
-+  - dma-names
-+  - interrupts
-+  - interrupt-names
-+  - serial-dir
-+  - op-mode
-+  - tdm-slots
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    mcasp0: mcasp0@1d00000 {
-+      compatible = "ti,da830-mcasp-audio";
-+      reg = <0x100000 0x3000>;
-+      reg-names = "mpu";
-+      interrupts = <82>, <83>;
-+      interrupt-names = "tx", "rx";
-+      op-mode = <0>;		/* MCASP_IIS_MODE */
-+      tdm-slots = <2>;
-+      dmas = <&main_udmap 0xc400>, <&main_udmap 0x4400>;
-+      dma-names = "tx", "rx";
-+      serial-dir = <
-+          0 0 0 0	/* 0: INACTIVE, 1: TX, 2: RX */
-+          0 0 0 0
-+          0 0 0 1
-+          2 0 0 0 >;
-+      tx-num-evt = <1>;
-+      rx-num-evt = <1>;
-+    };
--- 
-2.17.1
-
+Thanks,
+Chengguang
