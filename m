@@ -2,98 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4D445F06A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:12:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB0945F071
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:13:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377993AbhKZPPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 10:15:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350728AbhKZPNk (ORCPT
+        id S1378059AbhKZPQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 10:16:43 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:35238 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349060AbhKZPOm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 10:13:40 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 185E0C061784;
-        Fri, 26 Nov 2021 07:02:37 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id r11so40134242edd.9;
-        Fri, 26 Nov 2021 07:02:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7WKyxNFeEYKoREkD0c19RFptAww7wbbo/OFZ6cXxB1w=;
-        b=N6uHU5ILrCIQvq7r4K+/wN2arEkieagq8CclQdF596CUIcI44bK1d4yLKV9YUv+fTw
-         kuLTilApbMAkJWcxxrJqmoPbKMd5DF1QiRzVqFCc5Cy+i+6MP4KVI4Y43E8he6AqItIX
-         6mbDEQSazDe1aC3Iz79MEHd3Io/d6uwIlw+eWwuobRcsb7crx28sRolhQUiqjNyAnaRr
-         U58kSJbWKcS+kc7ajUKzA8DTUuZAihUMoNYcQaCAXIhTJ2en9qLMOUjvYHsnWYbv8GtJ
-         j8o4/bcgCHl1hL83JbcKEJG9GPj18QbAPURaxxpAMpL+ikgWGaSjOqQUix4l45gr1z4q
-         A4Gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7WKyxNFeEYKoREkD0c19RFptAww7wbbo/OFZ6cXxB1w=;
-        b=wnxJmgvHC675X2JbWbiiFN9l2kVYc8ZSmfIKDYAVga9EKx5RTym9FnbkoN5w1GCW73
-         5aLdgyGQ3g3QbPSKo+VHs+rMh2lRuoVQN6+imbJ8uJ6TndO3NsZ43Xuhj1l4nbOq8P5g
-         xHMp9MjNE+fbggT4sN8ym+qH/pQ7E0+G2dhR/c11ZqaHVa3FdZG0Y/w/bcHovIktbaFF
-         j3sToxzLjybtISnJ6IZZM5ETUgMUPYCyWpfNIJhmS794fb2BrKluPr/ndwGumehaF1i8
-         0ILu3pXHsuDzLKDTKXBu/3DAt2fm9TKxs5HPgKDBE/4vucruRB48IApHkTi1gcZE1NcF
-         Xr4g==
-X-Gm-Message-State: AOAM5336/TIoWzghuyYLYZezVeV0H1eD1v78lj+G9GvRaY2MyoUkSGH9
-        mbLf3ftIDMH7LD+qR/NfKawzi/Gxmfxg4WJE8+8=
-X-Google-Smtp-Source: ABdhPJzdCYVcg2NuZzEDoNjtQDVAN598WW8V35ihTMNpJhv5/C7pXOi35tFFgwaHKlkf0MFcL/NWn3SMeEllabA0jtA=
-X-Received: by 2002:a17:906:ecac:: with SMTP id qh12mr38496156ejb.377.1637938955561;
- Fri, 26 Nov 2021 07:02:35 -0800 (PST)
+        Fri, 26 Nov 2021 10:14:42 -0500
+X-Greylist: delayed 476 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Nov 2021 10:14:42 EST
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 84685622A6;
+        Fri, 26 Nov 2021 15:03:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0206C004E1;
+        Fri, 26 Nov 2021 15:03:32 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="mJBP9B08"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1637939009;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RH8/qH8grAa6gFEGBxQ5rymfbgwNueBjT+21OQOzhO4=;
+        b=mJBP9B085u3tSvmelxK1VgANWcawy3/lGtl4GeeSLlZI5s8gHBZtUkdXnN7jVumqfaNf3S
+        SaCfj3w9KE1VAu5TaoFdEdZocJwR0w/ikxlPO5HRXeEHIar3GdhYb4dEvl8O32PwD/4Sso
+        T4OkvJjfloWGdrP6rR9SX4osMmZy290=
+Received: by mail.zx2c4.com (OpenSMTPD) with ESMTPSA id 5640c36e (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Fri, 26 Nov 2021 15:03:29 +0000 (UTC)
+Received: by mail-yb1-f169.google.com with SMTP id x32so20908223ybi.12;
+        Fri, 26 Nov 2021 07:03:29 -0800 (PST)
+X-Gm-Message-State: AOAM533Jc8AG4ZsG6sgWQ8vTj/1jLSjXI4/ouleog9dw08dDLwkbX73i
+        Wm2KdUbuZwyQaf8qEjegsv5qcRcvTL5JXYN+MNI=
+X-Google-Smtp-Source: ABdhPJx4z9oxLEVwBzAuJQgoS1YMUVgfcuYfJ61Ct1d3EdlZFvLtdJRHAMiQkBFnhPiP2eyW9n08VvC6TS5Xzypnxk8=
+X-Received: by 2002:a25:acd4:: with SMTP id x20mr16332521ybd.416.1637939007316;
+ Fri, 26 Nov 2021 07:03:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20211126141027.16161-1-henning.schild@siemens.com> <20211126141027.16161-3-henning.schild@siemens.com>
-In-Reply-To: <20211126141027.16161-3-henning.schild@siemens.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 26 Nov 2021 17:02:00 +0200
-Message-ID: <CAHp75VcD0FQuG_AToNkVHHD9e6WV6=18P4U0cSi0qzD3FL=ssw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/4] leds: simatic-ipc-leds: add new driver for Siemens
- Industial PCs
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>, Enrico Weigelt <lkml@metux.net>
+References: <20211126143329.2689618-1-arnd@kernel.org>
+In-Reply-To: <20211126143329.2689618-1-arnd@kernel.org>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Fri, 26 Nov 2021 10:03:16 -0500
+X-Gmail-Original-Message-ID: <CAHmME9rotnZRzqeD43FJmSX6-i2CwvUVpXHrFkLGt+qVVdxK7A@mail.gmail.com>
+Message-ID: <CAHmME9rotnZRzqeD43FJmSX6-i2CwvUVpXHrFkLGt+qVVdxK7A@mail.gmail.com>
+Subject: Re: [PATCH] crypto: siphash - use _unaligned version by default
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jean-Philippe Aumasson <jeanphilippe.aumasson@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 4:10 PM Henning Schild
-<henning.schild@siemens.com> wrote:
->
-> This driver adds initial support for several devices from Siemens. It is
-> based on a platform driver introduced in an earlier commit.
+Hi Arnd,
 
-...
+It looks like Ard's old patch never got picked up so you're dusting it
+off. It looks like you're doing two things here -- moving from an
+ifndef to a much nicer IS_ENABLED, and changing the logic a bit. In
+trying to understand the logic part, I changed this in my buffer:
 
-> +static struct simatic_ipc_led simatic_ipc_leds_mem[] = {
-> +       {0x500 + 0x1A0, "red:" LED_FUNCTION_STATUS "-1"},
-> +       {0x500 + 0x1A8, "green:" LED_FUNCTION_STATUS "-1"},
-> +       {0x500 + 0x1C8, "red:" LED_FUNCTION_STATUS "-2"},
-> +       {0x500 + 0x1D0, "green:" LED_FUNCTION_STATUS "-2"},
-> +       {0x500 + 0x1E0, "red:" LED_FUNCTION_STATUS "-3"},
-> +       {0x500 + 0x198, "green:" LED_FUNCTION_STATUS "-3"},
-> +       { }
-> +};
+-#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+-       if (!IS_ALIGNED((unsigned long)data, HSIPHASH_ALIGNMENT))
++       if (IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) ||
++           !IS_ALIGNED((unsigned long)data, HSIPHASH_ALIGNMENT))
+                return __hsiphash_unaligned(data, len, key);
+        return ___hsiphash_aligned(data, len, key);
 
-Like I said, this is not okay.
+into this:
 
-Why can't you simply enable the pinctrl driver and use it?
+-       if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) &&
+-           !IS_ALIGNED((unsigned long)data, HSIPHASH_ALIGNMENT))
++       if (IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) ||
++           !IS_ALIGNED((unsigned long)data, HSIPHASH_ALIGNMENT))
+                return __hsiphash_unaligned(data, len, key);
+        return ___hsiphash_aligned(data, len, key);
 
+This way I can actually think about what's happening here.
 
+So with the old one, we use the faster aligned version if *either* the
+CPU has efficient unaligned access OR the bytes are statically known
+to be aligned. This seems sensible.
 
--- 
-With Best Regards,
-Andy Shevchenko
+On the new one, we use the faster aligned version if *both* the bytes
+are statically known to be aligned (ok) AND the CPU doesn't actually
+support efficient unaligned accesses (?). This seems kind of weird.
+
+It also means that CPUs with fast aligned accesses wind up calling the
+slower code path in some cases. Is your supposition that the compiler
+will always optimize the slow codepath to the fast one if the CPU it's
+compiling for supports that? Have you tested this on all platforms?
+
+Would it make sense to instead just fix clang-13? Or even to just get
+rid of CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS for armv6 or undef
+CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS for armv6 just in this file or
+maybe less messy, split CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS into
+two ifdefs that more sense for our usage?
+
+Jason
