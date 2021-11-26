@@ -2,88 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EBC945F528
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:25:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B79C845F561
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:45:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234556AbhKZT2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 14:28:30 -0500
-Received: from mga18.intel.com ([134.134.136.126]:22947 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231474AbhKZT03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 14:26:29 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="222579122"
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
-   d="scan'208";a="222579122"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 11:23:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
-   d="scan'208";a="539323646"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 26 Nov 2021 11:23:13 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqgoS-0008Tn-Gd; Fri, 26 Nov 2021 19:23:12 +0000
-Date:   Sat, 27 Nov 2021 03:23:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, alex@ghiti.fr
-Cc:     kbuild-all@lists.01.org, linux-mm@kvack.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 9/9] powerpc: Simplify and move arch_randomize_brk()
-Message-ID: <202111270342.b1Y85fuz-lkp@intel.com>
-References: <4c5a2b18774552c2226573f7069ffeee71ad77cb.1637828367.git.christophe.leroy@csgroup.eu>
+        id S236687AbhKZTs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 14:48:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236890AbhKZTq5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 14:46:57 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFCE2C061574;
+        Fri, 26 Nov 2021 11:27:33 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id y26so26473475lfa.11;
+        Fri, 26 Nov 2021 11:27:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=O1kK9AYBtc9AD0KhODE7NvT+qyLPdaRS8n6Xu3GYNXw=;
+        b=N1PRWlXx8pANbj2NPlTiFayoeMPh+egborEJg1CHEWS4T9yk/adQRe6+QCzUZQ6MmN
+         WvtMl2kAOP7xFb8hFb9LJ5UegafHCsOwlMoTuvyy7pm6LUorAW9q87DHBc6eUlHgGgxf
+         3Dqa7Pcv1e4TpqvAR4zeCIR4nCNalsOwQh3wt5Gw49/fBmE3kcxsSE5PEgFXE8zqJdBn
+         RNXcG631LSVnNsHbmkJxT8d0B29g0ScP020YoYZikbVOTOtuo7oWpzxQ+7MrqjySUz/m
+         E3OLLuJNBcA0ZTWzczJ0bjsJgngSsUXNp5IF8KtZuqGSZLnoWSCZ+VXocUNDrS/somke
+         QlMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=O1kK9AYBtc9AD0KhODE7NvT+qyLPdaRS8n6Xu3GYNXw=;
+        b=pOrCMh/YePxT3dy95KxJfoRGNIQn2lD1WRBZ6dEQ5sLNgKakHTXZe2gvlDKIFwxfh8
+         Y0FvxIvE5z1yvlGdWaIrTIut0WYy43uv29pw/ApvaOmWUNL14ZWcvg+bJjjyvSGf1XoC
+         3ifXn+CndiQ6IGdnu6SapGBgNrqaZF+ygTmkhllBeBEkLlnzHdTBfeZB6txdYJ+Z+tU5
+         degwkIruIS0+MyXDOFjDMeBH1KDOjmv/MwUvs8MITkqwxuYOosUuxyU5Ja1Zz3dDJtTJ
+         OvboAUC/kuqwRCc5y5fGEKPvfhNhf1axPnnUy+whDqGlgesYPQfntBrfm4sqZ5XDuWmJ
+         IPiw==
+X-Gm-Message-State: AOAM533fn3O7DwRGV/cqy6N95ZTEoNNzCO3zaX3JO5guaGDsxdbRQtR2
+        EbN6zNcvR01OqASsWPRb7F20638x6jQ=
+X-Google-Smtp-Source: ABdhPJwsAOi539yLJqNfE5zyJYLxjjvJ1laZK+5s4ZfumYwXzUr5B/hLGXjZ6PwZEC6MzWPg7sf1cA==
+X-Received: by 2002:a19:4f02:: with SMTP id d2mr32018081lfb.547.1637954852084;
+        Fri, 26 Nov 2021 11:27:32 -0800 (PST)
+Received: from [192.168.1.103] ([178.176.72.184])
+        by smtp.gmail.com with ESMTPSA id a30sm565161ljd.134.2021.11.26.11.27.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Nov 2021 11:27:31 -0800 (PST)
+Subject: Re: [PATCH -next V5 0/2] fix two bugs when trying rmmod sata_fsl
+To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Baokun Li <libaokun1@huawei.com>, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     yebin10@huawei.com, yukuai3@huawei.com
+References: <20211126020307.2168767-1-libaokun1@huawei.com>
+ <4469be5f-01a9-5d10-9dc3-b703f36a1ea4@opensource.wdc.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <52d961ae-e4e0-00fb-0753-518125edc560@gmail.com>
+Date:   Fri, 26 Nov 2021 22:27:29 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4c5a2b18774552c2226573f7069ffeee71ad77cb.1637828367.git.christophe.leroy@csgroup.eu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <4469be5f-01a9-5d10-9dc3-b703f36a1ea4@opensource.wdc.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+Hello!
 
-I love your patch! Perhaps something to improve:
+On 11/26/21 4:56 AM, Damien Le Moal wrote:
 
-[auto build test WARNING on powerpc/next]
-[also build test WARNING on hnaz-mm/master linus/master v5.16-rc2 next-20211126]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+>> V1->V2:
+>> 	Fixed the check on the return value of platform_get_irq().
+>> 	And propagate errors up to sata_fsl_probe()'s callers.
+>> V2->V3:
+>> 	Add fixed and CC stable and modified the patch description.
+>> V3->V4:
+>> 	Use a single structure.
+>> V4->V5:
+>> 	Delete duplicate dev_err() message.
+>>
+>> Baokun Li (2):
+>>   sata_fsl: fix UAF in sata_fsl_port_stop when rmmod sata_fsl
+>>   sata_fsl: fix warning in remove_proc_entry when rmmod sata_fsl
+>>
+>>  drivers/ata/sata_fsl.c | 20 +++++++++++++-------
+>>  1 file changed, 13 insertions(+), 7 deletions(-)
+>>
+> 
+> The series looks good to me now.
+> 
+> Sergei ? Are you OK with it ?
 
-url:    https://github.com/0day-ci/linux/commits/Christophe-Leroy/Convert-powerpc-to-default-topdown-mmap-layout/20211125-162916
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git next
-config: powerpc64-buildonly-randconfig-r006-20211125 (https://download.01.org/0day-ci/archive/20211127/202111270342.b1Y85fuz-lkp@intel.com/config)
-compiler: powerpc64-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/554c475dfb73dc352708dff3589b55845b3dd751
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Christophe-Leroy/Convert-powerpc-to-default-topdown-mmap-layout/20211125-162916
-        git checkout 554c475dfb73dc352708dff3589b55845b3dd751
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=powerpc SHELL=/bin/bash arch/powerpc/mm/book3s64/
+   Yeah, I'll just give the patches by Reviewed-by's.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
->> arch/powerpc/mm/book3s64/hash_utils.c:2077:15: warning: no previous prototype for 'arch_randomize_brk' [-Wmissing-prototypes]
-    2077 | unsigned long arch_randomize_brk(struct mm_struct *mm)
-         |               ^~~~~~~~~~~~~~~~~~
-
-
-vim +/arch_randomize_brk +2077 arch/powerpc/mm/book3s64/hash_utils.c
-
-  2076	
-> 2077	unsigned long arch_randomize_brk(struct mm_struct *mm)
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+MBR, Sergei
