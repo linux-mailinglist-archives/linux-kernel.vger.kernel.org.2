@@ -2,112 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AEC045E851
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:15:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A5C45E832
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359165AbhKZHSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 02:18:37 -0500
-Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17298 "EHLO
-        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346584AbhKZHQd (ORCPT
+        id S237289AbhKZHJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 02:09:42 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:43398 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232116AbhKZHHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 02:16:33 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1637903008; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=kTT6Em4JDS6/n2VGliGLaE9S+PknFWxGAUiJO4w9UcrhWM6NIlMzAx+PtzMv9HHDSNv2cP27qumLZNCOYVAznwtp8lXf6M/LqY/Gq/p/xzSUwgrV46aHdZiKMf+5JRO3Rs62wyy89VzmskC+loYa07G1bKLiqEwExGzYIzOszds=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1637903008; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
-        bh=e1fy8d/F7bO0bxbGs9DFbseWsVknlDYWORiYHfsGIf8=; 
-        b=D+d85SWg0ltZ94GnKtm7vV4/uUrRM6weqrb89FGTFtj4m89M2NfrXFUGJ9ojdiV/cZ7+gXsL/DBAa5KTV0Lqxv9KvyfNtzn2BrUtCvKpdzg8Gea5yYl3qHhHkcIcA/HcrdwmahOTG4+DUxHVrliJfPOrrOC6vMZtZRPBfJibA2Q=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1637903008;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=e1fy8d/F7bO0bxbGs9DFbseWsVknlDYWORiYHfsGIf8=;
-        b=Nl3r5ejY1FHl1ts5hqefnDJ9sJvZpsLJORZ3A4KioqoF7ibhdDL7ysWhdndMlvgk
-        bhsk/ZFNRmLwXCekMD84/SnA7kYzSfipuQe6dfXL/7ye+fUekX6MpcNkMD/JsBtfPKT
-        eXfIDlXUdRRy6lvszTi851IoRCvWRkSeoVID5kQk=
-Received: from mail.baihui.com by mx.zoho.com.cn
-        with SMTP id 163790300607680.6143952720198; Fri, 26 Nov 2021 13:03:26 +0800 (CST)
-Date:   Fri, 26 Nov 2021 13:03:26 +0800
-From:   Chengguang Xu <cgxu519@mykernel.net>
-Reply-To: cgxu519@mykernel.net
-To:     "Amir Goldstein" <amir73il@gmail.com>
-Cc:     "Miklos Szeredi" <miklos@szeredi.hu>, "Jan Kara" <jack@suse.cz>,
-        "overlayfs" <linux-unionfs@vger.kernel.org>,
-        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "Chengguang Xu" <charliecgxu@tencent.com>
-Message-ID: <17d5aa0795d.fdfda4a49855.5158536783597235118@mykernel.net>
-In-Reply-To: <CAOQ4uxhrg=MAL7sArmP47oyF_QmhG-1b=srs30VNdiT-9s-P0w@mail.gmail.com>
-References: <20211122030038.1938875-1-cgxu519@mykernel.net> <20211122030038.1938875-8-cgxu519@mykernel.net> <CAOQ4uxhrg=MAL7sArmP47oyF_QmhG-1b=srs30VNdiT-9s-P0w@mail.gmail.com>
-Subject: Re: [RFC PATCH V6 7/7] ovl: implement containerized syncfs for
- overlayfs
+        Fri, 26 Nov 2021 02:07:41 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0UyM4Bt8_1637910264;
+Received: from localhost.localdomain(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0UyM4Bt8_1637910264)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 26 Nov 2021 15:04:26 +0800
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+To:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        helgaas@kernel.org
+Cc:     bp@alien8.de, tony.luck@intel.com, james.morse@arm.com,
+        lenb@kernel.org, rjw@rjwysocki.net, bhelgaas@google.com,
+        xueshuai@linux.alibaba.com, zhangliguang@linux.alibaba.com,
+        zhuo.song@linux.alibaba.com
+Subject: [RFC PATCH v4] ACPI: Move sdei_init and ghes_init ahead to handle platform errors earlier
+Date:   Fri, 26 Nov 2021 15:04:22 +0800
+Message-Id: <20211126070422.73234-1-xueshuai@linux.alibaba.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Importance: Medium
-User-Agent: ZohoCN Mail
-X-Mailer: ZohoCN Mail
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=80, 2021-11-22 15:40:59 Amir Golds=
-tein <amir73il@gmail.com> =E6=92=B0=E5=86=99 ----
- > On Mon, Nov 22, 2021 at 5:01 AM Chengguang Xu <cgxu519@mykernel.net> wro=
-te:
- > >
- > > From: Chengguang Xu <charliecgxu@tencent.com>
- > >
- > > Now overlayfs can only sync own dirty inodes during syncfs,
- > > so remove unnecessary sync_filesystem() on upper file system.
- > >
- > > Signed-off-by: Chengguang Xu <charliecgxu@tencent.com>
- > > ---
- > >  fs/overlayfs/super.c | 14 +++++---------
- > >  1 file changed, 5 insertions(+), 9 deletions(-)
- > >
- > > diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
- > > index ccffcd96491d..213b795a6a86 100644
- > > --- a/fs/overlayfs/super.c
- > > +++ b/fs/overlayfs/super.c
- > > @@ -292,18 +292,14 @@ static int ovl_sync_fs(struct super_block *sb, i=
-nt wait)
- > >         /*
- > >          * Not called for sync(2) call or an emergency sync (SB_I_SKIP=
-_SYNC).
- > >          * All the super blocks will be iterated, including upper_sb.
- > > -        *
- > > -        * If this is a syncfs(2) call, then we do need to call
- > > -        * sync_filesystem() on upper_sb, but enough if we do it when =
-being
- > > -        * called with wait =3D=3D 1.
- > >          */
- > > -       if (!wait)
- > > -               return 0;
- > > -
- > >         upper_sb =3D ovl_upper_mnt(ofs)->mnt_sb;
- > > -
- > >         down_read(&upper_sb->s_umount);
- > > -       ret =3D sync_filesystem(upper_sb);
- > > +       if (wait)
- > > +               wait_sb_inodes(upper_sb);
- > > +       if (upper_sb->s_op->sync_fs)
- > > +               upper_sb->s_op->sync_fs(upper_sb, wait);
- > > +       ret =3D ovl_sync_upper_blockdev(upper_sb, wait);
- >=20
- > I think it will be cleaner to use a helper ovl_sync_upper_filesystem()
- > with everything from  upper_sb =3D ... and a comment to explain that
- > this is a variant of __sync_filesystem() where all the dirty inodes writ=
-e
- > have already been started.
- >=20
-=20
-I agree with you.=20
+On an ACPI system, ACPI is initialised very early from a subsys_initcall(),
+while SDEI is not ready until a subsys_initcall_sync().
 
-Thanks,
-Chengguang
+The SDEI driver provides functions (e.g. apei_sdei_register_ghes,
+apei_sdei_unregister_ghes) to register or unregister event callback for
+dispatcher in firmware. When the GHES driver probing, it registers the
+corresponding callback according to the notification type specified by
+GHES. If the GHES notification type is SDEI, the GHES driver will call
+apei_sdei_register_ghes to register event call.
+
+When the firmware emits an event, it migrates the handling of the event
+into the kernel at the registered entry-point __sdei_asm_handler. And
+finally, the kernel will call the registered event callback and return
+status_code to indicate the status of event handling. SDEI_EV_FAILED
+indicates that the kernel failed to handle the event.
+
+Consequently, when an error occurs during kernel booting, the kernel is
+unable to handle and report errors until the GHES driver is initialized by
+device_initcall(), in which the event callback is registered. All errors
+that occurred before GHES initialization are missed and there is no chance
+to report and find them again.
+
+From commit e147133a42cb ("ACPI / APEI: Make hest.c manage the estatus
+memory pool") was merged, ghes_init() relies on acpi_hest_init() to manage
+the estatus memory pool. On the other hand, ghes_init() relies on
+sdei_init() to detect the SDEI version and the framework for registering
+and unregistering events. By the way, I don't figure out why acpi_hest_init
+is called in acpi_pci_root_init, it don't rely on any other thing. May it
+could be moved further, following acpi_iort_init in acpi_init.
+
+sdei_init() relies on ACPI table which is initialized subsys_initcall():
+acpi_init(), acpi_bus_init(), acpi_load_tables(), acpi_tb_laod_namespace().
+May it should be also moved further, after acpi_load_tables.
+
+In this patch, move sdei_init and ghes_init as far ahead as possible, right
+after acpi_hest_init().
+
+Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+---
+ drivers/acpi/apei/ghes.c    | 18 ++++++++----------
+ drivers/acpi/pci_root.c     |  5 ++++-
+ drivers/firmware/arm_sdei.c | 13 ++-----------
+ include/acpi/apei.h         |  2 ++
+ include/linux/arm_sdei.h    |  2 ++
+ 5 files changed, 18 insertions(+), 22 deletions(-)
+
+diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+index 0c8330ed1ffd..b11e46fb4b3d 100644
+--- a/drivers/acpi/apei/ghes.c
++++ b/drivers/acpi/apei/ghes.c
+@@ -1457,27 +1457,26 @@ static struct platform_driver ghes_platform_driver = {
+ 	.remove		= ghes_remove,
+ };
+ 
+-static int __init ghes_init(void)
++void __init ghes_init(void)
+ {
+ 	int rc;
+ 
+ 	if (acpi_disabled)
+-		return -ENODEV;
++		return;
+ 
+ 	switch (hest_disable) {
+ 	case HEST_NOT_FOUND:
+-		return -ENODEV;
++		pr_info(GHES_PFX "HEST is not found!\n");
++		return;
+ 	case HEST_DISABLED:
+ 		pr_info(GHES_PFX "HEST is not enabled!\n");
+-		return -EINVAL;
++		return;
+ 	default:
+ 		break;
+ 	}
+ 
+-	if (ghes_disable) {
++	if (ghes_disable)
+ 		pr_info(GHES_PFX "GHES is not enabled!\n");
+-		return -EINVAL;
+-	}
+ 
+ 	ghes_nmi_init_cxt();
+ 
+@@ -1495,8 +1494,7 @@ static int __init ghes_init(void)
+ 	else
+ 		pr_info(GHES_PFX "Failed to enable APEI firmware first mode.\n");
+ 
+-	return 0;
++	return;
+ err:
+-	return rc;
++	ghes_disable = 1;
+ }
+-device_initcall(ghes_init);
+diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
+index ab2f7dfb0c44..1260bb556184 100644
+--- a/drivers/acpi/pci_root.c
++++ b/drivers/acpi/pci_root.c
+@@ -23,7 +23,7 @@
+ #include <linux/dmi.h>
+ #include <linux/platform_data/x86/apple.h>
+ #include <acpi/apei.h>	/* for acpi_hest_init() */
+-
++#include <linux/arm_sdei.h> /* for sdei_init() */
+ #include "internal.h"
+ 
+ #define ACPI_PCI_ROOT_CLASS		"pci_bridge"
+@@ -946,6 +946,9 @@ struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
+ void __init acpi_pci_root_init(void)
+ {
+ 	acpi_hest_init();
++	sdei_init();
++	ghes_init();
++
+ 	if (acpi_pci_disabled)
+ 		return;
+ 
+diff --git a/drivers/firmware/arm_sdei.c b/drivers/firmware/arm_sdei.c
+index a7e762c352f9..1e1a51510e83 100644
+--- a/drivers/firmware/arm_sdei.c
++++ b/drivers/firmware/arm_sdei.c
+@@ -1059,14 +1059,14 @@ static bool __init sdei_present_acpi(void)
+ 	return true;
+ }
+ 
+-static int __init sdei_init(void)
++void __init sdei_init(void)
+ {
+ 	struct platform_device *pdev;
+ 	int ret;
+ 
+ 	ret = platform_driver_register(&sdei_driver);
+ 	if (ret || !sdei_present_acpi())
+-		return ret;
++		return;
+ 
+ 	pdev = platform_device_register_simple(sdei_driver.driver.name,
+ 					       0, NULL, 0);
+@@ -1076,17 +1076,8 @@ static int __init sdei_init(void)
+ 		pr_info("Failed to register ACPI:SDEI platform device %d\n",
+ 			ret);
+ 	}
+-
+-	return ret;
+ }
+ 
+-/*
+- * On an ACPI system SDEI needs to be ready before HEST:GHES tries to register
+- * its events. ACPI is initialised from a subsys_initcall(), GHES is initialised
+- * by device_initcall(). We want to be called in the middle.
+- */
+-subsys_initcall_sync(sdei_init);
+-
+ int sdei_event_handler(struct pt_regs *regs,
+ 		       struct sdei_registered_event *arg)
+ {
+diff --git a/include/acpi/apei.h b/include/acpi/apei.h
+index ece0a8af2bae..7dbd6363fda7 100644
+--- a/include/acpi/apei.h
++++ b/include/acpi/apei.h
+@@ -27,8 +27,10 @@ extern int hest_disable;
+ extern int erst_disable;
+ #ifdef CONFIG_ACPI_APEI_GHES
+ extern bool ghes_disable;
++void __init ghes_init(void);
+ #else
+ #define ghes_disable 1
++static inline void ghes_init(void) { return; }
+ #endif
+ 
+ #ifdef CONFIG_ACPI_APEI
+diff --git a/include/linux/arm_sdei.h b/include/linux/arm_sdei.h
+index 0a241c5c911d..9c987188b692 100644
+--- a/include/linux/arm_sdei.h
++++ b/include/linux/arm_sdei.h
+@@ -46,9 +46,11 @@ int sdei_unregister_ghes(struct ghes *ghes);
+ /* For use by arch code when CPU hotplug notifiers are not appropriate. */
+ int sdei_mask_local_cpu(void);
+ int sdei_unmask_local_cpu(void);
++void __init sdei_init(void);
+ #else
+ static inline int sdei_mask_local_cpu(void) { return 0; }
+ static inline int sdei_unmask_local_cpu(void) { return 0; }
++static inline void sdei_init(void) { return ; }
+ #endif /* CONFIG_ARM_SDE_INTERFACE */
+ 
+ 
+-- 
+2.20.1.12.g72788fdb
+
