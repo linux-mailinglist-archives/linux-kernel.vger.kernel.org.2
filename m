@@ -2,130 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BFA45EBD8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:41:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D22245EBDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:44:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377127AbhKZKou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 05:44:50 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:11648 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236358AbhKZKmt (ORCPT
+        id S1345745AbhKZKsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 05:48:01 -0500
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:18737 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230092AbhKZKqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 05:42:49 -0500
+        Fri, 26 Nov 2021 05:46:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1637923177; x=1669459177;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=xpmhlSW7em7UtmFKOBx2CLVo53uxQhap/VGArGY8Pa4=;
-  b=vTKRROhUVRlJRF258OLkWea3ARqOFeP2/ru6J/dIvPzfmZQTWCeoJw5b
-   n92lbpHrd8tNjIi9/8UF5/eALX9UcZD/dvszGHccIPuVOAKlSidierXaY
-   GZKxxL00aqHfIxrKvdLYD3S9fSGn+n3m3BFD30Uso4CpQHN5idiuveiSN
-   +fgKbUn75jKCkxcNPt5c+4AUvOzpdMbkVXcoWc1P8O/QJArof7ZUZePt2
-   vRp8xBrBEBRuyqGD2UspivWhbdDszLohRVafzRxvLqFRAY7JtwjHY7fIR
-   qQ/b8uSlixG3xo8DVGzjPnaUXDETgMYCCK/97BT6Ywr8BfIgTvdjVud7A
-   A==;
-IronPort-SDR: bL+132sOLI9lgINdCORMFDLb6YAEVlBP+OMPuCHT7/JZMk4pG47jnl6W/hpbiK2qZglXWlTwzs
- r1vjJui+crD3+5a0mMU5ushlFCRPkitJXCq8kZbfkjMeABVBpJmyBwRRyIqTtVQTp4wUl3v3YN
- hmk4fPpgmYguJw06KxpGL+IgGF6r8E+jlJVIV8YZ/SLy3Ll7X2HyTjUyRQkuGcXD55X32+XS4U
- j4fsRQNbGLwveG90hd5HMSxh2iPFyFVSrL8LU6pyet82/3+BjecAwaC1qi0bSC+AVRkZauzHHJ
- 0e2gt6xXzR5o1Jm/CaP9exEs
-X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
-   d="scan'208";a="77667991"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Nov 2021 03:39:36 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 26 Nov 2021 03:39:36 -0700
-Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Fri, 26 Nov 2021 03:39:34 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net-next] net: phy: micrel: Add config_init for LAN8814
-Date:   Fri, 26 Nov 2021 11:38:33 +0100
-Message-ID: <20211126103833.3609945-1-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.33.0
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1637923369; x=1669459369;
+  h=from:to:cc:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=CTWpZZjATZrOk3yeQI8xK5pypLpfa0+4rtZk1vty0fg=;
+  b=dqmLqbDIBzLO75Fnp7+ZTa0/wC8XhuIo4VDy72ofIDv9rCZdydEw3Wmr
+   x5fIAMSh9/pV3MK5XYbiHdnDKMjIOjN6u74SxM+g3Q/JZ8ViGia2gbPCm
+   LWZcHZJkBxVQhox6eB9FypRs2J5BNuoQcbzcT/uuM2V3aJ0hZVNe6CgXF
+   JwbkwmW/ogK6jOgh/VCPWqXd8T0nnMhFXFNgvcqcJNeXBzQ5CAUmOXGqI
+   6OIhKY3IAnhlVGJrtmCe4bsxTw44JbZxRF37OAn38RcP8buX9Y4MDzJ8w
+   HM6ae1SV45UAr3pOXVMO8gmicQFgpMiZuuDnft1RkHx2PNUBjJstH0yL4
+   g==;
+X-IronPort-AV: E=Sophos;i="5.87,265,1631548800"; 
+   d="scan'208";a="187737150"
+Received: from mail-bn8nam12lp2169.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.169])
+  by ob1.hgst.iphmx.com with ESMTP; 26 Nov 2021 18:42:47 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AzBn02DCrwCq3WDUf97xtv1pr9W/0PlyfF5GneQUM/1/QWSEjzL70KoYKBwGhl5r2Fg8seau+YfvyaONRnDzn9043svT0k3cQCPrP404QJqDVwKlJffp7zrnyuQ4POc5UITuhaJLIWyeOewH0llHCzJjgqRxCIy6+QIumv7MkiNq7Fn8AVDL1fIKyhSdH24r8YmGMpykBHzDs00nuFRICyhb94SZpYlRZk3j7eUP3I73/hN2MQ1ujB6iPvzh8m0C5dhJjbaYM/C17syX6dAZ8fFbRmyKBlC1FFlFvBQC4wkKnAGl25T4rcaBXsnPBKD9YJbRNYq2DQTU8q2W4nkt7Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=U5eYYK3vTF9yBAkJSjT1IokJmrwKa7uPLwujM6wzPAs=;
+ b=ZFB2a9KsWZTCpNWuJst5tg3yF7BZJNULhL+5CLFoLiKlMmXlCWPUK6KwRMlarJnfU4tiWDel4kuBGpbDtr66J0pC7Cngi5vmMXZkwByNrlLfkd0Dff7CsgAKCnWUfVTsU+U6B6zDzRVp0z/UpnjLTPwPyN70rXtmotapZDRZQtzCl+CZvV79hiY+Y2HLbKYDBzYJ7IaR68ASz05hePWhC+vMNFvznZvO4ghPcwLUNSKbsbO5aXFvPmOeFkvy38S4rj2+Rgcz9akAxFq8NoY8DZoq0Qz1Uj5vjwJhSCUm6zzlHEbD0O5G1SZ9Fx+e10I3dH44FsXOQMT9GQRfSVQ5Rw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=U5eYYK3vTF9yBAkJSjT1IokJmrwKa7uPLwujM6wzPAs=;
+ b=D6N0vC9h3C3MsFY/R8cWgfamCFBn97uLP9OmAjjQIbKssdkjZtRExbMTHTfNbgtm5RBdyzC6JU0WJkT9vmcwS1g1F26duZWg5irvJT+Zi3S8cfdujaRvr4yNIffvPY9OHb7gwixRSqsmQQawc8VmzD5X7nvWkYtWGotDBXrQm+I=
+Received: from PH0PR04MB7158.namprd04.prod.outlook.com (2603:10b6:510:8::18)
+ by PH0PR04MB7320.namprd04.prod.outlook.com (2603:10b6:510:18::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Fri, 26 Nov
+ 2021 10:42:45 +0000
+Received: from PH0PR04MB7158.namprd04.prod.outlook.com
+ ([fe80::c504:3d44:5aef:f3ca]) by PH0PR04MB7158.namprd04.prod.outlook.com
+ ([fe80::c504:3d44:5aef:f3ca%4]) with mapi id 15.20.4734.023; Fri, 26 Nov 2021
+ 10:42:45 +0000
+From:   Niklas Cassel <Niklas.Cassel@wdc.com>
+To:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>
+CC:     "damien.lemoal@opensource.wdc.com" <damien.lemoal@opensource.wdc.com>,
+        Niklas Cassel <Niklas.Cassel@wdc.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] nvme: report write pointer for a full zone as zone start +
+ zone len
+Thread-Topic: [PATCH v2] nvme: report write pointer for a full zone as zone
+ start + zone len
+Thread-Index: AQHX4rJY3tsBd4Y+70+8pYI5zoHXOA==
+Date:   Fri, 26 Nov 2021 10:42:44 +0000
+Message-ID: <20211126104157.227400-1-Niklas.Cassel@wdc.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: git-send-email 2.33.1
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b19c9666-ee50-4370-4a16-08d9b0c97b27
+x-ms-traffictypediagnostic: PH0PR04MB7320:
+x-microsoft-antispam-prvs: <PH0PR04MB732053634359C4E8EADABEAEF2639@PH0PR04MB7320.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:989;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: mKY3aa6rABv+fPQTnTVgNDyI0Fev1Q4AKh2wnNjojeex7rM6eFRa1cgCEW6pw8hbu8wDv3xBNihX3fnI8Udda1bMdz52y1vtFSHc2OquCA0TdmxgcjyatsVnPXTlT/SYUqt1htAysnc7nhHr2hfzYqyE2vps1Y7Cbmp1napXEQ25MnT+9nt3ptlFILGeGZGAhAdEACLwCLQPhBSwcjl+gpt01A/xbd8B0LpEUPkcPQyLvbDhvldwK5BBhvBIR+bBw5p4mZDPwSfLcXf8pXqfXl9iyNFKAOfZDDmdJXUUSZub0y0U8R4LhGbSmHFjphLt2XZifXVFXl8J7I0m2ZgKoB6pVza5XGw0OSGG4CvCEQKPHMS3JPH4ogOIVQGSwUglFOxGOXU5vxvyIDvgI7owT9GCStwFpMP5B/Eao6ky071+Xw9O5qLFP/ASLT4lIgGlDZEmHIcWFRmt93yH4uqhMWi671FPSd7dy67/9GuMlwwkSuJ+o6ejoKP0DDWLoY6mBjwKD32nC0gbc0diaqI23Gg4eewD25PKHiD1IwxwGOZOKBhX+TuJkMTQyVg5SSg+AX5tz6HNFD0MooJdDV5laOqQk0laDfBxGp6KwB335/0Nusp0eC7n0U/WDRn+u/Ta6Hy1ck+3UwDo6u4XJ9PCw/sZdS9eZ9r0SpLhwJ5fVk1dJDD5KMAc61UvXONHwLmu4pz0vnYVufk2QOLWJOHdqw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7158.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2906002)(38100700002)(86362001)(122000001)(83380400001)(66446008)(2616005)(36756003)(6506007)(91956017)(76116006)(6486002)(54906003)(508600001)(186003)(316002)(66556008)(5660300002)(26005)(1076003)(82960400001)(71200400001)(64756008)(6512007)(4326008)(38070700005)(66476007)(8936002)(66946007)(8676002)(110136005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?Xjp2jOq/mx0TtoPyHhxjN2w+TMRvuFUx9NLMWU72Y9g0hg1N3RSlONE0Io?=
+ =?iso-8859-1?Q?sIIKc+ejnx1XGaC6cIa+ImXmep0ZCXGUcFkBrnESRZeAkx/GbPi6fgy64B?=
+ =?iso-8859-1?Q?FXEq4pAJd1QMY/l9oJGo0I2cz1gxvJnsrBhFebLG8JsU6UBbtjkFCyzipw?=
+ =?iso-8859-1?Q?/z2PogRf0+t9e/VaV6dchuQP1nJww+TCAp6Mj9u0nYW3YNWLv4yE2ke1Au?=
+ =?iso-8859-1?Q?+L5eR+noSWb4itp5Qyuasf0TXy10XWJbN2U85j3D9vpVe6WDOoQG+jclRg?=
+ =?iso-8859-1?Q?I8ol/soeW4edYxeBhQr6GRO64rj884H8SVQDP+GQWuJl8m9zGwVr8Li5Oz?=
+ =?iso-8859-1?Q?OfDyPDmdfO9doSwtQARVjK5JnJFWrXFFGa/UpomxhMMYCkBMP0JlotdAD4?=
+ =?iso-8859-1?Q?tF7M5X7uq1chEz/wC2VUR5fMAkugoaxzKnQ7LAsiXYsHhbMI0xMRj3kxX+?=
+ =?iso-8859-1?Q?YokWmB1Cf87UpVq/2U0kInl8J7JTK1fkPCSSgRfHEmq1nO8NLaZKxU69g4?=
+ =?iso-8859-1?Q?/79ZZKJ+M/OZ4YK+hxPW+aYiLR4MBJXbUQyswY0dYtw558gKxnmQQUO2Sh?=
+ =?iso-8859-1?Q?Q6yzJ2B4v6eFFi/3FwXpgWcITU3afnDIZHnnGZaeBjmeFfpXlronHKobLe?=
+ =?iso-8859-1?Q?AND0KpzEZ/owwcVszVrrAOpLCffsxsM3JpsReYclSEml593WzGyYNT7C0x?=
+ =?iso-8859-1?Q?zGRwEOX9wYoirw70HBMlFCpJYm6A/IEg8xaqIFAgRxVFRqEzjMyqIP1zyZ?=
+ =?iso-8859-1?Q?/4QJVQ7txWuTZ0LaQUkhQbPzOC/DVzFja9A1lwJL0ljMUYiqBkXEZhdZIf?=
+ =?iso-8859-1?Q?8FG6vMiR9nM1IAzmEXd6RzrqDwLjC5ywSCdukNrpeQdaaJbiEHiEh2ZUhC?=
+ =?iso-8859-1?Q?h4Bdr4ZQQR9MUn/aikASuUBXlBJyc79otfBL8utHJ+RJKL7iOvYNGOgJTz?=
+ =?iso-8859-1?Q?HkpLDQWUgx0uBWLb4cAAfCuL3si69IsUAPagWcr8TVMY83X0dMYYC/Os0E?=
+ =?iso-8859-1?Q?qUu29r7+9PGxtl9kPxuGySvUPoYHWyiAzZQZBI8rEnaf/acn6GUZMM0ib5?=
+ =?iso-8859-1?Q?RBkPx9gzud9/vXdLLrvz2AB/a5vmoVx3KJbg17N/C1rJB2w/LaseqPXiA3?=
+ =?iso-8859-1?Q?PzT1i0GQoPWszFpINK4mtDGGiKtN2E6qEg9sBP03fVZYLtpMQe52gUj2t5?=
+ =?iso-8859-1?Q?Y4rejzLEFRetE1QwcUickTZcTjlikMQHv8FWGSoRLN4osyNxTKX8MCCAsT?=
+ =?iso-8859-1?Q?EsJxQQ0nvHDcwMauaX1qL/LQQ8HwOMJz4Rt6mI3DlAFttcd+y906QkNrfD?=
+ =?iso-8859-1?Q?cGCQrE9GWuXDU72m94/CQp+336bv3aylKI6YdjfMqz12HXIBcdZzyC5s6f?=
+ =?iso-8859-1?Q?aj3bf19zz9HlbpPNPydPpXGdokWXPbZI0e46TUe3XMCllNYiySohM6EAIT?=
+ =?iso-8859-1?Q?Lfe37Adxx6PpJCs1xUJ38yB7bpY4JGylloLQ6s8l2jEinIwBHExQ1rtRL4?=
+ =?iso-8859-1?Q?Cmf331AAchM5ue/m8uWASsnSS2PD0yjcSChdM4zKZhCBYcSH5MwjzgBz5z?=
+ =?iso-8859-1?Q?K5Mmlxom2Plc6sZvYw6ZNAFSLy0JI/QRoYkWwPQnZHqcI23jbgHpY6vzea?=
+ =?iso-8859-1?Q?3SWVnim2IOrTJC5PBz/9F2aymGKE9oWSCORE7RjiCfID5mXL5NTOuVI85c?=
+ =?iso-8859-1?Q?dx9ltIXoYaVJXZIVxGgFWT8/QsuBDjqg0/DZRkjD?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7158.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b19c9666-ee50-4370-4a16-08d9b0c97b27
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Nov 2021 10:42:44.8911
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: AD+QvLziG+ZsF/Bne3ylB6lwjUi1qwc92zvE+I7Ai/sYsEyzkbrKPnAs1y9KV//tf67IGuR5u1SM20PdzQqGPw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7320
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add config_init for LAN8814. This function is required for the following
-reasons:
-- we need to make sure that the PHY is reset,
-- disable ANEG with QSGMII PCS Host side
-- swap the MDI-X A,B transmit so that there will not be any link flip-flaps
-  when the PHY gets a link.
+From: Niklas Cassel <niklas.cassel@wdc.com>
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+The write pointer in NVMe ZNS is invalid for a zone in zone state full.
+The same also holds true for ZAC/ZBC.
+
+The current behavior for NVMe is to simply propagate the wp reported by
+the drive, even for full zones. Since the wp is invalid for a full zone,
+the wp reported by the drive may be any value.
+
+The way that the sd_zbc driver handles a full zone is to always report
+the wp as zone start + zone len, regardless of what the drive reported.
+null_blk also follows this convention.
+
+Do the same for NVMe, so that a BLKREPORTZONE ioctl reports the write
+pointer for a full zone in a consistent way, regardless of the interface
+of the underlying zoned block device.
+
+blkzone report before patch:
+start: 0x000040000, len 0x040000, cap 0x03e000, wptr 0xfffffffffffbfff8
+reset:0 non-seq:0, zcond:14(fu) [type: 2(SEQ_WRITE_REQUIRED)]
+
+blkzone report after patch:
+start: 0x000040000, len 0x040000, cap 0x03e000, wptr 0x040000 reset:0
+non-seq:0, zcond:14(fu) [type: 2(SEQ_WRITE_REQUIRED)]
+
+Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
 ---
- drivers/net/phy/micrel.c | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+Changes since v1:
+- Minor commit message rewording.
+- Use if/else instead of setting wp unconditionally and then
+  conditionally updating it.
 
-diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-index 44a24b99c894..f080312032cf 100644
---- a/drivers/net/phy/micrel.c
-+++ b/drivers/net/phy/micrel.c
-@@ -1565,6 +1565,14 @@ static int ksz886x_cable_test_get_status(struct phy_device *phydev,
- #define LAN_EXT_PAGE_ACCESS_ADDRESS_DATA		0x17
- #define LAN_EXT_PAGE_ACCESS_CTRL_EP_FUNC		0x4000
- 
-+#define LAN8814_QSGMII_SOFT_RESET			0x43
-+#define LAN8814_QSGMII_SOFT_RESET_BIT			BIT(0)
-+#define LAN8814_QSGMII_PCS1G_ANEG_CONFIG		0x13
-+#define LAN8814_QSGMII_PCS1G_ANEG_CONFIG_ANEG_ENA	BIT(3)
-+#define LAN8814_ALIGN_SWAP				0x4a
-+#define LAN8814_ALIGN_TX_A_B_SWAP			0x1
-+#define LAN8814_ALIGN_TX_A_B_SWAP_MASK			GENMASK(2, 0)
-+
- #define LAN8804_ALIGN_SWAP				0x4a
- #define LAN8804_ALIGN_TX_A_B_SWAP			0x1
- #define LAN8804_ALIGN_TX_A_B_SWAP_MASK			GENMASK(2, 0)
-@@ -1601,6 +1609,29 @@ static int lanphy_write_page_reg(struct phy_device *phydev, int page, u16 addr,
- 	return 0;
+ drivers/nvme/host/zns.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/nvme/host/zns.c b/drivers/nvme/host/zns.c
+index bfc259e0d7b8..9f81beb4df4e 100644
+--- a/drivers/nvme/host/zns.c
++++ b/drivers/nvme/host/zns.c
+@@ -166,7 +166,10 @@ static int nvme_zone_parse_entry(struct nvme_ns *ns,
+ 	zone.len =3D ns->zsze;
+ 	zone.capacity =3D nvme_lba_to_sect(ns, le64_to_cpu(entry->zcap));
+ 	zone.start =3D nvme_lba_to_sect(ns, le64_to_cpu(entry->zslba));
+-	zone.wp =3D nvme_lba_to_sect(ns, le64_to_cpu(entry->wp));
++	if (zone.cond =3D=3D BLK_ZONE_COND_FULL)
++		zone.wp =3D zone.start + zone.len;
++	else
++		zone.wp =3D nvme_lba_to_sect(ns, le64_to_cpu(entry->wp));
+=20
+ 	return cb(&zone, idx, data);
  }
- 
-+static int lan8814_config_init(struct phy_device *phydev)
-+{
-+	int val;
-+
-+	/* Reset the PHY */
-+	val = lanphy_read_page_reg(phydev, 4, LAN8814_QSGMII_SOFT_RESET);
-+	val |= LAN8814_QSGMII_SOFT_RESET_BIT;
-+	lanphy_write_page_reg(phydev, 4, LAN8814_QSGMII_SOFT_RESET, val);
-+
-+	/* Disable ANEG with QSGMII PCS Host side */
-+	val = lanphy_read_page_reg(phydev, 5, LAN8814_QSGMII_PCS1G_ANEG_CONFIG);
-+	val &= ~LAN8814_QSGMII_PCS1G_ANEG_CONFIG_ANEG_ENA;
-+	lanphy_write_page_reg(phydev, 5, LAN8814_QSGMII_PCS1G_ANEG_CONFIG, val);
-+
-+	/* MDI-X setting for swap A,B transmit */
-+	val = lanphy_read_page_reg(phydev, 2, LAN8814_ALIGN_SWAP);
-+	val &= ~LAN8814_ALIGN_TX_A_B_SWAP_MASK;
-+	val |= LAN8814_ALIGN_TX_A_B_SWAP;
-+	lanphy_write_page_reg(phydev, 2, LAN8814_ALIGN_SWAP, val);
-+
-+	return 0;
-+}
-+
- static int lan8804_config_init(struct phy_device *phydev)
- {
- 	int val;
-@@ -1793,6 +1824,7 @@ static struct phy_driver ksphy_driver[] = {
- 	.phy_id		= PHY_ID_LAN8814,
- 	.phy_id_mask	= MICREL_PHY_ID_MASK,
- 	.name		= "Microchip INDY Gigabit Quad PHY",
-+	.config_init	= lan8814_config_init,
- 	.driver_data	= &ksz9021_type,
- 	.probe		= kszphy_probe,
- 	.soft_reset	= genphy_soft_reset,
--- 
-2.33.0
-
+--=20
+2.33.1
