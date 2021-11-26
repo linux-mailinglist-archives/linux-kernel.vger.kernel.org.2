@@ -2,406 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CCFE45EC95
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:24:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1645145ED4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:02:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238995AbhKZL1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 06:27:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27827 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238967AbhKZLZw (ORCPT
+        id S231942AbhKZMFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 07:05:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231490AbhKZMD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 06:25:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637925759;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5wQ71Ekph3DRe2BFAcFX0uixh6OWYjGAxQ/auMSN/pI=;
-        b=cqT1eScQyodS7BZeO/YeyDL9OYCAZa3Zdu4c8KUsGdIpASCo5REpRYiCR26Ynj53B8wd/P
-        I34nqsF9zKJ1kt8vnOPIaASa9Ez7EsEw48ZxLb04zd7fLMx55ABPdpiRGG6dhlsSUBdLam
-        w0jiWjJv3ATxe47qN25D9onICOzziZc=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-350-_znD0_jEOhisAqz2UeLdQg-1; Fri, 26 Nov 2021 06:22:38 -0500
-X-MC-Unique: _znD0_jEOhisAqz2UeLdQg-1
-Received: by mail-ed1-f70.google.com with SMTP id m17-20020aa7d351000000b003e7c0bc8523so7795286edr.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 03:22:38 -0800 (PST)
+        Fri, 26 Nov 2021 07:03:29 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABE3C08EAE5
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 03:25:20 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id p19so8629710qtw.12
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 03:25:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:references:in-reply-to:mime-version:thread-index:date
+         :message-id:subject:to:cc;
+        bh=NmoxRdUPluYuIT5I+UgYQLXwadY9Cf8K0zsbeCtSCME=;
+        b=eVqJ1dnuuXbkl7ORQDTANX4+iQNT+w6PSQbHGg827Cx+fiPF973Yxrep00K77stC4H
+         yloUP77sPfiocy3nIytO99EBx4dP7cLANo9RhN86E+yOgLo1V4PGk3XXPWsIUTqKhFRQ
+         EbbgHtjj8YpjH7Bi1qM+gtn4mtz+pcEbSlwQU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=5wQ71Ekph3DRe2BFAcFX0uixh6OWYjGAxQ/auMSN/pI=;
-        b=EV/K0Xcy0IY1P0uNKuKHAsU/KdY3Cg06pgsItN5q2MG3+lm+bVllwe2OzflRw/AOTR
-         KpLGy6Yim4vvxs/gpTJDz7UP4bmleU4yvS5kQViRrWLg4bYAX1YJmdkcHkQkX5o8jRkE
-         CdFA7gnPeXbTC2T8e5sh3OwArRsJZA7mRmCcrSJeQsaL73IB1imU0uHnACJzPY0u/Fhj
-         XMY6Fya+IUcfg2hT1DJwVMYvHIHRHcoawZj086++d+Rks+xqdz2IDYHQxJSLSpQlJR42
-         tbKMeJbaYywPCt7He/VKzVY8Lz01BkOu5h9FtOBYrmrfyIo+Uk21OS4lCiGvgQgr7yk/
-         GZbw==
-X-Gm-Message-State: AOAM531YVCevlA5ZbP/f2P/Wmfq/44o0hlAC+OGBxkhy6Nn3ZrR9gkGR
-        h6O8NkY1F2QWudOzADnC4BcaQzdN6ZKPf9BkK8SGWCH8KhR3yCpF/Kh/mHMKIQXmpCu/flIKjUg
-        YSGcRRBzZ9emMtTsyI77DfGSY
-X-Received: by 2002:a17:906:fcbb:: with SMTP id qw27mr37500924ejb.320.1637925756921;
-        Fri, 26 Nov 2021 03:22:36 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxPOFL2cQbmr2W2mt4cULzTQZVhO7d08bazuCPqd8d7L4mLsxhcBClNOG0Ss2AXat+dwi95iw==
-X-Received: by 2002:a17:906:fcbb:: with SMTP id qw27mr37500907ejb.320.1637925756666;
-        Fri, 26 Nov 2021 03:22:36 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id y19sm642739edq.2.2021.11.26.03.22.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Nov 2021 03:22:36 -0800 (PST)
-Message-ID: <19aeff06-d397-5f88-6d07-f76a2073b682@redhat.com>
-Date:   Fri, 26 Nov 2021 12:22:35 +0100
+        h=x-gm-message-state:from:references:in-reply-to:mime-version
+         :thread-index:date:message-id:subject:to:cc;
+        bh=NmoxRdUPluYuIT5I+UgYQLXwadY9Cf8K0zsbeCtSCME=;
+        b=UH4RSA7hxCkwUaRYr+q6u+LT4TRcTbynmo0litu/qSwID5D2HRTNVzcwRFcL5w+2iz
+         3D0HiHSv7t3WgLgqbQpCKVKGcKH47xo5MUj+x8tXkcZcTbBDZ4vd5JoVtvravqCQmYIQ
+         fcIfiVRCG0LelYgfIswZ3Nu7JzzzKKce8ewewwB8GgmOgccdc3PBIZsHv7z+8iI9M4vQ
+         wNhjVDDmpb683vuriR85o7WFphh/jBsh9deP/Q2xat7NhHLXLi5uql5ZVLnmbzL+NA8s
+         biclZsTnN7wFeVZzioFaTi+zNmAJu6xUmqOshBMoBb/ECs59cifXhH6MZrZP5bbDwiYz
+         f+lA==
+X-Gm-Message-State: AOAM533Y0XwnO7OAb1DGzzivvrrKTOcsfWR6y7uGWOOwmIeH+MjzKDOn
+        wGXandvwCAq8maYdkDwhS0tG8Ob8vQitDaFd8u/DMQ==
+X-Google-Smtp-Source: ABdhPJx7LvzhqbSQRKb5Id0VTp7M09dypgMey7sQkJ1uifcIMYmEiIC+9EisRGiqLPHKr6c8QD7Jm/vaUIyt6aHVD28=
+X-Received: by 2002:a05:622a:19a1:: with SMTP id u33mr14787270qtc.453.1637925919667;
+ Fri, 26 Nov 2021 03:25:19 -0800 (PST)
+From:   Kashyap Desai <kashyap.desai@broadcom.com>
+References: <1635852455-39935-1-git-send-email-john.garry@huawei.com>
+ <7fba1b1e-63a6-6315-e5ca-6d5ae9de6dbb@huawei.com> <b18285f4aa0e8be796aea19cdfde0293@mail.gmail.com>
+ <9859e133-e3b8-4e53-dfad-cbf75ed3102f@huawei.com>
+In-Reply-To: <9859e133-e3b8-4e53-dfad-cbf75ed3102f@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH v6 05/15] regulator: Introduce tps68470-regulator driver
-Content-Language: en-US
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
-        linux-clk@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-References: <20211125165412.535063-1-hdegoede@redhat.com>
- <20211125165412.535063-6-hdegoede@redhat.com>
- <YaAdIG+2MZPsdI+F@pendragon.ideasonboard.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <YaAdIG+2MZPsdI+F@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQJUjX6rU/P5SPFd3QoAV879Bj3AJQMPa4fEAveY/XABRUvQF6rh5Jkw
+Date:   Fri, 26 Nov 2021 16:55:17 +0530
+Message-ID: <9b092ca49e9b5415772cd950a3c12584@mail.gmail.com>
+Subject: RE: [PATCH RFT 0/3] blk-mq: Optimise blk_mq_queue_tag_busy_iter() for
+ shared tags
+To:     John Garry <john.garry@huawei.com>, axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com, hare@suse.de
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000a0f20305d1af58a1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+--000000000000a0f20305d1af58a1
+Content-Type: text/plain; charset="UTF-8"
 
-On 11/26/21 00:32, Laurent Pinchart wrote:
-> Hi Hans,
-> 
-> Thank you for the patch.
-> 
-> I've had a quick look and the driver seems fine. Just a few comments
-> below.
-> 
-> On Thu, Nov 25, 2021 at 05:54:02PM +0100, Hans de Goede wrote:
->> The TPS68470 PMIC provides Clocks, GPIOs and Regulators. At present in
->> the kernel the Regulators and Clocks are controlled by an OpRegion
->> driver designed to work with power control methods defined in ACPI, but
->> some platforms lack those methods, meaning drivers need to be able to
->> consume the resources of these chips through the usual frameworks.
->>
->> This commit adds a driver for the regulators provided by the tps68470,
->> and is designed to bind to the platform_device registered by the
->> intel_skl_int3472 module.
->>
->> This is based on this out of tree driver written by Intel:
->> https://github.com/intel/linux-intel-lts/blob/4.14/base/drivers/regulator/tps68470-regulator.c
->> with various cleanups added.
->>
->> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
->> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
->> ---
->> Changes in v6:
->> - Drop the unused volt_table argument from the TPS68470_REGULATOR() macro
->> - While working on VCM (voice coil motor) support for the camera-module behind
->>   this PMIC I learned that the VIO voltage is always on. Instead of pointing its
->>   enable_reg and enable_mask at the same register-bits as the VSIO regulator
->>   (which is wrong), add a new tps68470_always_on_reg_ops struct without
->>   is_enabled, enable and disable ops and use that for the VIO regulator.
->>
->> Changes in v5:
->> - Small comment / code cleanups based on review from Andy
->>
->> Changes in v4:
->> - Make the top comment block use c++ style comments
->> - Drop the bogus builtin regulator_init_data
->> - Add || COMPILE_TEST to Kconfig snippet
->> - Make the driver enable the PMIC clk when enabling the Core buck
->>   regulator, this switching regulator needs the PLL to be on
->>
->> Changes in v2:
->> - Update the comment on why a subsys_initcall is used to register the drv
->> - Make struct regulator_ops const
->> ---
->>  drivers/regulator/Kconfig              |   9 ++
->>  drivers/regulator/Makefile             |   1 +
->>  drivers/regulator/tps68470-regulator.c | 201 +++++++++++++++++++++++++
->>  3 files changed, 211 insertions(+)
->>  create mode 100644 drivers/regulator/tps68470-regulator.c
->>
->> diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
->> index 6be9b1c8a615..ebe46e09510e 100644
->> --- a/drivers/regulator/Kconfig
->> +++ b/drivers/regulator/Kconfig
->> @@ -1339,6 +1339,15 @@ config REGULATOR_TPS65912
->>  	help
->>  	    This driver supports TPS65912 voltage regulator chip.
->>  
->> +config REGULATOR_TPS68470
->> +	tristate "TI TPS68470 PMIC Regulators Driver"
->> +	depends on INTEL_SKL_INT3472 || COMPILE_TEST
->> +	help
->> +	  This driver adds support for the TPS68470 PMIC to register
->> +	  regulators against the usual framework.
->> +
->> +	  The module will be called "tps68470-regulator".
->> +
->>  config REGULATOR_TWL4030
->>  	tristate "TI TWL4030/TWL5030/TWL6030/TPS659x0 PMIC"
->>  	depends on TWL4030_CORE
->> diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
->> index b07d2a22df0b..257331d2caed 100644
->> --- a/drivers/regulator/Makefile
->> +++ b/drivers/regulator/Makefile
->> @@ -159,6 +159,7 @@ obj-$(CONFIG_REGULATOR_TPS6586X) += tps6586x-regulator.o
->>  obj-$(CONFIG_REGULATOR_TPS65910) += tps65910-regulator.o
->>  obj-$(CONFIG_REGULATOR_TPS65912) += tps65912-regulator.o
->>  obj-$(CONFIG_REGULATOR_TPS65132) += tps65132-regulator.o
->> +obj-$(CONFIG_REGULATOR_TPS68470) += tps68470-regulator.o
->>  obj-$(CONFIG_REGULATOR_TWL4030) += twl-regulator.o twl6030-regulator.o
->>  obj-$(CONFIG_REGULATOR_UNIPHIER) += uniphier-regulator.o
->>  obj-$(CONFIG_REGULATOR_VCTRL) += vctrl-regulator.o
->> diff --git a/drivers/regulator/tps68470-regulator.c b/drivers/regulator/tps68470-regulator.c
->> new file mode 100644
->> index 000000000000..9ad2d1eae8fe
->> --- /dev/null
->> +++ b/drivers/regulator/tps68470-regulator.c
->> @@ -0,0 +1,201 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +//
->> +// Regulator driver for TPS68470 PMIC
->> +//
->> +// Copyright (c) 2021 Red Hat Inc.
->> +// Copyright (C) 2018 Intel Corporation
->> +//
->> +// Authors:
->> +//	Hans de Goede <hdegoede@redhat.com>
->> +//	Zaikuo Wang <zaikuo.wang@intel.com>
->> +//	Tianshu Qiu <tian.shu.qiu@intel.com>
->> +//	Jian Xu Zheng <jian.xu.zheng@intel.com>
->> +//	Yuning Pu <yuning.pu@intel.com>
->> +//	Rajmohan Mani <rajmohan.mani@intel.com>
->> +
->> +#include <linux/clk.h>
->> +#include <linux/device.h>
->> +#include <linux/err.h>
->> +#include <linux/init.h>
->> +#include <linux/kernel.h>
->> +#include <linux/mfd/tps68470.h>
->> +#include <linux/module.h>
->> +#include <linux/platform_data/tps68470.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/regulator/driver.h>
->> +#include <linux/regulator/machine.h>
->> +
->> +struct tps68470_regulator_data {
->> +	struct clk *clk;
->> +};
->> +
->> +#define TPS68470_REGULATOR(_name, _id, _ops, _n,			\
->> +			   _vr, _vm, _er, _em, _lr, _nlr)		\
->> +	[TPS68470_ ## _name] = {					\
->> +		.name			= # _name,			\
->> +		.id			= _id,				\
->> +		.ops			= &_ops,			\
->> +		.n_voltages		= _n,				\
->> +		.type			= REGULATOR_VOLTAGE,		\
->> +		.owner			= THIS_MODULE,			\
->> +		.vsel_reg		= _vr,				\
->> +		.vsel_mask		= _vm,				\
->> +		.enable_reg		= _er,				\
->> +		.enable_mask		= _em,				\
->> +		.linear_ranges		= _lr,				\
->> +		.n_linear_ranges	= _nlr,				\
->> +	}
->> +
->> +static const struct linear_range tps68470_ldo_ranges[] = {
->> +	REGULATOR_LINEAR_RANGE(875000, 0, 125, 17800),
->> +};
->> +
->> +static const struct linear_range tps68470_core_ranges[] = {
->> +	REGULATOR_LINEAR_RANGE(900000, 0, 42, 25000),
->> +};
->> +
->> +static int tps68470_regulator_enable(struct regulator_dev *rdev)
->> +{
->> +	struct tps68470_regulator_data *data = rdev->reg_data;
->> +	int ret;
->> +
->> +	/* The Core buck regulator needs the PMIC's PLL to be enabled */
->> +	if (rdev->desc->id == TPS68470_CORE) {
->> +		ret = clk_prepare_enable(data->clk);
->> +		if (ret) {
->> +			dev_err(&rdev->dev, "Error enabling TPS68470 clock\n");
->> +			return ret;
->> +		}
->> +	}
->> +
->> +	return regulator_enable_regmap(rdev);
->> +}
->> +
->> +static int tps68470_regulator_disable(struct regulator_dev *rdev)
->> +{
->> +	struct tps68470_regulator_data *data = rdev->reg_data;
->> +
->> +	if (rdev->desc->id == TPS68470_CORE)
->> +		clk_disable_unprepare(data->clk);
->> +
->> +	return regulator_disable_regmap(rdev);
->> +}
->> +
->> +/* Operations permitted on DCDCx, LDO2, LDO3 and LDO4 */
->> +static const struct regulator_ops tps68470_regulator_ops = {
->> +	.is_enabled		= regulator_is_enabled_regmap,
->> +	.enable			= tps68470_regulator_enable,
->> +	.disable		= tps68470_regulator_disable,
->> +	.get_voltage_sel	= regulator_get_voltage_sel_regmap,
->> +	.set_voltage_sel	= regulator_set_voltage_sel_regmap,
->> +	.list_voltage		= regulator_list_voltage_linear_range,
->> +	.map_voltage		= regulator_map_voltage_linear_range,
->> +};
->> +
->> +static const struct regulator_ops tps68470_always_on_reg_ops = {
->> +	.get_voltage_sel	= regulator_get_voltage_sel_regmap,
->> +	.set_voltage_sel	= regulator_set_voltage_sel_regmap,
->> +	.list_voltage		= regulator_list_voltage_linear_range,
->> +	.map_voltage		= regulator_map_voltage_linear_range,
->> +};
->> +
->> +static const struct regulator_desc regulators[] = {
->> +	TPS68470_REGULATOR(CORE, TPS68470_CORE, tps68470_regulator_ops, 43,
->> +			   TPS68470_REG_VDVAL, TPS68470_VDVAL_DVOLT_MASK,
->> +			   TPS68470_REG_VDCTL, TPS68470_VDCTL_EN_MASK,
->> +			   tps68470_core_ranges, ARRAY_SIZE(tps68470_core_ranges)),
->> +	TPS68470_REGULATOR(ANA, TPS68470_ANA, tps68470_regulator_ops, 126,
->> +			   TPS68470_REG_VAVAL, TPS68470_VAVAL_AVOLT_MASK,
->> +			   TPS68470_REG_VACTL, TPS68470_VACTL_EN_MASK,
->> +			   tps68470_ldo_ranges, ARRAY_SIZE(tps68470_ldo_ranges)),
->> +	TPS68470_REGULATOR(VCM, TPS68470_VCM, tps68470_regulator_ops, 126,
->> +			   TPS68470_REG_VCMVAL, TPS68470_VCMVAL_VCVOLT_MASK,
->> +			   TPS68470_REG_VCMCTL, TPS68470_VCMCTL_EN_MASK,
->> +			   tps68470_ldo_ranges, ARRAY_SIZE(tps68470_ldo_ranges)),
->> +	TPS68470_REGULATOR(VIO, TPS68470_VIO, tps68470_always_on_reg_ops, 126,
->> +			   TPS68470_REG_VIOVAL, TPS68470_VIOVAL_IOVOLT_MASK,
->> +			   0, 0,
->> +			   tps68470_ldo_ranges, ARRAY_SIZE(tps68470_ldo_ranges)),
->> +/*
->> + * (1) This regulator must have the same voltage as VIO if S_IO LDO is used to
->> + *     power a sensor/VCM which I2C is daisy chained behind the PMIC.
->> + * (2) If there is no I2C daisy chain it can be set freely.
->> + */
-> 
-> Do we need safety checks for this ?
+> >
+> >
+> > I will continue testing and let you know how it goes.
+>
+> ok, good to know, thanks. But I would still like to know what is
+> triggering
+> blk_mq_queue_tag_busy_iter() so often. Indeed, as mentioned in this cover
+> letter, this function was hardly optimised before for shared sbitmap.
 
-There really is no way to deal this condition needs to matches inside the driver,
-this should be enforced by setting proper constraints on the 2 regulators where
-the PMIC is used with a sensor I2C daisy chained behind it.
+If I give  "--disk_util=0" option in my fio run, caller of "
+blk_mq_queue_tag_busy_iter" reduced drastically.
+As part of <fio> run, application call diskutils operations and it is almost
+same as doing "cat /proc/stats" in loop.
+Looking at fio code, it call diskstats every 250 msec. Here is sample fio
+logs -
 
-> 
->> +	TPS68470_REGULATOR(VSIO, TPS68470_VSIO, tps68470_regulator_ops, 126,
->> +			   TPS68470_REG_VSIOVAL, TPS68470_VSIOVAL_IOVOLT_MASK,
->> +			   TPS68470_REG_S_I2C_CTL, TPS68470_S_I2C_CTL_EN_MASK,
->> +			   tps68470_ldo_ranges, ARRAY_SIZE(tps68470_ldo_ranges)),
->> +	TPS68470_REGULATOR(AUX1, TPS68470_AUX1, tps68470_regulator_ops, 126,
->> +			   TPS68470_REG_VAUX1VAL, TPS68470_VAUX1VAL_AUX1VOLT_MASK,
->> +			   TPS68470_REG_VAUX1CTL, TPS68470_VAUX1CTL_EN_MASK,
->> +			   tps68470_ldo_ranges, ARRAY_SIZE(tps68470_ldo_ranges)),
->> +	TPS68470_REGULATOR(AUX2, TPS68470_AUX2, tps68470_regulator_ops, 126,
->> +			   TPS68470_REG_VAUX2VAL, TPS68470_VAUX2VAL_AUX2VOLT_MASK,
->> +			   TPS68470_REG_VAUX2CTL, TPS68470_VAUX2CTL_EN_MASK,
->> +			   tps68470_ldo_ranges, ARRAY_SIZE(tps68470_ldo_ranges)),
->> +};
->> +
->> +static int tps68470_regulator_probe(struct platform_device *pdev)
->> +{
->> +	struct device *dev = &pdev->dev;
->> +	struct tps68470_regulator_platform_data *pdata = dev_get_platdata(dev);
->> +	struct tps68470_regulator_data *data;
->> +	struct regulator_config config = { };
->> +	struct regulator_dev *rdev;
->> +	int i;
->> +
->> +	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
->> +	if (!data)
->> +		return -ENOMEM;
->> +
->> +	data->clk = devm_clk_get(dev, "tps68470-clk");
->> +	if (IS_ERR(data->clk))
->> +		return dev_err_probe(dev, PTR_ERR(data->clk), "getting tps68470-clk\n");
->> +
->> +	config.dev = dev->parent;
->> +	config.regmap = dev_get_drvdata(dev->parent);
->> +	config.driver_data = data;
->> +
->> +	for (i = 0; i < TPS68470_NUM_REGULATORS; i++) {
->> +		if (pdata)
->> +			config.init_data = pdata->reg_init_data[i];
->> +		else
->> +			config.init_data = NULL;
->> +
->> +		rdev = devm_regulator_register(dev, &regulators[i], &config);
->> +		if (IS_ERR(rdev))
->> +			return dev_err_probe(dev, PTR_ERR(data->clk),
-> 
-> This should be PTR_ERR(rdev).
+diskutil 87720 /sys/block/sdb/stat: stat read ok? 0
+diskutil 87720 update io ticks
+diskutil 87720 open stat file: /sys/block/sdb/stat
+diskutil 87720 /sys/block/sdb/stat: 127853173        0 1022829056 241827073
+0        0        0        0      255   984012 241827073        0        0
+0        0        0        0
 
-Good catch, thanks. Fixed for v7.
+There is one more call trace, but not sure why it is getting executed in my
+test.  Below path does not execute so frequently but it consumes cpu (not
+noticeable on my setup)
 
-Regards,
-
-Hans
+kthread
+        worker_thread
+        process_one_work
+        blk_mq_timeout_work
+        blk_mq_queue_tag_busy_iter
+        bt_iter
+        blk_mq_find_and_get_req
+        _raw_spin_lock_irqsave
+        native_queued_spin_lock_slowpath
 
 
-> 
->> +					     "registering %s regulator\n",
->> +					     regulators[i].name);
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static struct platform_driver tps68470_regulator_driver = {
->> +	.driver = {
->> +		.name = "tps68470-regulator",
->> +	},
->> +	.probe = tps68470_regulator_probe,
->> +};
->> +
->> +/*
->> + * The ACPI tps68470 probe-ordering depends on the clk/gpio/regulator drivers
->> + * registering before the drivers for the camera-sensors which use them bind.
->> + * subsys_initcall() ensures this when the drivers are builtin.
->> + */
->> +static int __init tps68470_regulator_init(void)
->> +{
->> +	return platform_driver_register(&tps68470_regulator_driver);
->> +}
->> +subsys_initcall(tps68470_regulator_init);
->> +
->> +static void __exit tps68470_regulator_exit(void)
->> +{
->> +	platform_driver_unregister(&tps68470_regulator_driver);
->> +}
->> +module_exit(tps68470_regulator_exit);
->> +
->> +MODULE_ALIAS("platform:tps68470-regulator");
->> +MODULE_DESCRIPTION("TPS68470 voltage regulator driver");
->> +MODULE_LICENSE("GPL v2");
-> 
+This patch set improves above call trace even after disk_util=0 is set.
 
+Kashyap
+
+>
+> And any opinion whether we would want this as a fix? Information requested
+> above would help explain why we would need it as a fix.
+>
+> Cheers,
+> John
+
+--000000000000a0f20305d1af58a1
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIQcAYJKoZIhvcNAQcCoIIQYTCCEF0CAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg3HMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA5MTYwMDAwMDBaFw0yODA5MTYwMDAwMDBaMFsxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBS
+MyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+vbCmXCcsbZ/a0fRIQMBxp4gJnnyeneFYpEtNydrZZ+GeKSMdHiDgXD1UnRSIudKo+moQ6YlCOu4t
+rVWO/EiXfYnK7zeop26ry1RpKtogB7/O115zultAz64ydQYLe+a1e/czkALg3sgTcOOcFZTXk38e
+aqsXsipoX1vsNurqPtnC27TWsA7pk4uKXscFjkeUE8JZu9BDKaswZygxBOPBQBwrA5+20Wxlk6k1
+e6EKaaNaNZUy30q3ArEf30ZDpXyfCtiXnupjSK8WU2cK4qsEtj09JS4+mhi0CTCrCnXAzum3tgcH
+cHRg0prcSzzEUDQWoFxyuqwiwhHu3sPQNmFOMwIDAQABo4IB2jCCAdYwDgYDVR0PAQH/BAQDAgGG
+MGAGA1UdJQRZMFcGCCsGAQUFBwMCBggrBgEFBQcDBAYKKwYBBAGCNxQCAgYKKwYBBAGCNwoDBAYJ
+KwYBBAGCNxUGBgorBgEEAYI3CgMMBggrBgEFBQcDBwYIKwYBBQUHAxEwEgYDVR0TAQH/BAgwBgEB
+/wIBADAdBgNVHQ4EFgQUljPR5lgXWzR1ioFWZNW+SN6hj88wHwYDVR0jBBgwFoAUj/BLf6guRSSu
+TVD6Y5qL3uLdG7wwegYIKwYBBQUHAQEEbjBsMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC5nbG9i
+YWxzaWduLmNvbS9yb290cjMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5j
+b20vY2FjZXJ0L3Jvb3QtcjMuY3J0MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuZ2xvYmFs
+c2lnbi5jb20vcm9vdC1yMy5jcmwwWgYDVR0gBFMwUTALBgkrBgEEAaAyASgwQgYKKwYBBAGgMgEo
+CjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAN
+BgkqhkiG9w0BAQsFAAOCAQEAdAXk/XCnDeAOd9nNEUvWPxblOQ/5o/q6OIeTYvoEvUUi2qHUOtbf
+jBGdTptFsXXe4RgjVF9b6DuizgYfy+cILmvi5hfk3Iq8MAZsgtW+A/otQsJvK2wRatLE61RbzkX8
+9/OXEZ1zT7t/q2RiJqzpvV8NChxIj+P7WTtepPm9AIj0Keue+gS2qvzAZAY34ZZeRHgA7g5O4TPJ
+/oTd+4rgiU++wLDlcZYd/slFkaT3xg4qWDepEMjT4T1qFOQIL+ijUArYS4owpPg9NISTKa1qqKWJ
+jFoyms0d0GwOniIIbBvhI2MJ7BSY9MYtWVT5jJO3tsVHwj4cp92CSFuGwunFMzCCA18wggJHoAMC
+AQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUAMEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9v
+dCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWduMRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5
+MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEgMB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENB
+IC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqG
+SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0E
+XyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuul9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+J
+J5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJpij2aTv2y8gokeWdimFXN6x0FNx04Druci8u
+nPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTv
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBU8wggQ3oAMCAQICDHA7TgNc55htm2viYDANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMTAyMjIxMjU2MDJaFw0yMjA5MTUxMTQ1MTZaMIGQ
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xFjAUBgNVBAMTDUthc2h5YXAgRGVzYWkxKTAnBgkqhkiG9w0B
+CQEWGmthc2h5YXAuZGVzYWlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
+CgKCAQEAzPAzyHBqFL/1u7ttl86wZrWK3vYcqFH+GBe0laKvAGOuEkaHijHa8iH+9GA8FUv1cdWF
+WY3c3BGA+omJGYc4eHLEyKowuLRWvjV3MEjGBG7NIVoIaTkH4R+6Xs1P4/9EmUA0WI881B3pTv5W
+nHG54/aqGUDSRDyWVhK7TLqJQkkiYKB0kH0GkB/UfmU/pmCaV68w5J6l4vz/TG23hWJmTg1lW5mu
+P3lSxcw4Cg90iKHqfpwLnGNc9AGXHMxUCukpnAHRlivljilKHMx1ymb180BLmtF+ZLm6KrFLQWzB
+4KeiUOMtKM13wJrQubqTeZgB1XA+89jeLYlxagVsMyksdwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
+BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
+YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
+BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
+MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
+YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
+Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
+HREEHjAcgRprYXNoeWFwLmRlc2FpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
+BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUkTOZp9jXE3yPj4ieKeDT
+OiNyCtswDQYJKoZIhvcNAQELBQADggEBABG1KCh7cLjStywh4S37nKE1eE8KPyAxDzQCkhxYLBVj
+gnnhaLmEOayEucPAsM1hCRAm/vR3RQ27lMXBGveCHaq9RZkzTjGSbzr8adOGK3CluPrasNf5StX3
+GSk4HwCapA39BDUrhnc/qG5vHwLrgA1jwAvSy8e/vn4F4h+KPrPoFNd1OnCafedbuiEXTqTkn5Rk
+vZ2AOTcSbxvmyKBMb/iu1vn7AAoui0d8GYCPoz8shf2iWMSUXVYJAMrtRHVJr47J5jlopF5F2ghC
+MzNfx6QsmJhYiRByd8L9sUOjp/DMgkC6H93PyYpYMiBGapgNf6UMsLg/1kx5DATNwhPAJbkxggJt
+MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
+VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxwO04DXOeYbZtr
+4mAwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEII2V1gp1L9eVsXe/6PZC+01l8DF9
+UhZRLzz3kX6w4gmLMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MTEyNjExMjUxOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
+AwQCATANBgkqhkiG9w0BAQEFAASCAQCOi6W/pCR8jc0aX9lCD/2mSbIWi4h6Q8NgqcA4v4lDum6i
+7m2c/zZBrMfAr6MtFlPta6WA4uckPnI7idsgGTqlpLdEebI2A2McucHfyl92zQs4gIK20InjzCxj
+NFkWH823E5TgiFrBAwUVgr/KykwdufQLFUaBjlF9QfLBhNvME8V8rkpfGM6Dmv7z9fPuk02ViSaP
+AG82LVUHKyoaWU71JTJ6/A5zDBGkZmX9DUHXc2SV5b8OAfiqRuRzb8AQ7swedK0VRvxJvDKV1GDd
+9nzQulCREDLqfDtPUA8xu8TG1R6bywBehZbCMutqqMUF98LvhCbUZXOGAMviyoE/1rVH
+--000000000000a0f20305d1af58a1--
