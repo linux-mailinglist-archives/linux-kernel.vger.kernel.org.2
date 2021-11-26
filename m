@@ -2,157 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF4D245EF5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:45:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 656F845EE8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:05:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377685AbhKZNsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 08:48:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348777AbhKZNqu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 08:46:50 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E4BC061746
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 05:02:39 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id 13so18570221ljj.11
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 05:02:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kempniu.pl; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=TXOwpLv7KDX/kwKg8NXTBcWSQI5gKaFisLYfaSk/F6g=;
-        b=SUdbpVmqbbzQ7GMGk5ybLBcdUOA8DYSC2v6K5Tuaxkogxu2DNLA4ClyRinwEuhHJAJ
-         mctyH3gQW+gUfkKjDY2mFEhquFNAmjYC60OhMIAOsh921be6Z0RZaak/Ilanf1igyEhX
-         nwNb/g+aGgtFVtjXE2WGR/kuzy4dEn8Y3NG8Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=TXOwpLv7KDX/kwKg8NXTBcWSQI5gKaFisLYfaSk/F6g=;
-        b=dEi7kWg2paLAuLvXFLpImJSmQKkZCntcOBDt6TnZtRrBYHXjM8bv95tq3qAFJi+t+V
-         8yEFrke61cMpPCUgj+CFmBf5Bp3CbgK7bEK64fOI1S9ty90HlfDeTGW7g4JYlhbWhILH
-         XXYThtW4/3QZIj7IZaAhY6XOxkZVSc4zSWPqKXems/Q0r/716pBIDDYzSOaCrPMTyq++
-         e0viv+zCaqqMjstNtSW38l5vHf7vuQZQhaDvL8v0eroRmeU1uaS4AZTYXX4FmvdAc0QH
-         wMTBZ1EVgm2MdcKPWuRKzTHcbMBJJjNGAWok9gvh6GS5maLyo6PJq0b4nU7rwcYHRecI
-         kAvg==
-X-Gm-Message-State: AOAM533kRMCj+GJ+2mD4viJiwlmF34xAOCVez2R9AlWbpnlgJN3TroSL
-        9NL81wE9mU/YqSoAk7T/NCl/6zu4j3u6Rw==
-X-Google-Smtp-Source: ABdhPJxUIahQRLbelSRGX08f9pSLdmcbvpjLK0Wt0SB+d6q+QgKmvzsKL3CRC0Q1NgyqKJbbE8NRFA==
-X-Received: by 2002:a2e:9ecb:: with SMTP id h11mr31283952ljk.212.1637931757336;
-        Fri, 26 Nov 2021 05:02:37 -0800 (PST)
-Received: from larwa.hq.kempniu.pl ([2001:470:64df:111::e02])
-        by smtp.gmail.com with ESMTPSA id 18sm490378ljr.17.2021.11.26.05.02.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Nov 2021 05:02:36 -0800 (PST)
-Date:   Fri, 26 Nov 2021 14:02:33 +0100
-From:   =?utf-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtdchar: prevent unbounded allocation in MEMWRITE ioctl
-Message-ID: <YaDa6Znbms3tVkr/@larwa.hq.kempniu.pl>
-References: <20211025082104.8017-1-kernel@kempniu.pl>
- <20211122103122.424326a1@xps13>
- <YZ98sDJZIqdhP0NF@larwa.hq.kempniu.pl>
- <20211126103116.5bef6bc0@xps13>
+        id S237946AbhKZNIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 08:08:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46134 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232653AbhKZNGo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 08:06:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED3506112D;
+        Fri, 26 Nov 2021 13:03:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637931811;
+        bh=QAD0fqmVf1jw+Lf34IzKs9qrKK0uHS/qI3FqYFyGPUA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QKANirDWpF/myNR5ipSftGhbDebfwA7La+sx0YQlzbe2cPhCC19xPhAgrwGFO8kvR
+         wQbuX/mhjxpj39j9KBsZeY+OzDWuuqpxsIFRVJKoUUMbi2RFWEdtnlNAyfRn3gUQZS
+         DouWfymP4T1+Vk65IW29q02hXY3jDiRor0ts5Qlkxcd4gIp8/XbCjNZfVUNUIV9PjU
+         g+vmI08PxT3ABDVegyJGE1DgEPQQw0OG/KGM9jdbYtRcrjW1GMVQXb2J7oG7f7GZDv
+         rvmKa7IngxRhbwZeVxprBzfH8TIHtZjbn6C1cv6imSClWISvOrV7oXMjLlxYjkxGJV
+         XF3zO5TdMkJRg==
+Date:   Fri, 26 Nov 2021 13:03:25 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     Lh Kuo =?utf-8?B?6YOt5Yqb6LGq?= <lh.Kuo@sunplus.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "LH.Kuo" <lhjeff911@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "dvorkin@tibbo.com" <dvorkin@tibbo.com>,
+        "qinjian@cqplus1.com" <qinjian@cqplus1.com>,
+        Wells Lu =?utf-8?B?5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
+Subject: Re: [PATCH v3 1/2] SPI: Add SPI driver for Sunplus SP7021
+Message-ID: <YaDbHe+COa3pke+s@sirena.org.uk>
+References: <1635747525-31243-1-git-send-email-lh.kuo@sunplus.com>
+ <cover.1637547799.git.lh.kuo@sunplus.com>
+ <e5f2549224cf875d81306ef5f6e98db1cfd81c2e.1637547799.git.lh.kuo@sunplus.com>
+ <CAHp75Vd2=OHbrpGtsU8AMXdtNfvSPhpc7vhzkWnahaV48XbfUQ@mail.gmail.com>
+ <YZz0n6Mpjl3tKmMe@sirena.org.uk>
+ <CAHp75Vf6+monqu4Hq-yoFSohD9tNFqZTuKjqDDKAJE3Om2BUYQ@mail.gmail.com>
+ <6eb68a8153ba46c48862d00f7aa6e0fe@sphcmbx02.sunplus.com.tw>
+ <CAHp75VftSORts5cbDxvfyHgqhxmb7K74BfPd=mST+75C+Ch9dQ@mail.gmail.com>
+ <33d50e94059b4734939db60b5c531bc9@sphcmbx02.sunplus.com.tw>
+ <63a467164c985cadce0e28e50508363a8d2f6622.camel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ljQ879YUAyNrToFD"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211126103116.5bef6bc0@xps13>
+In-Reply-To: <63a467164c985cadce0e28e50508363a8d2f6622.camel@pengutronix.de>
+X-Cookie: You fill a much-needed gap.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquèl,
 
-> >  5. The above causes the driver to receive 2048 bytes of data for a page
-> >     write in raw mode, which results in an error that propagates all the
-> >     way up to mtdchar_write_ioctl().
-> 
-> This is definitely far from an expected behavior. Writing a page
-> without OOB is completely fine.
+--ljQ879YUAyNrToFD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Could it be a nandsim quirk?  Sorry, I do not feel qualified enough to
-comment on this.  I prepared a code flow analysis below, though.
+On Fri, Nov 26, 2021 at 11:36:29AM +0100, Philipp Zabel wrote:
 
-> > The nandsim driver returns the same error if you pass the following
-> > request to the MEMWRITE ioctl:
-> > 
-> >     struct mtd_write_req req = {
-> >         .start = 2048,
-> >         .len = 2048,
-> >         .ooblen = 0,
-> >         .usr_data = 0x10000000,
-> >         .usr_oob = NULL,
-> >         .mode = MTD_OPS_RAW,
-> >     };
-> > 
-> > so it is not the driver that is broken or insane, it is the splitting
-> > process that may cause the MEMWRITE ioctl to return different error
-> > codes than before.
-> > 
-> > I played with the code a bit more and I found a fix which addresses this
-> > issue without breaking other scenarios: setting oobbuf to the same
-> > pointer for every loop iteration (if ooblen is 0, no OOB data will be
-> > written anyway).
-> 
-> You mean that
-> 	{ .user_oob = NULL, .ooblen = 0 }
-> fails, while
-> 	{ .user_oob = random, .ooblen = 0 }
-> works? This seems a little bit fragile.
+> > 	pm_runtime_disable(&pdev->dev);
 
-That is indeed the behavior I am observing with nandsim, even on a
-kernel which does not include my patch.
+> I'm not sure if the SPI framework requires the spi_controller to be
+> unregistered before hardware is powered off, maybe it is enough to call
+> spi_controller_suspend() in the right place?
 
-> Could you tell us the origin of the error? Because in
-> nand_do_write_ops() if ops->oobbuf is populated then oob_required is
-> set to true no matter the value set in ooblen.
+It would *probably* do the right thing but the expectation really is
+that you'll unregister before making the controller stop working, that
+should be much more robust..
 
-Correct - and that is what causes the behavior described above (and why
-the tweak I came up with works around the problem).
+--ljQ879YUAyNrToFD
+Content-Type: application/pgp-signature; name="signature.asc"
 
-nand_do_write_ops() calls nand_write_page() with 'oob_required' passed
-as the fifth parameter.  In raw mode, nand_write_page() calls
-nand_write_page_raw().  Here is what happens there:
+-----BEGIN PGP SIGNATURE-----
 
- 1. nand_prog_page_begin_op() sets up a page programming operation by
-    sending a few commands to the chip.  See nand_exec_prog_page_op()
-    for details.  Note that since the 'prog' parameter is set to false,
-    the last two instructions from the 'instrs' array are not run yet.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGg2x0ACgkQJNaLcl1U
+h9Cxlwf/XZs/9xTqiksXDYhiMOpt6+eD4gpanC5q5BSuqZkuUFHjGzpqL/v/s/+V
+edvkwQJDwb82Y2oKRhw/hZc4xA395j9lKmeJSWLyzCklvYlSIOAt4CPZx9w91Qsz
+NNONWU+zLwo/tt1ZM09eIclf6fQ0ef04cmjNxgpv0cq/VhmlrbjsjKGj3ViRU0p5
+Bz+ODOy0weYPH0VS9NDJlq2yzy7/M6dDN1vae/vApUDGUcSgiYr3+tZ/9LOugTTv
+D+SUjWC/L8Wv0/TAbwBVpRwj0hyaWCkaPAkzT5nZxIvk7TKFprjOWvl3JHYqXBkB
+/dyYP4Y8jc47Ya55wbhIZ+rpOExJ4g==
+=ZANf
+-----END PGP SIGNATURE-----
 
- 2. 'oob_required' is checked.  If it is set to 1, OOB data is sent to
-    the chip; otherwise, it is not sent.
-
- 3. nand_prog_page_end_op() is called to finish the programming
-    operation.
-
-At that point, the ACTION_PRGPAGE switch case in ns_do_state_action()
-(in drivers/mtd/nand/raw/nandsim.c) checks whether the number of bytes
-it received so far for this operation (ns->regs.count, updated by
-ns_nand_write_buf() as data is pushed to the chip) equals the number of
-bytes in a full page with OOB data (num).  If not, an error is returned,
-which results in the NAND_STATUS_FAIL flag being set in the status byte,
-triggering an -EIO.
-
-This does not happen for any other MTD operation mode because the chip
-callbacks that nand_write_page() invokes in those other modes cause OOB
-data to be sent to the chip.
-
-> Plus, the code in mtdchar is clear: .oobbuf is set to NULL if there are
-> no OOBs provided by the user so I believe this is a situation that
-> should already work. 
-
-Correct, though current mtdchar_write_ioctl() code only looks at the
-value of the 'usr_oob' field in the struct mtd_write_req passed to it,
-so even if you pass { .usr_oob = <something non-NULL>, .ooblen = 0 }, it
-will still set ops.oobbuf to the pointer returned by memdup_user().
-
--- 
-Best regards,
-Michał Kępień
+--ljQ879YUAyNrToFD--
