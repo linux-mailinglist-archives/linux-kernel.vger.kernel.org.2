@@ -2,147 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB7145E79A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 06:57:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75B2945E79E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 06:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352091AbhKZGAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 01:00:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242483AbhKZF6P (ORCPT
+        id S1358617AbhKZGBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 01:01:47 -0500
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:7444 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345845AbhKZF7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 00:58:15 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4C2C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 21:55:03 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id y68so17431456ybe.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 21:55:03 -0800 (PST)
+        Fri, 26 Nov 2021 00:59:47 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rYm+Oj5b5DS7c4h2uMaSXgxaMKweYGTC9dYrubjKWhA=;
-        b=DaOCr9/ufE6o0ZxwS7+ToZ7ghJ9pgXP7PM83y7WAtfJfYqy2LxHfIrC3MqmVxo2082
-         GRUnl7Fwyxu24siDEAZGBp9oCXdV3dqCitgwrshVFehZoU9j/XpstJgvugfB+1iCdsxf
-         H2JPGQR5w6U3am4/0zio/bera3YU2bGe9EaRJbUYSbzaaXu9u81iNGbmjrNrKzntbrhs
-         gJGcDy2FW4AJQYVuw/dSnFa42Tnw1DG56u1/ZNTRPWzFHY+/8PivpGyRUo2fEKFnr/BE
-         hU8+PJV4amp6UxhathDhGCb39Od9Yca+eniG6t8TyzCfHVeF5HBiE7yf/KSNcgMxfjSX
-         Gsvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rYm+Oj5b5DS7c4h2uMaSXgxaMKweYGTC9dYrubjKWhA=;
-        b=It5hta5/n4p9fODLa2+yP789zyyKzccvSYR09Kxb6WWKu6Smp9hK9hBqEx+C7ylp4e
-         1XY8oUb7t4/RGccg2J7siXkmdhnVHt7+/WUhqtJ91s5gvEW+sEFx9c1Z6NOdbbDw31NY
-         0Wf+6OcXSQ3C2g/sx3YtusWOQOvWDprGKtBEsDnuwIYU/FOpU/8MmdVxYBanZwgBt4cz
-         6esR86Sz8Y6PpPwxRBpG/k97CxG9JjEm0CzgiiJk7FmFA591ZvSvaPIg6hvsUeWPv3ih
-         UASr1NXjqbgF5gym8tHXtaF43Tm5Yk+7T006fNnxix3ipHsfvGjk1+QUvwMRYWkQzudm
-         3osg==
-X-Gm-Message-State: AOAM5319PZNhM0ke0LNf/EGyd4VaZCHbRe74KPAi5uiMaZgbkawI1/hf
-        pxEgRglKE+cLtcZdLl86u+6hB8AWs66PypHygGxqDA==
-X-Google-Smtp-Source: ABdhPJwkgwRRLS9LLDsz5qXSVgIlxlrkuVWkoLPGg1tSYn5NJ7OXaQMZ2gammsjPvPa8LknqFrX04hwyA7njdkp91/A=
-X-Received: by 2002:a25:d2ca:: with SMTP id j193mr12308424ybg.419.1637906102695;
- Thu, 25 Nov 2021 21:55:02 -0800 (PST)
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1637906195; x=1669442195;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=GYNL32o6Hn6Ik+B1j/3VlrFdmKQ3ydSTnL023Sn+wi0=;
+  b=w1jb7n7HET5jPBPK4nzgkW6tCORn89KJ2MB36P73W9Bh7RJ/4BjcxvEv
+   tfNpjqVcT6x+p4iWbxypHjuQFcgE0e0VyxLpe64/rYcQym0WkY3w4iijj
+   zzOKh1DUtxP1uT9c79IjmSR9VusTqZ3K72OCl//ZhjYrvxIFOPhWElP+1
+   Y=;
+Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 25 Nov 2021 21:56:34 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg03-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 21:56:34 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Thu, 25 Nov 2021 21:56:33 -0800
+Received: from [10.216.32.234] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Thu, 25 Nov
+ 2021 21:56:28 -0800
+Message-ID: <4427fe8d-c96d-d1f7-3ef2-674000b61b93@quicinc.com>
+Date:   Fri, 26 Nov 2021 11:26:24 +0530
 MIME-Version: 1.0
-References: <20211119065831.31406-1-songmuchun@bytedance.com>
- <396ef026-c299-6560-fe7c-7b9932164fe3@intel.com> <CAMZfGtVDgbLAS3uyB0QPHpDsA8Mam0sVYFdq9HhU4rSjqZG0qw@mail.gmail.com>
- <87a6hsms2v.ffs@tglx>
-In-Reply-To: <87a6hsms2v.ffs@tglx>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 26 Nov 2021 13:54:23 +0800
-Message-ID: <CAMZfGtV0=gCmOGTwP44U=7BMrP3U2MdWEbNdMVA8kck4D0upwQ@mail.gmail.com>
-Subject: Re: [External] Re: [RFC PATCH] x86/fault: move might_sleep() out of
- mmap read lock
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Lutomirski <luto@kernel.org>,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH] sched/idle: Export cpu_idle_poll_ctrl() symbol
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Anvin <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+        "Rafael J. Wysocki" <rafael@kernel.org>
+CC:     <bjorn.andersson@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <ulf.hansson@linaro.org>, <quic_lsrao@quicinc.com>,
+        <rnayak@codeaurora.org>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        "Vincent Guittot" <vincent.guittot@linaro.org>
+References: <1637831676-32737-1-git-send-email-quic_mkshah@quicinc.com>
+ <YZ9ctgCBYJEEjuwt@hirez.programming.kicks-ass.net>
+ <687d97b6-347a-92c0-34ba-00331dfb6c82@quicinc.com>
+ <0fb74083-e378-e1b4-624b-4f2076f237df@linaro.org>
+From:   Maulik Shah <quic_mkshah@quicinc.com>
+In-Reply-To: <0fb74083-e378-e1b4-624b-4f2076f237df@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 6:45 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> Muchun, Dave!
->
-> On Mon, Nov 22 2021 at 14:59, Muchun Song wrote:
-> > On Fri, Nov 19, 2021 at 11:04 PM Dave Hansen <dave.hansen@intel.com> wrote:
-> >> >
-> >> > +     might_sleep();
-> >> > +
-> >> >       /*
-> >> >        * Kernel-mode access to the user address space should only occur
-> >> >        * on well-defined single instructions listed in the exception
-> >> > @@ -1346,13 +1348,6 @@ void do_user_addr_fault(struct pt_regs *regs,
-> >> >               }
-> >> >  retry:
-> >> >               mmap_read_lock(mm);
-> >> > -     } else {
-> >> > -             /*
-> >> > -              * The above down_read_trylock() might have succeeded in
-> >> > -              * which case we'll have missed the might_sleep() from
-> >> > -              * down_read():
-> >> > -              */
-> >> > -             might_sleep();
-> >> >       }
-> >> >
-> >> >       vma = find_vma(mm, address);
-> >>
-> >> The comment is stale, which isn't great.  The might_sleep() is already
-> >> in the fast path.  So, moving it up above makes a lot of sense just in
-> >> terms of simplicity.
->
-> I don't think so. The point is:
->
->         if (unlikely(!mmap_read_trylock(mm))) {
->                 if (!user_mode(regs) && !search_exception_tables(regs->ip)) {
->                         /*
->                          * Fault from code in kernel from
->                          * which we do not expect faults.
->                          */
->                         bad_area_nosemaphore(regs, error_code, address);
->                         return;
->                 }
->
-> Moving it up will make the might_sleep() splat more important than an
-> unexpected fault when the unexpected fault happens in e.g. a preemption
-> disabled region. That's wrong because the important information in this
-> case is not the might sleep splat. The important information is the
-> fault itself.
->
-> But moving it up is even more wrong for spurious faults which are
-> correctly handled in that case via:
->
->      bad_area_nosemaphore()
->        __bad_area_nosemaphore()
->          kernelmode_fixup_or_oops()
->             handle(AMD erratum #91)
->               is_prefetch()
->
-> So if such a spurious fault happens in a condition which would trigger
-> the might_sleep() splat then moving might_sleep() before the trylock()
-> will cause false positives. So, no. It's going to stay where it is.
+Hi Daniel,
 
-Got it. I didn't realize those cases. Thank you for your patient
-explanation.
+On 11/25/2021 10:56 PM, Daniel Lezcano wrote:
+> On 25/11/2021 15:13, Maulik Shah wrote:
+>> Hi Peter,
+>>
+>> On 11/25/2021 3:21 PM, Peter Zijlstra wrote:
+>>> On Thu, Nov 25, 2021 at 02:44:36PM +0530, Maulik Shah wrote:
+>>>> Export cpu_idle_poll_ctrl() so that module drivers can use same.
+>>> This does not seem like a really safe interface to expose to the
+>>> world.
+>> Thanks for the review.
+>>
+>> Keeping the cpuidle enabled from boot up may delay/increase the boot up
+>> time.
+>> Below is our use case to force cpuidle to stay in cpu_idle_poll().
+>>
+>> We keep cpuidle disabled from boot up using "nohlt" option of kernel
+>> command line which internally sets cpu_idle_force_poll = 1;
+>> and once the device bootup reaches till certain point (for example the
+>> android homescreen is up) userspace may notify a
+>> vendor module driver which can invoke cpu_idle_poll_ctrl(false); to come
+>> out of poll mode.
+>> So vendor module driver needs cpu_idle_poll_ctrl() exported symbol.
+>>
+>> We can not take PM-QoS from driver to prevent deep cpuidle since all the
+>> vendor modules are kept in a separate partition and will be loaded only
+>> after kernel boot up is done
+>> and by this time kernel already starts executing deep cpuidle modes.
+>>> Surely the better solution is to rework things to not rely on this. I'm
+>>> fairly sure it's not hard to write a cpuidle driver that does much the
+>>> same.
+>> The other option i think is to pass cpuidle.off=1 in kernel command line
+>> and then add enable_cpuidle() in drivers/cpuidle/cpuidle.c
+>> something similar as below which can be called by vendor module.
+>>
+>> void enable_cpuidle(void)
+>> {
+>>          off = 0;
+>> }
+>> EXPORT_SYMBOL_GPL(enable_cpuidle);
+>>
+>> This may be a good option since we have already disable_cpuidle() but
+>> not enable_cpuidle().
+>>
+>> void disable_cpuidle(void)
+>> {
+>>          off = 1;
+>> }
+>>
+>> Hi Rafael/Daniel, can you please let me know your suggestion on
+>> this/similar implementation?
+> Did you try to use the QoS latency? Sounds like it is exactly for this
+> purpose.
+>
+> Set it to zero to force cpuidle to choose the shallowest idle state and
+> then INT_MAX to disable the constraint.
+>
+>   cpu_latency_qos_add_request();
+>
+> Hope that helps
+>
+>    -- Daniel
+The PM-QoS is not helping here since all the vendor drivers are kept in 
+a separate partition
+and will be loaded only after kernel boot up is done and by the time 
+vendor kernel modules are inserted
+takes QoS, kernel/menu governor already starts executing deep cpuidle modes.
 
+kernel start (t0)---------Menu governor loads (t1)----------vendor 
+modules loaded (t2)----------Usespace ready(t3)
 
->
-> > Without this patch, I didn't see the might_sleep() in the fast path. What
-> > am I missing here?
->
-> I have no idea what you are doing. If the trylock() succeeds and the
-> fault happened in e.g. a preemption disabled region then the
-> might_sleep() in the else path will trigger no matter what.
->
-> Thanks,
->
->         tglx
+Untill (t2), its only core kernel/android kernel which don't have any 
+vendor driver which can take QoS.
+If we take QoS, it can be taken only from point (t2) but CPUs still 
+enter deep idle state between (t1) to (t2).
+
+So to prevent this passing "cpuidle.off=1" or "nohlt" in kernel command 
+line can keep deep cpuidle states disabled from boot up and
+once vendor modules are ready at (t2) or (t3), it can either invoke 
+newly added enable_cpuidle() or cpu_idle_poll_ctrl(false);
+to comeout of polling mode and start executing deep low power modes.
+
+Thanks,
+Maulik
