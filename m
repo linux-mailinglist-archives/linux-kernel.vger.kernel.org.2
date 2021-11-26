@@ -2,72 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2255C45E7AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 07:03:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8F345E7B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 07:05:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358784AbhKZGGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 01:06:32 -0500
+        id S1358770AbhKZGIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 01:08:31 -0500
 Received: from esa3.hgst.iphmx.com ([216.71.153.141]:11664 "EHLO
         esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351980AbhKZGEa (ORCPT
+        with ESMTP id S244112AbhKZGGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 01:04:30 -0500
+        Fri, 26 Nov 2021 01:06:30 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1637906477; x=1669442477;
+  t=1637906597; x=1669442597;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=UHFYtRUpqo1Z8U1NRYz0VvF/MbTIc2c4ImiQa8RqQHA=;
-  b=b5QlIwU6xzq9CvsMskJtsRK3oQZk9AFV4tngYWwZLv5ThWAyBbTwo/NU
-   eTW00YNqeRtLkfJYcD8YxTxlstWjVeIgqxSUXr9TiT7oMi9VigvW0VsmO
-   OkfKrneI8HznYH01tZUWANKk52xIfGzmtsYtStKMrShq13r1CqzKfzWeG
-   hz4ngE7Zo3opS/8lB6cvOqcAef8E+rYfqtdI9/kXw4W+Y6JvBfwpvQs5S
-   Luo2hsi6D6wZ4jXjlPWlu2LZSntqopfjkEzH8B2lEje+vtCg+Ws5vWoWS
-   BwS95Q260qABQ0ygU6pS95veAcxF2zKPAouQQfcWejZzX9nWY/xQKOsrU
-   A==;
+  bh=oUs8KHpPoES62pGveh25YWvNvWsKpMxtp/olrjhpVBo=;
+  b=YXe+c9t/GQ9zDUpPBhlaesx1udIX32JmIW2UVsC4oCn2z+ndv+PwV1la
+   gZO3YPGS/3gItBqlZ2INwDt2CGeHefHzHYkCIUzXWVhyYPkFZ5EYRpahc
+   PlnqisB5598pl57XxypfZFEHpL8621zTCp9iwGR3RouhduEeFyDB7/ibS
+   I5hKW4vX/nL4nqeCszy0erQ2qxgryPhtjGPb8NZFrQSBwkygvC6E2s3XE
+   KUqNOKPgF7bXGSsd5gHHDaUeALW5+77NWiAGCHzkkFs05wIISnKrYecyi
+   ZTETo4PquI0J6vRvSZC6pMD35LJJ26Ayd1k7bQHQ0QfMbSMt6MoCdl653
+   Q==;
 X-IronPort-AV: E=Sophos;i="5.87,263,1631548800"; 
-   d="scan'208";a="191493917"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 26 Nov 2021 14:01:16 +0800
-IronPort-SDR: Cao0PXDQ1eOSXWrxeoL34g5WmkZSL3kA6vOy1VlZBx2y0nkyCPAau9AB3SThu6bK+uujA4uYQg
- LSoP+/DKuapUrq+MfVQoL6+Hx+Of/pnSElbyv98Ge3hl2EiQ/8YKNtlIqxGXcNrbi5JDu4zYP9
- +3Vo8ngaKu4BfpFCXSLIPtLWV/N4hnYig1egibxJ6s7hTvJ4pLcf54x89XulYItDUCpMAmaZwO
- sF4POGmJ7rkZHmRK79fvQsKigTWt6BiwBdL72sw19FTIGjYxOKhUUtBerkDgnRm0rboQQLfR9k
- inysgPly0KK1UbtbO2yS7x6C
+   d="scan'208";a="191493925"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 26 Nov 2021 14:01:26 +0800
+IronPort-SDR: P4NhqC9uNCI8EhXT4MrE9St5qYSpycba5bHiU0okSqTIP76MuzGH+L/H6fXZhOUdGtRdvFEtB3
+ l5q6s9YPxQ/pgxXcPeLOKrYsGMwQhA4FBx4gdHPB6GPonHmC5mjYum/wbfOqKe5NZwrQj2PiGY
+ suayzFCLCf5pSBt9N9xV1uM7AETmDnSQxixkFo5wsdSJBAbe8B7/BTQBB+Xe2x7TyEGzG1M+CV
+ VIh0eCgh1DygurDt9aVxYKFLW8wf9qYGl1EF3zymCm2Xca+esEiuFowpK5TIPA5MXJ0GGXUkEp
+ Yxk55tuDBXv8GxS/dmSSefUe
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 21:36:08 -0800
-IronPort-SDR: KlYU4/KsJ300hnvGkPbRwa0ezZJfpXGwF27k4bUl6Km9zLi935nEL0xrDkckSp0xG6B0qe9I/T
- 2Zt+a/SwO426mLLRrAZZEAyTBuOhq/7DyOxyA0oNQtLDZcTSg4cxGkPguCPWLfKtfHALu1BpR8
- P7EOQiaq9oAm+dTHLJr69/Q+JSo4vCrHJEv+JmMZcw7EIXjvEOMkko5cX3hwHQgR9iDvOYNXu3
- NFDmoTIW/WX52yfFy4MkOzYuBvaSJ3GcmTFecqzvIO/LRLO8N0d+qDbN1AbftRnTkmbgSGtPLE
- DZI=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 21:34:45 -0800
+IronPort-SDR: cE5OImlxdAllmq4hcGPccRSPmd6KASf86djUsRa0h9MrUZ7DujAbM8SSLzSok3rrxkn2Su5wsb
+ SEx7hdZZ9gmQuLIgqwvh+SOrUyNsxhoHR1UTF6rMRqW67cenAgc3Zq10lR8TsRnahkUgvgjAEt
+ QduJweYKXbV5MrHAgm93/hCzuve3gySzyDd74oSw78PmxANSPROGvddlT/zaaBbYLLyVhp1DIV
+ fcYme91JkH5/YF345Vxt/xRFo6t3QK58vl2HimCL6VJL2jpreB+ejAumZpCeW3sGCx+fZ4hSvv
+ tC8=
 WDCIronportException: Internal
 Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 22:01:17 -0800
+  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 22:01:27 -0800
 Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4J0kdT11Qpz1RtVl
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 22:01:17 -0800 (PST)
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4J0kdf75jLz1RtW5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 22:01:26 -0800 (PST)
 Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
         reason="pass (just generated, assumed good)"
         header.d=opensource.wdc.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
         opensource.wdc.com; h=content-transfer-encoding:mime-version
         :references:in-reply-to:x-mailer:message-id:date:subject:to
-        :from; s=dkim; t=1637906476; x=1640498477; bh=UHFYtRUpqo1Z8U1NRY
-        z0VvF/MbTIc2c4ImiQa8RqQHA=; b=UM3s2tFc8rIj4gOSHiCA2kixJ06bmwMSZm
-        nXp/xzAWpAlxvSmK/DRN5fHKOiHUtKZTJZTnbLSxMu8efaNrAv1g9NoDY8heiXV8
-        zGhJfUk7qvuVCbb3J6cwARZRee3JhUbCmIa0waojGvwKjmIWpvl9X1Zb728ki1ZC
-        dKeSYMSD50v4zg9KFdpcg4YuMY1EYhs2s2V/PlXJnaaDEBWEJzyeLj/Ri0ETBNJ6
-        r+WpxXgQL8MQ8yEQAaRZ7VdvqJ9qW3OgX+7qX600On4BXtwLhlXw7hp9uNmSnYJH
-        2ARVktXiqK9/sbDrx7G+Eb1sp2TRZB5HFge9YvgyG9Ha/8EsrMsQ==
+        :from; s=dkim; t=1637906485; x=1640498486; bh=oUs8KHpPoES62pGveh
+        25YWvNvWsKpMxtp/olrjhpVBo=; b=ADB3Iga72GY66n+Uk4bV4rpd9x0Ognceny
+        byUnLSah0nVg7yvJK5Aq1Mj+bX2p4AqBYvGWHYAYtLWQWQjvWbeWOITmKpkA9RFv
+        hh34RuaH0uEyAAnbEJqNlBOy22wvJD0wWpnjyFkE2n1AlYWA4QwbJ53vKIIcnNll
+        Rt8486s/kqn/6uq4oX5E8YPeUmkeaho9v0Sxkfa1Cp1sxY/5aTjyMR0daR94Yaj9
+        GJGeuLN+rmsJ65GSQnG4jNWiTsMKNrxTtHkkW2HnOVQ+rsH/kuth0qIrGIlpvBSk
+        ZfwekZfEez2+Ge676qILQLIu3Qml1LRIQUwf4uuLhyCGWWia7UJA==
 X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
 Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
         by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id y73P6cc8KlrO for <linux-kernel@vger.kernel.org>;
-        Thu, 25 Nov 2021 22:01:16 -0800 (PST)
+        with ESMTP id aTkrquMser5U for <linux-kernel@vger.kernel.org>;
+        Thu, 25 Nov 2021 22:01:25 -0800 (PST)
 Received: from toolbox.wdc.com (unknown [10.225.165.62])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4J0kdJ2F6xz1RtVp;
-        Thu, 25 Nov 2021 22:01:07 -0800 (PST)
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4J0kdT2FD4z1RtW3;
+        Thu, 25 Nov 2021 22:01:16 -0800 (PST)
 From:   Alistair Francis <alistair.francis@opensource.wdc.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     tglx@linutronix.de, arnd@arndb.de, namhyung@kernel.org,
@@ -76,9 +76,9 @@ Cc:     tglx@linutronix.de, arnd@arndb.de, namhyung@kernel.org,
         acme@kernel.org, linux-perf-users@vger.kernel.org,
         mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
         Alistair Francis <alistair.francis@wdc.com>
-Subject: [PATCH v3 5/6] uapi: futex: Add a futex waitv syscall
-Date:   Fri, 26 Nov 2021 16:00:23 +1000
-Message-Id: <20211126060024.3290177-5-alistair.francis@opensource.wdc.com>
+Subject: [PATCH v3 6/6] selftests: futex: Use futex_waitv helper function
+Date:   Fri, 26 Nov 2021 16:00:24 +1000
+Message-Id: <20211126060024.3290177-6-alistair.francis@opensource.wdc.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211126060024.3290177-1-alistair.francis@opensource.wdc.com>
 References: <20211126060024.3290177-1-alistair.francis@opensource.wdc.com>
@@ -90,83 +90,204 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alistair Francis <alistair.francis@wdc.com>
 
-This commit adds a futex waitv syscall wrapper that is exposed to
-userspace.
-
-Neither the kernel or glibc currently expose a futex wrapper, so
-userspace is left performing raw syscalls. As the futex_waitv syscall
-always expects a 64-bit time_t this can be tricky for 32-bit systems to
-get correct.
-
-In order to avoid userspace incorrectly passing the wrong timeouts let's
-expose a public helper function that ensures the kernel is passed the
-correct timeout struct.
+Use the publically exposed __kernel_futex_syscall_waitv() helper
+function for the futex_waitv tests.
 
 Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
 ---
- include/uapi/linux/futex_syscall.h | 32 +++++++++++++++++++++++++++++-
- 1 file changed, 31 insertions(+), 1 deletion(-)
+ .../futex/functional/futex_wait_timeout.c     |  6 ++---
+ .../futex/functional/futex_wait_wouldblock.c  |  4 ++--
+ .../selftests/futex/functional/futex_waitv.c  | 16 ++++++++------
+ .../selftests/futex/include/futex2test.h      | 22 -------------------
+ 4 files changed, 14 insertions(+), 34 deletions(-)
+ delete mode 100644 tools/testing/selftests/futex/include/futex2test.h
 
-diff --git a/include/uapi/linux/futex_syscall.h b/include/uapi/linux/fute=
-x_syscall.h
-index e0305c581142..98c550990833 100644
---- a/include/uapi/linux/futex_syscall.h
-+++ b/include/uapi/linux/futex_syscall.h
-@@ -9,12 +9,15 @@
- #ifndef _UAPI_LINUX_FUTEX_SYSCALL_H
- #define _UAPI_LINUX_FUTEX_SYSCALL_H
+diff --git a/tools/testing/selftests/futex/functional/futex_wait_timeout.=
+c b/tools/testing/selftests/futex/functional/futex_wait_timeout.c
+index 3651ce17beeb..f25e3bd8222e 100644
+--- a/tools/testing/selftests/futex/functional/futex_wait_timeout.c
++++ b/tools/testing/selftests/futex/functional/futex_wait_timeout.c
+@@ -15,9 +15,9 @@
+  *
+  ***********************************************************************=
+******/
 =20
--#include <asm/unistd.h>
-+#include <unistd.h>
++#include <linux/futex_syscall.h>
+ #include <pthread.h>
+ #include "futextest.h"
+-#include "futex2test.h"
+ #include "logging.h"
+=20
+ #define TEST_NAME "futex-wait-timeout"
+@@ -185,13 +185,13 @@ int main(int argc, char *argv[])
+ 	/* futex_waitv with CLOCK_MONOTONIC */
+ 	if (futex_get_abs_timeout(CLOCK_MONOTONIC, &to, timeout_ns))
+ 		return RET_FAIL;
+-	res =3D futex_waitv(&waitv, 1, 0, &to, CLOCK_MONOTONIC);
++	res =3D __kernel_futex_syscall_waitv(&waitv, 1, 0, &to, CLOCK_MONOTONIC=
+);
+ 	test_timeout(res, &ret, "futex_waitv monotonic", ETIMEDOUT);
+=20
+ 	/* futex_waitv with CLOCK_REALTIME */
+ 	if (futex_get_abs_timeout(CLOCK_REALTIME, &to, timeout_ns))
+ 		return RET_FAIL;
+-	res =3D futex_waitv(&waitv, 1, 0, &to, CLOCK_REALTIME);
++	res =3D __kernel_futex_syscall_waitv(&waitv, 1, 0, &to, CLOCK_REALTIME)=
+;
+ 	test_timeout(res, &ret, "futex_waitv realtime", ETIMEDOUT);
+=20
+ 	ksft_print_cnts();
+diff --git a/tools/testing/selftests/futex/functional/futex_wait_wouldblo=
+ck.c b/tools/testing/selftests/futex/functional/futex_wait_wouldblock.c
+index 7d7a6a06cdb7..399ac636524b 100644
+--- a/tools/testing/selftests/futex/functional/futex_wait_wouldblock.c
++++ b/tools/testing/selftests/futex/functional/futex_wait_wouldblock.c
+@@ -17,12 +17,12 @@
+=20
  #include <errno.h>
-+#include <linux/futex.h>
- #include <linux/types.h>
- #include <linux/time_types.h>
+ #include <getopt.h>
++#include <linux/futex_syscall.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <time.h>
+ #include "futextest.h"
+-#include "futex2test.h"
+ #include "logging.h"
+=20
+ #define TEST_NAME "futex-wait-wouldblock"
+@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
+ 	}
+=20
+ 	info("Calling futex_waitv on f1: %u @ %p with val=3D%u\n", f1, &f1, f1+=
+1);
+-	res =3D futex_waitv(&waitv, 1, 0, &to, CLOCK_MONOTONIC);
++	res =3D __kernel_futex_syscall_waitv(&waitv, 1, 0, &to, CLOCK_MONOTONIC=
+);
+ 	if (!res || errno !=3D EWOULDBLOCK) {
+ 		ksft_test_result_pass("futex_waitv returned: %d %s\n",
+ 				      res ? errno : res,
+diff --git a/tools/testing/selftests/futex/functional/futex_waitv.c b/too=
+ls/testing/selftests/futex/functional/futex_waitv.c
+index a94337f677e1..8ba45363c094 100644
+--- a/tools/testing/selftests/futex/functional/futex_waitv.c
++++ b/tools/testing/selftests/futex/functional/futex_waitv.c
+@@ -8,6 +8,7 @@
+ #include <errno.h>
+ #include <error.h>
+ #include <getopt.h>
++#include <linux/futex_syscall.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+@@ -16,7 +17,6 @@
  #include <stdint.h>
- #include <sys/syscall.h>
-+#include <sys/types.h>
-+#include <time.h>
+ #include <sys/shm.h>
+ #include "futextest.h"
+-#include "futex2test.h"
+ #include "logging.h"
 =20
- /**
-  * futex_syscall_timeout() - __NR_futex/__NR_futex_time64 syscall wrappe=
-r
-@@ -86,4 +89,31 @@ __kernel_futex_syscall_nr_requeue(volatile uint32_t *u=
-addr, int op, uint32_t val
- 	return -1;
- }
+ #define TEST_NAME "futex-wait"
+@@ -25,6 +25,8 @@
+ static struct futex_waitv waitv[NR_FUTEXES];
+ u_int32_t futexes[NR_FUTEXES] =3D {0};
 =20
-+/**
-+ * futex_waitv - Wait at multiple futexes, wake on any
-+ * @waiters:    Array of waiters
-+ * @nr_waiters: Length of waiters array
-+ * @flags: Operation flags
-+ * @timo:  Optional timeout for operation
-+ */
-+static inline int
-+__kernel_futex_syscall_waitv(volatile struct futex_waitv *waiters, unsig=
-ned long nr_waiters,
-+			      unsigned long flags, struct timespec *timo, clockid_t clockid)
-+{
-+	/* futex_waitv expects a 64-bit time_t */
-+	if (sizeof(*timo) =3D=3D sizeof(struct __kernel_timespec))
-+		return syscall(__NR_futex_waitv, waiters, nr_waiters, flags, timo, clo=
-ckid);
++#define u64_to_ptr(x) ((void *)(uintptr_t)(x))
 +
-+	/* If the caller supplied a 32-bit time_t, convert it to 64-bit */
-+	if (timo) {
-+		struct __kernel_timespec ts_new;
-+
-+		ts_new.tv_sec =3D timo->tv_sec;
-+		ts_new.tv_nsec =3D timo->tv_nsec;
-+
-+		return syscall(__NR_futex_waitv, waiters, nr_waiters, flags, &ts_new, =
-clockid);
-+	} else
-+		return syscall(__NR_futex_waitv, waiters, nr_waiters, flags, NULL, clo=
-ckid);
-+}
-+
- #endif /* _UAPI_LINUX_FUTEX_SYSCALL_H */
+ void usage(char *prog)
+ {
+ 	printf("Usage: %s\n", prog);
+@@ -45,7 +47,7 @@ void *waiterfn(void *arg)
+=20
+ 	to.tv_sec++;
+=20
+-	res =3D futex_waitv(waitv, NR_FUTEXES, 0, &to, CLOCK_MONOTONIC);
++	res =3D __kernel_futex_syscall_waitv(waitv, NR_FUTEXES, 0, &to, CLOCK_M=
+ONOTONIC);
+ 	if (res < 0) {
+ 		ksft_test_result_fail("futex_waitv returned: %d %s\n",
+ 				      errno, strerror(errno));
+@@ -153,7 +155,7 @@ int main(int argc, char *argv[])
+=20
+ 	to.tv_sec++;
+=20
+-	res =3D futex_waitv(waitv, NR_FUTEXES, 0, &to, CLOCK_MONOTONIC);
++	res =3D __kernel_futex_syscall_waitv(waitv, NR_FUTEXES, 0, &to, CLOCK_M=
+ONOTONIC);
+ 	if (res =3D=3D EINVAL) {
+ 		ksft_test_result_fail("futex_waitv private returned: %d %s\n",
+ 				      res ? errno : res,
+@@ -172,7 +174,7 @@ int main(int argc, char *argv[])
+=20
+ 	to.tv_sec++;
+=20
+-	res =3D futex_waitv(waitv, NR_FUTEXES, 0, &to, CLOCK_MONOTONIC);
++	res =3D __kernel_futex_syscall_waitv(waitv, NR_FUTEXES, 0, &to, CLOCK_M=
+ONOTONIC);
+ 	if (res =3D=3D EINVAL) {
+ 		ksft_test_result_fail("futex_wake private returned: %d %s\n",
+ 				      res ? errno : res,
+@@ -190,7 +192,7 @@ int main(int argc, char *argv[])
+=20
+ 	to.tv_sec++;
+=20
+-	res =3D futex_waitv(waitv, NR_FUTEXES, 0, &to, CLOCK_MONOTONIC);
++	res =3D __kernel_futex_syscall_waitv(waitv, NR_FUTEXES, 0, &to, CLOCK_M=
+ONOTONIC);
+ 	if (res =3D=3D EINVAL) {
+ 		ksft_test_result_fail("futex_waitv private returned: %d %s\n",
+ 				      res ? errno : res,
+@@ -206,7 +208,7 @@ int main(int argc, char *argv[])
+=20
+ 	to.tv_sec++;
+=20
+-	res =3D futex_waitv(NULL, NR_FUTEXES, 0, &to, CLOCK_MONOTONIC);
++	res =3D __kernel_futex_syscall_waitv(NULL, NR_FUTEXES, 0, &to, CLOCK_MO=
+NOTONIC);
+ 	if (res =3D=3D EINVAL) {
+ 		ksft_test_result_fail("futex_waitv private returned: %d %s\n",
+ 				      res ? errno : res,
+@@ -222,7 +224,7 @@ int main(int argc, char *argv[])
+=20
+ 	to.tv_sec++;
+=20
+-	res =3D futex_waitv(NULL, NR_FUTEXES, 0, &to, CLOCK_TAI);
++	res =3D __kernel_futex_syscall_waitv(NULL, NR_FUTEXES, 0, &to, CLOCK_TA=
+I);
+ 	if (res =3D=3D EINVAL) {
+ 		ksft_test_result_fail("futex_waitv private returned: %d %s\n",
+ 				      res ? errno : res,
+diff --git a/tools/testing/selftests/futex/include/futex2test.h b/tools/t=
+esting/selftests/futex/include/futex2test.h
+deleted file mode 100644
+index 9d305520e849..000000000000
+--- a/tools/testing/selftests/futex/include/futex2test.h
++++ /dev/null
+@@ -1,22 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-or-later */
+-/*
+- * Futex2 library addons for futex tests
+- *
+- * Copyright 2021 Collabora Ltd.
+- */
+-#include <stdint.h>
+-
+-#define u64_to_ptr(x) ((void *)(uintptr_t)(x))
+-
+-/**
+- * futex_waitv - Wait at multiple futexes, wake on any
+- * @waiters:    Array of waiters
+- * @nr_waiters: Length of waiters array
+- * @flags: Operation flags
+- * @timo:  Optional timeout for operation
+- */
+-static inline int futex_waitv(volatile struct futex_waitv *waiters, unsi=
+gned long nr_waiters,
+-			      unsigned long flags, struct timespec *timo, clockid_t clockid)
+-{
+-	return syscall(__NR_futex_waitv, waiters, nr_waiters, flags, timo, cloc=
+kid);
+-}
 --=20
 2.31.1
 
