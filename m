@@ -2,119 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3E3445E426
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 02:50:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4254345E429
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 02:52:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357397AbhKZBxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 20:53:40 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:31907 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351657AbhKZBvj (ORCPT
+        id S1357528AbhKZBz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 20:55:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1357463AbhKZBx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 20:51:39 -0500
-Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4J0d1f5YV3zcbLh;
-        Fri, 26 Nov 2021 09:48:22 +0800 (CST)
-Received: from [10.174.179.200] (10.174.179.200) by
- dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.20; Fri, 26 Nov 2021 09:48:25 +0800
-Subject: Re: [PATCH net v2] net: vlan: fix a UAF in vlan_dev_real_dev()
-To:     Petr Machata <petrm@nvidia.com>
-CC:     Jakub Kicinski <kuba@kernel.org>, <davem@davemloft.net>,
-        <jgg@nvidia.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20211102021218.955277-1-william.xuanziyang@huawei.com>
- <87k0h9bb9x.fsf@nvidia.com>
- <20211115094940.138d86dc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <87a6i3t2zg.fsf@nvidia.com> <7f7cbbec-8c4e-a2dc-787b-570d1049a6b4@huawei.com>
- <20211118061735.5357f739@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <c240e0e0-256c-698b-4a98-47490869faa3@huawei.com> <8735nstq62.fsf@nvidia.com>
- <daae2fe3-997c-a390-afae-15ff33ba3d1c@huawei.com> <87k0gzrqw8.fsf@nvidia.com>
- <87v90gqxl4.fsf@nvidia.com>
-From:   "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
-Message-ID: <7d45a6bc-e900-e80e-917a-031bdd77bc69@huawei.com>
-Date:   Fri, 26 Nov 2021 09:48:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 25 Nov 2021 20:53:57 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9946AC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 17:50:45 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id c4so15219740wrd.9
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 17:50:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ue+ydJFjsfN5rd8y2Zo0UmtI3oU+9VqtaCaChqusUO4=;
+        b=kXAsc3mjmWv9rUz4lB+vUNHm0Sr0p32DgP+/S8zwaD/EafvX9STH5ZFNz7Cgh3lW4f
+         erOfieBjkr/PBxp6CarPf6AXnjI4FbFALtNhHzW6AALWGJV42SLdsNV42t+q39ODeDWw
+         Jxi1O4tiftDa3Z2MxeWcSKVCsG+/1+iJIaLsUOe8ALMK3mNw/ifu4354yplVI6gIYJDY
+         bNYHjS5H5tl4EP64yis7lWB//URbVQGDIdQIUq6pBSqRUgD3WLcuzFGP+uQMVJGBT5kw
+         G5u+w2T/rnLXlgNeurUZSWqiXonlLWjbQo0zffYplthvFhKNmZBzlvGzZDYRW1OnIELg
+         CWAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ue+ydJFjsfN5rd8y2Zo0UmtI3oU+9VqtaCaChqusUO4=;
+        b=FX4WvWPy9Plfob9oH2y7DB1rkdpDpCrZSnqC1mOLEMKsAKunTQdjnupQ29JapjO428
+         UJPdMaPsxZjYvllrYLtdETkLWIBPWFe1rHoLTnO9Z0Pu7/sMCZ3PuLbHJpQf5diyAoSN
+         Q37tVBcH+vOWY+MvkJKt3IVMWF3Yb0TeJ1Y5Sjxml0299yc4SMJq9dyMfAJgW2bBFkIq
+         pyqxnxu2+Gp9J+BIQf8ghZKCp2oa+uLbuXNX5mEqcP/zppt+oSUoHWwGA2rjavgssLt/
+         YJhkb5Ops4OfjPGDnDI5Bmi6rhaU0lcKVLE38zA0uoLaXNuasLOo5ylDj7LQKeukPffC
+         +qxQ==
+X-Gm-Message-State: AOAM530F7945EvZFd1M0cPmsR2cHVQkgI49KaoG26mxVZLU/OffI8xka
+        PlUd/SYxu7PRXyIA5MSX3BYivJUGM94Ugxfw/qQT2Q==
+X-Google-Smtp-Source: ABdhPJw5/dBmybdmG22b7pw2fTf20H2BZ4oTSKV8OjjQssoabMfKGjg9VlqDquLgR+HMtMGgAxStqcMOVJrjyY/Cc90=
+X-Received: by 2002:adf:ef4f:: with SMTP id c15mr11584812wrp.226.1637891443685;
+ Thu, 25 Nov 2021 17:50:43 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <87v90gqxl4.fsf@nvidia.com>
-Content-Type: text/plain; charset="gbk"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.200]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggeml757-chm.china.huawei.com (10.1.199.137)
-X-CFilter-Loop: Reflected
+References: <20211125193852.3617-1-goldstein.w.n@gmail.com>
+In-Reply-To: <20211125193852.3617-1-goldstein.w.n@gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 25 Nov 2021 17:50:31 -0800
+Message-ID: <CANn89iLnH5B11CtzZ14nMFP7b--7aOfnQqgmsER+NYNzvnVurQ@mail.gmail.com>
+Subject: Re: [PATCH v1] x86/lib: Optimize 8x loop and memory clobbers in csum_partial.c
+To:     Noah Goldstein <goldstein.w.n@gmail.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        peterz@infradead.org, alexanderduyck@fb.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> 
-> Petr Machata <petrm@nvidia.com> writes:
-> 
->> Ziyang Xuan (William) <william.xuanziyang@huawei.com> writes:
->>
->>>>
->>>> Ziyang Xuan (William) <william.xuanziyang@huawei.com> writes:
->>>>
->>>>> I need some time to test my some ideas. And anyone has good ideas, please
->>>>> do not be stingy.
->>>>
->>>> Jakub Kicinski <kuba@kernel.org> writes:
->>>>
->>>>> I think we should move the dev_hold() to ndo_init(), otherwise it's
->>>>> hard to reason if destructor was invoked or not if
->>>>> register_netdevice() errors out.
->>>>
->>>> That makes sense to me. We always put real_dev in the destructor, so we
->>>> should always hold it in the constructor...
->>>
->>> Inject error before dev_hold(real_dev) in register_vlan_dev(), and execute
->>> the following testcase:
->>>
->>> ip link add dev dummy1 type dummy
->>> ip link add name dummy1.100 link dummy1 type vlan id 100 // failed for error injection
->>> ip link del dev dummy1
->>>
->>> Make the problem repro. The problem is solved using the following fix
->>> according to the Jakub's suggestion:
->>>
->>> diff --git a/net/8021q/vlan.c b/net/8021q/vlan.c
->>> index a3a0a5e994f5..abaa5d96ded2 100644
->>> --- a/net/8021q/vlan.c
->>> +++ b/net/8021q/vlan.c
->>> @@ -184,9 +184,6 @@ int register_vlan_dev(struct net_device *dev, struct netlink_ext_ack *extack)
->>>         if (err)
->>>                 goto out_unregister_netdev;
->>>
->>> -       /* Account for reference in struct vlan_dev_priv */
->>> -       dev_hold(real_dev);
->>> -
->>>         vlan_stacked_transfer_operstate(real_dev, dev, vlan);
->>>         linkwatch_fire_event(dev); /* _MUST_ call rfc2863_policy() */
->>>
->>> diff --git a/net/8021q/vlan_dev.c b/net/8021q/vlan_dev.c
->>> index ab6dee28536d..a54535cbcf4c 100644
->>> --- a/net/8021q/vlan_dev.c
->>> +++ b/net/8021q/vlan_dev.c
->>> @@ -615,6 +615,9 @@ static int vlan_dev_init(struct net_device *dev)
->>>         if (!vlan->vlan_pcpu_stats)
->>>                 return -ENOMEM;
->>>
->>> +       /* Get vlan's reference to real_dev */
->>> +       dev_hold(real_dev);
->>>
->>>
->>> If there is not any other idea and objection, I will send the fix patch later.
->>>
->>> Thank you!
->>
->> This fixes the issue in my repro, and does not seems to break anything.
->> We'll take it to full regression overnight, I'll report back tomorrow
->> about the result.
-> 
-> Sorry, was AFK yesterday. It does look good.
-> .
+On Thu, Nov 25, 2021 at 11:38 AM Noah Goldstein <goldstein.w.n@gmail.com> wrote:
+>
+> Modify the 8x loop to that it uses two independent
+> accumulators. Despite adding more instructions the latency and
+> throughput of the loop is improved because the `adc` chains can now
+> take advantage of multiple execution units.
 
-Thank you for your efforts very much! I have sent the fix patch.
+Nice !
+
+Note that I get better results if I do a different split, because the
+second chain gets shorter.
+
+First chain adds 5*8 bytes from the buffer, but first bytes are a mere
+load, so that is really 4+1 additions.
+
+Second chain adds 3*8 bytes from the buffer, plus the result coming
+from the first chain, also 4+1 additions.
+
+asm("movq 0*8(%[src]),%[res_tmp]\n\t"
+    "addq 1*8(%[src]),%[res_tmp]\n\t"
+    "adcq 2*8(%[src]),%[res_tmp]\n\t"
+    "adcq 3*8(%[src]),%[res_tmp]\n\t"
+    "adcq 4*8(%[src]),%[res_tmp]\n\t"
+    "adcq $0,%[res_tmp]\n\t"
+    "addq 5*8(%[src]),%[res]\n\t"
+    "adcq 6*8(%[src]),%[res]\n\t"
+    "adcq 7*8(%[src]),%[res]\n\t"
+    "adcq %[res_tmp],%[res]\n\t"
+    "adcq $0,%[res]"
+    : [res] "+r" (temp64), [res_tmp] "=&r"(temp_accum)
+    : [src] "r" (buff)
+    : "memory");
+
+
+>
+> Make the memory clobbers more precise. 'buff' is read only and we know
+> the exact usage range. There is no reason to write-clobber all memory.
+
+Not sure if that matters in this function ? Or do we expect it being inlined ?
+
+Personally, I find the "memory" constraint to be more readable than these casts
+"m"(*(const char(*)[64])buff));
+
+>
+> Relative performance changes on Tigerlake:
+>
+> Time Unit: Ref Cycles
+> Size Unit: Bytes
+>
+> size,   lat old,    lat new,    tput old,   tput new
+>    0,     4.972,      5.054,       4.864,      4.870
+
+Really what matters in modern networking is the case for 40 bytes, and
+eventually 8 bytes.
+
+Can you add these two cases in this nice table ?
+
+We hardly have to checksum anything with NIC that are not decades old.
+
+Apparently making the 64byte loop slightly longer incentives  gcc to
+move it away (our intent with the unlikely() hint).
+
+Anyway I am thinking of providing a specialized inline version for
+IPv6 header checksums (40 + x*8 bytes, x being 0  pretty much all the
+time),
+so we will likely not use csum_partial() anymore.
+
+Thanks !
