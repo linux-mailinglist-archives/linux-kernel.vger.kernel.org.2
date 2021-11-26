@@ -2,109 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC0A45E6F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 05:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 408EB45E6FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 05:57:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358493AbhKZEtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 23:49:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358601AbhKZEq7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 23:46:59 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA5D0C0613E1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 20:43:28 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id 200so7090610pga.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 20:43:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gwJIiwnisD6cF408GW4bOCdNiOevm+kN2DCfktfQz/4=;
-        b=p/HPnND/JDqjAz5osN2fiqxWxjwlxeukWlCnWFYdia3ksPcLdj2T2/w7EYHHk2wHzh
-         8NoOKsyeh7nIRO3jA2Qp5+Zzr44CZP9J0vSuGvhzzd5Ul9T7StHo8IKBzGd2fG7GtWDY
-         nTuYDnPwWGPJ6wmjXG3VlLZeKT3MdPKSc62rgr6+X422bqTD4m2MyX/LeNEwCfWWPAmJ
-         WL1g3/QQ9L7Sk4aUC+UtrkapDFWHLz0QFTssZtHaZhFkEONtoJXKH8XKz0xoFpLLMfX9
-         T9eYriy9fff/4MdXaIi3AukGZ6kvEwLf0KIs6V+L97ucwyXzlqO5xkmijlGi/tylQq5u
-         qsYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gwJIiwnisD6cF408GW4bOCdNiOevm+kN2DCfktfQz/4=;
-        b=FKJ3yX/gZOIx5midKkQZh6oqIlGcJX3/DmEB0T43n1wyIeFptgf8J3DWcT8ruXPPgl
-         hbSspDvg0M1I3hRxxMHAHBxzCzJDaAUpXm1pZJgWptr7TNXEqEKwWceDDfFUDDayYf8j
-         uxucnPqSJoAr+j6d1SFeoXGR4XYbjqcNza23n2BFsWRqQ9K8JqWINLJsAvmgs2koFF4B
-         02SgCRdEPeRFiKiOFW2spK/pMr9VAMC+554ExASAwjGEKpVNCoe41m5ij08PEnL/3BqQ
-         PFo41loD1Ah9Nir1VX9rppSugq9IfGCbs+cxv0D91Pzdv09AXGfauQRchcO5huTsBsg+
-         f7Ow==
-X-Gm-Message-State: AOAM532peMZlFl3Px8scMEqa9Ve4bbVuaWmdbTuY1D+o8xumPKtSkyOr
-        3xBNyPbLGOEKdeE81HvTNsBiTw==
-X-Google-Smtp-Source: ABdhPJx0FjXR51YfULBYoNlN6azVm4pmsK/QdHHWCakrLIU0+ikdrQc99GBXkyRgdyNDpZyG+Rly5Q==
-X-Received: by 2002:a63:150c:: with SMTP id v12mr19528275pgl.442.1637901808160;
-        Thu, 25 Nov 2021 20:43:28 -0800 (PST)
-Received: from google.com ([2401:fa00:1:10:5eda:d984:1426:91ca])
-        by smtp.gmail.com with ESMTPSA id g9sm5600382pfj.160.2021.11.25.20.43.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 20:43:27 -0800 (PST)
-Date:   Fri, 26 Nov 2021 12:43:23 +0800
-From:   Tzung-Bi Shih <tzungbi@google.com>
-To:     "allen-kh.cheng" <allen-kh.cheng@mediatek.com>
-Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        cujomalainey@google.com,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        sound-open-firmware@alsa-project.org
-Subject: Re: [PATCH v4 3/3] mailbox: mediatek: add support for adsp mailbox
- controller
-Message-ID: <YaBl66b7VFJK84F4@google.com>
-References: <20211125122925.1303-1-allen-kh.cheng@mediatek.com>
- <20211125122925.1303-4-allen-kh.cheng@mediatek.com>
+        id S245044AbhKZE7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 23:59:49 -0500
+Received: from m43-7.mailgun.net ([69.72.43.7]:27077 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235257AbhKZE5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 23:57:47 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1637902475; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=i1cn9N7jCKCUnk586WJ+l06/e3VDw48f/KLbV2Eakpo=;
+ b=m70+rxahhdfYmReETLn9N+lhleQ+9Ad2ZYeOqHNTWPABIk5kulUikP3KkbHxjbcNZPISEE73
+ gzX0fsb6KmBb5aYGzUzecrZZrqfmgQKdBl8zvZ7rLriNh8C0zPy/C7Le16lS8IYddGMjg++O
+ 3lAIFrZl/E8B3cmyxF0exd2s1kI=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
+ 61a068743553c354be439929 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Nov 2021 04:54:12
+ GMT
+Sender: jeyr=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id ADB4FC43617; Fri, 26 Nov 2021 04:54:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: jeyr)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A0273C4338F;
+        Fri, 26 Nov 2021 04:54:10 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211125122925.1303-4-allen-kh.cheng@mediatek.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 26 Nov 2021 10:24:10 +0530
+From:   jeyr@codeaurora.org
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
+Subject: Re: [PATCH 1/5] dt-bindings: misc: convert fastrpc bindings to yaml
+ and add property
+In-Reply-To: <be50fe57-e109-370d-621b-66bff479b46e@linaro.org>
+References: <1637849744-24844-1-git-send-email-jeyr@codeaurora.org>
+ <1637849744-24844-2-git-send-email-jeyr@codeaurora.org>
+ <be50fe57-e109-370d-621b-66bff479b46e@linaro.org>
+Message-ID: <9fc77d606794bbad7666942691b1c7ee@codeaurora.org>
+X-Sender: jeyr@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 08:29:25PM +0800, allen-kh.cheng wrote:
-> diff --git a/drivers/mailbox/mtk-adsp-mailbox.c b/drivers/mailbox/mtk-adsp-mailbox.c
-[...]
-> +static bool mtk_adsp_mbox_last_tx_done(struct mbox_chan *chan)
-> +{
-> +	struct adsp_mbox_ch_info *ch_info = chan->con_priv;
-> +	void __iomem *reg = ch_info->va_reg;
-> +
-> +	return (readl(reg + MTK_ADSP_MBOX_IN_CMD) == 0) ? true : false;
+On 2021-11-25 20:11, Srinivas Kandagatla wrote:
+> Hi Jeya,
+> 
+> You should retain the original patch ownership while sending the 
+> patches.
+Sure Srini, will add new property as dependent to yaml conversion patch.
+> 
+> On 25/11/2021 14:15, Jeya R wrote:
+>> Convert Qualcomm FastRPC bindings to yaml format and add a property
+>> to set dsp domain as non-secure.
+>> 
+>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> Signed-off-by: Jeya R <jeyr@codeaurora.org>
+>> ---
+>>   .../devicetree/bindings/misc/qcom,fastrpc.txt      | 78 
+>> -----------------
+>>   .../devicetree/bindings/misc/qcom,fastrpc.yaml     | 97 
+>> ++++++++++++++++++++++
+>>   2 files changed, 97 insertions(+), 78 deletions(-)
+>>   delete mode 100644 
+>> Documentation/devicetree/bindings/misc/qcom,fastrpc.txt
+>>   create mode 100644 
+>> Documentation/devicetree/bindings/misc/qcom,fastrpc.yaml
+>> 
+>> diff --git a/Documentation/devicetree/bindings/misc/qcom,fastrpc.txt 
+>> b/Documentation/devicetree/bindings/misc/qcom,fastrpc.txt
+>> deleted file mode 100644
+>> index 2a1827a..0000000
+>> --- a/Documentation/devicetree/bindings/misc/qcom,fastrpc.txt
+>> +++ /dev/null
+>> @@ -1,78 +0,0 @@
+>> -Qualcomm Technologies, Inc. FastRPC Driver
+>> -
+>> -The FastRPC implements an IPC (Inter-Processor Communication)
+>> -mechanism that allows for clients to transparently make remote method
+>> -invocations across DSP and APPS boundaries. This enables developers
+>> -to offload tasks to the DSP and free up the application processor for
+>> -other tasks.
+>> -
+>> -- compatible:
+>> -	Usage: required
+>> -	Value type: <stringlist>
+>> -	Definition: must be "qcom,fastrpc"
+>> -
+>> -- label
+>> -	Usage: required
+>> -	Value type: <string>
+>> -	Definition: should specify the dsp domain name this fastrpc
+>> -	corresponds to. must be one of this: "adsp", "mdsp", "sdsp", "cdsp"
+>> -
+>> -- #address-cells
+>> -	Usage: required
+>> -	Value type: <u32>
+>> -	Definition: Must be 1
+>> -
+>> -- #size-cells
+>> -	Usage: required
+>> -	Value type: <u32>
+>> -	Definition: Must be 0
+>> -
+>> -= COMPUTE BANKS
+>> -Each subnode of the Fastrpc represents compute context banks 
+>> available
+>> -on the dsp.
+>> -- All Compute context banks MUST contain the following properties:
+>> -
+>> -- compatible:
+>> -	Usage: required
+>> -	Value type: <stringlist>
+>> -	Definition: must be "qcom,fastrpc-compute-cb"
+>> -
+>> -- reg
+>> -	Usage: required
+>> -	Value type: <u32>
+>> -	Definition: Context Bank ID.
+>> -
+>> -- qcom,nsessions:
+>> -	Usage: Optional
+>> -	Value type: <u32>
+>> -	Defination: A value indicating how many sessions can share this
+>> -		    context bank. Defaults to 1 when this property
+>> -		    is not specified.
+>> -
+>> -Example:
+>> -
+>> -adsp-pil {
+>> -	compatible = "qcom,msm8996-adsp-pil";
+>> -	...
+>> -	smd-edge {
+>> -		label = "lpass";
+>> -		fastrpc {
+>> -			compatible = "qcom,fastrpc";
+>> -			qcom,smd-channels = "fastrpcsmd-apps-dsp";
+>> -			label = "adsp";
+>> -			#address-cells = <1>;
+>> -			#size-cells = <0>;
+>> -
+>> -			cb@1 {
+>> -				compatible = "qcom,fastrpc-compute-cb";
+>> -				reg = <1>;
+>> -			};
+>> -
+>> -			cb@2 {
+>> -				compatible = "qcom,fastrpc-compute-cb";
+>> -				reg = <2>;
+>> -			};
+>> -			...
+>> -		};
+>> -	};
+>> -};
+>> diff --git a/Documentation/devicetree/bindings/misc/qcom,fastrpc.yaml 
+>> b/Documentation/devicetree/bindings/misc/qcom,fastrpc.yaml
+>> new file mode 100644
+>> index 0000000..c3fe39b2
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/misc/qcom,fastrpc.yaml
+>> @@ -0,0 +1,97 @@
+>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: "http://devicetree.org/schemas/misc/qcom,fastrpc.yaml#"
+>> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+>> +
+>> +title: Qualcomm Technologies, Inc. FastRPC Driver
+>> +
+>> +maintainers:
+>> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> +
+>> +description: |
+>> +  This binding describes Qualcomm FastRPC an IPC (Inter-Processor 
+>> Communication)
+>> +  mechanism that allows for clients to transparently make remote 
+>> method
+>> +  invocations across DSP and APPS boundaries. This enables developers
+>> +  to offload tasks to the DSP and free up the application processor 
+>> for
+>> +  other tasks.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: qcom,fastrpc
+>> +
+>> +  label:
+>> +    enum:
+>> +      - adsp
+>> +      - mdsp
+>> +      - sdsp
+>> +      - cdsp
+>> +
+>> +  qcom,non-secure-domain: true
+>> +    # Specify that dsp domain is non-secure.
+>> +
+> 
+> This change was not there in the original patch that I shared, you
+> should add this change in a separate patch, as first patch converts to
+> yaml and next one adds new bindings.
+> 
+> This is also not following yaml style bindings.
+> Please take some time to look at
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/example-schema.yaml?h=v5.16-rc2
+> to add new binding.
+> 
+> 
+> 
+> --srini
+This will be corrected as a new patch. Thanks.
 
-To be concise, readl(reg + MTK_ADSP_MBOX_IN_CMD) == 0.
-
-> +static int mtk_adsp_mbox_probe(struct platform_device *pdev)
-> +{
-[...]
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!res) {
-> +		dev_err(dev, "no adsp mbox register resource\n");
-> +		return -ENXIO;
-> +	}
-> +
-> +	priv->va_mboxreg = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(priv->va_mboxreg))
-> +		return PTR_ERR(priv->va_mboxreg);
-
-If using devm_platform_ioremap_resource(), it doesn't need to call platform_get_resource().  res is unused.
+> 
+>> +  "#address-cells":
+>> +    const: 1
+>> +
+>> +  "#size-cells":
+>> +    const: 0
+>> +
+>> +patternProperties:
+>> +  "^cb@[0-9a-f]$":
+>> +    type: object
+>> +    description: |
+>> +      Compute context bank
+>> +
+>> +    properties:
+>> +      compatible:
+>> +        const: qcom,fastrpc-compute-cb
+>> +
+>> +      reg:
+>> +        maxItems: 1
+>> +        description: Context Bank ID
+>> +
+>> +      qcom,nsessions:
+>> +        $ref: /schemas/types.yaml#/definitions/uint32
+>> +        description: How many sessions can share this context bank.
+>> +                     Defaults to 1 when this property is not 
+>> specified.
+>> +
+>> +    required:
+>> +      - compatible
+>> +      - reg
+>> +
+>> +    additionalProperties: false
+>> +
+>> +required:
+>> +  - compatible
+>> +  - label
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    adsp-pil {
+>> +        compatible = "qqcom,msm8996-adsp-pil";
+>> +
+>> +        smd-edge {
+>> +            label = "lpass";
+>> +
+>> +            fastrpc {
+>> +                compatible = "qcom,fastrpc";
+>> +                label = "adsp";
+>> +                #address-cells = <1>;
+>> +                #size-cells = <0>;
+>> +
+>> +                cb@1 {
+>> +                    compatible = "qcom,fastrpc-compute-cb";
+>> +                    reg = <1>;
+>> +                };
+>> +
+>> +                cb@2 {
+>> +                    compatible = "qcom,fastrpc-compute-cb";
+>> +                    reg = <2>;
+>> +                };
+>> +            };
+>> +        };
+>> +    };
+>> +
+>> +
+>> 
