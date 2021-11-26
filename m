@@ -2,82 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A78B845F284
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3D745F291
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 18:00:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234876AbhKZQ52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:57:28 -0500
-Received: from outbound-smtp25.blacknight.com ([81.17.249.193]:48778 "EHLO
-        outbound-smtp25.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235558AbhKZQz1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:55:27 -0500
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp25.blacknight.com (Postfix) with ESMTPS id 8670BCB584
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 16:52:13 +0000 (GMT)
-Received: (qmail 10917 invoked from network); 26 Nov 2021 16:52:13 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 26 Nov 2021 16:52:13 -0000
-Date:   Fri, 26 Nov 2021 16:52:11 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Alexey Avramov <hakavlad@inbox.lv>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Rik van Riel <riel@surriel.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Darrick Wong <djwong@kernel.org>, regressions@lists.linux.dev,
-        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] mm: vmscan: Reduce throttling due to a failure to
- make progress
-Message-ID: <20211126165211.GL3366@techsingularity.net>
-References: <20211125151853.8540-1-mgorman@techsingularity.net>
- <20211127011246.7a8ac7b8@mail.inbox.lv>
+        id S234439AbhKZRDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 12:03:20 -0500
+Received: from pegase2.c-s.fr ([93.17.235.10]:47861 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230152AbhKZRBR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 12:01:17 -0500
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4J11CH0hFBz9sSM;
+        Fri, 26 Nov 2021 17:58:03 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 6oxPbBvnfkz3; Fri, 26 Nov 2021 17:58:03 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4J11CC2T7lz9sSL;
+        Fri, 26 Nov 2021 17:57:59 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 458848B781;
+        Fri, 26 Nov 2021 17:57:59 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id KJ3vvRA5g6Hk; Fri, 26 Nov 2021 17:57:59 +0100 (CET)
+Received: from [192.168.204.6] (unknown [192.168.204.6])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B98428B763;
+        Fri, 26 Nov 2021 17:57:58 +0100 (CET)
+Message-ID: <8e5493ac-dd05-9bad-c9ae-169114e0fdcf@csgroup.eu>
+Date:   Fri, 26 Nov 2021 17:57:58 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20211127011246.7a8ac7b8@mail.inbox.lv>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH v2] w1: Misuse of get_user()/put_user() reported by sparse
+Content-Language: fr-FR
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Evgeniy Polyakov <zbr@ioremap.net>, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kernel test robot <lkp@intel.com>
+References: <926b572075a26835f4e39d05710cd1b75fd4d5a4.1637945194.git.christophe.leroy@csgroup.eu>
+ <YaERVtyYpJ+BTQ/f@kroah.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+In-Reply-To: <YaERVtyYpJ+BTQ/f@kroah.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 27, 2021 at 01:12:46AM +0900, Alexey Avramov wrote:
-> >After the patch, the test gets killed after roughly 15 seconds which is
-> >the same length of time taken in 5.15.
+
+
+Le 26/11/2021 à 17:54, Greg Kroah-Hartman a écrit :
+> On Fri, Nov 26, 2021 at 05:47:58PM +0100, Christophe Leroy wrote:
+>> sparse warnings: (new ones prefixed by >>)
+>>>> drivers/w1/slaves/w1_ds28e04.c:342:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char [noderef] __user *_pu_addr @@     got char *buf @@
+>>     drivers/w1/slaves/w1_ds28e04.c:342:13: sparse:     expected char [noderef] __user *_pu_addr
+>>     drivers/w1/slaves/w1_ds28e04.c:342:13: sparse:     got char *buf
+>>>> drivers/w1/slaves/w1_ds28e04.c:356:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char const [noderef] __user *_gu_addr @@     got char const *buf @@
+>>     drivers/w1/slaves/w1_ds28e04.c:356:13: sparse:     expected char const [noderef] __user *_gu_addr
+>>     drivers/w1/slaves/w1_ds28e04.c:356:13: sparse:     got char const *buf
+>>
+>> The buffer buf is a failsafe buffer in kernel space, it's not user
+>> memory hence doesn't deserve the use of get_user() or put_user().
+>>
+>> Access 'buf' content directly.
+>>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Link: https://lore.kernel.org/lkml/202111190526.K5vb7NWC-lkp@intel.com/T/
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>> v2: Use sysfs_emit() and kstrtobool()
+>> ---
+>>   drivers/w1/slaves/w1_ds28e04.c | 25 +++----------------------
+>>   1 file changed, 3 insertions(+), 22 deletions(-)
+>>
+>> diff --git a/drivers/w1/slaves/w1_ds28e04.c b/drivers/w1/slaves/w1_ds28e04.c
+>> index e4f336111edc..98f80f412cfd 100644
+>> --- a/drivers/w1/slaves/w1_ds28e04.c
+>> +++ b/drivers/w1/slaves/w1_ds28e04.c
+>> @@ -32,7 +32,7 @@ static int w1_strong_pullup = 1;
+>>   module_param_named(strong_pullup, w1_strong_pullup, int, 0);
+>>   
+>>   /* enable/disable CRC checking on DS28E04-100 memory accesses */
+>> -static char w1_enable_crccheck = 1;
+>> +static bool w1_enable_crccheck = true;
+>>   
+>>   #define W1_EEPROM_SIZE		512
+>>   #define W1_PAGE_COUNT		16
+>> @@ -339,32 +339,13 @@ static BIN_ATTR_RW(pio, 1);
+>>   static ssize_t crccheck_show(struct device *dev, struct device_attribute *attr,
+>>   			     char *buf)
+>>   {
+>> -	if (put_user(w1_enable_crccheck + 0x30, buf))
+>> -		return -EFAULT;
+>> -
+>> -	return sizeof(w1_enable_crccheck);
+>> +	return sysfs_emit(buf, "%d\n", w1_enable_crccheck);
+>>   }
+>>   
+>>   static ssize_t crccheck_store(struct device *dev, struct device_attribute *attr,
+>>   			      const char *buf, size_t count)
+>>   {
+>> -	char val;
+>> -
+>> -	if (count != 1 || !buf)
+>> -		return -EINVAL;
+>> -
+>> -	if (get_user(val, buf))
+>> -		return -EFAULT;
+>> -
+>> -	/* convert to decimal */
+>> -	val = val - 0x30;
+>> -	if (val != 0 && val != 1)
+>> -		return -EINVAL;
+>> -
+>> -	/* set the new value */
+>> -	w1_enable_crccheck = val;
+>> -
+>> -	return sizeof(w1_enable_crccheck);
+>> +	return kstrtobool(buf, &w1_enable_crccheck) ? : count;
 > 
-> In my tests, the 5.15 still performs much better.
+> Please spell this line out, using ? : is unreadable at times.
 > 
 
-How much better?
+You prefer something like:
 
-> New question: is timeout=1 has sense? Will it save CPU?
+	int err = kstrtobool(buf, &w1_enable_crccheck);
 
-It's the minimum stall time available -- it's 1 tick so the exact stall
-time depends on HZ and yes, it's to stall to wait for something to
-happen. It'll get woken early if another reclaimer makes forward progress.
+	return err ? err : count;
 
-This patch on top will stall less. I sent it already but it may not be
-clear that I meant it to be applied on top of this patch.
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 176ddd28df21..167ea4f324a8 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -3404,8 +3404,8 @@ static void consider_reclaim_throttle(pg_data_t *pgdat, struct scan_control *sc)
- 	if (current_is_kswapd())
- 		return;
- 
--	/* Throttle if making no progress at high prioities. */
--	if (sc->priority < DEF_PRIORITY - 2 && !sc->nr_reclaimed)
-+	/* Throttle if making no progress at high priority. */
-+	if (sc->priority == 1 && !sc->nr_reclaimed)
- 		reclaim_throttle(pgdat, VMSCAN_THROTTLE_NOPROGRESS);
- }
- 
+Or
 
--- 
-Mel Gorman
-SUSE Labs
+	int err = kstrtobool(buf, &w1_enable_crccheck);
+
+	if (err)
+		return err;
+
+	return count;
+
+?
