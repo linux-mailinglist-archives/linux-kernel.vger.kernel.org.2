@@ -2,112 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E846845E391
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 01:03:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B17D45E394
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 01:05:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351698AbhKZAGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 19:06:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46800 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350988AbhKZAEG (ORCPT
+        id S1351682AbhKZAIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 19:08:46 -0500
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:1535 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351988AbhKZAGo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 19:04:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637884854;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0fqUjxGJvAmNwh+9GycDzUAaW22WJkGJ7g2kBi0jBnA=;
-        b=igqa0aaS3oIPkR0vnhp5z7HfaGuoUWKV3yRJlXxnO9gePDqcbxMCA1kssum1GlRceb+3ZI
-        BE56QGlEg21fL25AFbMwZI6iq/v0bDHVQU1wVFvvG3WmtvGpQhafvT/JQx88fXCjNdqU0s
-        1ElnEaiw81IJMd1uLJo0yiGCsxGgbDQ=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-312-db-Guo8rNy-J8aP2Wu1axQ-1; Thu, 25 Nov 2021 19:00:53 -0500
-X-MC-Unique: db-Guo8rNy-J8aP2Wu1axQ-1
-Received: by mail-pj1-f72.google.com with SMTP id mv1-20020a17090b198100b001a67d5901d2so5110507pjb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 16:00:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0fqUjxGJvAmNwh+9GycDzUAaW22WJkGJ7g2kBi0jBnA=;
-        b=5+Y/OMwzbhTaFemG2/LGce3xD+0JAXeFs6PcdpUjVaF6kjV2NKUdhiABRylqwvwL90
-         tRIVCsWpV1KMq9aR+Bvpyh8EiTdS21NrLa1AFUdaZUW70b52tH68N9y4fY2sfTnnMHAI
-         bzLYq6PEc2km8CuYDWMAH31yj+GFn5Q9jLOAX6Z1V+PZ0M4BN608idFaA5vCO+ntEcia
-         kq3peH1YcbO0sYkuNIxNPYTa0RkW74eeQ5I5D84C9mCscEOGQoco1rnaoyN7fXizqB4Z
-         a7ITN7zzc+lTNPJdRzIMJnAdoU3pLntMrSb3ShhQLWu/KslEgQ/TUgnYyZWyj0Cq1u2w
-         gFJg==
-X-Gm-Message-State: AOAM531EadAvPMTxM/mCEWqeQZ4E9Q1slZOJgyppLDYBLFeQ/x+AK+Lb
-        nkWmrkamZqCznCJ+MOuatyPFdjReoc/RByeMTkqaFt04567dxBr5Yrz7DDvUajD+8j3WUdyO+gF
-        HejKZs4A0RsPXZweewEqh2n7q
-X-Received: by 2002:a17:902:e547:b0:141:ddbc:a8d6 with SMTP id n7-20020a170902e54700b00141ddbca8d6mr34238858plf.27.1637884852216;
-        Thu, 25 Nov 2021 16:00:52 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxugDhZXUCujZt/BGJr90/hD7civMzObjEEBQ1B3/fLPPeUdpRiGWVp+WALh3ykiP0XE9Nb5A==
-X-Received: by 2002:a17:902:e547:b0:141:ddbc:a8d6 with SMTP id n7-20020a170902e54700b00141ddbca8d6mr34238830plf.27.1637884851916;
-        Thu, 25 Nov 2021 16:00:51 -0800 (PST)
-Received: from xz-m1.local ([94.177.118.150])
-        by smtp.gmail.com with ESMTPSA id k14sm4579753pff.6.2021.11.25.16.00.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 16:00:51 -0800 (PST)
-Date:   Fri, 26 Nov 2021 08:00:44 +0800
-From:   Peter Xu <peterx@redhat.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: split thp synchronously on MADV_DONTNEED
-Message-ID: <YaAjrJiImYSqjTvB@xz-m1.local>
-References: <1b30d06d-f9c0-1737-13e6-2d1a7d7b8507@redhat.com>
- <CALvZod5sFQbf3t_ZDW6ob+BqVtezn-c7i1UyOeev6Lwch96=7g@mail.gmail.com>
- <92fe0c31-b083-28c4-d306-da8a3cd891a3@redhat.com>
- <CALvZod4C1V6Gk96oMCMguaqChjggH0KH3KKcU1QOmjRG+QEAbQ@mail.gmail.com>
- <c61a6f30-ed62-7773-3371-981102f6804f@redhat.com>
- <CALvZod7xTfg5aeQC7-EaOZJ47Twb8CkoS6u4C=8+y+AX-NREVw@mail.gmail.com>
- <1b400921-8bef-8073-10f9-a7cbb09cfefe@redhat.com>
- <CALvZod6wyF7v1v888StoXSSWtb7ujaeBUnUB8Vs2RfMzUsj+Gw@mail.gmail.com>
- <YZ9gz8WGic8QOTxE@xz-m1.local>
- <CALvZod5166ReiM7J6kbky6+nRxiY5KbAdx4Yh8njnPddR+nXdQ@mail.gmail.com>
+        Thu, 25 Nov 2021 19:06:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1637885012; x=1669421012;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=skXtZu+B08GypQvVSh6izlTUDdUzL+y7dk1LX/ilERQ=;
+  b=JHb2soko3szlC/oWCu1A3Fwrfs9JAxhSon/itGurqJWmNyIN5byoJt9I
+   5C+7n45fgLbCRF2Xpl8nZQ1LrVy6PPn5OAywN2zE0haSaODoIh6Ty0UCs
+   I09ji5FfW0t5zNYXeM6cfi3ciV1Cue+fpXOMlUheNYaPI4+44dgnonwuC
+   Hag+0/1EWaJjcxnY2BoaiK/mIoxGbH4v9nI/PO6UOfplkKvqcfgJ+PaWX
+   F9W8P2aiX1CsMNAJ6Y4jqF7Krb5h7G6PrdeMYeZyLy6u0PUgqaawcL3tF
+   gEU5gGW5WRE3H1ioXoZ+nh+zYGmrIX9rqaw3HOJwAfa1KuJ8X+4VhAPuQ
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.87,263,1631548800"; 
+   d="scan'208";a="186672208"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 26 Nov 2021 08:01:31 +0800
+IronPort-SDR: C7RO6Ld4mpdy8yyBAuhV6e6M6UzjW4fy5vViKfgQo2uZw803dnZksvUbf+BiOCFsQEN8rRK9Wp
+ mdNQ1w+1NpDzQr8QxDxMcP71YaCbUUcSxDkaTiQXiUjatF9n7GeQqnLYOE4AsmL584NIKjrZ7/
+ Tavm2LdJ0WY2pJO5XZYqm11p1o1f4J8keigJJzpMVQ9IyMzwYvYJ8W1uLlvpsphyTehPr8S0Dr
+ 3rOcaUyuMbklBp3Sou1+FtPxdBEsDtLokuOC31cTXFHX8/qUSxLAl3e6AuraqO5CzkOQXjglYb
+ ZOJXc/5MQCNXDshjuwcqQXIG
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 15:36:23 -0800
+IronPort-SDR: +0BPSuY8vI5lxyNQ4ltz1wBVMQvZKYIfk82bLUPf06E0U5EFwuNrcr2hMwvwX+x7VEla/KR1Dy
+ 5559sofNHEhl4IiXp/0o8p5EQbQfteQfmGM5SubUvb/b38QTlZcivtoX0YOC5SMvsIIYgcCMTm
+ b+jBcVy0DvWCcu7z89+Flse0tqbMSmA6rnjxJYmlfiRqGx+UmO5NpyCrHZQwx7L6MN856Y1wdV
+ 5rRWpqBfVcC3W0UAtrFunRE3G7ajmd7RO3m6btL802BREfcxuDqAnMln6xLf8+QBaycKfYLOj6
+ b/k=
+WDCIronportException: Internal
+Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
+  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 16:01:33 -0800
+Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4J0ZfM6jDCz1RtVw
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 16:01:31 -0800 (PST)
+Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)"
+        header.d=opensource.wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+        opensource.wdc.com; h=content-transfer-encoding:content-type
+        :in-reply-to:organization:from:references:to:content-language
+        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
+        1637884891; x=1640476892; bh=skXtZu+B08GypQvVSh6izlTUDdUzL+y7dk1
+        LX/ilERQ=; b=qKohmARgvOKxhuc+fRA9gnCOydClERju4jeHU7DxtW3XoNJe0vh
+        Fp9Nk/XXZybB4v/3XDQXozphhGS/vm+Aim/yomdqFQXsvkbN7H12AA/qej7mCVRx
+        4E3ssNJ8Jw5GGglBIZt18Dpil7L3hgfwlac7BZ9TfwEDFcTDOMzSUEwr3xfCWXje
+        yQylstJCrx6LDEIzj0oeEYZyT+GIWauiq3u1s6YyEPzWKJEMnBwZKDtxa6H7Z7OV
+        yrr7zesEnqbjd9UNVESivWCh/CHyo8Q1v/CwNyITi0H+EZVFdOTNVvqpjAWpeErq
+        qRQWU+YjJpoVzwkg5Ay8ytXCSM2iNyMarog==
+X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
+Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
+        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id kkOQc1J3o-G7 for <linux-kernel@vger.kernel.org>;
+        Thu, 25 Nov 2021 16:01:31 -0800 (PST)
+Received: from [10.225.54.48] (unknown [10.225.54.48])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4J0ZfK6v4Zz1RtVl;
+        Thu, 25 Nov 2021 16:01:29 -0800 (PST)
+Message-ID: <28be175a-8e9b-937a-de35-bcc218006fe9@opensource.wdc.com>
+Date:   Fri, 26 Nov 2021 09:01:28 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CALvZod5166ReiM7J6kbky6+nRxiY5KbAdx4Yh8njnPddR+nXdQ@mail.gmail.com>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.2
+Subject: Re: [PATCH] dt-bindings: dma: snps,dw-axi-dmac: Document optional
+ reset
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heng Sia <jee.heng.sia@intel.com>
+Cc:     "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20211125152008.162571-1-geert@linux-m68k.org>
+From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Organization: Western Digital
+In-Reply-To: <20211125152008.162571-1-geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 09:14:30AM -0800, Shakeel Butt wrote:
-> On Thu, Nov 25, 2021 at 2:09 AM Peter Xu <peterx@redhat.com> wrote:
-> >
-> [...]
-> >
-> > Hi, Shakeel,
-> >
-> > I saw your v2 has started to pass in zap_details, then we need know the side
-> > effect on that skip-swap-entry thing because with your v2 code munmap() will
-> > start to skip swap entry too (while it was not before).
-> >
-> > I saw that you didn't mention this in v2 patch either in commit message or
-> > code, not sure whether you digged that up.  I think it needs some double check
-> > (or feel free to start this digging by reviewing my small patch above :).
-> >
+On 2021/11/26 0:20, Geert Uytterhoeven wrote:
+> "make dtbs_check":
 > 
-> I remember mentioning in the patch that this has dependency on your
-> rfc patch. Just checked again and yeah I only mentioned in the
-> 'changes since v1' section. I will add it more explicitly in the
-> following versions.
-
-Apologize for missing that section.  Yeah depending on that patch should work.
-
+>     Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
+>     arch/riscv/boot/dts/canaan/sipeed_maix_bit.dt.yaml: dma-controller@50000000: 'resets' does not match any of the regexes: 'pinctrl-[0-9]+'
+> 	    From schema: Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
 > 
-> I will take a close look at your patch as well.
+> The Synopsys DesignWare AXI DMA Controller on the Canaan K210 SoC
+> exposes its reset signal.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>  Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml b/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
+> index 90d9274e5464e396..06ddffaada295171 100644
+> --- a/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
+> +++ b/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
+> @@ -53,6 +53,9 @@ properties:
+>      minimum: 1
+>      maximum: 8
+>  
+> +  resets:
+> +    maxItems: 1
+> +
+>    snps,dma-masters:
+>      description: |
+>        Number of AXI masters supported by the hardware.
+> 
 
-Thanks a lot,
+Looks good to me.
+
+Reviewed-by: Damien Le Moal <damien.lemoal@opensource.wdc.com>
 
 -- 
-Peter Xu
-
+Damien Le Moal
+Western Digital Research
