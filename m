@@ -2,63 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC2F45ED8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF0545EE4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352993AbhKZMMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 07:12:35 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:49508 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377383AbhKZMKe (ORCPT
+        id S1347449AbhKZMzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 07:55:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232999AbhKZMx3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 07:10:34 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: kholk11)
-        with ESMTPSA id 3EA201F46821
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637928440; bh=dj2wyPkbyn7gApbtIg2geaaFyZHLewmQWww8/OOcwjY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Az76iqIeCUTTCWBpk7fpTJfqJeU1u4CPWP9K+xYrfFGv/0dB9VO/tXACSwBiWAL3F
-         EAqKvqKUkb3xqeMHFuUetdTIX36FVVSmXMgxlkgGCAD4IUsFDxspbvkIve/RwXv/jX
-         BJinM1irXDoV2KqilKafoYDmYfGrpMrelH7XbbcEIDLWaL9rwjkx5nNFAqR+qG9nfn
-         BAvUfweBRwMsRh5DMb2yXS/4MRvo0f05BeZ3j3Mq3ufsrhqtn+KKqwhfZ52Olvrwfj
-         dk+ow6aRijgPT/AJ/d+smDIR/0l4IRuWql8CmwMqRs71yCO7jPA36E1WjRffyzF9to
-         HbbVCD2458/lw==
-Subject: Re: [PATCH v2 8/8] ASoC: SOF: mediatek: Add DSP system PM callback
- for mt8195
-To:     Daniel Baluta <daniel.baluta@oss.nxp.com>, broonie@kernel.org,
-        alsa-devel@alsa-project.org
-Cc:     pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
-        daniel.baluta@nxp.com, daniel.baluta@gmail.com,
-        linux-kernel@vger.kernel.org, yc.hung@mediatek.com,
-        linux-mediatek@lists.infradead.org
-References: <20211118100749.54628-1-daniel.baluta@oss.nxp.com>
- <20211118100749.54628-9-daniel.baluta@oss.nxp.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Message-ID: <3cc9c55c-16ad-26aa-c41b-2f3f9302f021@collabora.com>
-Date:   Fri, 26 Nov 2021 13:07:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 26 Nov 2021 07:53:29 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C8D6C061D71;
+        Fri, 26 Nov 2021 04:09:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=UP4o40WovA7VvfxJGeCFvSn5F8UzSAraxCMx7u1V3Yc=; b=V9aBUG9nLRQMWSYWkP6fNVUjCR
+        kmHWbkMIrEfjPyGss+0DGQvjmNEkTVD4Z3RcjAev3qJ82+3pb67hhgit7sl8CNkJhWL+6U5Fzzwdf
+        y8OuvJGWdnq011dm14Ct/OQPg5trCrEYw0THrtFtlxz+QCr5xckbB06LbRr0DAw+qNphVsUbYkp89
+        Bx4CSevdfarvcS3Y/QCIrAyma/y/2bSpzAgsS0MwNOf1ht8oCDFMw6nV22SElNCBZuSHphjTkDRNP
+        0g326QgJEwLT98u1GCk7xDXzzFZrgq3bwJkisMk2kucWs1QAir/F77SeBbdKggq2H5JwJtlVY2ffb
+        gdXoZ3Fg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55914)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mqa2M-00031A-T9; Fri, 26 Nov 2021 12:09:06 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mqa2L-0003Fe-33; Fri, 26 Nov 2021 12:09:05 +0000
+Date:   Fri, 26 Nov 2021 12:09:05 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     Horatiu Vultur <horatiu.vultur@microchip.com>, andrew@lunn.ch,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: phy: micrel: Add config_init for LAN8814
+Message-ID: <YaDOYc+RWZ35lKjB@shell.armlinux.org.uk>
+References: <20211126103833.3609945-1-horatiu.vultur@microchip.com>
+ <402780af-9d12-45dd-e435-e7279f1b9263@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211118100749.54628-9-daniel.baluta@oss.nxp.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <402780af-9d12-45dd-e435-e7279f1b9263@gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 18/11/21 11:07, Daniel Baluta ha scritto:
-> From: YC Hung <yc.hung@mediatek.com>
+On Fri, Nov 26, 2021 at 12:57:33PM +0100, Heiner Kallweit wrote:
+> Not directly related to just this patch:
+> Did you consider implementing the read_page and write_page PHY driver
+> callbacks? Then you could use phylib functions like phy_modify_paged et al
+> and you wouldn't have to open-code the paged register operations.
 > 
-> Add DSP system PM callback for suspend and resume
+> I think write_page would just be
+> phy_write(phydev, LAN_EXT_PAGE_ACCESS_CONTROL, page);
+> phy_write(phydev, LAN_EXT_PAGE_ACCESS_ADDRESS_DATA, addr);
+> phy_write(phydev, LAN_EXT_PAGE_ACCESS_CONTROL, (page | LAN_EXT_PAGE_ACCESS_CTRL_EP_FUNC));
 > 
-> Signed-off-by: YC Hung <yc.hung@mediatek.com>
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
-> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+> and read_page
+> phy_read(phydev, LAN_EXT_PAGE_ACCESS_CONTROL);
 
-Acked-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Remember that read_page() and write_page() must be implemented using
+the unlocked accessors since the MDIO bus lock is held prior to calling
+them. So these should be __phy_write() and __phy_read().
 
+The use of the helpers you mention above also bring greater safety to
+the read-modify-write accesses, since with these accessors, the whole
+set of accesses are done while holding the bus lock.
 
+Thanks.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
