@@ -2,112 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F26F45EF17
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:25:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A48745EE8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:05:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350089AbhKZN2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 08:28:51 -0500
-Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17234 "EHLO
-        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242123AbhKZN0t (ORCPT
+        id S239682AbhKZNI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 08:08:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233994AbhKZNG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 08:26:49 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1637903008; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=kTT6Em4JDS6/n2VGliGLaE9S+PknFWxGAUiJO4w9UcrhWM6NIlMzAx+PtzMv9HHDSNv2cP27qumLZNCOYVAznwtp8lXf6M/LqY/Gq/p/xzSUwgrV46aHdZiKMf+5JRO3Rs62wyy89VzmskC+loYa07G1bKLiqEwExGzYIzOszds=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1637903008; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
-        bh=e1fy8d/F7bO0bxbGs9DFbseWsVknlDYWORiYHfsGIf8=; 
-        b=D+d85SWg0ltZ94GnKtm7vV4/uUrRM6weqrb89FGTFtj4m89M2NfrXFUGJ9ojdiV/cZ7+gXsL/DBAa5KTV0Lqxv9KvyfNtzn2BrUtCvKpdzg8Gea5yYl3qHhHkcIcA/HcrdwmahOTG4+DUxHVrliJfPOrrOC6vMZtZRPBfJibA2Q=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1637903008;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=e1fy8d/F7bO0bxbGs9DFbseWsVknlDYWORiYHfsGIf8=;
-        b=Nl3r5ejY1FHl1ts5hqefnDJ9sJvZpsLJORZ3A4KioqoF7ibhdDL7ysWhdndMlvgk
-        bhsk/ZFNRmLwXCekMD84/SnA7kYzSfipuQe6dfXL/7ye+fUekX6MpcNkMD/JsBtfPKT
-        eXfIDlXUdRRy6lvszTi851IoRCvWRkSeoVID5kQk=
-Received: from mail.baihui.com by mx.zoho.com.cn
-        with SMTP id 163790300607680.6143952720198; Fri, 26 Nov 2021 13:03:26 +0800 (CST)
-Date:   Fri, 26 Nov 2021 13:03:26 +0800
-From:   Chengguang Xu <cgxu519@mykernel.net>
-Reply-To: cgxu519@mykernel.net
-To:     "Amir Goldstein" <amir73il@gmail.com>
-Cc:     "Miklos Szeredi" <miklos@szeredi.hu>, "Jan Kara" <jack@suse.cz>,
-        "overlayfs" <linux-unionfs@vger.kernel.org>,
-        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "Chengguang Xu" <charliecgxu@tencent.com>
-Message-ID: <17d5aa0795d.fdfda4a49855.5158536783597235118@mykernel.net>
-In-Reply-To: <CAOQ4uxhrg=MAL7sArmP47oyF_QmhG-1b=srs30VNdiT-9s-P0w@mail.gmail.com>
-References: <20211122030038.1938875-1-cgxu519@mykernel.net> <20211122030038.1938875-8-cgxu519@mykernel.net> <CAOQ4uxhrg=MAL7sArmP47oyF_QmhG-1b=srs30VNdiT-9s-P0w@mail.gmail.com>
-Subject: Re: [RFC PATCH V6 7/7] ovl: implement containerized syncfs for
- overlayfs
+        Fri, 26 Nov 2021 08:06:58 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FEDFC0698D9
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 04:20:01 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id i63so18418770lji.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 04:20:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1P7a4NQH9IQLpNniRmMpOOZUJm8N7Do0aMDyA1XYmJA=;
+        b=aSQHS35j4Dbx7XqL/DAXehhmROXPGcwKdxIduJDiD4rGPidJGqd3Tifn36ytTb/vCk
+         x4HTITjugozqLQFx2KW0eO9JQ+xS2oc/VlMcmPs7CopTQVedtfqau2jXv/mEB8UB9hcv
+         pZNOBEm/RhmTLvz8sRKePLkEY+/KcpMiLTiXC2WsjdmXmdb/a9iP8ORBZbFYxjQw7OZ4
+         qbzh9B6D8heR/x7/N/1q0FBRCfMEKIYifjxrHWF8/eBgO/GSs+QOFfPu0imEPb2Owbob
+         e5KslRSiNdR+eedQ+Uejfk1bAa3JL2uxrczU6TwZiWaFNyPA4UoeV2l21U9Z4cHhbxW7
+         pRXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1P7a4NQH9IQLpNniRmMpOOZUJm8N7Do0aMDyA1XYmJA=;
+        b=TVr3l3TDAnaS9G0Gc5BK7eR953FeJr074NfQeVK7HkYFBOuVe5AyejPGbEZ2bOY0Ub
+         LLwByOpxm0hNmc/54GhuA9oHagUG7BfI6TJeAoB95NalAexHe8BBx0bJzvrFsEknMX9g
+         vHMLMU4VJqZch7Kw+4aFnxepTpwiGWiEdWadGDyHkh3mPqAWaqPt5sV/V6pUvQs4du5X
+         4K5yraz2cK7ZC6hfZcBo6cL0+ULqKa1OxqnHI1pw4GGbPEMzV3hjh6vxz54G73hpzh1G
+         0WY3stbGv+JgJWAzvg7taz4N4kKX4ShWt9VKJJP5ZBE777HMKRrVlkmaLYO7N3iM9kWK
+         nwTQ==
+X-Gm-Message-State: AOAM532PKuduLECSpfMVUQK4HNYW4Pp2Udw5ty6nKxg6+Oec6G+jLXn2
+        EVzVirpyy4KAoUj/7Pkk20AyJXDFKNlCuzs+9tjTM+f887sXcQ==
+X-Google-Smtp-Source: ABdhPJwcX6A37yTG8UeycL09VCr6DiKyYhLUi5YHsFbpvZa/urOCVs5YskI+K9+oltnHO34A/wlNV3r7DwPkxxnNydw=
+X-Received: by 2002:a2e:80c3:: with SMTP id r3mr31599986ljg.4.1637929199622;
+ Fri, 26 Nov 2021 04:19:59 -0800 (PST)
 MIME-Version: 1.0
+References: <20211026222626.39222-1-ulf.hansson@linaro.org>
+ <20211027020235.GA1306582@rowland.harvard.edu> <CAPDyKFpgHJA-duQSA2uqhccrDxFqWXO1R1DJxo=aOkT5FyX+Ag@mail.gmail.com>
+ <20211027143343.GC1319606@rowland.harvard.edu> <CAPDyKFoMS-0WqNjtsrGy5-SV3RRbpgA3_HS5XDtNHH9wFgLhXg@mail.gmail.com>
+ <CAJZ5v0iKMKhdxP9htt-fVm1RVBJnRO-pzJ9eySbBOSviSXCAdQ@mail.gmail.com> <CAPDyKFqR1S5Hw_RM90b44qETieW1f_59+k3KExdMXPpk_3Yygg@mail.gmail.com>
+In-Reply-To: <CAPDyKFqR1S5Hw_RM90b44qETieW1f_59+k3KExdMXPpk_3Yygg@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 26 Nov 2021 13:19:23 +0100
+Message-ID: <CAPDyKFrzjxdP0oC2CtuxuRsePyX5Y7mFJe4BttMduk4+WEnfag@mail.gmail.com>
+Subject: Re: [PATCH] PM: runtime: Allow rpm_resume() to succeed when runtime
+ PM is disabled
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Importance: Medium
-User-Agent: ZohoCN Mail
-X-Mailer: ZohoCN Mail
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=80, 2021-11-22 15:40:59 Amir Golds=
-tein <amir73il@gmail.com> =E6=92=B0=E5=86=99 ----
- > On Mon, Nov 22, 2021 at 5:01 AM Chengguang Xu <cgxu519@mykernel.net> wro=
-te:
- > >
- > > From: Chengguang Xu <charliecgxu@tencent.com>
- > >
- > > Now overlayfs can only sync own dirty inodes during syncfs,
- > > so remove unnecessary sync_filesystem() on upper file system.
- > >
- > > Signed-off-by: Chengguang Xu <charliecgxu@tencent.com>
- > > ---
- > >  fs/overlayfs/super.c | 14 +++++---------
- > >  1 file changed, 5 insertions(+), 9 deletions(-)
- > >
- > > diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
- > > index ccffcd96491d..213b795a6a86 100644
- > > --- a/fs/overlayfs/super.c
- > > +++ b/fs/overlayfs/super.c
- > > @@ -292,18 +292,14 @@ static int ovl_sync_fs(struct super_block *sb, i=
-nt wait)
- > >         /*
- > >          * Not called for sync(2) call or an emergency sync (SB_I_SKIP=
-_SYNC).
- > >          * All the super blocks will be iterated, including upper_sb.
- > > -        *
- > > -        * If this is a syncfs(2) call, then we do need to call
- > > -        * sync_filesystem() on upper_sb, but enough if we do it when =
-being
- > > -        * called with wait =3D=3D 1.
- > >          */
- > > -       if (!wait)
- > > -               return 0;
- > > -
- > >         upper_sb =3D ovl_upper_mnt(ofs)->mnt_sb;
- > > -
- > >         down_read(&upper_sb->s_umount);
- > > -       ret =3D sync_filesystem(upper_sb);
- > > +       if (wait)
- > > +               wait_sb_inodes(upper_sb);
- > > +       if (upper_sb->s_op->sync_fs)
- > > +               upper_sb->s_op->sync_fs(upper_sb, wait);
- > > +       ret =3D ovl_sync_upper_blockdev(upper_sb, wait);
- >=20
- > I think it will be cleaner to use a helper ovl_sync_upper_filesystem()
- > with everything from  upper_sb =3D ... and a comment to explain that
- > this is a variant of __sync_filesystem() where all the dirty inodes writ=
-e
- > have already been started.
- >=20
-=20
-I agree with you.=20
+On Mon, 1 Nov 2021 at 10:27, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> On Fri, 29 Oct 2021 at 20:27, Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> > On Fri, Oct 29, 2021 at 12:20 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > >
+> > > On Wed, 27 Oct 2021 at 16:33, Alan Stern <stern@rowland.harvard.edu> wrote:
+> > > >
+> > > > On Wed, Oct 27, 2021 at 12:55:43PM +0200, Ulf Hansson wrote:
+> > > > > On Wed, 27 Oct 2021 at 04:02, Alan Stern <stern@rowland.harvard.edu> wrote:
+> > > > > >
+> > > > > > On Wed, Oct 27, 2021 at 12:26:26AM +0200, Ulf Hansson wrote:
+> > > > > > > During system suspend, the PM core sets dev->power.is_suspended for the
+> > > > > > > device that is being suspended. This flag is also being used in
+> > > > > > > rpm_resume(), to allow it to succeed by returning 1, assuming that runtime
+> > > > > > > PM has been disabled and the runtime PM status is RPM_ACTIVE, for the
+> > > > > > > device.
+> > > > > > >
+> > > > > > > To make this behaviour a bit more useful, let's drop the check for the
+> > > > > > > dev->power.is_suspended flag in rpm_resume(), as it doesn't really need to
+> > > > > > > be limited to this anyway.
+> > > > > > >
+> > > > > > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> > > > > > > ---
+> > > > > > >  drivers/base/power/runtime.c | 4 ++--
+> > > > > > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > > > > >
+> > > > > > > diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
+> > > > > > > index ec94049442b9..fadc278e3a66 100644
+> > > > > > > --- a/drivers/base/power/runtime.c
+> > > > > > > +++ b/drivers/base/power/runtime.c
+> > > > > > > @@ -742,8 +742,8 @@ static int rpm_resume(struct device *dev, int rpmflags)
+> > > > > > >   repeat:
+> > > > > > >       if (dev->power.runtime_error)
+> > > > > > >               retval = -EINVAL;
+> > > > > > > -     else if (dev->power.disable_depth == 1 && dev->power.is_suspended
+> > > > > > > -         && dev->power.runtime_status == RPM_ACTIVE)
+> > > > > > > +     else if (dev->power.disable_depth > 0 &&
+> > > > > > > +             dev->power.runtime_status == RPM_ACTIVE)
+> > > > > >
+> > > > > > IIRC there was a good reason why the original code checked for
+> > > > > > disable_depth == 1 rather than > 0.  But I don't remember exactly what
+> > > > > > the reason was.  Maybe it had something to do with the fact that during
+> > > > > > a system sleep __device_suspend_late calls __pm_runtime_disable, and the
+> > > > > > code was checking that there were no other disables in effect.
+> > > > >
+> > > > > The check was introduced in the below commit:
+> > > > >
+> > > > > Commit 6f3c77b040fc
+> > > > > Author: Kevin Hilman <khilman@ti.com>
+> > > > > Date:   Fri Sep 21 22:47:34 2012 +0000
+> > > > > PM / Runtime: let rpm_resume() succeed if RPM_ACTIVE, even when disabled, v2
+> > > > >
+> > > > > By reading the commit message it's pretty clear to me that the check
+> > > > > was added to cover only one specific use case, during system suspend.
+> > > > >
+> > > > > That is, that a driver may want to call pm_runtime_get_sync() from a
+> > > > > late/noirq callback (when the PM core has disabled runtime PM), to
+> > > > > understand whether the device is still powered on and accessible.
+> > > > >
+> > > > > > This is
+> > > > > > related to the documented behavior of rpm_resume (it's supposed to fail
+> > > > > > with -EACCES if the device is disabled for runtime PM, no matter what
+> > > > > > power state the device is in).
+> > > > > >
+> > > > > > That probably is also the explanation for why dev->power.is_suspended
+> > > > > > gets checked: It's how the code tells whether a system sleep is in
+> > > > > > progress.
+> > > > >
+> > > > > Yes, you are certainly correct about the current behaviour. It's there
+> > > > > for a reason.
+> > > > >
+> > > > > On the other hand I would be greatly surprised if this change would
+> > > > > cause any issues. Of course, I can't make guarantees, but I am, of
+> > > > > course, willing to help to fix problems if those happen.
+> > > > >
+> > > > > As a matter of fact, I think the current behaviour looks quite
+> > > > > inconsistent, as it depends on whether the device is being system
+> > > > > suspended.
+> > > > >
+> > > > > Moreover, for syscore devices (dev->power.syscore is set for them),
+> > > > > the PM core doesn't set the "is_suspended" flag. Those can benefit
+> > > > > from a common behaviour.
+> > > > >
+> > > > > Finally, I think the "is_suspended" flag actually needs to be
+> > > > > protected by a lock when set by the PM core, as it's being used in two
+> > > > > separate execution paths. Although, rather than adding a lock for
+> > > > > protection, we can just rely on the "disable_depth" in rpm_resume().
+> > > > > It would be easier and makes the behaviour consistent too.
+> > > >
+> > > > As long as is_suspended isn't _written_ in two separate execution paths,
+> > > > we're probably okay without a lock -- provided the code doesn't mind
+> > > > getting an indefinite result when a read races with a write.
+> > >
+> > > Well, indefinite doesn't sound very good to me for these cases, even
+> > > if it most likely never will happen.
+> > >
+> > > >
+> > > > > > So overall, I suspect this change should not be made.  But some other
+> > > > > > improvement (like a nice comment) might be in order.
+> > > > > >
+> > > > > > Alan Stern
+> > > > >
+> > > > > Thanks for reviewing!
+> > > >
+> > > > You're welcome.  Whatever you eventually decide to do should be okay
+> > > > with me.  I just wanted to make sure that you understood the deeper
+> > > > issue here and had given it some thought.  For example, it may turn out
+> > > > that you can resolve matters simply by updating the documentation.
+> > >
+> > > I observed the issue on cpuidle-psci. The devices it operates upon are
+> > > assigned as syscore devices and these are hooked up to a genpd.
+> > >
+> > > A call to pm_runtime_get_sync() can happen even after the PM core has
+> > > disabled runtime PM in the "late" phase. So the error code is received
+> > > for these real use-cases.
+> > >
+> > > Now, as we currently don't check the return value of
+> > > pm_runtime_get_sync() in cpuidle-psci, it's not a big deal. But it
+> > > certainly seems worth fixing in my opinion.
+> > >
+> > > Let's see if Rafael has some thoughts around this.
+> >
+> > Am I thinking correctly that this is mostly about working around the
+> > limitations of pm_runtime_force_suspend()?
+>
+> No, this isn't related at all.
+>
+> The cpuidle-psci driver doesn't have PM callbacks, thus using
+> pm_runtime_force_suspend() would not work here.
 
-Thanks,
-Chengguang
+Just wanted to send a ping on this to see if we can come to a
+conclusion. Or maybe we did? :-)
+
+I think in the end, what slightly bothers me, is that the behavior is
+a bit inconsistent. Although, maybe it's the best we can do.
+
+Kind regards
+Uffe
