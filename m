@@ -2,97 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E811A45EAD9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 10:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D8C45EAEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:01:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376437AbhKZKAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 05:00:08 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:49528 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376588AbhKZJ6F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 04:58:05 -0500
-Received: from Monstersaurus.local (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id EB43CE2C;
-        Fri, 26 Nov 2021 10:54:50 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1637920491;
-        bh=gDWf41GJ9wF0lnHEXzdtH0ScCqfwcfOYTY8fNdxgyTQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gNrU0LTY85tles7val6sqq7JGvSGccgZJakYIh1nxxKnd400qHZnU+z4uKRi+dTQ6
-         jDA2EWoIxOMB36aXqS2kqL5gNT+mpI5+BCm0cTN91lCwdlLRC5vXVQ0mOZH6V5BgS9
-         qJFDVx7NuOrXei9ChESds4pO9L129lceAogaowgQ=
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-To:     linux-renesas-soc@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Geert Uytterhoeven <geert@glider.be>
-Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v4 4/4] arm64: dts: renesas: r8a779a0: Provide default DSI data-lanes
-Date:   Fri, 26 Nov 2021 09:54:45 +0000
-Message-Id: <20211126095445.932930-5-kieran.bingham+renesas@ideasonboard.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211126095445.932930-1-kieran.bingham+renesas@ideasonboard.com>
-References: <20211126095445.932930-1-kieran.bingham+renesas@ideasonboard.com>
+        id S1376520AbhKZKEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 05:04:15 -0500
+Received: from mga14.intel.com ([192.55.52.115]:36697 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1376643AbhKZKCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 05:02:12 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="235881215"
+X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
+   d="scan'208";a="235881215"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 01:56:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
+   d="scan'208";a="457619479"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 26 Nov 2021 01:56:23 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqXxv-0007vz-3M; Fri, 26 Nov 2021 09:56:23 +0000
+Date:   Fri, 26 Nov 2021 17:55:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Atish Patra <atishp@rivosinc.com>
+Cc:     kbuild-all@lists.01.org, Atish Patra <Atish.Patra@wdc.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [atishp04:sparse_hartid_support 3/9]
+ arch/riscv/kernel/cpu_ops_sbi.c:24: warning: This comment starts with '/**',
+ but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+Message-ID: <202111261703.e95Tql2Z-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The data-lanes is a mandatory property for the endpoints.
-Provide a default when not connected that represents the maximum
-lanes supported by the device.
+tree:   https://github.com/atishp04/linux sparse_hartid_support
+head:   b85b7fd1f4028c3e1a895cfe163555241ae742fa
+commit: b9432952c1b228a156c1a5959bce4c23c834f1f5 [3/9] RISC-V: Avoid using per cpu array for ordered booting
+config: riscv-allyesconfig (https://download.01.org/0day-ci/archive/20211126/202111261703.e95Tql2Z-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/atishp04/linux/commit/b9432952c1b228a156c1a5959bce4c23c834f1f5
+        git remote add atishp04 https://github.com/atishp04/linux
+        git fetch --no-tags atishp04 sparse_hartid_support
+        git checkout b9432952c1b228a156c1a5959bce4c23c834f1f5
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=riscv 
 
-A connected device should override the data-lanes if it uses a lower
-number of lanes.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+All warnings (new ones prefixed by >>):
+
+>> arch/riscv/kernel/cpu_ops_sbi.c:24: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * Ordered booting via HSM brings one cpu at a time. Per cpu data strucutre is
+
+
+vim +24 arch/riscv/kernel/cpu_ops_sbi.c
+
+    22	
+    23	/**
+  > 24	 * Ordered booting via HSM brings one cpu at a time. Per cpu data strucutre is
+    25	 * not required.
+    26	 */
+    27	static struct sbi_sec_boot_data bdata __section(".data");
+    28	
+
 ---
-
-This patch is split from 2/4 to keep it's change for distinct review.
-The data-lanes is marked as a mandatory property in the DSI bindings
-(which are out of tree, most recent posting at [0])
-
-[0] https://lore.kernel.org/all/YQGFP%2FcFoSksPyn+@pendragon.ideasonboard.com/
-
-The data-lanes property is marked as mandatory, which means it needs to
-be provided even when supplying the port templates which get overridden
-later. Is this expected behaviour?
-
-Does this have sufficient meaning? Or will it always have to be
-specified by any node overriding anyway...?
-
-
- arch/arm64/boot/dts/renesas/r8a779a0.dtsi | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
-index fdad8bc4a069..7322c4628e2b 100644
---- a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
-@@ -2661,6 +2661,7 @@ dsi0_in: endpoint {
- 				port@1 {
- 					reg = <1>;
- 					dsi0_out: endpoint {
-+						data-lanes = <1 2 3 4>;
- 					};
- 				};
- 			};
-@@ -2691,7 +2692,9 @@ dsi1_in: endpoint {
- 
- 				port@1 {
- 					reg = <1>;
-+
- 					dsi1_out: endpoint {
-+						data-lanes = <1 2 3 4>;
- 					};
- 				};
- 			};
--- 
-2.30.2
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
