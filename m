@@ -2,132 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1ABF45EFE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7FE45EFE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:30:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353716AbhKZObZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 09:31:25 -0500
-Received: from mout.gmx.net ([212.227.15.19]:50027 "EHLO mout.gmx.net"
+        id S1349940AbhKZOdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 09:33:20 -0500
+Received: from mga07.intel.com ([134.134.136.100]:52075 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377680AbhKZO3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 09:29:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1637936761;
-        bh=RORlYk3nCRBTNpL3jgHcU3QrBA0W44b6IbvLH9lXNQA=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:In-Reply-To:References;
-        b=hICtennXYLiECVSfC+rWTnPKZWhXA3V3kvXM4bP/WlO3JIchIhwr06zVfVmfys/Qd
-         epuuKyIYnWB6RJCxrAvKRZVTqmYGdqXbJHb7YnHC5FtXyVKmPfit7tbtbXJyOpY/vD
-         BYCU0NdXcnslqS9uEX5GxxOMeJrr6K9LXr9WXLgY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost ([62.216.209.164]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MXGvM-1n7Yut2gG6-00Ygws; Fri, 26
- Nov 2021 15:26:01 +0100
-Date:   Fri, 26 Nov 2021 15:25:58 +0100
-From:   Peter Seiderer <ps.report@gmx.net>
-To:     Felix Fietkau <nbd@nbd.name>
-Cc:     linux-wireless@vger.kernel.org,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [RFC v2] mac80211: minstrel_ht: do not set RTS/CTS flag for
- fallback rates
-Message-ID: <20211126152558.4d9fbce3@gmx.net>
-In-Reply-To: <e098a58a-8ec0-f90d-dbc9-7b621e31d051@nbd.name>
-References: <20211116212828.27613-1-ps.report@gmx.net>
-        <e098a58a-8ec0-f90d-dbc9-7b621e31d051@nbd.name>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-suse-linux-gnu)
+        id S238289AbhKZObT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 09:31:19 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="299074732"
+X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
+   d="scan'208";a="299074732"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 06:28:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
+   d="scan'208";a="458192760"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 26 Nov 2021 06:28:05 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqcCq-0008Ez-Ot; Fri, 26 Nov 2021 14:28:04 +0000
+Date:   Fri, 26 Nov 2021 22:27:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Liu Yi L <yi.l.liu@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: [luxis1999-iommufd:iommufd-v5.16-rc2 24/31] ERROR: modpost:
+ "vfio_platform_ops" [drivers/vfio/platform/vfio-platform.ko] undefined!
+Message-ID: <202111262210.xve6f7hZ-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:0wYbdN4fhkxA4iepLxNMYjwuxCqluactjjNyhttz1I5sOv0NkEY
- iYWF5PU1uhapP4Z6CDymiVDkD7xIuCf+6p//d6yfXIMjm8INQLyykUubjIh9ofnQr/r+WRX
- Ulao9sRBulcIBIaOxvFOaxghSRrycsbAhKTGWHR1X11l9Stcor6np9PB4LpLh0BdgV1jkny
- PaT9Ty8WuJolZKb0QmHaw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:kawEkXoYq94=:4WlTbTEqyqne8UDa1lQP1j
- vHHHEt53IUvgOu+OILFiG77UeO4aMTLnuxF8GvTUWOpRZSkJO1816wxV4kDGxuOJKrIo4uFjM
- 3b1D84asCHQnvBigs27wgYnMJ+2aSu5hxLXMSRw77UWbxMW+qI1Kve4vGjtifu63ZM8NrQN0r
- GyqCzYT+8UOrRtMaq0HOIr7z0dsL/cK4r+/IZcgAEI+T+pQgq0aph0qvH0OiPEHZR148hHGbu
- S8ZWLgB6XNpb0NZooYrSyh1VsX/5V1mV2PrPghEP1R6DKrPI5ImKtp8kJJ7lONPCkUNwd5Rk2
- lWU74MGxxWTSEjeBf6BRXEoamIglUUwzN5BWr7u89Csv7BCYx6MPWDPeB76LCk0xrawVgXLzd
- Llhk0NcKoe5l6Ri3NJR2DuryQ/+LnY+qbc5X5Bmy4zrbXGSHR1X1MBKt95x11wNMxTCtLUokD
- cmxQvw8cuxOAbiB6h1ZZLpSf29PytcYfL+aInoqVB1psOMXW8VkJkD93IlbWUtbOd8WJLzEyQ
- ziRe+4fbNb4EFhgQ42jFqJho7GRezWciASuQTCSg/3GB6EB3sejeRh6AvHHFo8AfQ91ZwSkqG
- ZWveXxZj2qRgdrXNAg/rfqbGe3uiCLVUH+mXM3BOO70hOncVUANpilu1apWyexkWsr3JzLZcA
- TkxV4sLuXPWPWmWONHWqdhWeoDzxCLXKBk8hjJvF1CTOau2mBrwUPc8YF395GECZPH4ohytS4
- mL0D7RKwQAKkybZXrOQ4wQdytQkvdJRr/H88EYt1SBOfsWrmfZpyJM3B189tfzhiWkH9EQmS4
- DTZ1M2rEz1OXUNUs6+EqXyT8K6/ctSQDiEjBk1bLHL1AX48deIKpePBQGBZxiCRAka6B3Zx/e
- QFvT/krcCjCwMIddcbsA/ygTgLa8Wr/CmvDFaS/1VFRak78tSiLCzcBU2AB9OZII2ozRjFb27
- O3qDGsioVoBDh7VjhsoaiR9+FcjijKwEFvXcIG2ff6aJ6XJ/5XXQ/UpBeKzR/qRzrf8BzJsiV
- wfsPP5DW8M0C+4FTppaHfkLDiZTRCFmBkKELuxX7SSw7yScSR3gGIvqHcexw4KmUz9830+//b
- cYnZUcMSQhripo=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Felix,
+tree:   https://github.com/luxis1999/iommufd iommufd-v5.16-rc2
+head:   9821bacf94cee7dd38c9f919a0a38fd48a6f3ae7
+commit: 06d2ba7660dd55a192ac5893a04fe30674236d2d [24/31] vifo_platform: Use vfio_alloc/put_device()
+config: arc-buildonly-randconfig-r001-20211125 (https://download.01.org/0day-ci/archive/20211126/202111262210.xve6f7hZ-lkp@intel.com/config)
+compiler: arceb-elf-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/luxis1999/iommufd/commit/06d2ba7660dd55a192ac5893a04fe30674236d2d
+        git remote add luxis1999-iommufd https://github.com/luxis1999/iommufd
+        git fetch --no-tags luxis1999-iommufd iommufd-v5.16-rc2
+        git checkout 06d2ba7660dd55a192ac5893a04fe30674236d2d
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=arc 
 
-On Fri, 26 Nov 2021 13:47:07 +0100, Felix Fietkau <nbd@nbd.name> wrote:
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-> On 2021-11-16 22:28, Peter Seiderer wrote:
-> > Despite the 'RTS thr:off' setting a wireshark trace of IBSS
-> > traffic with HT40 mode enabled between two ath9k cards revealed
-> > some RTS/CTS traffic.
-> >
-> > Debug and code analysis showed that most places setting
-> > IEEE80211_TX_RC_USE_RTS_CTS respect the RTS strategy by
-> > evaluating rts_threshold, e.g. net/mac80211/tx.c:
-> >
-> >   698         /* set up RTS protection if desired */
-> >   699         if (len > tx->local->hw.wiphy->rts_threshold) {
-> >   700                 txrc.rts =3D true;
-> >   701         }
-> >   702
-> >   703         info->control.use_rts =3D txrc.rts;
-> >
-> > or drivers/net/wireless/ath/ath9k/xmit.c
-> >
-> > 1238                 /*
-> > 1239                  * Handle RTS threshold for unaggregated HT frame=
-s.
-> > 1240                  */
-> > 1241                 if (bf_isampdu(bf) && !bf_isaggr(bf) &&
-> > 1242                     (rates[i].flags & IEEE80211_TX_RC_MCS) &&
-> > 1243                     unlikely(rts_thresh !=3D (u32) -1)) {
-> > 1244                         if (!rts_thresh || (len > rts_thresh))
-> > 1245                                 rts =3D true;
-> > 1246                 }
-> >
-> > The only place setting IEEE80211_TX_RC_USE_RTS_CTS unconditionally
-> > was found in net/mac80211/rc80211_minstrel_ht.c.
-> >
-> > As the use_rts value is only calculated after hitting the minstrel_ht =
-code
-> > preferre to not set IEEE80211_TX_RC_USE_RTS_CTS (and overruling the
-> > RTS threshold setting) for the fallback rates case.
-> The idea behind the this part of minstrel_ht code is to avoid the
-> overhead of RTS/CTS for transmissions using the primary rate and to
-> increase the reliability of retransmissions by adding it for fallback
-> rates. This is completely unrelated to the RTS threshold.
+All errors (new ones prefixed by >>, old ones prefixed by <<):
 
-How does it avoid RTS/CTS (if it is set independent by RTS threshold
-evaluation mac80211 and/or hardware driver)?
+>> ERROR: modpost: "vfio_platform_ops" [drivers/vfio/platform/vfio-platform.ko] undefined!
 
->
-> If you don't want this behavior, I'm fine with adding a way to
-> explicitly disable it. However, I do think leaving it on by default
-> makes sense.
-
-I expected this (as otherwise the flag setting would not be there) ;-)
-
-Any hint how to implement an additional RTS/CTS on/off feature despite
-the RTS threshold one for use explicit by minstrel_ht? Configure option,
-module option, ...?
-
-Regards,
-Peter
-
->
-> - Felix
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
