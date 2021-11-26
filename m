@@ -2,108 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392EB45E782
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 06:41:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC1C45E794
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 06:50:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358656AbhKZFof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 00:44:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345385AbhKZFme (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 00:42:34 -0500
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22389C061746;
-        Thu, 25 Nov 2021 21:39:22 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 7483D41DF4;
-        Fri, 26 Nov 2021 05:39:18 +0000 (UTC)
-Subject: Re: [PATCH v3 0/4] Add DTs for all Apple M1 (t8103) devices
-To:     Janne Grunau <j@jannau.net>, Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Mark Kettenis <mark.kettenis@xs4all.nl>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211122225807.8105-1-j@jannau.net>
-From:   Hector Martin <marcan@marcan.st>
-Message-ID: <b38bb236-d739-4514-e79a-d7666ae23337@marcan.st>
-Date:   Fri, 26 Nov 2021 14:39:16 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1345732AbhKZFxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 00:53:54 -0500
+Received: from pegase2.c-s.fr ([93.17.235.10]:52399 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242483AbhKZFvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 00:51:51 -0500
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4J0kLs32pFz9sSM;
+        Fri, 26 Nov 2021 06:48:37 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id JxVCKAO1sD1d; Fri, 26 Nov 2021 06:48:37 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4J0kLs1yldz9sSL;
+        Fri, 26 Nov 2021 06:48:37 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2D1C38B768;
+        Fri, 26 Nov 2021 06:48:37 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id Wdy7xI6fAQoi; Fri, 26 Nov 2021 06:48:37 +0100 (CET)
+Received: from [192.168.204.6] (unknown [192.168.204.6])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A2E018B763;
+        Fri, 26 Nov 2021 06:48:36 +0100 (CET)
+Message-ID: <0dc1af93-3b5f-6147-359a-33980591c73f@csgroup.eu>
+Date:   Fri, 26 Nov 2021 06:48:36 +0100
 MIME-Version: 1.0
-In-Reply-To: <20211122225807.8105-1-j@jannau.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: linux-next: runtime warnings from qemu run
+Content-Language: fr-FR
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20211126161747.1f7795b0@canb.auug.org.au>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+In-Reply-To: <20211126161747.1f7795b0@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/11/2021 07.58, Janne Grunau wrote:
-> Hej All,
-> 
-> this series extends the device tree files and bindings to all current
-> Apple M1 devices. Specifically it adds DTs for following devices:
-> - MacBook Air (M1, 2020)
-> - Macbook Pro (13-inch, M1, 2020)
-> - iMac (24-inch, M1, 2021)
-> 
-> It also adds i2c and cd321x devices nodes. Bindings and code changes for
-> those were merged for 5.16 without adding devices to the device tree.
-> Patches are include in a single series for dependencies
-> 
-> Changes since v2:
->   - split i2c and cd321x changes into 2 commit
->   - add i2c4 used by MacBooc Pros (j293, 13-inch, M1, 2020)
->   - add hpm2 and hpm3 for the additional USB-C ports on j456 iMac
->     (24-inch, M1, 2021) models
-> 
-> Series depends for functionality and dtbs verification on
-> "[PATCH 0/3] Apple Arm patform device tree and bindings fixes".
-> 
-> thanks,
-> Janne
-> 
-> The series is available as branch from:
->      https://github.com/jannau/linux/tree/apple_m1/dt-for-5.17_v3
-> 
-> Janne Grunau (4):
->    dt-bindings: arm: apple: Add iMac (24-inch 2021) to Apple bindings
->    arm64: dts: apple: Add missing M1 (t8103) devices
->    arm64: dts: apple: t8103: Add i2c nodes
->    arm64: dts: apple: t8103: Add cd321x nodes
-> 
->   .../devicetree/bindings/arm/apple.yaml        |  6 +-
->   arch/arm64/boot/dts/apple/Makefile            |  4 +
->   arch/arm64/boot/dts/apple/t8103-j274.dts      | 33 +------
->   arch/arm64/boot/dts/apple/t8103-j293.dts      | 41 +++++++++
->   arch/arm64/boot/dts/apple/t8103-j313.dts      | 33 +++++++
->   arch/arm64/boot/dts/apple/t8103-j456.dts      | 59 ++++++++++++
->   arch/arm64/boot/dts/apple/t8103-j457.dts      | 47 ++++++++++
->   arch/arm64/boot/dts/apple/t8103-jxxx.dtsi     | 67 ++++++++++++++
->   arch/arm64/boot/dts/apple/t8103.dtsi          | 92 +++++++++++++++++++
->   9 files changed, 352 insertions(+), 30 deletions(-)
->   create mode 100644 arch/arm64/boot/dts/apple/t8103-j293.dts
->   create mode 100644 arch/arm64/boot/dts/apple/t8103-j313.dts
->   create mode 100644 arch/arm64/boot/dts/apple/t8103-j456.dts
->   create mode 100644 arch/arm64/boot/dts/apple/t8103-j457.dts
->   create mode 100644 arch/arm64/boot/dts/apple/t8103-jxxx.dtsi
-> 
 
-Whole series is:
 
-Tested-by: Hector Martin <marcan@marcan.st>
+Le 26/11/2021 à 06:17, Stephen Rothwell a écrit :
+> Hi all,
+> 
+> My qemu boot test (pseries_le_defconfig) produces these new messages:
+> 
+> code-patching: test failed at line 444
+> code-patching: test failed at line 447
+> code-patching: test failed at line 450
+> code-patching: test failed at line 453
+> code-patching: test failed at line 456
+> code-patching: test failed at line 461
+> code-patching: test failed at line 466
+> code-patching: test failed at line 471
+> code-patching: test failed at line 476
+> code-patching: test failed at line 493
+> code-patching: test failed at line 533
+> code-patching: test failed at line 536
+> code-patching: test failed at line 539
+> code-patching: test failed at line 542
+> code-patching: test failed at line 545
+> code-patching: test failed at line 553
+> code-patching: test failed at line 558
+> code-patching: test failed at line 563
+> code-patching: test failed at line 568
+> code-patching: test failed at line 585
+> code-patching: test failed at line 605
+> code-patching: test failed at line 609
+> code-patching: test failed at line 618
+> code-patching: test failed at line 619
+> code-patching: test failed at line 620
+> code-patching: test failed at line 629
+> code-patching: test failed at line 630
+> code-patching: test failed at line 631
+> code-patching: test failed at line 640
+> code-patching: test failed at line 641
+> code-patching: test failed at line 650
+> code-patching: test failed at line 651
+> code-patching: test failed at line 661
+> code-patching: test failed at line 665
+> code-patching: test failed at line 675
+> code-patching: test failed at line 676
+> code-patching: test failed at line 677
+> code-patching: test failed at line 687
+> code-patching: test failed at line 688
+> code-patching: test failed at line 689
+> code-patching: test failed at line 699
+> code-patching: test failed at line 700
+> code-patching: test failed at line 710
+> code-patching: test failed at line 711
+> 
+> Maybe caused by commit
+> 
+>    8b8a8f0ab3f5 ("powerpc/code-patching: Improve verification of patchability")
 
-on j274, j313, j456.
+Yes, Nic proposed a series to fix that: 
+https://patchwork.ozlabs.org/project/linuxppc-dev/patch/20211126032249.1652080-1-npiggin@gmail.com/
 
-Thanks! If you spin up a v4 with the minor comments addressed, I'll be 
-happy to merge it :)
 
--- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+> 
+> As an presumably unrelated aside, we seem to be using a bit more stack
+> space as well
+> 
+> - mount (54) used greatest stack depth: 12512 bytes left
+> - mount (55) used greatest stack depth: 12032 bytes left
+> + mount (54) used greatest stack depth: 10608 bytes left
+> 
