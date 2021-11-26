@@ -2,66 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E0545F4E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 19:43:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9464245F4CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 19:42:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242335AbhKZSqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 13:46:51 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:50848 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242379AbhKZSou (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 13:44:50 -0500
-X-Greylist: delayed 377 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Nov 2021 13:44:49 EST
-Received: from mail.kernel.org (unknown [198.145.29.99])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D3EDAB8285E;
-        Fri, 26 Nov 2021 18:35:16 +0000 (UTC)
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4B3B0601FA;
-        Fri, 26 Nov 2021 18:35:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637951715;
-        bh=nHvLSDsMSum4XIzaG0wnvFxuR3N7HkPRnHuGHl7mECA=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=N4FxuhSZEKpuypLASqAv53tj9a1n4JYqhhv70/SM7UwXnErKlo2cPrn+pTV6N9oLE
-         MI77vaBkCFvzY0PineMJldztlQxcnpePUYp1QunEshHLNTcd7jSzBNaukhHB+Nf8FB
-         iwVLDd6X48GWnomULrot1V06eyXPvJ2kuQMqu1IzDloqiQwWoo6WtzRmlc6QhpWl4/
-         CpzKJp1+csRpKkR9mwB86dIcyinPNr2CbIhE4q4p0SXL31OHbRo082Q7YlpAnRQ+7u
-         oDUzaxe9DM5ZHpWpZrIOfHB6PZRiKCEDQWEQTyAQEPlfqDod6+nIK8gnfs8tldTDxQ
-         i05Y91p514obQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 459FC609D5;
-        Fri, 26 Nov 2021 18:35:15 +0000 (UTC)
-Subject: Re: [GIT PULL] MMC fixes for v5.16-rc3
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211126133055.27138-1-ulf.hansson@linaro.org>
-References: <20211126133055.27138-1-ulf.hansson@linaro.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211126133055.27138-1-ulf.hansson@linaro.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.16-rc1
-X-PR-Tracked-Commit-Id: 5f719948b5d43eb39356e94e8d0b462568915381
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d3e647926c0dd120612b2f9e698ee38d6156d17d
-Message-Id: <163795171527.22939.439907213482730919.pr-tracker-bot@kernel.org>
-Date:   Fri, 26 Nov 2021 18:35:15 +0000
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
+        id S243492AbhKZSpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 13:45:13 -0500
+Received: from foss.arm.com ([217.140.110.172]:36698 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233632AbhKZSnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 13:43:12 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9311611D4;
+        Fri, 26 Nov 2021 10:39:58 -0800 (PST)
+Received: from bogus (unknown [10.57.33.218])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1EC6D3F7B4;
+        Fri, 26 Nov 2021 10:39:57 -0800 (PST)
+Date:   Fri, 26 Nov 2021 18:39:54 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        linux-kernel@vger.kernel.org, rafael@kernel.org,
+        peterz@infradead.org, cj.chengjian@huawei.com,
+        huawei.libin@huawei.com, weiyongjun1@huawei.com,
+        Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH] arch_topology: Fix missing clear cluster_cpumask in
+ remove_cpu_topology()
+Message-ID: <20211126183954.scu2wfirrzlgqxxi@bogus>
+References: <20211110095856.469360-1-bobo.shaobowang@huawei.com>
+ <YaELI8+QnBeXXIVm@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YaELI8+QnBeXXIVm@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 26 Nov 2021 14:30:55 +0100:
+On Fri, Nov 26, 2021 at 05:28:19PM +0100, Greg KH wrote:
+> On Wed, Nov 10, 2021 at 05:58:56PM +0800, Wang ShaoBo wrote:
+> > When testing cpu online and offline, warning happened like this:
+> > 
+> > [  146.746743] WARNING: CPU: 92 PID: 974 at kernel/sched/topology.c:2215 build_sched_domains+0x81c/0x11b0
+> > [  146.749988] CPU: 92 PID: 974 Comm: kworker/92:2 Not tainted 5.15.0 #9
+> > [  146.750402] Hardware name: Huawei TaiShan 2280 V2/BC82AMDDA, BIOS 1.79 08/21/2021
+> > [  146.751213] Workqueue: events cpuset_hotplug_workfn
+> > [  146.751629] pstate: 00400009 (nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> > [  146.752048] pc : build_sched_domains+0x81c/0x11b0
+> > [  146.752461] lr : build_sched_domains+0x414/0x11b0
+> > [  146.752860] sp : ffff800040a83a80
+> > [  146.753247] x29: ffff800040a83a80 x28: ffff20801f13a980 x27: ffff20800448ae00
+> > [  146.753644] x26: ffff800012a858e8 x25: ffff800012ea48c0 x24: 0000000000000000
+> > [  146.754039] x23: ffff800010ab7d60 x22: ffff800012f03758 x21: 000000000000005f
+> > [  146.754427] x20: 000000000000005c x19: ffff004080012840 x18: ffffffffffffffff
+> > [  146.754814] x17: 3661613030303230 x16: 30303078303a3239 x15: ffff800011f92b48
+> > [  146.755197] x14: ffff20be3f95cef6 x13: 2e6e69616d6f642d x12: 6465686373204c4c
+> > [  146.755578] x11: ffff20bf7fc83a00 x10: 0000000000000040 x9 : 0000000000000000
+> > [  146.755957] x8 : 0000000000000002 x7 : ffffffffe0000000 x6 : 0000000000000002
+> > [  146.756334] x5 : 0000000090000000 x4 : 00000000f0000000 x3 : 0000000000000001
+> > [  146.756705] x2 : 0000000000000080 x1 : ffff800012f03860 x0 : 0000000000000001
+> > [  146.757070] Call trace:
+> > [  146.757421]  build_sched_domains+0x81c/0x11b0
+> > [  146.757771]  partition_sched_domains_locked+0x57c/0x978
+> > [  146.758118]  rebuild_sched_domains_locked+0x44c/0x7f0
+> > [  146.758460]  rebuild_sched_domains+0x2c/0x48
+> > [  146.758791]  cpuset_hotplug_workfn+0x3fc/0x888
+> > [  146.759114]  process_one_work+0x1f4/0x480
+> > [  146.759429]  worker_thread+0x48/0x460
+> > [  146.759734]  kthread+0x158/0x168
+> > [  146.760030]  ret_from_fork+0x10/0x20
+> > [  146.760318] ---[ end trace 82c44aad6900e81a ]---
+> > 
+> > For some architectures like risc-v and arm64 which use common code
+> > clear_cpu_topology() in shutting down CPUx, When CONFIG_SCHED_CLUSTER
+> > is set, cluster_sibling in cpu_topology of each sibling adjacent
+> > to CPUx is missed clearing, this causes checking failed in
+> > topology_span_sane() and rebuilding topology failure at end when CPU online.
+> > 
+> > Different sibling's cluster_sibling in cpu_topology[] when CPU92 offline
+> > (CPU 92, 93, 94, 95 are in one cluster):
+> > 
+> > Before revision:
+> > CPU                 [92]      [93]      [94]      [95]
+> > cluster_sibling     [92]     [92-95]   [92-95]   [92-95]
+> > 
+> > After revision:
+> > CPU                 [92]      [93]      [94]      [95]
+> > cluster_sibling     [92]     [93-95]   [93-95]   [93-95]
+> > 
+> > Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+> > ---
+> >  drivers/base/arch_topology.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> 
+> What commit id does this fix?
+>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.16-rc1
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d3e647926c0dd120612b2f9e698ee38d6156d17d
-
-Thank you!
+v2[1] has the information and all the tags IIUC.
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Regards,
+Sudeep
+
+[1] https://lore.kernel.org/all/20211111140435.3209001-1-bobo.shaobowang@huawei.com/
