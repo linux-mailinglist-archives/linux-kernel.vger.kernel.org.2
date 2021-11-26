@@ -2,143 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79FE645E95F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:29:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 563FC45E976
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:34:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359514AbhKZIch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 03:32:37 -0500
-Received: from mga01.intel.com ([192.55.52.88]:42677 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347286AbhKZIag (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 03:30:36 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="259533058"
-X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
-   d="scan'208";a="259533058"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 00:22:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
-   d="scan'208";a="539184991"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 26 Nov 2021 00:22:20 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqWUu-0007pJ-0X; Fri, 26 Nov 2021 08:22:20 +0000
-Date:   Fri, 26 Nov 2021 16:21:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, linux-s390@vger.kernel.org,
-        kexec@lists.infradead.org, hca@linux.ibm.com, prudo@redhat.com,
-        Baoquan He <bhe@redhat.com>
-Subject: Re: [PATCH v2 1/2] s390/kexec: check the return value of
- ipl_report_finish
-Message-ID: <202111261649.WZQbFG5g-lkp@intel.com>
-References: <20211116032557.14075-1-bhe@redhat.com>
+        id S1359801AbhKZIhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 03:37:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353341AbhKZIfk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 03:35:40 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0DBC061792
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 00:24:13 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id p8so3755662ljo.5
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 00:24:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9+3W8vdagLbTNRPFAylCMOvx5SBmZnQyRatYFnnBvgI=;
+        b=PkAcmF1arCHVIb3ura2asB/DtB7F6PIY0/REH1dK7SNZ+dImaFIt2Itsy+oN4xMAQN
+         Kufzzz6oxEoxNyWadXLkHEcyu4AJo6t3B8P8Tte/k1fuE84nA8o+lDv12YVLHhOGjWoS
+         MIE6nbkG53/y8r3109Sagecr+VSqjx2FFRViH0TYhee9rCy3kVCXLm2e7fpoZVEyMjqG
+         sTmm1hnJT5XnZG4MXXqJ8/LM2mIiqiYf2/dayXbu4dsDzWdn9Ur7Jn+cAHWk300BwdhA
+         vHJLimhyIdekGA+QMxtiCnMiFPjP881/di88/AtGQ8jQ4HD0Ky99OVSZ07YCRxua8eNk
+         2IFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9+3W8vdagLbTNRPFAylCMOvx5SBmZnQyRatYFnnBvgI=;
+        b=k8+5bRkmscV1lpWd1u+bjU6FPdW9takAi3TexMd3QGmAuqbIUPPB2q1yESsr6BUFEG
+         maH7qu9YXTo/I7lIU6BktJa9iNaQak1CyZt3Hc6b4nn2aNli4yN6ysP8zOwhwYqGp+ye
+         9UgxEhA52EBdnFSBNIaC3uN94SexXxMay5wrHYrZoEhDkIVSQJ7Ofgz5kws/TGDPl/YE
+         Utt3Vasd5kdZ9swk3Br0/oVhGbarAe3o55je2qHhijJbtNdKcSdej40l+Dr6Jl9rlKZE
+         cyJhUBj+SUiyPpUPb87IZChALHWALHJwfDpdCnV0b2fEY30IiotAFBGBaAPzQRJ+iRs0
+         7Z7A==
+X-Gm-Message-State: AOAM531ko7rr9DWrRHJn6fRQ+jrKpDYubRGfQQfE/qPd4Pp4ursG39Mr
+        98e1tC5l2Irs9rWm3DiRDRJz+3QM/8w0TJ84jO5GnQ==
+X-Google-Smtp-Source: ABdhPJys9Onf/yd269QUTMsXZRfQTh8QnxOP2HY5QyZGAi+Ox24N9DcupY8WRb8SPA1kN5B2wszkR04d76i4AhCAIfA=
+X-Received: by 2002:a2e:b88e:: with SMTP id r14mr29554658ljp.365.1637915051223;
+ Fri, 26 Nov 2021 00:24:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211116032557.14075-1-bhe@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211124154239.3191366-1-vincent.donnefort@arm.com>
+ <CAKfTPtDX8sOfguZhJt5QV3j5D_JetcgncuF2w+uLa0XDk7UXkw@mail.gmail.com>
+ <8735nkcwov.mognet@arm.com> <CAKfTPtDPskVdEd-KQ_cwe-R_zVFPQOgdbk9x+3eD12pKs8fGFw@mail.gmail.com>
+ <87zgpsb6de.mognet@arm.com>
+In-Reply-To: <87zgpsb6de.mognet@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 26 Nov 2021 09:23:59 +0100
+Message-ID: <CAKfTPtCnusWJXJLDEudQ_q8MWaZYbPJK-QjAbBYWFW8Nw-J+Ww@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Fix detection of per-CPU kthreads waking a task
+To:     Valentin Schneider <Valentin.Schneider@arm.com>
+Cc:     Vincent Donnefort <Vincent.Donnefort@arm.com>,
+        peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, mgorman@techsingularity.net,
+        dietmar.eggemann@arm.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Baoquan,
+On Thu, 25 Nov 2021 at 16:30, Valentin Schneider
+<Valentin.Schneider@arm.com> wrote:
+>
+> On 25/11/21 14:23, Vincent Guittot wrote:
+> > On Thu, 25 Nov 2021 at 12:16, Valentin Schneider
+> > <Valentin.Schneider@arm.com> wrote:
+> >> I think you can still hit this on a symmetric system; let me try to
+> >> reformulate my other email.
+> >>
+> >> If this (non-patched) condition evaluates to true, it means the previous
+> >> condition
+> >>
+> >>   (available_idle_cpu(target) || sched_idle_cpu(target)) &&
+> >>    asym_fits_capacity(task_util, target)
+> >>
+> >> evaluated to false, so for a symmetric system target sure isn't idle.
+> >>
+> >> prev == smp_processor_id() implies prev == target, IOW prev isn't
+> >> idle. Now, consider:
+> >>
+> >>   p0.prev = CPU1
+> >>   p1.prev = CPU1
+> >>
+> >>   CPU0                     CPU1
+> >>   current = don't care     current = swapper/1
+> >>
+> >>   ttwu(p1)
+> >>     ttwu_queue(p1, CPU1)
+> >>     // or
+> >>     ttwu_queue_wakelist(p1, CPU1)
+> >>
+> >>                           hrtimer_wakeup()
+> >>                             wake_up_process()
+> >>                               ttwu()
+> >>                                 idle_cpu(CPU1)? no
+> >>
+> >>                                 is_per_cpu_kthread(current)? yes
+> >>                                 prev == smp_processor_id()? yes
+> >>                                 this_rq()->nr_running <= 1? yes
+> >>                                 => self enqueue
+> >>
+> >>                           ...
+> >>                           schedule_idle()
+> >>
+> >> This works if CPU0 does either a full enqueue (rq->nr_running == 1) or just
+> >> a wakelist enqueue (rq->ttwu_pending > 0). If there was an idle CPU3
+> >> around, we'd still be stacking p0 and p1 onto CPU1.
+> >>
+> >> IOW this opens a window between a remote ttwu() and the idle task invoking
+> >> schedule_idle() where the idle task can stack more tasks onto its CPU.
+> >
+> > Your use case above is out of the scope of this patch and has always
+> > been there, even for other per cpu kthreads. In such case, the wake up
+> > is not triggered by current (idle or another per cpu kthread) but by
+> > an interrupt (hrtimer in your case).
+>
+> Technically the idle task didn't pass is_per_cpu_kthread(p) when that
+> condition was added, this is somewhat of a "new development" - but you're
+> right on the hardirq side of things.
+>
+> > If we want to filter wakeup
+> > generated by interrupt context while a per cpu kthread is running, it
+> > would be better to fix all cases and test the running context like
+> > this
+> >
+>
+> I think that could make sense - though can the idle task issue wakeups in
+> process context? If so that won't be sufficient. A quick audit tells me:
+>
+> o rcu_nocb_flush_deferred_wakeup() happens before calling into cpuidle
+> o I didn't see any wakeup issued from the cpu_pm_notifier call chain
+> o I'm not entirely sure about flush_smp_call_function_from_idle(). I found
+>   this thing in RCU:
+>
+>   smp_call_function_single(cpu, rcu_exp_handler)
+>
+>     rcu_exp_handler()
+>       rcu_report_exp_rdp()
+>         rcu_report_exp_cpu_mult()
+>           __rcu_report_exp_rnp()
+>             swake_up_one()
+>
+> IIUC if set_nr_if_polling() then the smp_call won't send an IPI and should be
+> handled in that flush_foo_from_idle() call.
 
-I love your patch! Perhaps something to improve:
+Aren't all these planned to wakeup on local cpu  ? so i don't  see any
+real problem there
 
-[auto build test WARNING on s390/features]
-[also build test WARNING on kvms390/next]
-[cannot apply to linux/master linus/master v5.16-rc2 next-20211126]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+>
+> I'd be tempted to stick your VincentD's conditions together, just to be
+> safe...
 
-url:    https://github.com/0day-ci/linux/commits/Baoquan-He/s390-kexec-check-the-return-value-of-ipl_report_finish/20211116-112827
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git features
-config: s390-allyesconfig (https://download.01.org/0day-ci/archive/20211126/202111261649.WZQbFG5g-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/27ed543b2d76a1d948c64d4404c180ba31ca8cff
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Baoquan-He/s390-kexec-check-the-return-value-of-ipl_report_finish/20211116-112827
-        git checkout 27ed543b2d76a1d948c64d4404c180ba31ca8cff
-        # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=s390 
+More than safe I would prefer that we fix the correct root cause
+instead of hiding it
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
-   arch/s390/kernel/ipl.c: In function 'ipl_report_finish':
->> arch/s390/kernel/ipl.c:2159:24: warning: returning 'void *' from a function with return type 'int' makes integer from pointer without a cast [-Wint-conversion]
-    2159 |                 return ERR_PTR(-ENOMEM);
-         |                        ^~~~~~~~~~~~~~~~
-
-
-vim +2159 arch/s390/kernel/ipl.c
-
-937347ac56bfca Martin Schwidefsky 2019-02-25  2146  
-27ed543b2d76a1 Baoquan He         2021-11-16  2147  int ipl_report_finish(struct ipl_report *report, void **ipl_buf)
-937347ac56bfca Martin Schwidefsky 2019-02-25  2148  {
-937347ac56bfca Martin Schwidefsky 2019-02-25  2149  	struct ipl_report_certificate *cert;
-937347ac56bfca Martin Schwidefsky 2019-02-25  2150  	struct ipl_report_component *comp;
-937347ac56bfca Martin Schwidefsky 2019-02-25  2151  	struct ipl_rb_certificates *certs;
-937347ac56bfca Martin Schwidefsky 2019-02-25  2152  	struct ipl_parameter_block *ipib;
-937347ac56bfca Martin Schwidefsky 2019-02-25  2153  	struct ipl_rb_components *comps;
-937347ac56bfca Martin Schwidefsky 2019-02-25  2154  	struct ipl_rl_hdr *rl_hdr;
-937347ac56bfca Martin Schwidefsky 2019-02-25  2155  	void *buf, *ptr;
-937347ac56bfca Martin Schwidefsky 2019-02-25  2156  
-937347ac56bfca Martin Schwidefsky 2019-02-25  2157  	buf = vzalloc(report->size);
-937347ac56bfca Martin Schwidefsky 2019-02-25  2158  	if (!buf)
-937347ac56bfca Martin Schwidefsky 2019-02-25 @2159  		return ERR_PTR(-ENOMEM);
-937347ac56bfca Martin Schwidefsky 2019-02-25  2160  	ptr = buf;
-937347ac56bfca Martin Schwidefsky 2019-02-25  2161  
-937347ac56bfca Martin Schwidefsky 2019-02-25  2162  	memcpy(ptr, report->ipib, report->ipib->hdr.len);
-937347ac56bfca Martin Schwidefsky 2019-02-25  2163  	ipib = ptr;
-937347ac56bfca Martin Schwidefsky 2019-02-25  2164  	if (ipl_secure_flag)
-937347ac56bfca Martin Schwidefsky 2019-02-25  2165  		ipib->hdr.flags |= IPL_PL_FLAG_SIPL;
-937347ac56bfca Martin Schwidefsky 2019-02-25  2166  	ipib->hdr.flags |= IPL_PL_FLAG_IPLSR;
-937347ac56bfca Martin Schwidefsky 2019-02-25  2167  	ptr += report->ipib->hdr.len;
-937347ac56bfca Martin Schwidefsky 2019-02-25  2168  	ptr = PTR_ALIGN(ptr, 8);
-937347ac56bfca Martin Schwidefsky 2019-02-25  2169  
-937347ac56bfca Martin Schwidefsky 2019-02-25  2170  	rl_hdr = ptr;
-937347ac56bfca Martin Schwidefsky 2019-02-25  2171  	ptr += sizeof(*rl_hdr);
-937347ac56bfca Martin Schwidefsky 2019-02-25  2172  
-937347ac56bfca Martin Schwidefsky 2019-02-25  2173  	comps = ptr;
-937347ac56bfca Martin Schwidefsky 2019-02-25  2174  	comps->rbt = IPL_RBT_COMPONENTS;
-937347ac56bfca Martin Schwidefsky 2019-02-25  2175  	ptr += sizeof(*comps);
-937347ac56bfca Martin Schwidefsky 2019-02-25  2176  	list_for_each_entry(comp, &report->components, list) {
-937347ac56bfca Martin Schwidefsky 2019-02-25  2177  		memcpy(ptr, &comp->entry, sizeof(comp->entry));
-937347ac56bfca Martin Schwidefsky 2019-02-25  2178  		ptr += sizeof(comp->entry);
-937347ac56bfca Martin Schwidefsky 2019-02-25  2179  	}
-937347ac56bfca Martin Schwidefsky 2019-02-25  2180  	comps->len = ptr - (void *)comps;
-937347ac56bfca Martin Schwidefsky 2019-02-25  2181  
-937347ac56bfca Martin Schwidefsky 2019-02-25  2182  	certs = ptr;
-937347ac56bfca Martin Schwidefsky 2019-02-25  2183  	certs->rbt = IPL_RBT_CERTIFICATES;
-937347ac56bfca Martin Schwidefsky 2019-02-25  2184  	ptr += sizeof(*certs);
-937347ac56bfca Martin Schwidefsky 2019-02-25  2185  	list_for_each_entry(cert, &report->certificates, list) {
-937347ac56bfca Martin Schwidefsky 2019-02-25  2186  		memcpy(ptr, &cert->entry, sizeof(cert->entry));
-937347ac56bfca Martin Schwidefsky 2019-02-25  2187  		ptr += sizeof(cert->entry);
-937347ac56bfca Martin Schwidefsky 2019-02-25  2188  	}
-937347ac56bfca Martin Schwidefsky 2019-02-25  2189  	certs->len = ptr - (void *)certs;
-937347ac56bfca Martin Schwidefsky 2019-02-25  2190  	rl_hdr->len = ptr - (void *)rl_hdr;
-937347ac56bfca Martin Schwidefsky 2019-02-25  2191  
-937347ac56bfca Martin Schwidefsky 2019-02-25  2192  	list_for_each_entry(cert, &report->certificates, list) {
-937347ac56bfca Martin Schwidefsky 2019-02-25  2193  		memcpy(ptr, cert->key, cert->entry.len);
-937347ac56bfca Martin Schwidefsky 2019-02-25  2194  		ptr += cert->entry.len;
-937347ac56bfca Martin Schwidefsky 2019-02-25  2195  	}
-937347ac56bfca Martin Schwidefsky 2019-02-25  2196  
-937347ac56bfca Martin Schwidefsky 2019-02-25  2197  	BUG_ON(ptr > buf + report->size);
-27ed543b2d76a1 Baoquan He         2021-11-16  2198  	*ipl_buf = buf;
-27ed543b2d76a1 Baoquan He         2021-11-16  2199  
-27ed543b2d76a1 Baoquan He         2021-11-16  2200  	return 0;
-937347ac56bfca Martin Schwidefsky 2019-02-25  2201  }
-937347ac56bfca Martin Schwidefsky 2019-02-25  2202  
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -6397,7 +6397,8 @@ static int select_idle_sibling(struct
+> > task_struct *p, int prev, int target)
+> >          * essentially a sync wakeup. An obvious example of this
+> >          * pattern is IO completions.
+> >          */
+> > -       if (is_per_cpu_kthread(current) &&
+> > +       if (!in_interrupt() &&
+> > +           is_per_cpu_kthread(current) &&
+> >             prev == smp_processor_id() &&
+> >             this_rq()->nr_running <= 1) {
+> >                 return prev;
+> >
+> >>
+> >> >
+> >> >> --
+> >> >> 2.25.1
+> >> >>
