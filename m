@@ -2,104 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A98D45F318
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 18:40:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD20545F2CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 18:20:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234729AbhKZRoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 12:44:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbhKZRmB (ORCPT
+        id S236326AbhKZRXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 12:23:55 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:28950 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231310AbhKZRVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 12:42:01 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0108C06137E;
-        Fri, 26 Nov 2021 09:18:21 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id x6so41484206edr.5;
-        Fri, 26 Nov 2021 09:18:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YszGERDeECoMOZaP29/5y/59DxPqeaNztlt3/qz1DSQ=;
-        b=YURDCbcg2Zi2uj6U53+fUclZRJ+Z6QuyvcHC8U2BW+t3nuWnO1YVaLZ6tmaxtHMjcP
-         lN9SUJu0DqaBoPJ+UIDuC8cxEgLPEh8V2VnKsNXJSED5KaAaUp3rG8rpge+Eg4RZsVg5
-         /jjZEKrS+xWMvT2iSi4EETruqrrcFkMctYzpyTgXORfIo1lsuvZcmVX97Gs9oy/5Bo75
-         5SQ281z5DYXXn7TUQWak8+NCNnorbvo5Oh0eSkmBEaiej62Uc7AJjAOIGUfACHWFDSQw
-         QOy3Vim6eycMIxunHc9iPGzRzaHjLP4zBjo8CcKkI35DEOqG+2dmNAIfPPosfuCECaLt
-         PQaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YszGERDeECoMOZaP29/5y/59DxPqeaNztlt3/qz1DSQ=;
-        b=IUHeJ0XnRVTawNSrnayr2uN/6u0+kq7x7iVJYbumCtdLfX1TjJg4fD+9Q5kcw6hP0/
-         vy04J6dSP0aO6zqzU9Ly2xgC47NB10DYLPORUO+wWwkTBjhBMmCWrWygXwglNY9SmmMm
-         hR0Sxn79ZfM1DTn6kBat+43IUkQvqXsrMMNEEesEFonElBDcOZvT8w3E2vEMHBJmkkyu
-         Wdk35KSDCIPzDQku1k8y8jFngzymFeqrCf27Jf2+bVKeOSlsAgfKz5U8d5x4s7LxsH/j
-         jXbVgygR84uYMUC93/BtjkODghypYvTs5ae4yPLEHmuXisX5vweuDL4yuo46wA3iE0Ng
-         PNDQ==
-X-Gm-Message-State: AOAM531z2ocEY44gAtV+rjF5+lkpNPJlBtJWXvzekiQezNgWYwT2VTdC
-        wQZAthvf0relmgF3hKiFWic=
-X-Google-Smtp-Source: ABdhPJyqvxtKrHddLLi/xtSEJmBvf/jHJglJSqpUHfu4TNZIhPrFrC2N7hDDaAJQlNbbFeRHDmO1aA==
-X-Received: by 2002:a05:6402:11cb:: with SMTP id j11mr51131484edw.38.1637947100439;
-        Fri, 26 Nov 2021 09:18:20 -0800 (PST)
-Received: from skbuf ([188.25.173.50])
-        by smtp.gmail.com with ESMTPSA id hp3sm3565638ejc.61.2021.11.26.09.18.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Nov 2021 09:18:19 -0800 (PST)
-Date:   Fri, 26 Nov 2021 19:18:18 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Richard Cochran <richardcochran@gmail.com>
-Cc:     Kurt Kanzenbach <kurt@linutronix.de>,
-        Martin Kaistra <martin.kaistra@linutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 7/7] net: dsa: b53: Expose PTP timestamping ioctls to
- userspace
-Message-ID: <20211126171818.bvlxjoz7hu5w7bi5@skbuf>
-References: <20211106001804.GA24062@hoboy.vegasvil.org>
- <20211106003606.qvfkitgyzoutznlw@skbuf>
- <20211107140534.GB18693@hoboy.vegasvil.org>
- <20211107142703.tid4l4onr6y2gxic@skbuf>
- <20211108144824.GD7170@hoboy.vegasvil.org>
- <20211125170518.socgptqrhrds2vl3@skbuf>
- <87r1b3nw93.fsf@kurt>
- <20211126163108.GA27081@hoboy.vegasvil.org>
- <CA+h21hq=6eMrCJ=TS+zdrxHhuxcmVFLU0hzGmhLXUGFU-vLhPg@mail.gmail.com>
- <20211126170348.GE27081@hoboy.vegasvil.org>
+        Fri, 26 Nov 2021 12:21:54 -0500
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-85-p6P5kx9jPIac9PXsayavaA-1; Fri, 26 Nov 2021 17:18:35 +0000
+X-MC-Unique: p6P5kx9jPIac9PXsayavaA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.26; Fri, 26 Nov 2021 17:18:34 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.026; Fri, 26 Nov 2021 17:18:34 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Eric Dumazet' <edumazet@google.com>,
+        Noah Goldstein <goldstein.w.n@gmail.com>
+CC:     Johannes Berg <johannes@sipsolutions.net>,
+        "alexanderduyck@fb.com" <alexanderduyck@fb.com>,
+        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
+        "lkp@intel.com" <lkp@intel.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        X86 ML <x86@kernel.org>
+Subject: RE: [tip:x86/core 1/1] arch/x86/um/../lib/csum-partial_64.c:98:12:
+ error: implicit declaration of function 'load_unaligned_zeropad'
+Thread-Topic: [tip:x86/core 1/1] arch/x86/um/../lib/csum-partial_64.c:98:12:
+ error: implicit declaration of function 'load_unaligned_zeropad'
+Thread-Index: AQHX4bFY91qWVfGwmUGWCXjqsQaln6wWDW5Q
+Date:   Fri, 26 Nov 2021 17:18:34 +0000
+Message-ID: <4dbf7f8d095b46a8a45e285d0ec8f8b0@AcuMS.aculab.com>
+References: <CANn89i+hQTn26hK-4CA=cAwCxEMzogqD30PYdqz4NP8kjmH2gg@mail.gmail.com>
+ <CANn89i+K6=Kc0weayD_phAPn9YT=2UUje+1BZfg=kUiLp7ELqQ@mail.gmail.com>
+ <619eee05.1c69fb81.4b686.4bbc@mx.google.com>
+ <CANn89iJdQ1VTLYUKu1hYNm4wF__ZzrwNYr28v_vGM0MCybJpxg@mail.gmail.com>
+ <CAFUsyf+5zp+p_0TPFLr-fMNry0M_CnNAFDG30PKDuy2jA5MhNw@mail.gmail.com>
+ <CANn89iLtZmSyBYtvJ0nxdrM3CKyf3D9y9AWBC4GVbPCxtjOROw@mail.gmail.com>
+In-Reply-To: <CANn89iLtZmSyBYtvJ0nxdrM3CKyf3D9y9AWBC4GVbPCxtjOROw@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211126170348.GE27081@hoboy.vegasvil.org>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 09:03:48AM -0800, Richard Cochran wrote:
-> On Fri, Nov 26, 2021 at 06:42:57PM +0200, Vladimir Oltean wrote:
-> > I'm still missing something obvious, aren't I?
-> 
-> You said there are "many more" drivers with this bug, but I'm saying
-> that most drivers correctly upgrade the ioctl request.
-> 
-> So far we have b53 and ocelot doing the buggy downgrade.  I guess it
-> will require a tree wide audit to discover the "many more"...
+RnJvbTogRXJpYyBEdW1hemV0DQo+IFNlbnQ6IDI1IE5vdmVtYmVyIDIwMjEgMDQ6MDENCi4uLg0K
+PiA+IFRoZSBvdXRwdXRzIHNlZW0gdG8gbWF0Y2ggaWYgYGJ1ZmZgIGlzIGFsaWduZWQgdG8gNjQt
+Yml0LiBTdGlsbCBzZWUNCj4gPiBkaWZmZXJlbmNlIHdpdGggYGNzdW1fZm9sZChjc3VtX3BhcnRp
+YWwoKSlgIGlmIGBidWZmYCBpcyBub3QgNjQtYml0IGFsaWduZWQuDQo+ID4NCj4gPiBUaGUgY29t
+bWVudCBhdCB0aGUgdG9wIHNheXMgaXQncyAiYmVzdCIgdG8gaGF2ZSBgYnVmZmAgNjQtYml0IGFs
+aWduZWQgYnV0DQo+ID4gdGhlIGNvZGUgbG9naWMgc2VlbXMgbWVhbnQgdG8gc3VwcG9ydCB0aGUg
+bWlzYWxpZ25lZCBjYXNlIHNvIG5vdA0KPiA+IHN1cmUgaWYgaXQncyBhbiBpc3N1ZS4NCj4gPg0K
+PiANCj4gSXQgaXMgYW4gaXNzdWUgaW4gZ2VuZXJhbCwgbm90IGluIHN0YW5kYXJkIGNhc2VzIGJl
+Y2F1c2UgbmV0d29yaw0KPiBoZWFkZXJzIGFyZSBhbGlnbmVkLg0KPiANCj4gSSB0aGluayBpdCBj
+YW1lIHdoZW4gSSBmb2xkZWQgY3N1bV9wYXJ0aWFsKCkgYW5kIGRvX2NzdW0oKSwgSSBmb3Jnb3QN
+Cj4gdG8gcm9yKCkgdGhlIHNlZWQuDQo+IA0KPiBJIHN1c3BlY3QgdGhlIGZvbGxvd2luZyB3b3Vs
+ZCBoZWxwOg0KPiANCj4gZGlmZiAtLWdpdCBhL2FyY2gveDg2L2xpYi9jc3VtLXBhcnRpYWxfNjQu
+YyBiL2FyY2gveDg2L2xpYi9jc3VtLXBhcnRpYWxfNjQuYw0KPiBpbmRleCAxZWI4ZjJkMTFmN2M3
+ODViZTYyNGViYTMxNWZlOWNhNzk4OWZkNTZkLi5lZTdiMGU3YTYwNTViY2JlZjQyZDIyZjdlMWQ4
+ZjUyZGRiZDZiZTZkDQo+IDEwMDY0NA0KPiAtLS0gYS9hcmNoL3g4Ni9saWIvY3N1bS1wYXJ0aWFs
+XzY0LmMNCj4gKysrIGIvYXJjaC94ODYvbGliL2NzdW0tcGFydGlhbF82NC5jDQo+IEBAIC00MSw2
+ICs0MSw3IEBAIF9fd3N1bSBjc3VtX3BhcnRpYWwoY29uc3Qgdm9pZCAqYnVmZiwgaW50IGxlbiwg
+X193c3VtIHN1bSkNCj4gICAgICAgICBpZiAodW5saWtlbHkob2RkKSkgew0KPiAgICAgICAgICAg
+ICAgICAgaWYgKHVubGlrZWx5KGxlbiA9PSAwKSkNCj4gICAgICAgICAgICAgICAgICAgICAgICAg
+cmV0dXJuIHN1bTsNCj4gKyAgICAgICAgICAgICAgIHRlbXA2NCA9IHJvcjMyKChfX2ZvcmNlIHU2
+NClzdW0sIDgpOw0KPiAgICAgICAgICAgICAgICAgdGVtcDY0ICs9ICgqKHVuc2lnbmVkIGNoYXIg
+KilidWZmIDw8IDgpOw0KPiAgICAgICAgICAgICAgICAgbGVuLS07DQo+ICAgICAgICAgICAgICAg
+ICBidWZmKys7DQoNCllvdSBjYW4gc2F2ZSBhbiBpbnN0cnVjdGlvbiAoYXMgaWYgdGhpcyBwYXRo
+IG1hdHRlcnMpIGJ5Og0KCQkJdGVtcDY0ID0gc3VtICsgKih1bnNpZ25lZCBjaGFyICopYnVmZjsN
+CgkJCXRlbXA2NCA8PD0gODsNCkFsdGhvdWdoIHRoYXQgcHJvYmFibHkgZmFsbHMgZm91bCBvZiA2
+NGJpdCBzaGlmdHMgYmVpbmcgc2xvdy4NClNvIG1heWJlIGp1c3Q6DQoJCQlzdW0gKz0gKih1bnNp
+Z25lZCBjaGFyICopYnVmZjsNCgkJCXRlbXA2NCA9IGJzd2FwMzIoc3VtKTsNCkFGQUlDVCAoZnJv
+bSBhIHBkZikgYnN3YXAzMigpIGFuZCByb3IoeCwgOCkgYXJlIGxpa2VseSB0byBiZQ0KdGhlIHNh
+bWUgc3BlZWQgYnV0IG1heSB1c2UgZGlmZmVyZW50IGV4ZWN1dGlvbiB1bml0cy4NCg0KSW50ZWwg
+c2VlbSBzbyBoYXZlIG1hbmFnZWQgdG8gc2xvdyBkb3duIHJvcih4LCAlY2wpIHRvIDMgY2xvY2tz
+DQppbiBzYW5keSBicmlkZ2UgLSBhbmQgc3RpbGwgbm90IGZpeGVkIGl0Lg0KQWx0aG91Z2ggdGhl
+IGNvbXBpbGVyIG1pZ2h0IGJlIG1ha2luZyBhIHBpZ3MtYnJlYWtmYXN0IG9mIHRoZQ0KcmVnaXN0
+ZXIgYWxsb2NhdGlvbiB3aGVuIHlvdSB0cmllZCBzZXR0aW5nICdvZGQgPSA4Jy4NCg0KV2Vla3Mg
+Y2FuIGJlIHNwZW50IGZpZGRsaW5nIHdpdGggdGhpcyBjb2RlIDotKA0KDQoJRGF2aWQNCg0KLQ0K
+UmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1p
+bHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVz
+KQ0K
 
-Ah, yes, I assure you that there are many more drivers doing wacky
-stuff, for example sja1105 will take any RX filter that isn't NONE, and
-then reports it back as PTP_V2_L2_EVENT.
-https://elixir.bootlin.com/linux/latest/source/drivers/net/dsa/sja1105/sja1105_ptp.c#L89
-
-Somehow at this stage I don't even want to know about any other drivers,
-since I might feel the urge to patch them and I don't really have the
-necessary free time for that right now :D
