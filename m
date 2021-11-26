@@ -2,112 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB42745EA39
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 10:21:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA8945E9DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 10:04:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238592AbhKZJYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 04:24:39 -0500
-Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17285 "EHLO
-        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238495AbhKZJWi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 04:22:38 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1637903008; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=kTT6Em4JDS6/n2VGliGLaE9S+PknFWxGAUiJO4w9UcrhWM6NIlMzAx+PtzMv9HHDSNv2cP27qumLZNCOYVAznwtp8lXf6M/LqY/Gq/p/xzSUwgrV46aHdZiKMf+5JRO3Rs62wyy89VzmskC+loYa07G1bKLiqEwExGzYIzOszds=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1637903008; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
-        bh=e1fy8d/F7bO0bxbGs9DFbseWsVknlDYWORiYHfsGIf8=; 
-        b=D+d85SWg0ltZ94GnKtm7vV4/uUrRM6weqrb89FGTFtj4m89M2NfrXFUGJ9ojdiV/cZ7+gXsL/DBAa5KTV0Lqxv9KvyfNtzn2BrUtCvKpdzg8Gea5yYl3qHhHkcIcA/HcrdwmahOTG4+DUxHVrliJfPOrrOC6vMZtZRPBfJibA2Q=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1637903008;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=e1fy8d/F7bO0bxbGs9DFbseWsVknlDYWORiYHfsGIf8=;
-        b=Nl3r5ejY1FHl1ts5hqefnDJ9sJvZpsLJORZ3A4KioqoF7ibhdDL7ysWhdndMlvgk
-        bhsk/ZFNRmLwXCekMD84/SnA7kYzSfipuQe6dfXL/7ye+fUekX6MpcNkMD/JsBtfPKT
-        eXfIDlXUdRRy6lvszTi851IoRCvWRkSeoVID5kQk=
-Received: from mail.baihui.com by mx.zoho.com.cn
-        with SMTP id 163790300607680.6143952720198; Fri, 26 Nov 2021 13:03:26 +0800 (CST)
-Date:   Fri, 26 Nov 2021 13:03:26 +0800
-From:   Chengguang Xu <cgxu519@mykernel.net>
-Reply-To: cgxu519@mykernel.net
-To:     "Amir Goldstein" <amir73il@gmail.com>
-Cc:     "Miklos Szeredi" <miklos@szeredi.hu>, "Jan Kara" <jack@suse.cz>,
-        "overlayfs" <linux-unionfs@vger.kernel.org>,
-        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "Chengguang Xu" <charliecgxu@tencent.com>
-Message-ID: <17d5aa0795d.fdfda4a49855.5158536783597235118@mykernel.net>
-In-Reply-To: <CAOQ4uxhrg=MAL7sArmP47oyF_QmhG-1b=srs30VNdiT-9s-P0w@mail.gmail.com>
-References: <20211122030038.1938875-1-cgxu519@mykernel.net> <20211122030038.1938875-8-cgxu519@mykernel.net> <CAOQ4uxhrg=MAL7sArmP47oyF_QmhG-1b=srs30VNdiT-9s-P0w@mail.gmail.com>
-Subject: Re: [RFC PATCH V6 7/7] ovl: implement containerized syncfs for
- overlayfs
+        id S1359788AbhKZJGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 04:06:40 -0500
+Received: from comms.puri.sm ([159.203.221.185]:35038 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1376262AbhKZJEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 04:04:38 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id B4A69E1252;
+        Fri, 26 Nov 2021 01:01:25 -0800 (PST)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id GyawlSRMnNDE; Fri, 26 Nov 2021 01:01:21 -0800 (PST)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     martin.kepplinger@puri.sm, mchehab@kernel.org, broonie@kernel.org,
+        sakari.ailus@linux.intel.com
+Cc:     kernel@puri.sm, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-pm@vger.kernel.org,
+        Angus Ainslie <angus@akkea.ca>
+Subject: [PATCH v2] media: i2c: dw9714: add optional regulator support
+Date:   Fri, 26 Nov 2021 10:01:07 +0100
+Message-Id: <20211126090107.1243558-1-martin.kepplinger@puri.sm>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Importance: Medium
-User-Agent: ZohoCN Mail
-X-Mailer: ZohoCN Mail
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=80, 2021-11-22 15:40:59 Amir Golds=
-tein <amir73il@gmail.com> =E6=92=B0=E5=86=99 ----
- > On Mon, Nov 22, 2021 at 5:01 AM Chengguang Xu <cgxu519@mykernel.net> wro=
-te:
- > >
- > > From: Chengguang Xu <charliecgxu@tencent.com>
- > >
- > > Now overlayfs can only sync own dirty inodes during syncfs,
- > > so remove unnecessary sync_filesystem() on upper file system.
- > >
- > > Signed-off-by: Chengguang Xu <charliecgxu@tencent.com>
- > > ---
- > >  fs/overlayfs/super.c | 14 +++++---------
- > >  1 file changed, 5 insertions(+), 9 deletions(-)
- > >
- > > diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
- > > index ccffcd96491d..213b795a6a86 100644
- > > --- a/fs/overlayfs/super.c
- > > +++ b/fs/overlayfs/super.c
- > > @@ -292,18 +292,14 @@ static int ovl_sync_fs(struct super_block *sb, i=
-nt wait)
- > >         /*
- > >          * Not called for sync(2) call or an emergency sync (SB_I_SKIP=
-_SYNC).
- > >          * All the super blocks will be iterated, including upper_sb.
- > > -        *
- > > -        * If this is a syncfs(2) call, then we do need to call
- > > -        * sync_filesystem() on upper_sb, but enough if we do it when =
-being
- > > -        * called with wait =3D=3D 1.
- > >          */
- > > -       if (!wait)
- > > -               return 0;
- > > -
- > >         upper_sb =3D ovl_upper_mnt(ofs)->mnt_sb;
- > > -
- > >         down_read(&upper_sb->s_umount);
- > > -       ret =3D sync_filesystem(upper_sb);
- > > +       if (wait)
- > > +               wait_sb_inodes(upper_sb);
- > > +       if (upper_sb->s_op->sync_fs)
- > > +               upper_sb->s_op->sync_fs(upper_sb, wait);
- > > +       ret =3D ovl_sync_upper_blockdev(upper_sb, wait);
- >=20
- > I think it will be cleaner to use a helper ovl_sync_upper_filesystem()
- > with everything from  upper_sb =3D ... and a comment to explain that
- > this is a variant of __sync_filesystem() where all the dirty inodes writ=
-e
- > have already been started.
- >=20
-=20
-I agree with you.=20
+From: Angus Ainslie <angus@akkea.ca>
 
-Thanks,
-Chengguang
+Allow the dw9714 to control a regulator and adjust suspend() and resume()
+to support both runtime and system pm.
+
+Signed-off-by: Angus Ainslie <angus@akkea.ca>
+Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+---
+
+revision history
+----------------
+
+v2: (thank you Mark)
+ * simplify the regulator_get_optional() error path
+ * fix regulator usage during probe()
+
+v1:
+https://lore.kernel.org/linux-media/20211125080922.978583-1-martin.kepplinger@puri.sm/
+
+
+
+ drivers/media/i2c/dw9714.c | 39 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+
+diff --git a/drivers/media/i2c/dw9714.c b/drivers/media/i2c/dw9714.c
+index 3863dfeb8293..e8cc19b89861 100644
+--- a/drivers/media/i2c/dw9714.c
++++ b/drivers/media/i2c/dw9714.c
+@@ -5,6 +5,7 @@
+ #include <linux/i2c.h>
+ #include <linux/module.h>
+ #include <linux/pm_runtime.h>
++#include <linux/regulator/consumer.h>
+ #include <media/v4l2-ctrls.h>
+ #include <media/v4l2-device.h>
+ #include <media/v4l2-event.h>
+@@ -36,6 +37,7 @@ struct dw9714_device {
+ 	struct v4l2_ctrl_handler ctrls_vcm;
+ 	struct v4l2_subdev sd;
+ 	u16 current_val;
++	struct regulator *vcc;
+ };
+ 
+ static inline struct dw9714_device *to_dw9714_vcm(struct v4l2_ctrl *ctrl)
+@@ -145,6 +147,21 @@ static int dw9714_probe(struct i2c_client *client)
+ 	if (dw9714_dev == NULL)
+ 		return -ENOMEM;
+ 
++	dw9714_dev->vcc = devm_regulator_get_optional(&client->dev, "vcc");
++	if (IS_ERR(dw9714_dev->vcc)) {
++		dev_dbg(&client->dev, "No vcc regulator found: %ld\n",
++			PTR_ERR(dw9714_dev->vcc));
++		dw9714_dev->vcc = NULL;
++	}
++
++	if (dw9714_dev->vcc) {
++		rval = regulator_enable(dw9714_dev->vcc);
++		if (rval < 0) {
++			dev_err(&client->dev, "failed to enable vcc: %d\n", rval);
++			return rval;
++		}
++	}
++
+ 	v4l2_i2c_subdev_init(&dw9714_dev->sd, client, &dw9714_ops);
+ 	dw9714_dev->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE |
+ 				V4L2_SUBDEV_FL_HAS_EVENTS;
+@@ -200,6 +217,9 @@ static int __maybe_unused dw9714_vcm_suspend(struct device *dev)
+ 	struct dw9714_device *dw9714_dev = sd_to_dw9714_vcm(sd);
+ 	int ret, val;
+ 
++	if (pm_runtime_suspended(&client->dev))
++		return 0;
++
+ 	for (val = dw9714_dev->current_val & ~(DW9714_CTRL_STEPS - 1);
+ 	     val >= 0; val -= DW9714_CTRL_STEPS) {
+ 		ret = dw9714_i2c_write(client,
+@@ -208,6 +228,13 @@ static int __maybe_unused dw9714_vcm_suspend(struct device *dev)
+ 			dev_err_once(dev, "%s I2C failure: %d", __func__, ret);
+ 		usleep_range(DW9714_CTRL_DELAY_US, DW9714_CTRL_DELAY_US + 10);
+ 	}
++
++	if (dw9714_dev->vcc) {
++		ret = regulator_disable(dw9714_dev->vcc);
++		if (ret)
++			dev_err(dev, "Failed to disable vcc: %d\n", ret);
++	}
++
+ 	return 0;
+ }
+ 
+@@ -224,6 +251,18 @@ static int  __maybe_unused dw9714_vcm_resume(struct device *dev)
+ 	struct dw9714_device *dw9714_dev = sd_to_dw9714_vcm(sd);
+ 	int ret, val;
+ 
++	if (pm_runtime_suspended(&client->dev))
++		return 0;
++
++	if (dw9714_dev->vcc) {
++		ret = regulator_enable(dw9714_dev->vcc);
++		if (ret) {
++			dev_err(dev, "Failed to enable vcc: %d\n", ret);
++			return ret;
++		}
++		usleep_range(1000, 2000);
++	}
++
+ 	for (val = dw9714_dev->current_val % DW9714_CTRL_STEPS;
+ 	     val < dw9714_dev->current_val + DW9714_CTRL_STEPS - 1;
+ 	     val += DW9714_CTRL_STEPS) {
+-- 
+2.30.2
+
