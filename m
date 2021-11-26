@@ -2,177 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 719D445E9AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:53:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C037B45E9AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:54:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359338AbhKZI4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 03:56:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49246 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1359387AbhKZIyk (ORCPT
+        id S1353892AbhKZI5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 03:57:19 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:36026 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344599AbhKZIzL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 03:54:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637916687;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Fri, 26 Nov 2021 03:55:11 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id CDB5B1FDFC;
+        Fri, 26 Nov 2021 08:51:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637916717; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=buxrUV+g6E7RgVJ5J84jnki/Cx5fv7dc0O2MOtNji5E=;
-        b=WGzQH/BzAFcveQFiX4iYUNaELgpUcqefBRVGfYWjwLQwBjDdMID5B3zGudzmagV7GwnDwG
-        W6XtniruGTiG70aSHA4DEQYmfWx7noEiOgrv1oaiHa5nUzbO1/YKDTfoQDhwwHiitG97b7
-        xnIaOTrjH03Yszt6Cp0m7tmkx5eEpEQ=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-288-XwtCo46WNWaQh-k4fGgyLA-1; Fri, 26 Nov 2021 03:51:26 -0500
-X-MC-Unique: XwtCo46WNWaQh-k4fGgyLA-1
-Received: by mail-wr1-f71.google.com with SMTP id h13-20020adfa4cd000000b001883fd029e8so1551125wrb.11
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 00:51:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=buxrUV+g6E7RgVJ5J84jnki/Cx5fv7dc0O2MOtNji5E=;
-        b=W/2TmB0WGf2DQZoDM5INToLxTHwLUiVtt1Olnpn9xCu7k63tgyHG3LepFV9+9jNKX6
-         gol5TiHqRSKimFIKqpzXhu33Zsw+gKx5XH2VZoApAF7tu3la0wW9a8IrxxhzZrgx20nj
-         utYMQsbqUwiCuNQWmRFBFCqPfpn6meMroyS5xvUIdO+Utu5JTf3JOYrfgcwedPCGlibo
-         ODgUnRWYNXp/Iy64nVdv8RE7ihG/9+R+GOQl9I9ITqxs3aqXHAUADmxA/0I4AjYuFRiY
-         GGAWLRo2V49dNBxynqKBbnfGazTjBDJkTQS1W9L1nunhjusc4RYCugrOhuu1feHYhVos
-         HDTQ==
-X-Gm-Message-State: AOAM53018aMhnKHQUeb+ZIzJ/D1msQ8vG5U2WrXRe8wdntCmNe6LAQmV
-        v0FwUNLgtcAJ7Wik5281LoHzJePZIoIlfy20YTXUgfWd9qN/nRdGkdvN+8o6fcHvNcZlaYffvjF
-        lM1Yq5wrM7Y7dIYHmaMLW+6YD
-X-Received: by 2002:adf:9e01:: with SMTP id u1mr12555720wre.561.1637916684810;
-        Fri, 26 Nov 2021 00:51:24 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz+zRTh3M3Te7Zo+O1GLnjMROjijj+1i34zEBnuPKXwHZMOgzY2YMCX6RlCP4Doiy0fPswqhw==
-X-Received: by 2002:adf:9e01:: with SMTP id u1mr12555706wre.561.1637916684638;
-        Fri, 26 Nov 2021 00:51:24 -0800 (PST)
-Received: from [192.168.3.132] (p5b0c69e1.dip0.t-ipconnect.de. [91.12.105.225])
-        by smtp.gmail.com with ESMTPSA id f7sm12695103wmg.6.2021.11.26.00.51.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Nov 2021 00:51:24 -0800 (PST)
-Message-ID: <74c1d756-3f7c-7085-0ae9-2c082dce63b2@redhat.com>
-Date:   Fri, 26 Nov 2021 09:51:23 +0100
+        bh=GO/CEFsKscptchxk94rFkxTwkn3ZTcCkh+pO7jjo1Es=;
+        b=kSRqac9d9tMPzRCBw4x9ALwwMpGbHjlXjAGfMe5mW+WlqJ97igIdgpLIEeR0PRfqUdPVdb
+        wAkM9Q5W20L0ZeduQWiov0Zlnn2DF+MDqP/UpBRozpOoVs9Rklya8nIIMrVO0pX1YiMGcY
+        DLBDjFpgbupXwieKpxBvA4jklBYJcTA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637916717;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GO/CEFsKscptchxk94rFkxTwkn3ZTcCkh+pO7jjo1Es=;
+        b=cKo39gTtmrK28q8KZrUwHcA4hSA6wcUHTimQZsFM5/B4jbsQcybhQ1n7AbbtgP3asLCPx0
+        zMFrHu7XbFwpSyAQ==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id 49F6FA3B81;
+        Fri, 26 Nov 2021 08:51:57 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 38F7B1E11F3; Fri, 26 Nov 2021 09:51:54 +0100 (CET)
+Date:   Fri, 26 Nov 2021 09:51:54 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Chengguang Xu <cgxu519@mykernel.net>
+Cc:     miklos@szeredi.hu, jack@suse.cz, amir73il@gmail.com,
+        linux-unionfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chengguang Xu <charliecgxu@tencent.com>
+Subject: Re: [RFC PATCH V6 1/7] ovl: setup overlayfs' private bdi
+Message-ID: <20211126085154.GA13004@quack2.suse.cz>
+References: <20211122030038.1938875-1-cgxu519@mykernel.net>
+ <20211122030038.1938875-2-cgxu519@mykernel.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH AUTOSEL 5.15 7/7] virtio-mem: support
- VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE
-Content-Language: en-US
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Marek Kedzierski <mkedzier@redhat.com>,
-        Hui Zhu <teawater@gmail.com>,
-        Sebastien Boeuf <sebastien.boeuf@intel.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        virtualization@lists.linux-foundation.org
-References: <20211126023006.440839-1-sashal@kernel.org>
- <20211126023006.440839-7-sashal@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20211126023006.440839-7-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211122030038.1938875-2-cgxu519@mykernel.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.11.21 03:30, Sasha Levin wrote:
-> From: David Hildenbrand <david@redhat.com>
+On Mon 22-11-21 11:00:32, Chengguang Xu wrote:
+> From: Chengguang Xu <charliecgxu@tencent.com>
 > 
-> [ Upstream commit 61082ad6a6e1f999eef7e7e90046486c87933b1e ]
+> Setup overlayfs' private bdi so that we can collect
+> overlayfs' own dirty inodes.
 > 
-> The initial virtio-mem spec states that while unplugged memory should not
-> be read, the device still has to allow for reading unplugged memory inside
-> the usable region. The primary motivation for this default handling was
-> to simplify bringup of virtio-mem, because there were corner cases where
-> Linux might have accidentially read unplugged memory inside added Linux
-> memory blocks.
-> 
-> In the meantime, we:
-> 1. Removed /dev/kmem in commit bbcd53c96071 ("drivers/char: remove
->    /dev/kmem for good")
-> 2. Disallowed access to virtio-mem device memory via /dev/mem in
->    commit 2128f4e21aa2 ("virtio-mem: disallow mapping virtio-mem memory via
->    /dev/mem")
-> 3. Sanitized access to virtio-mem device memory via /proc/kcore in
->    commit 0daa322b8ff9 ("fs/proc/kcore: don't read offline sections,
->    logically offline pages and hwpoisoned pages")
-> 4. Sanitized access to virtio-mem device memory via /proc/vmcore in
->    commit ce2814622e84 ("virtio-mem: kdump mode to sanitize /proc/vmcore
->    access")
-> 
-> "Accidential" access to unplugged memory is no longer possible; we can
-> support the new VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE feature that will be
-> required by some hypervisors implementing virtio-mem in the near future.
-> 
-> Acked-by: Michael S. Tsirkin <mst@redhat.com>
-> Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> Cc: Jason Wang <jasowang@redhat.com>
-> Cc: Marek Kedzierski <mkedzier@redhat.com>
-> Cc: Hui Zhu <teawater@gmail.com>
-> Cc: Sebastien Boeuf <sebastien.boeuf@intel.com>
-> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> Signed-off-by: Chengguang Xu <charliecgxu@tencent.com>
+
+Looks good. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
 > ---
->  drivers/virtio/virtio_mem.c     | 1 +
->  include/uapi/linux/virtio_mem.h | 9 ++++++---
->  2 files changed, 7 insertions(+), 3 deletions(-)
+>  fs/overlayfs/super.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-> index bef8ad6bf4661..78dfdc9c98a1c 100644
-> --- a/drivers/virtio/virtio_mem.c
-> +++ b/drivers/virtio/virtio_mem.c
-> @@ -2758,6 +2758,7 @@ static unsigned int virtio_mem_features[] = {
->  #if defined(CONFIG_NUMA) && defined(CONFIG_ACPI_NUMA)
->  	VIRTIO_MEM_F_ACPI_PXM,
->  #endif
-> +	VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE,
->  };
+> diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
+> index 265181c110ae..18a12088a37b 100644
+> --- a/fs/overlayfs/super.c
+> +++ b/fs/overlayfs/super.c
+> @@ -1984,6 +1984,10 @@ static int ovl_fill_super(struct super_block *sb, void *data, int silent)
+>  	if (!ofs)
+>  		goto out;
 >  
->  static const struct virtio_device_id virtio_mem_id_table[] = {
-> diff --git a/include/uapi/linux/virtio_mem.h b/include/uapi/linux/virtio_mem.h
-> index 70e01c687d5eb..e9122f1d0e0cb 100644
-> --- a/include/uapi/linux/virtio_mem.h
-> +++ b/include/uapi/linux/virtio_mem.h
-> @@ -68,9 +68,10 @@
->   * explicitly triggered (VIRTIO_MEM_REQ_UNPLUG).
->   *
->   * There are no guarantees what will happen if unplugged memory is
-> - * read/written. Such memory should, in general, not be touched. E.g.,
-> - * even writing might succeed, but the values will simply be discarded at
-> - * random points in time.
-> + * read/written. In general, unplugged memory should not be touched, because
-> + * the resulting action is undefined. There is one exception: without
-> + * VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE, unplugged memory inside the usable
-> + * region can be read, to simplify creation of memory dumps.
->   *
->   * It can happen that the device cannot process a request, because it is
->   * busy. The device driver has to retry later.
-> @@ -87,6 +88,8 @@
->  
->  /* node_id is an ACPI PXM and is valid */
->  #define VIRTIO_MEM_F_ACPI_PXM		0
-> +/* unplugged memory must not be accessed */
-> +#define VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE	1
->  
->  
->  /* --- virtio-mem: guest -> host requests --- */
+> +	err = super_setup_bdi(sb);
+> +	if (err)
+> +		goto out_err;
+> +
+>  	err = -ENOMEM;
+>  	ofs->creator_cred = cred = prepare_creds();
+>  	if (!cred)
+> -- 
+> 2.27.0
 > 
-
-As 2. and 4. are part of v5.16-rc1 but not v5.15-stable
-
-Nacked-by: David Hildenbrand <david@redhat.com>
-
+> 
 -- 
-Thanks,
-
-David / dhildenb
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
