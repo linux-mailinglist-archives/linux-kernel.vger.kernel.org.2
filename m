@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1502D45ED9A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:10:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 776FC45ED98
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:10:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349967AbhKZMNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 07:13:21 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:31911 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377469AbhKZMLL (ORCPT
+        id S1377440AbhKZMNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 07:13:17 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:28177 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1377473AbhKZMLL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 26 Nov 2021 07:11:11 -0500
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4J0tmS0K2tzcbXN;
-        Fri, 26 Nov 2021 20:07:52 +0800 (CST)
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4J0tkL45rmz8vMk;
+        Fri, 26 Nov 2021 20:06:02 +0800 (CST)
 Received: from kwepemm600016.china.huawei.com (7.193.23.20) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2308.20; Fri, 26 Nov 2021 20:07:55 +0800
 Received: from localhost.localdomain (10.67.165.24) by
  kwepemm600016.china.huawei.com (7.193.23.20) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 26 Nov 2021 20:07:54 +0800
+ 15.1.2308.20; Fri, 26 Nov 2021 20:07:55 +0800
 From:   Guangbin Huang <huangguangbin2@huawei.com>
 To:     <davem@davemloft.net>, <kuba@kernel.org>, <wangjie125@huawei.com>
 CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <lipeng321@huawei.com>, <huangguangbin2@huawei.com>,
         <chenhao288@hisilicon.com>
-Subject: [PATCH net 1/4] net: hns3: fix VF RSS failed problem after PF enable multi-TCs
-Date:   Fri, 26 Nov 2021 20:03:15 +0800
-Message-ID: <20211126120318.33921-2-huangguangbin2@huawei.com>
+Subject: [PATCH net 2/4] net: hns3: add check NULL address for page pool
+Date:   Fri, 26 Nov 2021 20:03:16 +0800
+Message-ID: <20211126120318.33921-3-huangguangbin2@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211126120318.33921-1-huangguangbin2@huawei.com>
 References: <20211126120318.33921-1-huangguangbin2@huawei.com>
@@ -45,41 +45,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When PF is set to multi-TCs and configured mapping relationship between
-priorities and TCs, the hardware will active these settings for this PF
-and its VFs.
+From: Hao Chen <chenhao288@hisilicon.com>
 
-In this case when VF just uses one TC and its rx packets contain priority,
-and if the priority is not mapped to TC0, as other TCs of VF is not valid,
-hardware always put this kind of packets to the queue 0. It cause this kind
-of packets of VF can not be used RSS function.
+When page pool is not enabled, its address value is still NULL and page
+pool should not be accessed, so add a check for it.
 
-To fix this problem, set tc mode of all unused TCs of VF to the setting of
-TC0, then rx packet with priority which map to unused TC will be direct to
-TC0.
-
-Fixes: e2cb1dec9779 ("net: hns3: Add HNS3 VF HCL(Hardware Compatibility Layer) Support")
+Fixes: 850bfb912a6d ("net: hns3: debugfs add support dumping page pool info")
+Signed-off-by: Hao Chen <chenhao288@hisilicon.com>
 Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-index 25c419d40066..41afaeea881b 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-@@ -703,9 +703,9 @@ static int hclgevf_set_rss_tc_mode(struct hclgevf_dev *hdev,  u16 rss_size)
- 	roundup_size = ilog2(roundup_size);
- 
- 	for (i = 0; i < HCLGEVF_MAX_TC_NUM; i++) {
--		tc_valid[i] = !!(hdev->hw_tc_map & BIT(i));
-+		tc_valid[i] = 1;
- 		tc_size[i] = roundup_size;
--		tc_offset[i] = rss_size * i;
-+		tc_offset[i] = (hdev->hw_tc_map & BIT(i)) ? rss_size * i : 0;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
+index 67364ab63a1f..fbb8a5f08222 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
+@@ -1106,6 +1106,11 @@ hns3_dbg_page_pool_info(struct hnae3_handle *h, char *buf, int len)
+ 		return -EFAULT;
  	}
  
- 	hclgevf_cmd_setup_basic_desc(&desc, HCLGEVF_OPC_RSS_TC_MODE, false);
++	if (!priv->ring[h->kinfo.num_tqps].page_pool) {
++		dev_err(&h->pdev->dev, "page pool is not initialized\n");
++		return -EFAULT;
++	}
++
+ 	for (i = 0; i < ARRAY_SIZE(page_pool_info_items); i++)
+ 		result[i] = &data_str[i][0];
+ 
 -- 
 2.33.0
 
