@@ -2,150 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69FFF45EB90
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:29:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD2745EBF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:54:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377020AbhKZKcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 05:32:03 -0500
-Received: from mout.gmx.net ([212.227.15.18]:35285 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377090AbhKZKaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 05:30:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1637922384;
-        bh=obeD6+sqgmga7SssO9pkbRmhV6wRnRhhX+/nLsuEoX0=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=ESyG5jlfZJMIN/iX4X8anthjCUadoQoTAz7Bsg0aIUzc/fBN/nncymtp/Ck5LWznv
-         3iylcnyDjfNwnLxgjMevBNQ4zGGF0gR2EjkS5gNolUkfJUFngNa+hhk8VV0U8x6HtR
-         Ojsxsvni6r9QPsucjIBoG3UgLtaYNsIxo5hn6juY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.217.181]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N5G9n-1mRQPi3MRR-011A4O; Fri, 26
- Nov 2021 11:26:23 +0100
-Message-ID: <cf8040cbd4a83c3e6b1d89f6ea1a3066da11bb11.camel@gmx.de>
-Subject: Re: [PATCH 1/1] mm: vmscan: Reduce throttling due to a failure to
- make progress
-From:   Mike Galbraith <efault@gmx.de>
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Michal Hocko <mhocko@suse.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Alexey Avramov <hakavlad@inbox.lv>,
-        Rik van Riel <riel@surriel.com>,
-        Darrick Wong <djwong@kernel.org>, regressions@lists.linux.dev,
-        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Fri, 26 Nov 2021 11:26:21 +0100
-In-Reply-To: <20211125151853.8540-1-mgorman@techsingularity.net>
-References: <20211125151853.8540-1-mgorman@techsingularity.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.1 
+        id S230446AbhKZK5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 05:57:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234706AbhKZKzS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 05:55:18 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBEBDC08C5FE
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:26:34 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id r11so36862612edd.9
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:26:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8xVP94R+dRuu3FMjsfnrvAUvAbuGPe4qG4TVuPkf5ds=;
+        b=ijwB6fmPaWQjzRJgUohX1UANvy8oVBBR+qS+idmSA4fNEJuHUj5DEB0gC9yHE+k/vB
+         oifn7GLD9Qkq/Xxyu072QAEHFHlaNLVMtGkqrDPnsQRgI6xQWTTVup5UtOv9OardIEKX
+         4hYepGDW4zhs2s5BlCzBZVv4uzB68fxFIZS6d2PuKfB9DsxoRNie8nJUnZQLcx8PhoAd
+         1r2EViUfLsoTi4neD/Ur29Rzvhpwyi5BL2Ln38De4sX/X0wSeb2wrKj/uTM/iH+qzQbN
+         9wK6MCkBm36O38UWCHobL6Nc6OtqnYimMSPVgoEWELV3reg8Pjuzzk2SF473rt9jvDsB
+         he9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8xVP94R+dRuu3FMjsfnrvAUvAbuGPe4qG4TVuPkf5ds=;
+        b=mWAngdpiAnZwLLYiilvEgaibKBmXq9/GyJRE2JqEIdMRsi1gCDAZ1Pvf0ksbggFmZK
+         6/AqvfM3DXyPNw59OTsmA6jr3m1lf8kgyTupCeB+VOYDLGdMaYxtMt9gB4KQoxmeuH9H
+         w2bD84FIGRAb2h7j2AMmMrMU/8akgKBiaiCdaFvo/TMGaON0Vz4nRAiRTFj7Ui8Q4CHL
+         z8JUzzu1BTihVpCNHCRdMbP14OJmWMZjUKcrAAywXYevwicyfdOxvZ920WWdjrmMn3av
+         s+kNcom/HfeGvIa26U/xmLWd4p1dYXwMuBKorjOs/sw24F+X/8As0Y6CzIvBu2G8KINR
+         aJmw==
+X-Gm-Message-State: AOAM533HMIfGZm8KZOFDmWt7/VCKc6J6vGyUBGNfbRFhVqACAJMsKEgw
+        mEQ9omkAAI9zLIXNUfh72YcDrft6dN7AsEWW9JUajA==
+X-Google-Smtp-Source: ABdhPJxHpPq8QHs5cdLpGQZe3oZAPOqQ10mo8SvSXXxwo6nGNyHZs6l7zJKx5JJqwYaw3RAR6Ib+l8cYePFGXHnr3Mg=
+X-Received: by 2002:a05:6402:2813:: with SMTP id h19mr46686676ede.267.1637922393451;
+ Fri, 26 Nov 2021 02:26:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:atLP9Gml7Z7TDmeDtb+384j5teVIu0zYxgKfva1m2rHvt4sNBbk
- zIpbfQbIwZ5CuaUu6v41luPKqQj/w35VDSI8fYqDqTjuzjL3/Ynm0zkR979zbtgkNIWdO6e
- lLPId74dSRUmxvidBm4ok0ek8qafghD4uHhhEmx+f/iuFO6eOsOiqJx5gJeLHGqoKkhkOtS
- 9S0RJY03DgD4bOa+yEmVw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9qO32pdP3qM=:vw66KE9Mt4y1A8D+y12uQh
- 4vW+idEMwugJr8cyLr5DH/igXS90mq8tGTWm77KcyePvrpMIyanOKXUWetmj62GlrjCo3zwb6
- Lq8MO5xbtJ+ErfPuGuiw4eH+Gx6s3cTo2I7PFWvjRYz5wjTsc2EFSBMK52G2Vzl2Q90TkPn2U
- rAQQ81SPdzgn1H6UbOLpPwhME+clYRSpXwCWSr7lgPxBwgtFyZaTPi/tkrYUj+zMrGIoZPL1a
- DTNQLv17NkIfx4mLuqFbCVwy9oyLAWvbMjuyz3GJHz2GuM7PgLmc9aGh2DE2XkaIQdGm+kunB
- hBMLW+FlvzOEbFhwfFRX2usQxGkF2I0/+vGcIN7r3gjVKyv7ii+1/mtHQc3jmOiQey1HRAvuK
- wNNXVfKw8yspIxQv6vgLHarkXm5N0rXjlxdjfS4tyUCGeQIIk5O5Eh90TLv64JktRUQiMuZVD
- a4vyDvhFbuHb/BCzDRZMoCJGuFyfzEC5nDtty81NqH0mOQbWGp1P9gjB2VhQPBWn1HQM55BBK
- cuByUayAcBL74kSrgM0e6J6L76gmyvKUslH62ULE813qg2ensEgIrtaLly0vzPxAs8yeTYPqD
- 7McykY7GKBj688jVPHWtoJW6Drlm+naMhujf6Q/JYSVoMupYNnSIXjhjUsFAkTmH0lpZ2NR9E
- pQX720HfHZeYi6QuYxZ5lfou9eB74htq3To9Kj6/CvtmEA/tDP2tKzEpqhCibeNmaDnMZsjgc
- mHLrmRP/k9HP/LOsZcdheB0vnWZTW8RGiUc0fbEngBuegcLCoJEGyvrm5iLF/5eKBl9EqovmZ
- VIJMbv1KRA93gNl1KSsPihBWBdqnenF5KH/kimmd7uPlmqfnQXZatCbTd8K416FMXtlnWDAuc
- /yOysP1MKwuIJI+PvANmM917RBMJZ0TOubuwi/dORveq+sZB1tLgpjAck8j+DGUW8Vji+ipYQ
- nL0k3FtwO+DugS+Wr7A0rgU8gx7T5Fym4HBSXsKpx0Hu50pN5HmrQfU+qxUmX+kbcVpJhvLzy
- Tv2kxRTLIqiOeAgJKsKoRZtPYSd1J8Km0aBzERwSU85Km3NsdltwOduXe1yIFszdgpdMzSxML
- g4mrgU3EHb/Hso=
+References: <20211124114257.19878-1-brgl@bgdev.pl> <20211124114257.19878-3-brgl@bgdev.pl>
+ <CAMRc=MeR4ubyVWUmR_x99dLjovcFn3Bn9FwGKgX88-P0_PeStw@mail.gmail.com> <20211126022334.GA11357@sol>
+In-Reply-To: <20211126022334.GA11357@sol>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Fri, 26 Nov 2021 11:26:22 +0100
+Message-ID: <CAMRc=MdorxE58YRWTfCVkXOuuakXyMq=F+0HbQGJtrVmOygv7w@mail.gmail.com>
+Subject: Re: [PATCH v10 2/5] gpio: sim: new testing module
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-11-25 at 15:18 +0000, Mel Gorman wrote:
-> Mike Galbraith, Alexey Avramov and Darrick Wong all reported similar
-> problems due to reclaim throttling for excessive lengths of time.
-> In Alexey's case, a memory hog that should go OOM quickly stalls for
-> several minutes before stalling. In Mike and Darrick's cases, a small
-> memcg environment stalled excessively even though the system had enough
-> memory overall.
+On Fri, Nov 26, 2021 at 3:23 AM Kent Gibson <warthog618@gmail.com> wrote:
 >
-> Commit 69392a403f49 ("mm/vmscan: throttle reclaim when no progress is be=
-ing
-> made") introduced the problem although commit a19594ca4a8b ("mm/vmscan:
-> increase the timeout if page reclaim is not making progress") made it
-> worse. Systems at or near an OOM state that cannot be recovered must
-> reach OOM quickly and memcg should kill tasks if a memcg is near OOM.
+> On Thu, Nov 25, 2021 at 02:14:20PM +0100, Bartosz Golaszewski wrote:
+> > On Wed, Nov 24, 2021 at 12:43 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> > >
+> > > Implement a new, modern GPIO testing module controlled by configfs
+> > > attributes instead of module parameters. The goal of this driver is
+> > > to provide a replacement for gpio-mockup that will be easily extensible
+> > > with new features and doesn't require reloading the module to change
+> > > the setup.
+> > >
+> > > Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
+> > > ---
+> > >  Documentation/admin-guide/gpio/gpio-sim.rst |   80 ++
+> > >  drivers/gpio/Kconfig                        |    8 +
+> > >  drivers/gpio/Makefile                       |    1 +
+> > >  drivers/gpio/gpio-sim.c                     | 1370 +++++++++++++++++++
+> > >  4 files changed, 1459 insertions(+)
+> > >  create mode 100644 Documentation/admin-guide/gpio/gpio-sim.rst
+> > >  create mode 100644 drivers/gpio/gpio-sim.c
+> > >
+> >
+> > Hi guys!
+> >
+> > I'd like to get your opinion on some parts of the interface.
+> >
+> > Should we allow creating multiple gpiochips per platform device like
+> > some drivers do? And if so - should the sysfs groups be created for
+> > each gpiochip device kobject and not the parent?
+> >
+> > Currently we do this:
+> >
+> > # Create the chip (platform device + single gpiochip):
+> > mkdir /sys/kernel/config/gpio-sim/my-chip
+> > # Configure it
+> > echo 8 > /sys/kernel/config/gpio-sim/my-chip/num_lines
+> > # Enable it
+> > echo 1 > /sys/kernel/config/gpio-sim/my-chip/live
+> >
+> > What I mean above would make it look like this:
+> >
+> > # Create the platform device
+> > mkdir /sys/kernel/config/gpio-sim/my-gpio-device
+> >
+> > # what's inside?
+> > ls /sys/kernel/config/gpio-sim/my-gpio-device
+> > live
+> >
+> > # Create GPIO chips
+> > mkdir /sys/kernel/config/gpio-sim/my-gpio-device/chip0
+> > mkdir /sys/kernel/config/gpio-sim/my-gpio-device/chip1
+> >
+> > # Configure chips
+> > echo 8 > /sys/kernel/config/gpio-sim/my-gpio-device/chip0/num_lines
+> > echo 4 > /sys/kernel/config/gpio-sim/my-gpio-device/chip1/num_lines
+> > echo foobar > /sys/kernel/config/gpio-sim/my-gpio-device/chip1/label
+> >
+> > # Enable both chips
+> > echo 1 > /sys/kernel/config/gpio-sim/my-gpio-device/live
+> >
+> > And in sysfs instead of current:
+> >
+> > echo pull-up > /sys/devices/platform/gpio-sim.0/sim_line0/pull
+> >
+> > We'd have to do:
+> >
+> > echo pull-up > /sys/devices/platform/gpio-sim.0/gpiochip1/sim_line0/pull
+> >
+> > While I don't see any usefulness of that at this time, if we don't do
+> > it now, then it'll be hard to extend this module later. What are your
+> > thoughts?
+> >
 >
-> To address this, only stall for the first zone in the zonelist, reduce
-> the timeout to 1 tick for VMSCAN_THROTTLE_NOPROGRESS and only stall if
-> the scan control nr_reclaimed is 0 and kswapd is still active.=C2=A0 If =
-kswapd
-> has stopped reclaiming due to excessive failures, do not stall at all so
-> that OOM triggers relatively quickly.
+> I might be missing something, but I don't see the platform abstraction
+> adding anything that can't be easily emulated in userspace using multiple
+> chips, and it complicates the minimal case as you now have to create a
+> platform as well as the chip.
 
-This patch helped a ton with LTP testcases, but, the behavior of
-test_1() in memcg_regression_test.sh still looks pretty darn bad...
+I wouldn't stress about the level of complication of the user-space
+interface. Normally users will wrap it in some kind of library anyway.
 
-homer:..debug/tracing # tail -1 /trace
-    memcg_test_1-4683    [002] .....   282.319617: out_of_memory+0x194/0x4=
-40: !!oc->chosen:1
-homer:..debug/tracing # grep memcg_test_1-4683 /trace|grep sleepy|wc -l
-190 !!!
+> So I'd keep it simple and stick with the chip level abstraction.
+>
+> Cheers,
+> Kent.
+>
 
-That one memcg_test_1 instance, of 400 spawned in a memcg with its
-limit_in_bytes set to zero, slept 190 times on the way to oom-kill,
-leading a regression test that used to complete in a fraction of a
-second still taking over 8 minutes to even with the huge improvement
-$subject made.
+Yes, in user-space nothing would change as it only sees separate
+gpiochips whether they're just banks of the same device or actual
+devices of their own (except if you start digging into uevents'
+contents, then you'll see it).
 
-Poking it with the sharp stick below took it down to 20 encounters with
-reclaim_throttle(), and a tad under a minute for test_1() to complete.
+But this module is also aimed at doing some kernel subsystem testing
+(even if triggered from user-space) and providing multiple banks of
+GPIOs is a regularly used feature. Adding it allows us to test this
+other level of hierarchy + multi-level device properties etc.
 
-Reasoning: given try_charge_memcg() will loop as long as there is ANY
-progress, and each call to try_to_free_mem_cgroup_pages() therein now
-entails multiple encounters with reclaim_throttle(), allowing plenty of
-time for some progress enabling events to have occurred and benefit
-reaped by the time we return, looping again and again when having been
-throttled numerous times did NOT help at all seems now to constitute
-pointless thumb twiddling.  Or?
+Another issue is logical correctness. In this version the line
+attributes in sysfs are at the platform device level
+(/sys/platform/devices/gpio-sim.X). Logically they really should be at
+the gpio device level (/sys/platform/devices/gpio-sim.X/gpiochipY).
 
-=2D--
- mm/memcontrol.c |    5 -----
- 1 file changed, 5 deletions(-)
-
-=2D-- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2584,7 +2584,6 @@ static int try_charge_memcg(struct mem_c
- 			unsigned int nr_pages)
- {
- 	unsigned int batch =3D max(MEMCG_CHARGE_BATCH, nr_pages);
--	int nr_retries =3D MAX_RECLAIM_RETRIES;
- 	struct mem_cgroup *mem_over_limit;
- 	struct page_counter *counter;
- 	enum oom_status oom_status;
-@@ -2675,9 +2674,6 @@ static int try_charge_memcg(struct mem_c
- 	if (mem_cgroup_wait_acct_move(mem_over_limit))
- 		goto retry;
-
--	if (nr_retries--)
--		goto retry;
--
- 	if (gfp_mask & __GFP_RETRY_MAYFAIL)
- 		goto nomem;
-
-@@ -2694,7 +2690,6 @@ static int try_charge_memcg(struct mem_c
- 		       get_order(nr_pages * PAGE_SIZE));
- 	if (oom_status =3D=3D OOM_SUCCESS) {
- 		passed_oom =3D true;
--		nr_retries =3D MAX_RECLAIM_RETRIES;
- 		goto retry;
- 	}
- nomem:
-
+So I'm willing to give it a shot.
