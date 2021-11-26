@@ -2,143 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8387045F6B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 22:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D28AB45F6B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 23:02:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242135AbhKZWCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 17:02:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48844 "EHLO
+        id S243255AbhKZWGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 17:06:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241820AbhKZWAB (ORCPT
+        with ESMTP id S235626AbhKZWEH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 17:00:01 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A52C06173E
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 13:56:48 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id u3so27265983lfl.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 13:56:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=QWWtOidMzsjvAKxeAS7b8lTc05KdXZeQanVTUq2qbEo=;
-        b=GcKt20lEaAogQDEQAun3vb0IjBQ/H18zsvVKCJZqsvuBjlberwkcwifN0FAXHA/FW9
-         OU5IBLKi3cAIYY4KK8COo0liUi6zUZT9bQ1OzcQQil3rBIUqH2ZQAbOQXqdWOmAilEpH
-         kHaOL5rA6bZi68A7rjeR8h4wqrMKVAT3kAak/RFxeVuFCuMaztinDbRJ4h3B2UZk9/oG
-         WRMZ4nRta2hrIboaZLndKvO9IfokMLreyKCeFytQUyXC4jbG1t6jKTxRuGwlgD38ZkQz
-         usGUgTBH7IV6Qc2gs39BNO0MM2wi0x6JTulxLdUQjuRkrZ7RFVAmgytZO9Rn9QDQAoiE
-         7Jfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QWWtOidMzsjvAKxeAS7b8lTc05KdXZeQanVTUq2qbEo=;
-        b=Omcxci4g06Gm/kNBtNFneEYvMWBYTUaUiiYnHuSBzZ2igPhU/hPUyc+e4lPLdvY17O
-         cZBcF/RidrvepUROjgWEagCj8yex9aXA12lQyJkzXuxgS57g2Fx6ImmpU4b6WFH/0PJm
-         Z/u3tKXbG2UyvSxVU7LUZz37eYHRGVr/6YQIxeWZ9x7i41ZwKBqum+njGSRCOenDUnxG
-         MFyNkRF01RpCTHwqDXobex4+mDbvxHHAUOFV+4o79GbTJwJBB7e39PsqDTb9GnPjIdsS
-         MvM2TbwmqIVzobVRyHUU5czU+cUkp9+rO9qNzlySFH3X0Rro6cFvh+90owZeQhz1HD+t
-         KrNw==
-X-Gm-Message-State: AOAM533uPY/M237ulIIKZKlDIGoHrR9XGwekbuuTK7fgdu3nZzUWE39M
-        Ap1lk3guud0By3T25vXQ2xOrnafBQeYrKa5BN7rcnQ==
-X-Google-Smtp-Source: ABdhPJwtljwAmkD/NkmAfbPf/8CARqBuGrgIww0VlMYRN8503DRr8KdefbcChfI+9TFiMZaHNLBVnkFwJMtNsautp2g=
-X-Received: by 2002:a05:6512:3a87:: with SMTP id q7mr31614406lfu.515.1637963806464;
- Fri, 26 Nov 2021 13:56:46 -0800 (PST)
-MIME-Version: 1.0
-References: <20210401183654.27214-1-daniel.lezcano@linaro.org>
- <20210401183654.27214-3-daniel.lezcano@linaro.org> <CAAYoRsURO1tf03nfiki1uaXYEmTKQyYKUeTyKW+vefrVzCO7jg@mail.gmail.com>
- <CAJZ5v0hcuq0qriHbc=XHbCo8fJMAV1dbCBws3M9GktN17aCE_g@mail.gmail.com> <acb3ac6c-d6e6-c3f7-6b04-12d3a1fbf0a1@linaro.org>
-In-Reply-To: <acb3ac6c-d6e6-c3f7-6b04-12d3a1fbf0a1@linaro.org>
-From:   Doug Smythies <dsmythies@telus.net>
-Date:   Fri, 26 Nov 2021 13:56:36 -0800
-Message-ID: <CAAYoRsXftJbk0q7sjc8fvQJcWtjnsG-SrdhrvWHQbK2vw4TQLQ@mail.gmail.com>
-Subject: Re: [PATCH v6 3/7] powercap/drivers/dtpm: Simplify the dtpm table
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
+        Fri, 26 Nov 2021 17:04:07 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E57C061758;
+        Fri, 26 Nov 2021 14:00:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mVe6i3/v+cqujpezlAYb0QP3ok/XczGEBz8gbXJU03U=; b=O2JWYmxJ7/f03ehjL+s7JohJC/
+        ynfSXmDUkqlrleL67OukKwqmvBNMKdl3qCPsf8hgCedRMFGPTn7A7Eb1BiQDlY0DDDqrpYd0yI9/R
+        HfNvz8TLPNMXLBCJxw0WFjgSopXR5Q5lwmDahpJ7kTlsHv8MVQb04YRmzEvNbx4PBlaocgeZBJUqf
+        jjdUkZAtkHEJInkocwoUeava42Xe+DR8u13pxi1L4mmqXg36lPFz9vnOyEBNlWnwoAHM3CN9lYU7g
+        eJQpcFcWe4lNXYzlaWAwx3zdieeWosmMQjxuLdDjVtT13IKOIafv1FFHU9lUrRlGJv5URI3LS6IQE
+        2LGGE60A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mqjFx-000mvv-WB; Fri, 26 Nov 2021 21:59:47 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0D7F43000DD;
+        Fri, 26 Nov 2021 22:59:45 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EAA812D1EBB54; Fri, 26 Nov 2021 22:59:44 +0100 (CET)
+Date:   Fri, 26 Nov 2021 22:59:44 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Peter Oskolkov <posk@posk.io>, Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dsmythies <dsmythies@telus.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        linux-api@vger.kernel.org, Paul Turner <pjt@google.com>,
+        Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>
+Subject: Re: [PATCH v0.9.1 3/6] sched/umcg: implement UMCG syscalls
+Message-ID: <YaFY0KqfPhmZjK7n@hirez.programming.kicks-ass.net>
+References: <20211122211327.5931-1-posk@google.com>
+ <20211122211327.5931-4-posk@google.com>
+ <20211124200822.GF721624@worktop.programming.kicks-ass.net>
+ <CAFTs51Uka8VRCHuGidw7mRwATufp87U6S8SWUVod_kU-h6T3ew@mail.gmail.com>
+ <YaEUts3RbOLyvAjl@hirez.programming.kicks-ass.net>
+ <87a6hqhbgh.ffs@tglx>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87a6hqhbgh.ffs@tglx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 9:43 AM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
->
-> On 26/11/2021 18:21, Rafael J. Wysocki wrote:
-> > Hi Doug,
-> >
-> > On Fri, Nov 26, 2021 at 6:08 PM Doug Smythies <dsmythies@telus.net> wro=
-te:
-> >>
-> >> Hi Daniel,
-> >>
-> >> This patch introduces a regression, at least on my test system.
-> >> I can no longer change CPU frequency scaling drivers, for example
-> >> from intel_cpufreq (A.K.A intel_pstate in passive mode) to intel_pstat=
-e
-> >> (A.K.A. active mode). The task just hangs forever.
-> >>
-> >> I bisected the kernel and got this commit as the result.
-> >> As a double check, I reverted this commit:
-> >> 7a89d7eacf8e84f2afb94db5ae9d9f9faa93f01c
-> >> on kernel 5.16-rc2 and the issue was resolved.
-> >>
-> >> While your email is fairly old, I observe that it was only included as=
- of
-> >> kernel 5.16-rc1.
-> >>
-> >> Command Example that never completes:
-> >>
-> >> $ echo passive | sudo tee /sys/devices/system/cpu/intel_pstate/status
-> >>
-> >> syslog excerpt attached.
-> >
-> > This looks like it may be problematic:
-> >
-> > diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
-> > index f6076de39540..98841524a782 100644
-> > --- a/drivers/powercap/dtpm_cpu.c
-> > +++ b/drivers/powercap/dtpm_cpu.c
-> > @@ -204,7 +204,7 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
-> >        return ret;
-> > }
-> >
-> > -int dtpm_register_cpu(struct dtpm *parent)
-> > +static int __init dtpm_cpu_init(void)
-> > {
-> >        int ret;
-> >
-> > so please try to remove the __init annotation from dtpm_cpu_init() and
-> > see if that helps.
->
-> Yes, actually that should be called only if it is configured properly.
-> The dtpm_cpu just initializes itself unconditionally, I did not figured
-> out there is the usually allyesconfig used by default by the distros.
->
-> That should be fixed with a proper DT configuration [1]
+On Fri, Nov 26, 2021 at 10:08:14PM +0100, Thomas Gleixner wrote:
+> On Fri, Nov 26 2021 at 18:09, Peter Zijlstra wrote:
+> > +
+> > +	if (timo) {
+> > +		hrtimer_init_sleeper_on_stack(&timeout, tsk->umcg_clock,
+> > +					      HRTIMER_MODE_ABS);
+> > +		hrtimer_set_expires_range_ns(&timeout.timer, (s64)timo,
+> > +					     tsk->timer_slack_ns);
+> > +	}
+> > +
+> > +	for (;;) {
+> > +		set_current_state(TASK_INTERRUPTIBLE);
+> > +
+> > +		ret = -EINTR;
+> > +		if (signal_pending(current))
+> > +			break;
+> > +
+> > +		/*
+> > +		 * Faults can block and scribble our wait state.
+> > +		 */
+> > +		pagefault_disable();
+> > +		if (get_user(state, &self->state)) {
+> > +			pagefault_enable();
+> > +
+> > +			ret = -EFAULT;
+> > +			if (page) {
+> > +				unpin_user_page(page);
+> > +				page = NULL;
+> > +				break;
+> > +			}
+> > +
+> > +			if (pin_user_pages_fast((unsigned long)self, 1, 0, &page) != 1) {
+> > +				page = NULL;
+> > +				break;
+> > +			}
+> > +
+> > +			continue;
+> > +		}
+> > +
+> > +		if (page) {
+> > +			unpin_user_page(page);
+> > +			page = NULL;
+> > +		}
+> > +		pagefault_enable();
+> > +
+> > +		state &= UMCG_TASK_MASK;
+> > +		if (state != UMCG_TASK_RUNNABLE) {
+> > +			ret = 0;
+> > +			if (state == UMCG_TASK_RUNNING)
+> > +				break;
+> > +
+> > +			ret = -EINVAL;
+> > +			break;
+> > +		}
+> > +
+> > +		if (timo)
+> > +			hrtimer_sleeper_start_expires(&timeout, HRTIMER_MODE_ABS);
+> > +
+> > +		freezable_schedule();
+> 
+> You can replace the whole hrtimer foo with
+> 
+>                 if (!schedule_hrtimeout_range_clock(timo ? &timo : NULL,
+>                                                     tsk->timer_slack_ns,
+>                                                     HRTIMER_MODE_ABS,
+>                                                     tsk->umcg_clock)) {
+>                 	ret = -ETIMEOUT;
+>                         break;
+>                 }
 
-I added your 5 patch set on top of 5.16-rc2 and confirm it fixes
-the issue. I tested both ways, with CONFIG_OF not set, forcing the
-CONFIG_DTPM stuff off, and with CONFIG_OF=3Dy.
+That seems to loose the freezable crud.. then again, since we're
+interruptible, that shouldn't matter. Lemme go do that.
 
-Oh, I used V2 of the patch set from earlier today.
-
-... Doug
-
->
-> [1]
-> https://lore.kernel.org/all/20211124125506.2971069-3-daniel.lezcano@linar=
-o.org/
->
-> --
-> <http://www.linaro.org/> Linaro.org =E2=94=82 Open source software for AR=
-M SoCs
->
-> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-> <http://twitter.com/#!/linaroorg> Twitter |
-> <http://www.linaro.org/linaro-blog/> Blog
