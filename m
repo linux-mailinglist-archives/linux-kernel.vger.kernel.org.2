@@ -2,262 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2488245FEFB
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 14:58:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A40B45FEFD
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 15:01:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354993AbhK0OBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 09:01:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232663AbhK0N7h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 08:59:37 -0500
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45709C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 05:56:23 -0800 (PST)
-Received: by mail-oi1-x22b.google.com with SMTP id bf8so24494664oib.6
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 05:56:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=giMoLq5fbyi+MsmBjnI6FSiJC93/tqGR86Hyg1DELZg=;
-        b=NZdcKgO7WhzCR/4opCfDO+ImEnR42+IvlmdnLimKKlmOBxOkRS2l86QKTt8R4pL7Fv
-         ryqiO5zkbG5LnJJuKJx+rK/b5sp+g5XQtYToEu0JMyjFICtBf4e7n+dBKDGwq+706D+M
-         RxrhqgD38hACxlGnXxZMLg+v70eMbEa4tFagOfGFAC/yS6GfZXznYARctx4fF80VxsvL
-         N5RoEj7BxIPuWbNsQsbjsL7B3f/bwWAhaE89VmWVVI8TGc8C4OrC4cpDKW584E4fFbWO
-         qEKZ1NqHPUYUqJz4xDz21pkt7661n9i++T91Nfqr34Yz1y6GbilxO+CbXzITluzwbMaf
-         1XIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=giMoLq5fbyi+MsmBjnI6FSiJC93/tqGR86Hyg1DELZg=;
-        b=Fi6nCGAdr6EWlEAtzRoDat9bk6OBo2Yvp7Kc0q4B4t6P0wgkSJrSuDM2xPg0Qb2AK+
-         FTZQmQfqquMY59Svvcno5NjD//ClL8MeaC2hM9JxAkLUh1kn5teeFOcHRne6TpAtBlIz
-         sLqFZh+QYEAURJx+fw3r6D9OfbOuLqYx/7B7XxGsEQtaijOD1E1Dnx8X/oYu+lyLR0Wx
-         euoP4ZsZL8rWWlZvh/grd3isJJEN3CRnkLLUHFrr0I3TfJdEBzufcl/iaGKdjf9G2Tz0
-         l0BqfyeJ6hsSNuEoc4N5W2CKKt/502lsL7+5u8sJ3SElvzSc2vCLS93kl4wEp6mVgq66
-         ROXw==
-X-Gm-Message-State: AOAM530Y8N8N3bYXYQFxU2JSxr886KyWrarqQrTJFiTMI5eEDdPmfr68
-        IvJkgwjndgN1u9D9P3AOK2HMjGMM46ZdO7OrCXs=
-X-Google-Smtp-Source: ABdhPJz4n1ThWRCp/WUjE4eQXEYPJGslPBpXWXC/9eoMeK5gYPtju9oypgDUqCWimCpmAMQfrSsGjaQakAmzDqmK5bQ=
-X-Received: by 2002:a05:6808:994:: with SMTP id a20mr28900812oic.18.1638021382076;
- Sat, 27 Nov 2021 05:56:22 -0800 (PST)
+        id S1351430AbhK0OFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 09:05:10 -0500
+Received: from mga04.intel.com ([192.55.52.120]:17069 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231760AbhK0ODJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 09:03:09 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="234492803"
+X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
+   d="scan'208";a="234492803"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 05:57:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
+   d="scan'208";a="476149456"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 27 Nov 2021 05:57:53 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqyDA-0009bV-Ik; Sat, 27 Nov 2021 13:57:52 +0000
+Date:   Sat, 27 Nov 2021 21:57:48 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: drivers/net/ethernet/chelsio/cxgb4/sge.c:814:28: warning: unused
+ function 'calc_tx_descs'
+Message-ID: <202111272116.77QvtsrM-lkp@intel.com>
 MIME-Version: 1.0
-Received: by 2002:a9d:71c7:0:0:0:0:0 with HTTP; Sat, 27 Nov 2021 05:56:21
- -0800 (PST)
-From:   "Mrs. Fatima Usman" <res983662@gmail.com>
-Date:   Sat, 27 Nov 2021 05:56:21 -0800
-Message-ID: <CAPXfnJ6B=uq8sZutfS6ejwSzWRvoNrSmZtZ1yoi3PKUhXPo9=g@mail.gmail.com>
-Subject: From: Mrs. Fatima Usman
-To:     undisclosed-recipients:;
-Content-Type: multipart/mixed; boundary="0000000000009d155805d1c592a0"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000009d155805d1c592a0
-Content-Type: text/plain; charset="UTF-8"
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   c5c17547b778975b3d83a73c8d84e8fb5ecf3ba5
+commit: 198688edbf77c6fc0e65f5d062f810d83d090166 MIPS: Fix inline asm input/output type mismatch in checksum.h used with Clang
+date:   10 months ago
+config: mips-buildonly-randconfig-r003-20211127 (https://download.01.org/0day-ci/archive/20211127/202111272116.77QvtsrM-lkp@intel.com/config)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 5162b558d8c0b542e752b037e72a69d5fd51eb1e)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install mips cross compiling tool for clang build
+        # apt-get install binutils-mips-linux-gnu
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=198688edbf77c6fc0e65f5d062f810d83d090166
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout 198688edbf77c6fc0e65f5d062f810d83d090166
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=mips SHELL=/bin/bash drivers/net/ethernet/chelsio/cxgb4/
 
--- 
-Please Contact My Son:
-Mr. Ahmed Hassan Usman
-Email: ahmedhassanusman1988@gmail.com
-Thanking you for your anticipated co-operation in advance.
-Sincerely yours,
-Mrs. Fatima Usman (Widow)
-For The Family
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
---0000000000009d155805d1c592a0
-Content-Type: application/pdf; name="FROMMRS.FATIMA USMAN. (1).pdf"
-Content-Disposition: attachment; filename="FROMMRS.FATIMA USMAN. (1).pdf"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: file0
+All warnings (new ones prefixed by >>):
 
-JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PCAKICAgL1R5cGUgL0NhdGFsb2cKICAgL1BhZ2VzIDIg
-MCBSCiAgIC9QYWdlTGF5b3V0IC9PbmVDb2x1bW4KICAgL1BhZ2VNb2RlIC9Vc2VOb25lCiAgIC9P
-Q1Byb3BlcnRpZXMgPDwgCiAgIC9EIDw8IAogICAvT3JkZXIgW10KICAgL0FTIFs8PCAKICAgL0V2
-ZW50IC9WaWV3CiAgIC9DYXRlZ29yeSBbL1ZpZXcgXQo+PiA8PCAKICAgL0V2ZW50IC9QcmludAog
-ICAvQ2F0ZWdvcnkgWy9QcmludCBdCj4+IDw8IAogICAvRXZlbnQgL0V4cG9ydAogICAvQ2F0ZWdv
-cnkgWy9FeHBvcnQgXQo+PiBdCj4+Cj4+Cj4+CmVuZG9iagoyIDAgb2JqCjw8IAogICAvVHlwZSAv
-UGFnZXMKICAgL0tpZHMgWzMgMCBSIF0KICAgL0NvdW50IDEKPj4KZW5kb2JqCjMgMCBvYmoKPDwg
-CiAgIC9UeXBlIC9QYWdlCiAgIC9QYXJlbnQgMiAwIFIKICAgL1Jlc291cmNlcyA8PCAKICAgL1By
-b2NTZXQgWy9QREYgL1RleHQgXQogICAvRm9udCA8PCAKICAgL0YxIDYgMCBSCiAgIC9GMiA5IDAg
-UgogICAvRjMgMTIgMCBSCiAgIC9GNCAxNSAwIFIKPj4KPj4KICAgL01lZGlhQm94IFswIDAgNjEy
-IDc5Ml0KICAgL0NvbnRlbnRzIDQgMCBSCj4+CmVuZG9iago0IDAgb2JqCjw8IAogICAvRmlsdGVy
-IC9GbGF0ZURlY29kZQogICAvTGVuZ3RoIDMyNTcKPj4Kc3RyZWFtCnhevVxbc9u4FX73r1BnehFn
-IpYASVFMX7rb7LbZ6Xa7WWf60PRBli07k6zlDe206q8vcQCc7wCCZDvgdDLDUCQInMt3rgT9y9kv
-Z2pm/n26Puv0rKuWZa1nqu7LppmpplTL2aers+3Zj+PAr8/Pfv/tOFbPzrdnVanqup6F/42TVGXf
-r9SsGv+pGc24Kvvl7Pzns3/Ovy0Wqpp/KhbdfFcs2vnPRa3mL4uFns/M4ftCKXt3KPmifWZtht+b
-3+/H3yv7JF2kQW+H8ViJq7fFv2bn3519c/6FhGuljAAk8bNgSim0Za/L5Ti4KVerSWS27NtSr+yy
-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
-mvBjEMIlkvwJtkPk0Wg+H5BETsFzp0rzhHXP5vOutIN2X/F/sQdW9kt7udwUjvgZfviLSdd9ZT7/
-l6SnHXqf485r3cQCmkK97ZIrI1GjAqMffNoYdKpSvj9dNwcOX2x6F/UltsLJpMVntDblpINrzPiA
-sI6mlAmnCrb0eiLIGD+Dns0kMcW9KJGinEIzTc1FpnGOsvWE+l5klnsurfeRFoYXmeSotrN/DqSe
-su5VuufK5/E//SHe1Hv/4/xnceyPGrybm6zdfk8p2gtIwd8VmVxoXZt0QnIyhWBUyymxlYE0NZXa
-FzpeFNI67NRlEqVaTfFUEJbgc0SIKqu6750/mx3+lRHDXaXN682DSX48+x/338mPCmVuZHN0cmVh
-bQplbmRvYmoKNSAwIG9iago8PCAKICAgL1Byb2R1Y2VyIDxGRUZGMDA2NDAwNkYwMDUwMDA0NDAw
-NDYwMDIwMDA1NjAwNjUwMDcyMDAyMDAwMzcwMDJFMDAzMjAwMjAwMDQyMDA3NTAwNjkwMDZDMDA2
-NDAwMjAwMDMzMDAzNzAwMzYwMDIwMDAyODAwNzUwMDZFMDA2QjAwNkUwMDZGMDA3NzAwNkUwMDIw
-MDA1NzAwNjkwMDZFMDA2NDAwNkYwMDc3MDA3MzAwMjAwMDc2MDA2NTAwNzIwMDczMDA2OTAwNkYw
-MDZFMDAyMDAwMkQwMDIwMDA1NjAwNjUwMDcyMDA3MzAwNjkwMDZGMDA2RTAwM0EwMDIwMDAzMTAw
-MzAwMDJFMDAzMDAwMkUwMDMxMDAzOTAwMzAwMDM0MDAzMzAwMjAwMDI4MDA3ODAwMzYwMDM0MDAy
-OTAwMjk+CiAgIC9DcmVhdGlvbkRhdGUgKEQ6MjAyMTExMjMxNDI4MzkrMDMnMDAnKQo+PgplbmRv
-YmoKNiAwIG9iago8PCAKICAgL1R5cGUgL0ZvbnQKICAgL1N1YnR5cGUgL1RydWVUeXBlCiAgIC9G
-b250RGVzY3JpcHRvciA3IDAgUgogICAvQmFzZUZvbnQgL0FyaWFsTVQKICAgL0ZpcnN0Q2hhciAw
-CiAgIC9MYXN0Q2hhciAyNTUKICAgL1dpZHRocyA4IDAgUgogICAvRW5jb2RpbmcgL1dpbkFuc2lF
-bmNvZGluZwo+PgplbmRvYmoKNyAwIG9iago8PCAKICAgL1R5cGUgL0ZvbnREZXNjcmlwdG9yCiAg
-IC9Gb250TmFtZSAvQXJpYWxNVAogICAvQXNjZW50IDcyOAogICAvQ2FwSGVpZ2h0IDcxNgogICAv
-RGVzY2VudCAtMjEwCiAgIC9GbGFncyAzMgogICAvRm9udEJCb3ggWy02NjUgLTMyNSAyMDAwIDEw
-NDBdCiAgIC9JdGFsaWNBbmdsZSAwCiAgIC9TdGVtViA4NwogICAvWEhlaWdodCA1MTkKPj4KZW5k
-b2JqCjggMCBvYmoKWzc1MCA3NTAgNzUwIDc1MCA3NTAgNzUwIDc1MCA3NTAgNzUwIDc1MCA3NTAg
-NzUwIDc1MCA3NTAgNzUwIDc1MCA3NTAgNzUwIDc1MCA3NTAgNzUwIDc1MCA3NTAgNzUwIDc1MCA3
-NTAgNzUwIDc1MCA3NTAgNzUwIDc1MCA3NTAgMjc4IDI3OCAzNTUgNTU2IDU1NiA4ODkgNjY3IDE5
-MSAzMzMgMzMzIDM4OSA1ODQgMjc4IDMzMyAyNzggMjc4IDU1NiA1NTYgNTU2IDU1NiA1NTYgNTU2
-IDU1NiA1NTYgNTU2IDU1NiAyNzggMjc4IDU4NCA1ODQgNTg0IDU1NiAxMDE1IDY2NyA2NjcgNzIy
-IDcyMiA2NjcgNjExIDc3OCA3MjIgMjc4IDUwMCA2NjcgNTU2IDgzMyA3MjIgNzc4IDY2NyA3Nzgg
-NzIyIDY2NyA2MTEgNzIyIDY2NyA5NDQgNjY3IDY2NyA2MTEgMjc4IDI3OCAyNzggNDY5IDU1NiAz
-MzMgNTU2IDU1NiA1MDAgNTU2IDU1NiAyNzggNTU2IDU1NiAyMjIgMjIyIDUwMCAyMjIgODMzIDU1
-NiA1NTYgNTU2IDU1NiAzMzMgNTAwIDI3OCA1NTYgNTAwIDcyMiA1MDAgNTAwIDUwMCAzMzQgMjYw
-IDMzNCA1ODQgMzUwIDU1NiAzNTAgMjIyIDU1NiAzMzMgMTAwMCA1NTYgNTU2IDMzMyAxMDAwIDY2
-NyAzMzMgMTAwMCAzNTAgNjExIDM1MCAzNTAgMjIyIDIyMiAzMzMgMzMzIDM1MCA1NTYgMTAwMCAz
-MzMgMTAwMCA1MDAgMzMzIDk0NCAzNTAgNTAwIDY2NyAyNzggMzMzIDU1NiA1NTYgNTU2IDU1NiAy
-NjAgNTU2IDMzMyA3MzcgMzcwIDU1NiA1ODQgMzMzIDczNyA1NTIgNDAwIDU0OSAzMzMgMzMzIDMz
-MyA1NzYgNTM3IDMzMyAzMzMgMzMzIDM2NSA1NTYgODM0IDgzNCA4MzQgNjExIDY2NyA2NjcgNjY3
-IDY2NyA2NjcgNjY3IDEwMDAgNzIyIDY2NyA2NjcgNjY3IDY2NyAyNzggMjc4IDI3OCAyNzggNzIy
-IDcyMiA3NzggNzc4IDc3OCA3NzggNzc4IDU4NCA3NzggNzIyIDcyMiA3MjIgNzIyIDY2NyA2Njcg
-NjExIDU1NiA1NTYgNTU2IDU1NiA1NTYgNTU2IDg4OSA1MDAgNTU2IDU1NiA1NTYgNTU2IDI3OCAy
-NzggMjc4IDI3OCA1NTYgNTU2IDU1NiA1NTYgNTU2IDU1NiA1NTYgNTQ5IDYxMSA1NTYgNTU2IDU1
-NiA1NTYgNTAwIDU1NiA1MDAgXQplbmRvYmoKOSAwIG9iago8PCAKICAgL1R5cGUgL0ZvbnQKICAg
-L1N1YnR5cGUgL1RydWVUeXBlCiAgIC9Gb250RGVzY3JpcHRvciAxMCAwIFIKICAgL0Jhc2VGb250
-IC9UaW1lc05ld1JvbWFuUFNNVAogICAvRmlyc3RDaGFyIDAKICAgL0xhc3RDaGFyIDI1NQogICAv
-V2lkdGhzIDExIDAgUgogICAvRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZwo+PgplbmRvYmoKMTAg
-MCBvYmoKPDwgCiAgIC9UeXBlIC9Gb250RGVzY3JpcHRvcgogICAvRm9udE5hbWUgL1RpbWVzTmV3
-Um9tYW5QU01UCiAgIC9Bc2NlbnQgNjkzCiAgIC9DYXBIZWlnaHQgNjYyCiAgIC9EZXNjZW50IC0y
-MTYKICAgL0ZsYWdzIDMyCiAgIC9Gb250QkJveCBbLTU2OCAtMzA3IDIwNDYgMTA0MF0KICAgL0l0
-YWxpY0FuZ2xlIDAKICAgL1N0ZW1WIDg3CiAgIC9YSGVpZ2h0IDQ0Nwo+PgplbmRvYmoKMTEgMCBv
-YmoKWzc3OCA3NzggNzc4IDc3OCA3NzggNzc4IDc3OCA3NzggNzc4IDc3OCA3NzggNzc4IDc3OCA3
-NzggNzc4IDc3OCA3NzggNzc4IDc3OCA3NzggNzc4IDc3OCA3NzggNzc4IDc3OCA3NzggNzc4IDc3
-OCA3NzggNzc4IDc3OCA3NzggMjUwIDMzMyA0MDggNTAwIDUwMCA4MzMgNzc4IDE4MCAzMzMgMzMz
-IDUwMCA1NjQgMjUwIDMzMyAyNTAgMjc4IDUwMCA1MDAgNTAwIDUwMCA1MDAgNTAwIDUwMCA1MDAg
-NTAwIDUwMCAyNzggMjc4IDU2NCA1NjQgNTY0IDQ0NCA5MjEgNzIyIDY2NyA2NjcgNzIyIDYxMSA1
-NTYgNzIyIDcyMiAzMzMgMzg5IDcyMiA2MTEgODg5IDcyMiA3MjIgNTU2IDcyMiA2NjcgNTU2IDYx
-MSA3MjIgNzIyIDk0NCA3MjIgNzIyIDYxMSAzMzMgMjc4IDMzMyA0NjkgNTAwIDMzMyA0NDQgNTAw
-IDQ0NCA1MDAgNDQ0IDMzMyA1MDAgNTAwIDI3OCAyNzggNTAwIDI3OCA3NzggNTAwIDUwMCA1MDAg
-NTAwIDMzMyAzODkgMjc4IDUwMCA1MDAgNzIyIDUwMCA1MDAgNDQ0IDQ4MCAyMDAgNDgwIDU0MSAz
-NTAgNTAwIDM1MCAzMzMgNTAwIDQ0NCAxMDAwIDUwMCA1MDAgMzMzIDEwMDAgNTU2IDMzMyA4ODkg
-MzUwIDYxMSAzNTAgMzUwIDMzMyAzMzMgNDQ0IDQ0NCAzNTAgNTAwIDEwMDAgMzMzIDk4MCAzODkg
-MzMzIDcyMiAzNTAgNDQ0IDcyMiAyNTAgMzMzIDUwMCA1MDAgNTAwIDUwMCAyMDAgNTAwIDMzMyA3
-NjAgMjc2IDUwMCA1NjQgMzMzIDc2MCA1MDAgNDAwIDU0OSAzMDAgMzAwIDMzMyA1NzYgNDUzIDMz
-MyAzMzMgMzAwIDMxMCA1MDAgNzUwIDc1MCA3NTAgNDQ0IDcyMiA3MjIgNzIyIDcyMiA3MjIgNzIy
-IDg4OSA2NjcgNjExIDYxMSA2MTEgNjExIDMzMyAzMzMgMzMzIDMzMyA3MjIgNzIyIDcyMiA3MjIg
-NzIyIDcyMiA3MjIgNTY0IDcyMiA3MjIgNzIyIDcyMiA3MjIgNzIyIDU1NiA1MDAgNDQ0IDQ0NCA0
-NDQgNDQ0IDQ0NCA0NDQgNjY3IDQ0NCA0NDQgNDQ0IDQ0NCA0NDQgMjc4IDI3OCAyNzggMjc4IDUw
-MCA1MDAgNTAwIDUwMCA1MDAgNTAwIDUwMCA1NDkgNTAwIDUwMCA1MDAgNTAwIDUwMCA1MDAgNTAw
-IDUwMCBdCmVuZG9iagoxMiAwIG9iago8PCAKICAgL1R5cGUgL0ZvbnQKICAgL1N1YnR5cGUgL1Ry
-dWVUeXBlCiAgIC9Gb250RGVzY3JpcHRvciAxMyAwIFIKICAgL0Jhc2VGb250IC9BcmlhbC1Cb2xk
-TVQKICAgL0ZpcnN0Q2hhciAwCiAgIC9MYXN0Q2hhciAyNTUKICAgL1dpZHRocyAxNCAwIFIKICAg
-L0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcKPj4KZW5kb2JqCjEzIDAgb2JqCjw8IAogICAvVHlw
-ZSAvRm9udERlc2NyaXB0b3IKICAgL0ZvbnROYW1lIC9BcmlhbC1Cb2xkTVQKICAgL0FzY2VudCA3
-MjgKICAgL0NhcEhlaWdodCA3MTYKICAgL0Rlc2NlbnQgLTIxMAogICAvRmxhZ3MgMjYyMTc2CiAg
-IC9Gb250QkJveCBbLTYyOCAtMzc2IDIwMDAgMTA1Nl0KICAgL0l0YWxpY0FuZ2xlIDAKICAgL1N0
-ZW1WIDE2NQogICAvWEhlaWdodCA1MTkKPj4KZW5kb2JqCjE0IDAgb2JqCls3NTAgNzUwIDc1MCA3
-NTAgNzUwIDc1MCA3NTAgNzUwIDc1MCA3NTAgNzUwIDc1MCA3NTAgNzUwIDc1MCA3NTAgNzUwIDc1
-MCA3NTAgNzUwIDc1MCA3NTAgNzUwIDc1MCA3NTAgNzUwIDc1MCA3NTAgNzUwIDc1MCA3NTAgNzUw
-IDI3OCAzMzMgNDc0IDU1NiA1NTYgODg5IDcyMiAyMzggMzMzIDMzMyAzODkgNTg0IDI3OCAzMzMg
-Mjc4IDI3OCA1NTYgNTU2IDU1NiA1NTYgNTU2IDU1NiA1NTYgNTU2IDU1NiA1NTYgMzMzIDMzMyA1
-ODQgNTg0IDU4NCA2MTEgOTc1IDcyMiA3MjIgNzIyIDcyMiA2NjcgNjExIDc3OCA3MjIgMjc4IDU1
-NiA3MjIgNjExIDgzMyA3MjIgNzc4IDY2NyA3NzggNzIyIDY2NyA2MTEgNzIyIDY2NyA5NDQgNjY3
-IDY2NyA2MTEgMzMzIDI3OCAzMzMgNTg0IDU1NiAzMzMgNTU2IDYxMSA1NTYgNjExIDU1NiAzMzMg
-NjExIDYxMSAyNzggMjc4IDU1NiAyNzggODg5IDYxMSA2MTEgNjExIDYxMSAzODkgNTU2IDMzMyA2
-MTEgNTU2IDc3OCA1NTYgNTU2IDUwMCAzODkgMjgwIDM4OSA1ODQgMzUwIDU1NiAzNTAgMjc4IDU1
-NiA1MDAgMTAwMCA1NTYgNTU2IDMzMyAxMDAwIDY2NyAzMzMgMTAwMCAzNTAgNjExIDM1MCAzNTAg
-Mjc4IDI3OCA1MDAgNTAwIDM1MCA1NTYgMTAwMCAzMzMgMTAwMCA1NTYgMzMzIDk0NCAzNTAgNTAw
-IDY2NyAyNzggMzMzIDU1NiA1NTYgNTU2IDU1NiAyODAgNTU2IDMzMyA3MzcgMzcwIDU1NiA1ODQg
-MzMzIDczNyA1NTIgNDAwIDU0OSAzMzMgMzMzIDMzMyA1NzYgNTU2IDMzMyAzMzMgMzMzIDM2NSA1
-NTYgODM0IDgzNCA4MzQgNjExIDcyMiA3MjIgNzIyIDcyMiA3MjIgNzIyIDEwMDAgNzIyIDY2NyA2
-NjcgNjY3IDY2NyAyNzggMjc4IDI3OCAyNzggNzIyIDcyMiA3NzggNzc4IDc3OCA3NzggNzc4IDU4
-NCA3NzggNzIyIDcyMiA3MjIgNzIyIDY2NyA2NjcgNjExIDU1NiA1NTYgNTU2IDU1NiA1NTYgNTU2
-IDg4OSA1NTYgNTU2IDU1NiA1NTYgNTU2IDI3OCAyNzggMjc4IDI3OCA2MTEgNjExIDYxMSA2MTEg
-NjExIDYxMSA2MTEgNTQ5IDYxMSA2MTEgNjExIDYxMSA2MTEgNTU2IDYxMSA1NTYgXQplbmRvYmoK
-MTUgMCBvYmoKPDwgCiAgIC9UeXBlIC9Gb250CiAgIC9TdWJ0eXBlIC9UcnVlVHlwZQogICAvRm9u
-dERlc2NyaXB0b3IgMTYgMCBSCiAgIC9CYXNlRm9udCAvQ2FsaWJyaQogICAvRmlyc3RDaGFyIDAK
-ICAgL0xhc3RDaGFyIDI1NQogICAvV2lkdGhzIDE3IDAgUgogICAvRW5jb2RpbmcgL1dpbkFuc2lF
-bmNvZGluZwo+PgplbmRvYmoKMTYgMCBvYmoKPDwgCiAgIC9UeXBlIC9Gb250RGVzY3JpcHRvcgog
-ICAvRm9udE5hbWUgL0NhbGlicmkKICAgL0FzY2VudCA3NTAKICAgL0NhcEhlaWdodCA2MzIKICAg
-L0Rlc2NlbnQgLTI1MAogICAvRmxhZ3MgMzIKICAgL0ZvbnRCQm94IFstNTAzIC0zMTMgMTI0MCAx
-MDI2XQogICAvSXRhbGljQW5nbGUgMAogICAvU3RlbVYgODcKICAgL1hIZWlnaHQgNDY0Cj4+CmVu
-ZG9iagoxNyAwIG9iagpbNTA3IDUwNyA1MDcgNTA3IDUwNyA1MDcgNTA3IDUwNyA1MDcgNTA3IDUw
-NyA1MDcgNTA3IDUwNyA1MDcgNTA3IDUwNyA1MDcgNTA3IDUwNyA1MDcgNTA3IDUwNyA1MDcgNTA3
-IDUwNyA1MDcgNTA3IDUwNyA1MDcgNTA3IDUwNyAyMjYgMzI2IDQwMSA0OTggNTA3IDcxNSA2ODIg
-MjIxIDMwMyAzMDMgNDk4IDQ5OCAyNTAgMzA2IDI1MiAzODYgNTA3IDUwNyA1MDcgNTA3IDUwNyA1
-MDcgNTA3IDUwNyA1MDcgNTA3IDI2OCAyNjggNDk4IDQ5OCA0OTggNDYzIDg5NCA1NzkgNTQ0IDUz
-MyA2MTUgNDg4IDQ1OSA2MzEgNjIzIDI1MiAzMTkgNTIwIDQyMCA4NTUgNjQ2IDY2MiA1MTcgNjcz
-IDU0MyA0NTkgNDg3IDY0MiA1NjcgODkwIDUxOSA0ODcgNDY4IDMwNyAzODYgMzA3IDQ5OCA0OTgg
-MjkxIDQ3OSA1MjUgNDIzIDUyNSA0OTggMzA1IDQ3MSA1MjUgMjI5IDIzOSA0NTUgMjI5IDc5OSA1
-MjUgNTI3IDUyNSA1MjUgMzQ5IDM5MSAzMzUgNTI1IDQ1MiA3MTUgNDMzIDQ1MyAzOTUgMzE0IDQ2
-MCAzMTQgNDk4IDQ5OCA1MDcgNDk4IDI1MCAzMDUgNDE4IDY5MCA0OTggNDk4IDM5NSAxMDM4IDQ1
-OSAzMzkgODY3IDQ5OCA0NjggNDk4IDQ5OCAyNTAgMjUwIDQxOCA0MTggNDk4IDQ5OCA5MDUgNDUw
-IDcwNSAzOTEgMzM5IDg1MCA0OTggMzk1IDQ4NyAyMjYgMzI2IDQ5OCA1MDcgNDk4IDUwNyA0OTgg
-NDk4IDM5MyA4MzQgNDAyIDUxMiA0OTggMzA2IDUwNyAzOTQgMzM5IDQ5OCAzMzYgMzM0IDI5MiA1
-NTAgNTg2IDI1MiAzMDcgMjQ2IDQyMiA1MTIgNjM2IDY3MSA2NzUgNDYzIDU3OSA1NzkgNTc5IDU3
-OSA1NzkgNTc5IDc2MyA1MzMgNDg4IDQ4OCA0ODggNDg4IDI1MiAyNTIgMjUyIDI1MiA2MjUgNjQ2
-IDY2MiA2NjIgNjYyIDY2MiA2NjIgNDk4IDY2NCA2NDIgNjQyIDY0MiA2NDIgNDg3IDUxNyA1Mjcg
-NDc5IDQ3OSA0NzkgNDc5IDQ3OSA0NzkgNzczIDQyMyA0OTggNDk4IDQ5OCA0OTggMjI5IDIyOSAy
-MjkgMjI5IDUyNSA1MjUgNTI3IDUyNyA1MjcgNTI3IDUyNyA0OTggNTI5IDUyNSA1MjUgNTI1IDUy
-NSA0NTMgNTI1IDQ1MyBdCmVuZG9iagp4cmVmCjAgMTggCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAw
-MDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMzIwIDAwMDAwIG4gCjAwMDAwMDAzODggMDAwMDAgbiAK
-MDAwMDAwMDYwNSAwMDAwMCBuIAowMDAwMDAzOTQyIDAwMDAwIG4gCjAwMDAwMDQzMzUgMDAwMDAg
-biAKMDAwMDAwNDUyMSAwMDAwMCBuIAowMDAwMDA0NzM1IDAwMDAwIG4gCjAwMDAwMDU3ODQgMDAw
-MDAgbiAKMDAwMDAwNTk4MiAwMDAwMCBuIAowMDAwMDA2MjA3IDAwMDAwIG4gCjAwMDAwMDcyNTMg
-MDAwMDAgbiAKMDAwMDAwNzQ0NyAwMDAwMCBuIAowMDAwMDA3NjcyIDAwMDAwIG4gCjAwMDAwMDg3
-MjEgMDAwMDAgbiAKMDAwMDAwODkxMCAwMDAwMCBuIAowMDAwMDA5MTI1IDAwMDAwIG4gCnRyYWls
-ZXIKPDwgCiAgIC9Sb290IDEgMCBSCiAgIC9JbmZvIDUgMCBSCiAgIC9TaXplIDE4Cj4+CnN0YXJ0
-eHJlZgoxMDE2OQolJUVPRgo=
---0000000000009d155805d1c592a0--
+>> drivers/net/ethernet/chelsio/cxgb4/sge.c:814:28: warning: unused function 'calc_tx_descs'
+   static inline unsigned int calc_tx_descs(const struct sk_buff
+   ^
+   fatal error: error in backend: Nested variants found in inline asm string: '.if ( 0x04 ) != -1)) 0x04 ) != -1)) : ($( static struct ftrace_branch_data __attribute__((__aligned__(4))) __attribute__((__section__("_ftrace_branch"))) __if_trace = $( .func = __func__, .file = "arch/mips/include/asm/barrier.h", .line = 27, $); 0x04 ) != -1)) : $))) ) && ( (1 << 0) ); .set push; .set mips64r2; .rept (1 - (0x04 == 0x04)); sync 0x04; .endr; .set pop; .else; ; .endif'
+   clang-14: error: clang frontend command failed with exit code 70 (use -v to see invocation)
+   clang version 14.0.0 (git://gitmirror/llvm_project 5162b558d8c0b542e752b037e72a69d5fd51eb1e)
+   Target: mips64-unknown-linux
+   Thread model: posix
+   InstalledDir: /opt/cross/clang-5162b558d8/bin
+   clang-14: note: diagnostic msg:
+   Makefile arch drivers include kernel nr_bisected scripts source usr
+
+
+vim +/calc_tx_descs +814 drivers/net/ethernet/chelsio/cxgb4/sge.c
+
+fd3a47900b6f9fa drivers/net/cxgb4/sge.c                  Dimitris Michailidis 2010-04-01  805  
+fd3a47900b6f9fa drivers/net/cxgb4/sge.c                  Dimitris Michailidis 2010-04-01  806  /**
+fd3a47900b6f9fa drivers/net/cxgb4/sge.c                  Dimitris Michailidis 2010-04-01  807   *	calc_tx_descs - calculate the number of Tx descriptors for a packet
+fd3a47900b6f9fa drivers/net/cxgb4/sge.c                  Dimitris Michailidis 2010-04-01  808   *	@skb: the packet
+29bbf5d7f5efe84 drivers/net/ethernet/chelsio/cxgb4/sge.c Rahul Lakkireddy     2020-06-24  809   *	@chip_ver: chip version
+fd3a47900b6f9fa drivers/net/cxgb4/sge.c                  Dimitris Michailidis 2010-04-01  810   *
+fd3a47900b6f9fa drivers/net/cxgb4/sge.c                  Dimitris Michailidis 2010-04-01  811   *	Returns the number of Tx descriptors needed for the given Ethernet
+fd3a47900b6f9fa drivers/net/cxgb4/sge.c                  Dimitris Michailidis 2010-04-01  812   *	packet, including the needed WR and CPL headers.
+fd3a47900b6f9fa drivers/net/cxgb4/sge.c                  Dimitris Michailidis 2010-04-01  813   */
+d0a1299c6bf7d80 drivers/net/ethernet/chelsio/cxgb4/sge.c Ganesh Goudar        2018-01-10 @814  static inline unsigned int calc_tx_descs(const struct sk_buff *skb,
+d0a1299c6bf7d80 drivers/net/ethernet/chelsio/cxgb4/sge.c Ganesh Goudar        2018-01-10  815  					 unsigned int chip_ver)
+fd3a47900b6f9fa drivers/net/cxgb4/sge.c                  Dimitris Michailidis 2010-04-01  816  {
+d0a1299c6bf7d80 drivers/net/ethernet/chelsio/cxgb4/sge.c Ganesh Goudar        2018-01-10  817  	return flits_to_desc(calc_tx_flits(skb, chip_ver));
+fd3a47900b6f9fa drivers/net/cxgb4/sge.c                  Dimitris Michailidis 2010-04-01  818  }
+fd3a47900b6f9fa drivers/net/cxgb4/sge.c                  Dimitris Michailidis 2010-04-01  819  
+
+:::::: The code at line 814 was first introduced by commit
+:::::: d0a1299c6bf7d80c8bb8e181f36a7c407a4cabca cxgb4: add support for vxlan segmentation offload
+
+:::::: TO: Ganesh Goudar <ganeshgr@chelsio.com>
+:::::: CC: David S. Miller <davem@davemloft.net>
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
