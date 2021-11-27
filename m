@@ -2,158 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95513460086
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 18:29:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 089E646008F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 18:34:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355617AbhK0Rcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 12:32:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:20342 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239344AbhK0Rak (ORCPT
+        id S239583AbhK0Rh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 12:37:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238708AbhK0Rf0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 12:30:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1638034045;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zQkcR9i5clHeNsrtOztHmizggbBo17IKKNg3wYL/MF8=;
-        b=huLJyfuhZeIF64faoUM8cwqvHbhXJh6/vNz7gFxfkzoNK/XzjkM/0Tbm/NC31xlf/NVixg
-        wlmzfrstVTmNBqlT7V/R7u08Up2DhKIg6ht9gwCFKUcNKSP+q5QzTQRUQKqvdt1U9W689G
-        rzwPfSGbdBTeF5yP4TUiqB/i9oNixao=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-237-jgGmQf-_NjqhtX2CQwDlUg-1; Sat, 27 Nov 2021 12:27:24 -0500
-X-MC-Unique: jgGmQf-_NjqhtX2CQwDlUg-1
-Received: by mail-ed1-f72.google.com with SMTP id a3-20020a05640213c300b003e7d12bb925so10334304edx.9
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 09:27:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zQkcR9i5clHeNsrtOztHmizggbBo17IKKNg3wYL/MF8=;
-        b=SHbGsl12Uspn7rYHcO9yKtgBQOGzBnXDcxsq3KkMuGHTPz1uXJHKpfv1rJ6Zis8ck0
-         rW8WUHtyRxdzZ/qQ/w57HVrk6BTBrv2ejynsiO9hZD0QXHjcDDEFiyfRLKmWhDLzjAFf
-         RhA1WeLTrhxKm/oOmg2qbiTpzR4Zp03KTN2jFUryblHVO407+/zM0K8iQg17GYg9vvL/
-         va6JyXd92d/MVpvAMX1sWgidVq5WxmWuLVFr1E/WUoUbOWtEuimWjk6Trf6sveLwVgh9
-         duploeEerDcFaPxDhDHaeY4Vzcn+7urhX+FmnsDeJ0ZSSdwg0sqH8hss2jcXUoWuDdpg
-         b70A==
-X-Gm-Message-State: AOAM531vwfuDh2MeloLYJ/p91mQm781jtkBwatkEH2d0QrqHDdIrl0x+
-        mUAOf9o4sVYJZ02K4GCpt0UvAbgQrJhdibpjTqMpPsKjsFolegHYT+Idy5yR6cqiuUUuUQBs6k5
-        deGsOnJX8eZMVr+lPTe/3rbAt
-X-Received: by 2002:a05:6402:6d2:: with SMTP id n18mr57419256edy.210.1638034043027;
-        Sat, 27 Nov 2021 09:27:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJytLtoKh7WUSMD7CfwDREP8JjUQlvCtlwQbJa6dQEbUdPHTgSMZDAvdxnXvttVwBzigk1UUmA==
-X-Received: by 2002:a05:6402:6d2:: with SMTP id n18mr57419219edy.210.1638034042845;
-        Sat, 27 Nov 2021 09:27:22 -0800 (PST)
-Received: from gator.home (cst2-173-70.cust.vodafone.cz. [31.30.173.70])
-        by smtp.gmail.com with ESMTPSA id jg36sm5154065ejc.44.2021.11.27.09.27.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Nov 2021 09:27:22 -0800 (PST)
-Date:   Sat, 27 Nov 2021 18:27:20 +0100
-From:   Andrew Jones <drjones@redhat.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [RFC PATCH v2 04/11] KVM: arm64: Setup a framework for hypercall
- bitmap firmware registers
-Message-ID: <20211127172720.zte6wfdguoyi3gd6@gator.home>
-References: <20211113012234.1443009-1-rananta@google.com>
- <20211113012234.1443009-5-rananta@google.com>
- <87wnl0cdfn.wl-maz@kernel.org>
- <CAJHc60ydffBkqqb6xyObiK-66psaPODsOo0DpLFv7thx=zHjZw@mail.gmail.com>
+        Sat, 27 Nov 2021 12:35:26 -0500
+X-Greylist: delayed 533 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 27 Nov 2021 09:32:11 PST
+Received: from balrog.mythic-beasts.com (balrog.mythic-beasts.com [IPv6:2a00:1098:0:82:1000:0:2:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718E1C061574;
+        Sat, 27 Nov 2021 09:32:11 -0800 (PST)
+Received: from [81.101.6.87] (port=48008 helo=jic23-huawei)
+        by balrog.mythic-beasts.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <jic23@jic23.retrosnub.co.uk>)
+        id 1mr1Q3-000560-5D; Sat, 27 Nov 2021 17:23:27 +0000
+Date:   Sat, 27 Nov 2021 17:28:09 +0000
+From:   Jonathan Cameron <jic23@jic23.retrosnub.co.uk>
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+Cc:     <robh+dt@kernel.org>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 1/3] iio: frequency: admv1013: add support for
+ ADMV1013
+Message-ID: <20211127172646.22848575@jic23-huawei>
+In-Reply-To: <20211123115336.65827-1-antoniu.miclaus@analog.com>
+References: <20211123115336.65827-1-antoniu.miclaus@analog.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJHc60ydffBkqqb6xyObiK-66psaPODsOo0DpLFv7thx=zHjZw@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-BlackCat-Spam-Score: 19
+X-Spam-Status: No, score=1.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 10:34:23AM -0800, Raghavendra Rao Ananta wrote:
-> On Mon, Nov 22, 2021 at 9:23 AM Marc Zyngier <maz@kernel.org> wrote:
-> > I keep being baffled by this. Why should we track the VMM accesses or
-> > the VMM writeback? This logic doesn't seem to bring anything useful as
-> > far as I can tell. All we need to ensure is that what is written to
-> > the pseudo-register is an acceptable subset of the previous value, and
-> > I cannot see why this can't be done at write-time.
-> >
-> > If you want to hide this behind a capability, fine (although my guts
-> > feeling is that we don't need that either). But I really want to be
-> > convinced about all this tracking.
-> >
-> The tracking of each owner register is necessary here to safe-guard
-> the possibility that the user-space may not be aware of a newly
-> introduced register, and hence, hasn't accessed it. If it had at least
-> read the register, but not write-back, we assume that the user-space
-> is happy with the configuration. But the fact that the register has
-> not even been read would state that user-space is unaware of the
-> existence of this new register. In such a case, if we don't sanitize
-> (clear all the bits) this register, the features will be exposed
-> unconditionally to the guest.
+On Tue, 23 Nov 2021 13:53:34 +0200
+Antoniu Miclaus <antoniu.miclaus@analog.com> wrote:
+
+> The ADMV1013 is a wideband, microwave upconverter optimized
+> for point to point microwave radio designs operating in the
+> 24 GHz to 44 GHz radio frequency (RF) range.
 > 
-> The capability is introduced here to make sure that this new
-> infrastructure is backward compatible with old VMMs. If the VMMs don't
-> enable this capability, they are probably unaware of this, and this
-> will work as it always has- expose new services to the guest
-> unconditionally as and when they are introduced.
+> Datasheet:
+> https://www.analog.com/media/en/technical-documentation/data-sheets/ADMV1013.pdf
+> 
+> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
 
-Hi Raghavendra,
+Hi Antoniu,
 
-I don't think we need a CAP that has to be enabled or to make any
-assumptions or policy decisions in the kernel. I think we just need to
-provide a bit more information to the VMM when it checks if KVM has the
-CAP. If KVM would tell the VMM how may pseudo registers there are, which
-can be done with the return value of the CAP, then the VMM code could be
-something like this
+Clearly you are exploring new territory here so thanks for persisting and
+I think we are getting close to where we want to be with this.
 
-  r = check_cap(KVM_CAP_ARM_HVC_FW_REG_BMAP);
-  if (r) {
-    num_regs = r;
 
-    for (idx = 0; idx < num_regs; ++idx) {
-      reg = hvc_fw_reg(idx);
+Other than one question over whether the generated ABI using
+extinfo matches what you have in the docs, the remaining changes are all ABI
+/ dt binding review related which will have impacts in here as well.
 
-      if (idx > vmm_last_known_idx) {
-        ...
-      } else {
-        ...
-      }
-    }
-  }
+hmm. Side note, my kernel.org email is blocking for some reason so sending
+using a different account. Hopefully it will make it!
 
-With this, the VMM is free to decide if it wants to clear all registers
-greater than the last index it was aware of or if it wants to let those
-registers just get exposed to the guest without knowing what's getting
-exposed. Along with documenting that by default everything gets exposed
-by KVM, which is the backwards compatible thing to do, then the VMM has
-been warned and given everything it needs to manage its guests.
+> +
+> +#define _ADMV1013_EXT_INFO(_name, _shared, _ident) { \
+> +		.name = _name, \
+> +		.read = admv1013_read, \
+> +		.write = admv1013_write, \
+> +		.private = _ident, \
+> +		.shared = _shared, \
+> +}
+> +
+> +static const struct iio_enum admv1013_mode_enum = {
+> +	.items = admv1013_modes,
+> +	.num_items = ARRAY_SIZE(admv1013_modes),
+> +	.get = admv1013_get_mode,
+> +	.set = admv1013_set_mode,
+> +};
+> +
+> +static const struct iio_chan_spec_ext_info admv1013_ext_info[] = {
+> +	_ADMV1013_EXT_INFO("i", IIO_SEPARATE, ADMV1013_RFMOD_I),
+> +	_ADMV1013_EXT_INFO("q", IIO_SEPARATE, ADMV1013_RFMOD_Q),
+> +	IIO_ENUM("freq_mode", IIO_SHARED_BY_ALL, &admv1013_mode_enum),
+> +	IIO_ENUM_AVAILABLE("freq_mode", IIO_SHARED_BY_ALL, &admv1013_mode_enum),
+> +	{ },
+> +};
+> +
+> +#define ADMV1013_CHAN_PHASE(_channel, _channel2, _admv1013_ext_info) {		\
+> +	.type = IIO_ALTVOLTAGE,					\
+> +	.output = 0,						\
+> +	.indexed = 1,						\
+> +	.channel2 = _channel2,					\
+> +	.channel = _channel,					\
+> +	.differential = 1,					\
+> +	.info_mask_separate = BIT(IIO_CHAN_INFO_PHASE),		\
+> +	.ext_info = _admv1013_ext_info,				\
+> +	}
+> +
+> +#define ADMV1013_CHAN_CALIB(_channel, _admv1013_ext_info) {\
+> +	.type = IIO_ALTVOLTAGE,					\
+> +	.output = 0,						\
+> +	.indexed = 1,						\
+> +	.channel = _channel,					\
+> +	.info_mask_separate = BIT(IIO_CHAN_INFO_PHASE),		\
 
-Another thing that might be nice is giving userspace control of how many
-pseudo registers show up in get-reg-list. In order to migrate from a host
-with a more recent KVM to a host with an older KVM[*] we should only
-expose the number of pseudo registers that the older host is aware of.
-The VMM would zero these registers out anyway, in order to be compatible
-for migration, but that's not enough when they also show up in the list
-(at least not with QEMU that aborts migration when the destination
-expects less registers than what get-reg-list provides)
+This has me a little confused.  How do these map to the
+0-1_phase_i etc that you have in the ABI docs?
+Unless I'm completely forgetting how this works this will give us
+one attribute for phase and another one for _i
 
-[*] This isn't a great idea, but it'd be nice if we can make it work,
-because users may want to rollback upgrades or, after migrating to a
-host with a newer kernel, they may want to migrate back to where they
-started.
+Perhaps it's worth providing a sysfs directory listing for this one
+given it's rather unusual.
 
-Thanks,
-drew
+> +	.ext_info = _admv1013_ext_info,				\
+> +	}
+> +
+> +static const struct iio_chan_spec admv1013_channels[] = {
+> +	ADMV1013_CHAN_PHASE(0, 1, admv1013_ext_info),
+> +	ADMV1013_CHAN_CALIB(0, admv1013_ext_info),
+> +	ADMV1013_CHAN_CALIB(1, admv1013_ext_info),
+> +};
+> +
+
 
