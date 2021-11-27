@@ -2,179 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C96145FFFE
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 16:53:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A50EC460002
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 16:58:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355419AbhK0P4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 10:56:20 -0500
-Received: from mga12.intel.com ([192.55.52.136]:33987 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351049AbhK0PyS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 10:54:18 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="215790667"
-X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
-   d="scan'208";a="215790667"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 07:51:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
-   d="scan'208";a="675815184"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 27 Nov 2021 07:50:59 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqzyc-0009iV-QQ; Sat, 27 Nov 2021 15:50:58 +0000
-Date:   Sat, 27 Nov 2021 23:50:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Peng Wang <rocking@linux.alibaba.com>, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/idle: support busy loop polling on idle SMT cpus
-Message-ID: <202111272343.0rQFsj1v-lkp@intel.com>
-References: <487180cde91b5de55f013c0294743908fd46e358.1637062971.git.rocking@linux.alibaba.com>
+        id S1349232AbhK0QCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 11:02:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231697AbhK0QAD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 11:00:03 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F04FC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 07:56:48 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id h16-20020a9d7990000000b0055c7ae44dd2so18494882otm.10
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 07:56:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=Wb8YLQANc5QRzYld+Cz8kvavn4ZutkCVadi3QcaIrpY=;
+        b=Fr8KB/sNhZtkDGzfSVmsZExXWinvFjOR5Ko1s0uSScNTr6JbWF+c6kOdXOuGEu78t/
+         sTWhm850HsnqnXtSfKwyIB4HrWGYTIzeWukDg6IeWRNpezYSD49PQfzoGlD6PQjieAyB
+         pSAHdn5NJYglySEGVTBl/1y8ZKmTEdKy8lQ3j0O0kHjmByvIc2yDdDEF2FnWwBpTCW34
+         DcQlY1WdnrO5vb7M0IQfdT12HoI8AOULQUc3uuFz0R240RakkIEGjQp1JlzCYI7woUYv
+         g2u0SW59xe7NW0hnYQMpxHqWzvCluiqOZFImwB+GYHkIG61GjoeOYEDAMR01PEtUabBY
+         31fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=Wb8YLQANc5QRzYld+Cz8kvavn4ZutkCVadi3QcaIrpY=;
+        b=QeVxTd0++NXf/R6SWoz5sTnPWXjeL9+bWDIuhGiqhmTcKE5ZsiOVLuPBe4rEUmvzla
+         5wU1Q1Q86eDCDOd+91JlFmpKS0dfwUVqkuv0cjcqa9ffbCNbqZ0keUSsLbb85lCp8OKI
+         rKwXWuNN1nlzJ0vPwHSTlxNDeFVN6iE1k6+Zl3Ru/Xbdmg0KXLC1T6luufLCIFgTrF7x
+         V50x6PFFBfhaqbISAkIaB4tC92+2pV7JOLsSrgu32X0CZwlgdIe4Sp6g3VE1bdbYU7Vu
+         BnZ1jyu1UHzI9WqMrH5KdSXmrWlcRcnx7jXqjAn13cp1pWZQyVO5dFYAq21mzXHjMlMP
+         MFeA==
+X-Gm-Message-State: AOAM530wxnuvQKMnra6oygn9Zq3MJSm3g+b+MIotZs3mkA0fi2dGcdEF
+        BF/Tu3Tj7CNZdAtKHnsXD01zuVmI3/Urxn8qfsU=
+X-Google-Smtp-Source: ABdhPJyC4FU9InA+iNRnE7UKWy2E241xcgOzOpK0usEvm0hYnW+xsvUpfZ/Ort/5Izq0oxffd9V+nZRIshTvve6wvls=
+X-Received: by 2002:a05:6830:4414:: with SMTP id q20mr35022514otv.14.1638028607854;
+ Sat, 27 Nov 2021 07:56:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <487180cde91b5de55f013c0294743908fd46e358.1637062971.git.rocking@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: ericgloriapaul@gmail.com
+Received: by 2002:a05:6830:231d:0:0:0:0 with HTTP; Sat, 27 Nov 2021 07:56:47
+ -0800 (PST)
+From:   DINA MCKENNA <dinamckennahowley@gmail.com>
+Date:   Sat, 27 Nov 2021 15:56:47 +0000
+X-Google-Sender-Auth: oDZTPG_LGnKAtM5QjQW-K-OPXz8
+Message-ID: <CAApFGfSkyxaxfVfWatjQ=PKm1ZaCSagBin0cbA0uMjjw+UdwYg@mail.gmail.com>
+Subject: Hello,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peng,
+Hello my dear,.
 
-Thank you for the patch! Yet something to improve:
+ I sent this mail praying it will get to you in a good condition of
+health, since I myself are in a very critical health condition in
+which I sleep every night without knowing if I may be alive to see the
+next day. I bring peace and love to you. It is by the grace of God, I
+had no choice than to do what is lawful and right in the sight of God
+for eternal life and in the sight of man, for witness of God=E2=80=99s merc=
+y
+and glory upon my life. I am Mrs. Dina. Howley Mckenna,. a widow. I am
+suffering from a long time brain tumor, It has defiled all forms of
+medical treatment, and right now I have about a few months to leave,
+according to medical experts. The situation has gotten complicated
+recently with my inability to hear proper, am communicating with you
+with the help of the chief nurse herein the hospital, from all
+indication my conditions is really deteriorating and it is quite
+obvious that, according to my doctors they have advised me that I may
+not live too long, Because this illness has gotten to a very bad
+stage. I plead that you will not expose or betray this trust and
+confidence that I am about to repose on you for the mutual benefit of
+the orphans and the less privilege. I have some funds I inherited from
+my late husband, the sum of ($ 11,000,000.00, Eleven Million Dollars).
+Having known my condition, I decided to donate this fund to you
+believing that you will utilize it the way i am going to instruct
+herein. I need you to assist me and reclaim this money and use it for
+Charity works therein your country  for orphanages and gives justice
+and help to the poor, needy and widows says The Lord." Jeremiah
+22:15-16.=E2=80=9C and also build schools for less privilege that will be
+named after my late husband if possible and to promote the word of God
+and the effort that the house of God is maintained. I do not want a
+situation where this money will be used in an ungodly manner. That's
+why I'm taking this decision. I'm not afraid of death, so I know where
+I'm going. I accept this decision because I do not have any child who
+will inherit this money after I die.. Please I want your sincerely and
+urgent answer to know if you will be able to execute this project for
+the glory of God, and I will give you more information on how the fund
+will be transferred to your bank account. May the grace, peace, love
+and the truth in the Word of God be with you and all those that you
+love and care for.
 
-[auto build test ERROR on tip/sched/core]
-[also build test ERROR on tip/master linux/master linus/master v5.16-rc2 next-20211126]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+I'm waiting for your immediate reply..
 
-url:    https://github.com/0day-ci/linux/commits/Peng-Wang/sched-idle-support-busy-loop-polling-on-idle-SMT-cpus/20211116-195600
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git 8ea9183db4ad8afbcb7089a77c23eaf965b0cacd
-config: sparc64-randconfig-r035-20211116 (https://download.01.org/0day-ci/archive/20211127/202111272343.0rQFsj1v-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/11c6a63e5c0f496b43058351f1e2a488ee27a5ec
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Peng-Wang/sched-idle-support-busy-loop-polling-on-idle-SMT-cpus/20211116-195600
-        git checkout 11c6a63e5c0f496b43058351f1e2a488ee27a5ec
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=sparc64 SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   In file included from include/linux/list.h:9,
-                    from include/linux/rculist.h:10,
-                    from include/linux/pid.h:5,
-                    from include/linux/sched.h:14,
-                    from kernel/sched/sched.h:5,
-                    from kernel/sched/idle.c:9:
-   kernel/sched/idle.c: In function 'smt_idle_poll_switch':
->> kernel/sched/idle.c:73:51: error: 'cpu_cgrp_id' undeclared (first use in this function); did you mean 'io_cgrp_id'?
-      73 |         tg = container_of(task_css_check(current, cpu_cgrp_id, true),
-         |                                                   ^~~~~~~~~~~
-   include/linux/kernel.h:494:33: note: in definition of macro 'container_of'
-     494 |         void *__mptr = (void *)(ptr);                                   \
-         |                                 ^~~
-   kernel/sched/idle.c:73:27: note: in expansion of macro 'task_css_check'
-      73 |         tg = container_of(task_css_check(current, cpu_cgrp_id, true),
-         |                           ^~~~~~~~~~~~~~
-   kernel/sched/idle.c:73:51: note: each undeclared identifier is reported only once for each function it appears in
-      73 |         tg = container_of(task_css_check(current, cpu_cgrp_id, true),
-         |                                                   ^~~~~~~~~~~
-   include/linux/kernel.h:494:33: note: in definition of macro 'container_of'
-     494 |         void *__mptr = (void *)(ptr);                                   \
-         |                                 ^~~
-   kernel/sched/idle.c:73:27: note: in expansion of macro 'task_css_check'
-      73 |         tg = container_of(task_css_check(current, cpu_cgrp_id, true),
-         |                           ^~~~~~~~~~~~~~
-   In file included from <command-line>:
-   include/linux/kernel.h:495:58: error: invalid use of undefined type 'struct task_group'
-     495 |         BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) &&   \
-         |                                                          ^~
-   include/linux/compiler_types.h:302:23: note: in definition of macro '__compiletime_assert'
-     302 |                 if (!(condition))                                       \
-         |                       ^~~~~~~~~
-   include/linux/compiler_types.h:322:9: note: in expansion of macro '_compiletime_assert'
-     322 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-         |                                     ^~~~~~~~~~~~~~~~~~
-   include/linux/kernel.h:495:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-     495 |         BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) &&   \
-         |         ^~~~~~~~~~~~~~~~
-   include/linux/kernel.h:495:27: note: in expansion of macro '__same_type'
-     495 |         BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) &&   \
-         |                           ^~~~~~~~~~~
-   kernel/sched/idle.c:73:14: note: in expansion of macro 'container_of'
-      73 |         tg = container_of(task_css_check(current, cpu_cgrp_id, true),
-         |              ^~~~~~~~~~~~
->> include/linux/compiler_types.h:140:41: error: invalid use of undefined type 'struct task_group'
-     140 | #define __compiler_offsetof(a, b)       __builtin_offsetof(a, b)
-         |                                         ^~~~~~~~~~~~~~~~~~
-   include/linux/stddef.h:17:33: note: in expansion of macro '__compiler_offsetof'
-      17 | #define offsetof(TYPE, MEMBER)  __compiler_offsetof(TYPE, MEMBER)
-         |                                 ^~~~~~~~~~~~~~~~~~~
-   include/linux/kernel.h:498:28: note: in expansion of macro 'offsetof'
-     498 |         ((type *)(__mptr - offsetof(type, member))); })
-         |                            ^~~~~~~~
-   kernel/sched/idle.c:73:14: note: in expansion of macro 'container_of'
-      73 |         tg = container_of(task_css_check(current, cpu_cgrp_id, true),
-         |              ^~~~~~~~~~~~
->> kernel/sched/idle.c:75:36: error: invalid use of undefined type 'struct task_group'
-      75 |         rq->need_smt_idle_poll = tg->need_smt_idle_poll;
-         |                                    ^~
-
-
-vim +73 kernel/sched/idle.c
-
-    57	
-    58	void smt_idle_poll_switch(struct rq *rq)
-    59	{
-    60		struct rq *smt_rq;
-    61		struct task_group *tg;
-    62		int smt, cpu;
-    63	
-    64		if (!static_branch_unlikely(&__smt_idle_poll_enabled))
-    65			return;
-    66	
-    67		if (rq->idle == current) {
-    68			rq->need_smt_idle_poll = false;
-    69			return;
-    70		}
-    71	
-    72		rcu_read_lock();
-  > 73		tg = container_of(task_css_check(current, cpu_cgrp_id, true),
-    74			struct task_group, css);
-  > 75		rq->need_smt_idle_poll = tg->need_smt_idle_poll;
-    76		rcu_read_unlock();
-    77	
-    78		if (!rq->need_smt_idle_poll)
-    79			return;
-    80	
-    81		cpu = rq->cpu;
-    82		for_each_cpu(smt, cpu_smt_mask(cpu)) {
-    83			if (cpu == smt || !cpu_online(smt))
-    84				continue;
-    85			smt_rq = cpu_rq(smt);
-    86			if (smt_rq->idle == smt_rq->curr && !smt_rq->in_smt_idle_poll)
-    87				smp_send_reschedule(smt);
-    88		}
-    89	}
-    90	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+May God Bless you,
+Mrs. Dina. Howley Mckenna.
