@@ -2,122 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E79C145FC16
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 03:28:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5CE45FB52
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 02:37:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235809AbhK0Cb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 21:31:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhK0C36 (ORCPT
+        id S233151AbhK0BlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 20:41:00 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:16308 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346045AbhK0Bi4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 21:29:58 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC3EC08ED4B
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 17:33:25 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id u17so7697852plg.9
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 17:33:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding:content-disposition;
-        bh=X8QlSj+7J7KTHGL3d4vBencwUADDVpyBriTFH4PukKs=;
-        b=mSJ8fJrFPmmxdffytRC+GUJ3cqSCF0AxMspew4IGovmY1kkJQAEcOEZ6OQkPpbM3OK
-         RxjOcE7SBAFsjjrEPgXP5L7JnOX5BEUhlgdxBIU7/rFJwC+0NQbjaaOmfEBNMWhTti+F
-         oHnJgVL+V2ys1uS4xKLuN+/55kjhuNqCDmbJdk8WPpYswsbjozEGTzJMWSot44WPqwAr
-         YzJldmEdzQ39MQLg3nDGC5OktC2S/UPjnn9bK93X7PNusl59FfK9FzEbhPcrHasKdHne
-         MZAb0m8z6LgHZr/UILj8VzkN2t4mTlzyPO/SpJOGAiMrcctBGBsCEZRuDxUBIA3zxT/Q
-         KUIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding
-         :content-disposition;
-        bh=X8QlSj+7J7KTHGL3d4vBencwUADDVpyBriTFH4PukKs=;
-        b=yXpwxXc7VoNfWgybiolUOupt86+7fOvkYFOC/NWTjalSJ05ToJteFXXvK4t20kQfiM
-         hrQra3X11udLH5UfmdqzEvP08mPCdKCV3Zjyh4WOIg+zo/HH5f8urLarHPhLjHu++hu6
-         rrhWxrelBA74DOig3106Kfv5cobh16Pki9Qec0RqCl/4W17VQqbjHpojq871OOrjS/II
-         uyfieMvao6IVvdyZx33njM1lMbf2mMhROcwjhCvkbZgc7NY+0WKveaO3/Lll8M9DHO9Z
-         UOrVvavJdHF2Je7nTfEQmQ3TvSFOH5GpbNaF1v8cu8GwlDsn2h2wWXmdzT4XgLRfpVcz
-         jMvg==
-X-Gm-Message-State: AOAM530jWSVblPfr95qaZVd6dmlkhUMGjF4ysZdt0Vs19+BU51YgP+5d
-        Y96sC4E29b/qo8e5N6GC2K8=
-X-Google-Smtp-Source: ABdhPJzI+eUkvspJeekb6OOEDPmnxyF8L1bDDVL+PQz2etsOx1uABAB180rQOM/viSL3PN6icMqwSg==
-X-Received: by 2002:a17:90a:c78f:: with SMTP id gn15mr19678485pjb.54.1637976805227;
-        Fri, 26 Nov 2021 17:33:25 -0800 (PST)
-Received: from pc ([223.197.3.99])
-        by smtp.gmail.com with ESMTPSA id z22sm9007173pfe.93.2021.11.26.17.33.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 26 Nov 2021 17:33:24 -0800 (PST)
-Date:   Sat, 27 Nov 2021 09:33:19 +0800
-From:   Zackary Liu <zackary.liu.pro@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     "=?utf-8?Q?masahiroy=40kernel.org?=" <masahiroy@kernel.org>,
-        "=?utf-8?Q?ripxorip=40gmail.com?=" <ripxorip@gmail.com>,
-        "=?utf-8?Q?mpe=40ellerman.id.au?=" <mpe@ellerman.id.au>,
-        "=?utf-8?Q?linux-kernel=40vger.kernel.org?=" 
+        Fri, 26 Nov 2021 20:38:56 -0500
+Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4J1Dh00y3yz90SV;
+        Sat, 27 Nov 2021 09:35:12 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Sat, 27 Nov 2021 09:35:40 +0800
+Subject: Re: [PATCH -next V5 1/2] sata_fsl: fix UAF in sata_fsl_port_stop when
+ rmmod sata_fsl
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        <damien.lemoal@opensource.wdc.com>, <axboe@kernel.dk>,
+        <tj@kernel.org>, <linux-ide@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Message-ID: <A5940078-2624-4F28-859A-9F11C1F5058A@getmailspring.com>
-In-Reply-To: <YaEECIyT3LT7JQzQ@kroah.com>
-References: <YaEECIyT3LT7JQzQ@kroah.com>
-Subject: Re: [PATCH] scripts/tags: merge "TAGS" and "tags" in case
-X-Mailer: Mailspring
+CC:     <yebin10@huawei.com>, <yukuai3@huawei.com>,
+        <stable@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
+References: <20211126020307.2168767-1-libaokun1@huawei.com>
+ <20211126020307.2168767-2-libaokun1@huawei.com>
+ <f8acc1f0-62d1-3c80-840f-1e38e21ad3c9@gmail.com>
+From:   "libaokun (A)" <libaokun1@huawei.com>
+Message-ID: <87fba93f-3813-87e2-9746-55c2393bde95@huawei.com>
+Date:   Sat, 27 Nov 2021 09:35:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+In-Reply-To: <f8acc1f0-62d1-3c80-840f-1e38e21ad3c9@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+在 2021/11/27 3:43, Sergei Shtylyov 写道:
+> On 11/26/21 5:03 AM, Baokun Li wrote:
+>
+>> When the `rmmod sata_fsl.ko` command is executed in the PPC64 GNU/Linux,
+>> a bug is reported:
+>>   ==================================================================
+>>   BUG: Unable to handle kernel data access on read at 0x80000800805b502c
+>>   Oops: Kernel access of bad area, sig: 11 [#1]
+>>   NIP [c0000000000388a4] .ioread32+0x4/0x20
+>>   LR [80000000000c6034] .sata_fsl_port_stop+0x44/0xe0 [sata_fsl]
+>>   Call Trace:
+>>    .free_irq+0x1c/0x4e0 (unreliable)
+>>    .ata_host_stop+0x74/0xd0 [libata]
+>>    .release_nodes+0x330/0x3f0
+>>    .device_release_driver_internal+0x178/0x2c0
+>>    .driver_detach+0x64/0xd0
+>>    .bus_remove_driver+0x70/0xf0
+>>    .driver_unregister+0x38/0x80
+>>    .platform_driver_unregister+0x14/0x30
+>>    .fsl_sata_driver_exit+0x18/0xa20 [sata_fsl]
+>>    .__se_sys_delete_module+0x1ec/0x2d0
+>>    .system_call_exception+0xfc/0x1f0
+>>    system_call_common+0xf8/0x200
+>>   ==================================================================
+>>
+>> The triggering of the BUG is shown in the following stack:
+>>
+>> driver_detach
+>>    device_release_driver_internal
+>>      __device_release_driver
+>>        drv->remove(dev) --> platform_drv_remove/platform_remove
+>>          drv->remove(dev) --> sata_fsl_remove
+>>            iounmap(host_priv->hcr_base);			<---- unmap
+>>            kfree(host_priv);                             <---- free
+>>        devres_release_all
+>>          release_nodes
+>>            dr->node.release(dev, dr->data) --> ata_host_stop
+>>              ap->ops->port_stop(ap) --> sata_fsl_port_stop
+>>                  ioread32(hcr_base + HCONTROL)           <---- UAF
+>>              host->ops->host_stop(host)
+>>
+>> The iounmap(host_priv->hcr_base) and kfree(host_priv) functions should
+>> not be executed in drv->remove. These functions should be executed in
+>> host_stop after port_stop. Therefore, we move these functions to the
+>> new function sata_fsl_host_stop and bind the new function to host_stop.
+>>
+>> Fixes: faf0b2e5afe7 ("drivers/ata: add support to Freescale 3.0Gbps SATA Controller")
+>> Cc: stable@vger.kernel.org
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+>
+> MBR, Sergei
+> .
 
-On Nov 26 2021, at 11:58 pm, Greg KH <gregkh@linuxfoundation.org> wrote:
+Thank you for your review.
 
-> On Wed, Nov 03, 2021 at 11:35:29PM +0800, Zhaoyu Liu wrote:
->> merge "TAGS" and "tags" for the code more concise
->> 
->> Signed-off-by: Zhaoyu Liu <zackary.liu.pro@gmail.com>
->> ---
->>  scripts/tags.sh | 14 +++++---------
->>  1 file changed, 5 insertions(+), 9 deletions(-)
->> 
->> diff --git a/scripts/tags.sh b/scripts/tags.sh
->> index 16d475b3e203..a9181dd0fee2 100755
->> --- a/scripts/tags.sh
->> +++ b/scripts/tags.sh
->> @@ -315,15 +315,11 @@ case "$1" in
->>  		dogtags
->>  		;;
->>  
->> -	"tags")
->> -		rm -f tags
->> -		xtags ctags
->> -		remove_structs=y
->> -		;;
->> -
->> -	"TAGS")
->> -		rm -f TAGS
->> -		xtags etags
->> +	"TAGS" | "tags")
->> +		rm -f $1
->> +		xtags $([ $1 = "tags" ]	\
->> +			&& echo ctags		\
->> +			|| echo etags)
->>  		remove_structs=y
->>  		;;
-> 
-> Ick, that's much harder to read and understand.
-> 
-> What is wrong with the existing code?  It's obvious and makes sense, it
-> is not duplicating any lines here except the one "remove_structs=y"
-> which is fine.
-> 
-> I'm not going to take this, sorry.
-> 
-> greg k-h
-> 
+-- 
+With Best Regards,
+Baokun Li
+.
 
-Ok you're right, Easy to understand is better.
-Thank you.
-
-zackary
