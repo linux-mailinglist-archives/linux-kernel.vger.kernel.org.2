@@ -2,72 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB2845FE96
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 13:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ADC245FE9A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 13:35:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354651AbhK0MiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 07:38:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233937AbhK0MgO (ORCPT
+        id S1354791AbhK0Mip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 07:38:45 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:38978 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242443AbhK0Mgn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 07:36:14 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBBFBC06173E;
-        Sat, 27 Nov 2021 04:32:59 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id i8-20020a7bc948000000b0030db7b70b6bso12645106wml.1;
-        Sat, 27 Nov 2021 04:32:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:reply-to:mime-version
-         :content-disposition:user-agent;
-        bh=cym/rhXni262lJDrdSli5f3C7oHJR0/fnsXBXxHnTTs=;
-        b=o4HYizWSiV5rx6hMfafIab4dtg7tx7IR2lBwTGzH6v4RX2UX34iHJilrK6tWdxa4gJ
-         wi+M/IoWxknuaxjHJeAK2vKHZRDHF4qc5Oq/oq9nosuHNq/IeRqw2rNwFMKGdZXB9OEn
-         JZjFYITb4v3oV6alKCLyA2AsgldH3eQr2L4Fu8aU3LGOF5TfLPaWFEtLZihvPK5jXBLn
-         XsRHnHA6pXDhyyMdSKcDDX5DdUb4wWWXrX4b8rqnBczAe1pvpMpc77wnjE4YTYrk//Lu
-         kMl4HMRLOtYavFXIYgj19xR8d2cyo2svwZQnK5pIeXMpGr7KK3oFpr/iSn5qvLwWWDlX
-         3DvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :mime-version:content-disposition:user-agent;
-        bh=cym/rhXni262lJDrdSli5f3C7oHJR0/fnsXBXxHnTTs=;
-        b=EcZHHBEpoB3Wy2kRpRmAF9kA8XTANvCwvRP4ngefxdXTes8GFyh0JUJ1B2XozOJxZP
-         KW+LWx+qN9UZoXWU5YvsmxPxN1ycqrKB/xeLJSQ9r+qRlnh7UmtYNPhx5pW+YZKPrzny
-         zWy8E2yY54LH39cHzJCp72faE7VqC0lw4sZtBSf8RxoVy4O5CqDGy/wVv8uJKYYT/pOf
-         X6yCga1V48uNQ64aOSm0XyilsHzeTe/D+6II0jqdRHFKLnxZs9hjMDpIs12qH96kpcGd
-         hFywkftutFhWbUGOckyfGUgzDC2rgMfgCsp5ib7vl6gNrMQIiI2ugr1FrPFok6Rdu7Zv
-         C4Xg==
-X-Gm-Message-State: AOAM532oQFuXWt2kePNzO8POEU00SGYpte4dxVdG8MiGficMcbHbQlHi
-        YfbewoYXYgU7Pvi1nAAnXZA=
-X-Google-Smtp-Source: ABdhPJxhBcmHNU7kdzFqDTv20cEQft9Tb2E5xjOWlDYu5QO1xdu74z8xHEP3mxuEfNQlYTeF8/ziXQ==
-X-Received: by 2002:a05:600c:3510:: with SMTP id h16mr22236706wmq.144.1638016378333;
-        Sat, 27 Nov 2021 04:32:58 -0800 (PST)
-Received: from debian.domena ([176.106.33.180])
-        by smtp.gmail.com with ESMTPSA id f7sm16986463wmg.6.2021.11.27.04.32.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Nov 2021 04:32:58 -0800 (PST)
-Date:   Sat, 27 Nov 2021 13:32:56 +0100
-From:   Dominik Kobinski <dominikkobinski314@gmail.com>
-To:     linus.walleij@linaro.org
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        ivo.ivanov.ivanov1@gmail.com, linux-arm-msm@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dominikkobinski314@gmail.com
-Subject: Re: [PATCH v2,1/5] pinctrl: qcom: spmi-gpio: Add pm8226 compatibility
-Message-ID: <20211127123254.GA4014@debian.domena>
-Reply-To: CACRpkda9PkXZugE2vFnw+BhSrN-wJvX0Yu1Nffyd9qqg46ijoA@mail.gmail.com
+        Sat, 27 Nov 2021 07:36:43 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id CD159B81B33;
+        Sat, 27 Nov 2021 12:33:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFB5FC53FAD;
+        Sat, 27 Nov 2021 12:33:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1638016406;
+        bh=jDfQyHsi3RriZ5ZWV8f+HEUm1N4gUzCAPBaQlnUROlA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RvixBZ/ISwOAUImnksfi7zufQTgUiqeLh/7boi8Gt5SIP7YchCvymFs19VAM+pqQo
+         zjsGrjhGOqrYedKeM7bug0fJlGXWkldVSjj/ZtkL8dpoOrPARzAeroMsQSxSSLXYZ+
+         GT3Hs1K1hfMe+l7Tkwp0ugaxHRcZ+LUpK2NveDWM=
+Date:   Sat, 27 Nov 2021 13:33:24 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Marc Zygnier <maz@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Megha Dey <megha.dey@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, linux-pci@vger.kernel.org,
+        linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com
+Subject: Re: [patch 32/32] genirq/msi: Convert storage to xarray
+Message-ID: <YaIllD3pSVCI/gbj@kroah.com>
+References: <20211126230957.239391799@linutronix.de>
+ <20211126232736.190744801@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211126232736.190744801@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-True. Sorry for the confusion and thank you for applying the patch.
+On Sat, Nov 27, 2021 at 02:23:17AM +0100, Thomas Gleixner wrote:
+> The current linked list storage for MSI descriptors is suboptimal in
+> several ways:
+> 
+>   1) Looking up a MSI desciptor requires a O(n) list walk in the worst case
+> 
+>   2) The upcoming support of runtime expansion of MSI-X vectors would need
+>      to do a full list walk to figure out whether a particular index is
+>      already associated.
+> 
+>   3) Runtime expansion of sparse allocations is even more complex as the
+>      current implementation assumes an ordered list (increasing MSI index).
+> 
+> Use an xarray which solves all of the above problems nicely.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  include/linux/msi.h |   19 ++---
+>  kernel/irq/msi.c    |  188 ++++++++++++++++++++++------------------------------
+>  2 files changed, 90 insertions(+), 117 deletions(-)
 
-Regards,
-Dominik Kobinski
+Much simpler code too, nice!
 
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
