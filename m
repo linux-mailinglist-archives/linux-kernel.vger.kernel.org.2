@@ -2,129 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE07D460132
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 20:29:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A33C460137
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 20:33:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235067AbhK0TcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 14:32:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45062 "EHLO
+        id S232471AbhK0Tg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 14:36:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356112AbhK0TaG (ORCPT
+        with ESMTP id S231426AbhK0Tey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 14:30:06 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B93F0C06175D
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 11:26:51 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id c4so26557075wrd.9
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 11:26:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=89TQIfFMi5YcjZndEermwrf0AkyDoyzUG6bDIxitI4Y=;
-        b=HUJpYejgaxfyWI6FpnqGcfAhCMCEr2D6LDN0gcB4SuTSnAZuS1UNAbVqizSg7xc9g+
-         Zmyt0bmyMWVJoZN4k6IzzYdJeHUSjvQprh+lRLGW2rHb9n2J8uU01p7MpxstS101R1f/
-         D4u6RmxDVDugEaSME+2QZDhm2CszDNgJ3e+Mo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=89TQIfFMi5YcjZndEermwrf0AkyDoyzUG6bDIxitI4Y=;
-        b=dpyggTqwNwjxVj5ibjwXnC+yN5KUujvbvfH/cO4hq/HTjGcvXPWvn9v9U/VuJy2Jji
-         3IZvBem7SVQ1uZbs+M4hy6GuAwE55Wr5Q3T2HQKrJgAHJAkC7oHlDCnu+7yGbdiiMT1p
-         Thko5Bf3itxVq9/Fu1FBv8FeOwitKW5T9oN06VJ1SJ4dNg3fMJBAx0fv/avzlELgaYRU
-         MaLrRaw2kC6+G5SqPWdvKwOPJWvJwadIzl83XFZ/6gq4ku0NY8hSXYFeaLMSVELSWgax
-         tu9VS690tk/Exbj9138KAUquA/0OGfm7it97zbn8co2dcdugW0tJ1PI0AO98Mpza8r9d
-         BDxA==
-X-Gm-Message-State: AOAM5314loGXjMlG9itHq04wE7pt5v8xsFm+DDv+OmTfXkK1CXeN+aWK
-        slUtj5J+d5t2Lz55O9zA10FA7A==
-X-Google-Smtp-Source: ABdhPJxgeqxmYvRq4/UvvikJwlN1aQmyd/Q4yh/D789U9or7uv4rdJy+HLzB9k4Tp7otyhxN440x7Q==
-X-Received: by 2002:a5d:6347:: with SMTP id b7mr23300469wrw.36.1638041210365;
-        Sat, 27 Nov 2021 11:26:50 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id p12sm9122810wro.33.2021.11.27.11.26.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Nov 2021 11:26:49 -0800 (PST)
-Date:   Sat, 27 Nov 2021 20:26:48 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] drm: Fix build error caused by missing drm_nomodeset.o
-Message-ID: <YaKGeKU7HJOgEu9r@phenom.ffwll.local>
-Mail-Followup-To: Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org
-References: <20211127191910.709356-1-javierm@redhat.com>
+        Sat, 27 Nov 2021 14:34:54 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103A9C06173E;
+        Sat, 27 Nov 2021 11:31:39 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1638041497;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dBon8SfZp1CEsl8BVx51RpGEII8dcWVBs/L2NZ3qLTE=;
+        b=12PZFwTo7dzQMjfEIObW/kTHWjbjA52CzuNfBOGK2uRNbJnVye3Dkjthb5DBQpAbPv7TIC
+        TsqmXC/RKQHhFH0JoAJSD/jtQ2oejhyxTYvz0qqHdVGIr1KZVfNESIfcaSejeaTNiTor4r
+        W9Y2iyfT6OYXEM8U9FgPnx3RHC8aCxTytiP5bDoYcv6afKfuKbi5UnpFvDIWIlhmL4+t3u
+        Xq6qEMUKoTtCgTIRJa8JPhxoqGWKYTp2XzfU1jQwu2xSEbgcbbxwA+/k4wnLBtEzx8V++W
+        F+hPOYnOETgCXAUIjN7tQ/1H4iL0wcicT8Zz0vfIwfMcYvTZwglzsfLoi8WH1w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1638041497;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dBon8SfZp1CEsl8BVx51RpGEII8dcWVBs/L2NZ3qLTE=;
+        b=JdAw3GTJGlue61YNMCREzj0zPv+Nw+GkUxnJdMLcseVulh7WwPNi/XNiSzdLuLfkV0fjnG
+        Y2wbE7D4FTsLxlDw==
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Marc Zygnier <maz@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Megha Dey <megha.dey@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, linux-pci@vger.kernel.org,
+        linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com
+Subject: Re: [patch 31/32] genirq/msi: Simplify sysfs handling
+In-Reply-To: <YaIlX8bef2jPLkUE@kroah.com>
+References: <20211126230957.239391799@linutronix.de>
+ <20211126232736.135247787@linutronix.de> <YaIlX8bef2jPLkUE@kroah.com>
+Date:   Sat, 27 Nov 2021 20:31:37 +0100
+Message-ID: <87lf19fl9i.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211127191910.709356-1-javierm@redhat.com>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 27, 2021 at 08:19:10PM +0100, Javier Martinez Canillas wrote:
-> The patch for commit ("6a2d2ddf2c34 drm: Move nomodeset kernel parameter
-> to the DRM subsystem") was generated with config 'diff.noprefix true'.
-> 
-> But later was applied using 'cat nomodeset.mbox | dim apply-branch' on a
-> machine with 'diff.noprefix false'. And command 'git am --scissors -3' as
+On Sat, Nov 27 2021 at 13:32, Greg Kroah-Hartman wrote:
+> On Sat, Nov 27, 2021 at 02:23:15AM +0100, Thomas Gleixner wrote:
+>> The sysfs handling for MSI is a convoluted maze and it is in the way of
+>> supporting dynamic expansion of the MSI-X vectors because it only supports
+>> a one off bulk population/free of the sysfs entries.
+>> 
+>> Change it to do:
+>> 
+>>    1) Creating an empty sysfs attribute group when msi_device_data is
+>>       allocated
+>> 
+>>    2) Populate the entries when the MSI descriptor is initialized
+>
+> How much later does this happen?  Can it happen while the device has a
+> driver bound to it?
 
-Huh that's a dangerous setting, I guess a dim patch to check for this and
-very loudly complain would be good? Care to type that up?  It's no big
-deal because strange git settings for dim is pretty much a game of
-whack-a-mole, but we should tackle them when they pop up.
+That's not later than before. It's when the driver initializes the
+MSI[X] interrupts, which usually happens in the probe() function.
 
-> used by the dim tool doesn't handle that case well, since the 3-way merge
-> wrongly resolves the path for new file drivers/gpu/drm/drm_nomodeset.c as
-> gpu/drm/drm_nomodeset.c instead.
-> 
-> It led to the following build error as reported by the kernel test robot:
-> 
->   make[4]: *** No rule to make target 'drivers/gpu/drm/drm_nomodeset.o', needed by 'drivers/gpu/drm/built-in.a'.
-> 
-> Fixes: ("6a2d2ddf2c34 drm: Move nomodeset kernel parameter to the DRM subsystem")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+The difference is that the group, (i.e.) directory is created slightly
+earlier.
 
-Build testing before pushing should be done, not the other way round :-)
+>> +
+>> +static inline int msi_sysfs_create_group(struct device *dev)
+>> +{
+>> +	return devm_device_add_group(dev, &msi_irqs_group);
+>
+> Much nicer, but you changed the lifetime rules of when these attributes
+> will be removed, is that ok?
 
-Also this is pretty much why we want gitlab CI and real branches.
+The msi entries are removed at the same place as they are removed in the
+current mainline code, i.e. when the device driver shuts the device
+down and disables MSI[X], which happens usually during remove()
 
-Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> ---
-> 
->  {gpu => drivers/gpu}/drm/drm_nomodeset.c | 0
->  1 file changed, 0 insertions(+), 0 deletions(-)
->  rename {gpu => drivers/gpu}/drm/drm_nomodeset.c (100%)
-> 
-> diff --git a/gpu/drm/drm_nomodeset.c b/drivers/gpu/drm/drm_nomodeset.c
-> similarity index 100%
-> rename from gpu/drm/drm_nomodeset.c
-> rename to drivers/gpu/drm/drm_nomodeset.c
-> -- 
-> 2.33.1
-> 
+What's different now is that the empty group stays around a bit
+longer. I don't see how that matters.
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> I still worry that these attributes show up "after" the device is
+> registered with the driver core, but hey, it's no worse than it
+> currently is, so that's not caused by this patch series...
+
+Happens that register before or after driver->probe()?
+
+>> -		}
+>> +	desc->sysfs_attrs = NULL;
+>> +	for (i = 0; i < desc->nvec_used; i++) {
+>> +		if (attrs[i].show)
+>> +			sysfs_remove_file_from_group(&dev->kobj, &attrs[i].attr, msi_irqs_group.name);
+>> +		kfree(attrs[i].attr.name);
+>
+> That's a cute hack, but should be documented somewhere in the code (that
+> if there is no show function, that means no attribute was registered
+> here).
+>
+> If you add a comment for this (either here or when you register the
+> attribute), feel free to add:
+
+Will do.
+
+Thanks,
+
+        tglx
