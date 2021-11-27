@@ -2,156 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A355D4605A0
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 11:15:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7565E460599
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 11:07:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357099AbhK1KSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 05:18:14 -0500
-Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17268 "EHLO
-        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237547AbhK1KQN (ORCPT
+        id S1345638AbhK1KKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 05:10:14 -0500
+Received: from penny.gigared.com.ar ([190.183.195.207]:37458 "EHLO
+        penny.gigared.com.ar" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1357105AbhK1KIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 05:16:13 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1638005196; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=n3tN4S2pUQeHcaidBskaxPvMtDHKVAxGlzpV4gGhKRw0ZRPexTpe+9491ASfmg0HTmlzpcGklxp+HMRiNT0nz7WB3yRDEgMXIVlbk6nppF5tsd9+xwYvYa+sqjKuO3IG1VFKI2d/3UUUTEAStZqRuO2G7fPvidPxfb9wuISL+GM=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1638005196; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
-        bh=Gx78nwaiX6IcgNHFjD7iZoX/9w5JdvaOCjUYq7EIGF8=; 
-        b=L+x/I3014bH31MUiJjwlMUIA0OFhsckS6h6hv6axN+6zUKZ3hEWIrtJxc9FBqQ6Qibg6YP4JsjtX6NX4JOTcEAN2havNabHJChd8GNBZB0Un8LvTEUsJdciVm1vdlMiA5HCTyeHhT3WETZ5Uv7oleWAWjCIqSZgTHB0xWTty7g8=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1638005196;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=Gx78nwaiX6IcgNHFjD7iZoX/9w5JdvaOCjUYq7EIGF8=;
-        b=AOUteeEka8coVmSi4zQzORqE5JY1MaV08/LAMtbTc27DCvaprB+pMimMaBupCWxB
-        O+FA0+jbAUUvYwibbnxdThAmY5Ue8tUKtJFxMKJfWYfyRApCoywzOrqMRC2+ZkgXx95
-        aD4148NrPXGMaIDIGuyGKpO95c4vIFvh8io47D5E=
-Received: from mail.baihui.com by mx.zoho.com.cn
-        with SMTP id 1638005193699274.15327156530714; Sat, 27 Nov 2021 17:26:33 +0800 (CST)
-Date:   Sat, 27 Nov 2021 17:26:33 +0800
-From:   Chengguang Xu <cgxu519@mykernel.net>
-Reply-To: cgxu519@mykernel.net
-To:     "miklos" <miklos@szeredi.hu>
-Cc:     "linux-unionfs" <linux-unionfs@vger.kernel.org>,
-        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "Chengguang Xu" <charliecgxu@tencent.com>,
-        "ronyjin" <ronyjin@tencent.com>, "amir73il" <amir73il@gmail.com>,
-        "jack" <jack@suse.cz>
-Message-ID: <17d60b7bbc2.caee608a13298.8366222634423039066@mykernel.net>
-In-Reply-To: <20211122030038.1938875-1-cgxu519@mykernel.net>
-References: <20211122030038.1938875-1-cgxu519@mykernel.net>
-Subject: =?UTF-8?Q?=E5=9B=9E=E5=A4=8D:[RFC_PATCH_V6_0/7]_implement_c?=
- =?UTF-8?Q?ontainerized_syncfs_for_overlayfs?=
+        Sun, 28 Nov 2021 05:08:14 -0500
+X-Greylist: delayed 54471 seconds by postgrey-1.27 at vger.kernel.org; Sun, 28 Nov 2021 05:08:13 EST
+Received: from penny.gigared.com.ar (localhost.localdomain [127.0.0.1])
+        by penny.gigared.com.ar (Proxmox) with ESMTP id 08A9320744A;
+        Sat, 27 Nov 2021 12:36:30 -0300 (-03)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gigared.com.ar;
+         h=cc:content-description:content-transfer-encoding:content-type
+        :content-type:date:from:from:message-id:mime-version:reply-to
+        :reply-to:subject:subject:to:to; s=dkim1; bh=h7053oHt7IWudgeGxt1
+        +jEseK0wFHGk/Ahu+FKu/4oA=; b=Nv8jpOexhhV3H7AKLlZVMTNHpgegmqNUmy0
+        EvZfph/GI/NzmICEuMWLKFUwoYYVCcaxPP8Jdv+GvnlB3epcKIIbvcENdhPs2fmN
+        hBKVFaWlwyx7vesHpBX+pp/ddJteCOO98jGM6gf/Y30PA8Bp8mzexE6H6NsQxXeQ
+        LiL7fkouUWIFATXipBcuF3X95VZutlhDZX88G2djfEqv7SuV4ABl/8yeUnZYLlHa
+        dDnYtd8g/Lbg7rztqIap+UTJuxi/oDlMUsQTLGuwP5iVbmbyOsUMuGotdALUvPmv
+        7bMJ/+zdHMFh31L2wKREQujqmpsgSUykiLEyKfBz5N78WMGzsBA==
+Received: from mail.gigared.com.ar (smtp.gigared.com.ar [190.7.31.233])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by penny.gigared.com.ar (Proxmox) with ESMTPS id 1D0C322E271;
+        Sat, 27 Nov 2021 12:33:17 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.gigared.com.ar (Postfix) with ESMTP id 9C3FA5C108522;
+        Sat, 27 Nov 2021 12:33:16 -0300 (-03)
+Received: from mail.gigared.com.ar ([127.0.0.1])
+        by localhost (mail.gigared.com.ar [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id mgCXQmtK2xD7; Sat, 27 Nov 2021 12:33:16 -0300 (-03)
+Received: from mail.gigared.com.ar (localhost [127.0.0.1])
+        by mail.gigared.com.ar (Postfix) with ESMTPS id 31DEB5C10851B;
+        Sat, 27 Nov 2021 12:33:16 -0300 (-03)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.gigared.com.ar 31DEB5C10851B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gigared.com.ar;
+        s=A65C87CE-340A-11E9-BBED-632450DDCFE9; t=1638027196;
+        bh=cl7CLg571pZQFgyqEVq03+OVot9DPtVYPlxbLHVUnIY=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=hRBmOhFJYz936ElrSbQhL2l+TnOFNux47uj3R4/00vmkJ5gA3KSZP46mVwXR0qrDm
+         ynuD/q5x10fl6NCpNz3PFyc6ktRaEVHPujrdGDKZSdPXNNG15uq69CPYpFVMRC1eAB
+         CmW9hop1QcVE9Zi0SEoavli8PzR8ml3+Dsm48FeM=
+Received: from [192.168.0.194] (unknown [102.91.5.194])
+        by mail.gigared.com.ar (Postfix) with ESMTPSA id 2E4995C108522;
+        Sat, 27 Nov 2021 12:33:06 -0300 (-03)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Importance: Medium
-User-Agent: ZohoCN Mail
-X-Mailer: ZohoCN Mail
+Content-Description: Mail message body
+Subject: A2A SPA
+To:     Recipients <focampos@gigared.com.ar>
+From:   focampos@gigared.com.ar
+Date:   Sat, 27 Nov 2021 07:32:56 -0800
+Reply-To: dubailoansltd@outlook.com
+Message-Id: <20211127153307.2E4995C108522@mail.gigared.com.ar>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=80, 2021-11-22 11:00:31 Chengguang=
- Xu <cgxu519@mykernel.net> =E6=92=B0=E5=86=99 ----
- > From: Chengguang Xu <charliecgxu@tencent.com>
- >=20
- > Current syncfs(2) syscall on overlayfs just calls sync_filesystem()
- > on upper_sb to synchronize whole dirty inodes in upper filesystem
- > regardless of the overlay ownership of the inode. In the use case of
- > container, when multiple containers using the same underlying upper
- > filesystem, it has some shortcomings as below.
- >=20
- > (1) Performance
- > Synchronization is probably heavy because it actually syncs unnecessary
- > inodes for target overlayfs.
- >=20
- > (2) Interference
- > Unplanned synchronization will probably impact IO performance of
- > unrelated container processes on the other overlayfs.
- >=20
- > This series try to implement containerized syncfs for overlayfs so that
- > only sync target dirty upper inodes which are belong to specific overlay=
-fs
- > instance. By doing this, it is able to reduce cost of synchronization an=
-d=20
- > will not seriously impact IO performance of unrelated processes.
- >=20
- > v1->v2:
- > - Mark overlayfs' inode dirty itself instead of adding notification
- > mechanism to vfs inode.
- >=20
- > v2->v3:
- > - Introduce overlayfs' extra syncfs wait list to wait target upper inode=
-s
- > in ->sync_fs.
- >=20
- > v3->v4:
- > - Using wait_sb_inodes() to wait syncing upper inodes.
- > - Mark overlay inode dirty only when having upper inode and VM_SHARED
- > flag in ovl_mmap().
- > - Check upper i_state after checking upper mmap state
- > in ovl_write_inode.
- >=20
- > v4->v5:
- > - Add underlying inode dirtiness check after mnt_drop_write().
- > - Handle both wait/no-wait mode of syncfs(2) in overlayfs' ->sync_fs().
- >=20
- > v5->v6:
- > - Rebase to latest overlayfs-next tree.
- > - Mark oerlay inode dirty when it has upper instead of marking dirty on
- >   modification.
- > - Trigger dirty page writeback in overlayfs' ->write_inode().
- > - Mark overlay inode 'DONTCACHE' flag.
- > - Delete overlayfs' ->writepages() and ->evict_inode() operations.
+Buona giornata,
+
+    Questo =E8 Dubai Loans LTD che concede prestiti tramite pubblicit=E0 pe=
+r posta, forniamo vari tipi di prestito, prestito di progetti (prestito a b=
+reve e lungo termine, prestito personale, prestito di INVESTIMENTO prestito=
+ IMPRESA prestito MUTUI ecc.) con un tasso di interesse del 3%, i nostri pr=
+estiti vanno da 10.000,00 a 500.000.000,00 Euro con una durata massima di 1=
+5 anni.
+
+Siamo interessati a finanziare progetti di grande volume. Il periodo di rim=
+borso =E8 di 1-30 anni + 6 mesi di grazia.
+
+INFORMAZIONE RICHIESTA:
+
+* I vostri nomi:
+* Importo del prestito necessario:
+* Durata:
+* Numero di telefono:
+
+Grazie per la tua comprensione.
 
 
-Hi Miklos,
-
-Have you got time to have a look at this V6 series? I think this version ha=
-s already fixed
-the issues in previous feedbacks of you guys and passed fstests (generic/ov=
-erlay cases).
-
-I did some stress long time tests (tar & syncfs & diff on w/wo copy-up) and=
- found no obvious problem.
-For syncfs time with 1M clean upper inodes, there was extra 1.3s wasted on =
-waiting scheduling.
-I guess this 1.3s will not bring significant impact to container instance i=
-n most cases, I also
-agree with Jack that we can start with this approach and do some improvemen=
-ts afterwards if there is
-complain from any real users.
+Youssef Salman
+Consulente finanziario, Dubai Loans LTD
+whatsapp: +971 527 421 865
+E-mail: info@dubailoansltd.com
 
 
+--
+This e-mail and any attached files are confidential and may be legally priv=
+ileged. If you are not the addressee, any disclosure, reproduction, copying=
+, distribution, or other dissemination or use of this communication is stri=
+ctly prohibited. If you have received this transmission in error please not=
+ify the sender immediately and then delete this mail.
+E-mail transmission cannot be guaranteed to be secure or error free as info=
+rmation could be intercepted, corrupted, lost, destroyed, arrive late or in=
+complete, or contain viruses. The sender therefore does not accept liabilit=
+y for any errors or omissions in the contents of this message which arise a=
+s a result of e-mail transmission or changes to transmitted date not specif=
+ically approved by the sender.
+If this e-mail or attached files contain information which do not relate to=
+ our professional activity we do not accept liability for such information.
 
-Thanks,
-Chengguang
-
-
- >=20
- > Chengguang Xu (7):
- >   ovl: setup overlayfs' private bdi
- >   ovl: mark overlayfs inode dirty when it has upper
- >   ovl: implement overlayfs' own ->write_inode operation
- >   ovl: set 'DONTCACHE' flag for overlayfs inode
- >   fs: export wait_sb_inodes()
- >   ovl: introduce ovl_sync_upper_blockdev()
- >   ovl: implement containerized syncfs for overlayfs
- >=20
- >  fs/fs-writeback.c         |  3 ++-
- >  fs/overlayfs/inode.c      |  5 +++-
- >  fs/overlayfs/super.c      | 49 ++++++++++++++++++++++++++++++++-------
- >  fs/overlayfs/util.c       |  1 +
- >  include/linux/writeback.h |  1 +
- >  5 files changed, 48 insertions(+), 11 deletions(-)
- >=20
- > --=20
- > 2.27.0
- >=20
- >=20
