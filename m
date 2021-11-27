@@ -2,60 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9044600EB
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 19:23:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4FC4600E8
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 19:23:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240292AbhK0S0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 13:26:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234948AbhK0SYS (ORCPT
+        id S235429AbhK0S0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 13:26:17 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:52116 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231425AbhK0SYQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 13:24:18 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB58C061748
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 10:21:03 -0800 (PST)
+        Sat, 27 Nov 2021 13:24:16 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E3B4EB8091F
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 18:21:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A109CC53FBF;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5B3DF60ED0;
+        Sat, 27 Nov 2021 18:21:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC52CC53FCE;
         Sat, 27 Nov 2021 18:21:00 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@goodmis.org>)
-        id 1mr2Jn-000D2F-NV;
+        id 1mr2Jn-000D2q-Tb;
         Sat, 27 Nov 2021 13:20:59 -0500
-Message-ID: <20211127181957.838045913@goodmis.org>
+Message-ID: <20211127182059.754893754@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Sat, 27 Nov 2021 13:19:57 -0500
+Date:   Sat, 27 Nov 2021 13:19:58 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Tom Zanussi <zanussi@kernel.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Subject: [for-linus][PATCH 0/2] tracing: Two fixes for 5.16
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        stable@vger.kernel.org
+Subject: [for-linus][PATCH 1/2] tracing: Check pid filtering when creating events
+References: <20211127181957.838045913@goodmis.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Resending because my email server was not connecting to mail.kernel.org ]
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Two fixes to event pid filtering:
+When pid filtering is activated in an instance, all of the events trace
+files for that instance has the PID_FILTER flag set. This determines
+whether or not pid filtering needs to be done on the event, otherwise the
+event is executed as normal.
 
-- Have created events reflect the current state of pid filtering
+If pid filtering is enabled when an event is created (via a dynamic event
+or modules), its flag is not updated to reflect the current state, and the
+events are not filtered properly.
 
-- Test pid filtering on discard test of recorded logic.
-  (Also clean up the if statement to be cleaner).
-
-
-Steven Rostedt (VMware) (2):
-      tracing: Check pid filtering when creating events
-      tracing: Fix pid filtering when triggers are attached
-
-----
- kernel/trace/trace.h        | 24 ++++++++++++++++++------
+Cc: stable@vger.kernel.org
+Fixes: 3fdaf80f4a836 ("tracing: Implement event pid filtering")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
  kernel/trace/trace_events.c | 12 ++++++++++++
- 2 files changed, 30 insertions(+), 6 deletions(-)
+ 1 file changed, 12 insertions(+)
+
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index 4021b9a79f93..f8965fd50d3b 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -2678,12 +2678,24 @@ static struct trace_event_file *
+ trace_create_new_event(struct trace_event_call *call,
+ 		       struct trace_array *tr)
+ {
++	struct trace_pid_list *no_pid_list;
++	struct trace_pid_list *pid_list;
+ 	struct trace_event_file *file;
++	unsigned int first;
+ 
+ 	file = kmem_cache_alloc(file_cachep, GFP_TRACE);
+ 	if (!file)
+ 		return NULL;
+ 
++	pid_list = rcu_dereference_protected(tr->filtered_pids,
++					     lockdep_is_held(&event_mutex));
++	no_pid_list = rcu_dereference_protected(tr->filtered_no_pids,
++					     lockdep_is_held(&event_mutex));
++
++	if (!trace_pid_list_first(pid_list, &first) ||
++	    !trace_pid_list_first(pid_list, &first))
++		file->flags |= EVENT_FILE_FL_PID_FILTER;
++
+ 	file->event_call = call;
+ 	file->tr = tr;
+ 	atomic_set(&file->sm_ref, 0);
+-- 
+2.33.0
