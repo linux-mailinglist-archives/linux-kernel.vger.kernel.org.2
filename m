@@ -2,110 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8730A45FFED
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 16:42:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF9CE45FFEF
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 16:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348747AbhK0Ppv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 10:45:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52476 "EHLO
+        id S1347316AbhK0PuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 10:50:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234853AbhK0Pnu (ORCPT
+        with ESMTP id S1347597AbhK0PsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 10:43:50 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB16C061748;
-        Sat, 27 Nov 2021 07:40:35 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id i12so10631524wmq.4;
-        Sat, 27 Nov 2021 07:40:35 -0800 (PST)
+        Sat, 27 Nov 2021 10:48:01 -0500
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60514C061574;
+        Sat, 27 Nov 2021 07:44:47 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id t23so24944441oiw.3;
+        Sat, 27 Nov 2021 07:44:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IC/TlGTWkhJl4qcceepZ/CYaq+BBm6DPEjqCKhmnCsw=;
-        b=GmzyqzXEbqYqGI9eVUKMe0UNzDtUmA4nqzsKU6AV+sLw89kJG9jR3U/d/MPyhkDBo4
-         Sa86RIC0VNB2qn+yThFmo8sXr9mLmrrTLlhbNH1y3FJjf1LfdmwZ5Ddn1orqYsQrqLMt
-         L1d3d1car9BsTzbz+4v01BwSPjrGkoz4ywbWyEJ/GnOddX94typXdtSK4QBfGUXOeadV
-         bj+9OfmJZ1ZtAq9gcVXuvhiF9T2tTQIeEwarADNst5nx0++Ew1ob4d7yRRrWqfl92KbD
-         +XYqw3mpJyMpTFpDEiN25SFMWsD1bUGTSEaqqHppMMqm42JTfZp+VsV/mb94P6qyAKbs
-         E4tg==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=X9mTAXN0GDjT0OEVL106WoVdWnzq/NHT7A3sF8XWLAg=;
+        b=a/PWkdrcYwcyP2NijmJKQ2FoB7gZEOL9eWlziuafvWDQIt/7xwHjgU/+BgRphScBuD
+         +H2CaKK1JvoDa4NOutV+4sohNBam/bngsGaLEQ7I5P4T3FfkaD2PvtowZmfVQVZc2vwy
+         z+/kRjuSfB2p9dZor4Nc2MAJhuc1tRFAKbiP6dToOKg9/D7++Q8z/8SSdp182ce3THp3
+         FHp8lIXzacwyr7wALSVxmdS1VGfSONkiXEX1wjgDGaSWeHaZSfuS+t/5iaHyCT0C6M6x
+         SMZBEf2OsxMR1eLxybgXdcLcPMjZ6BFm1EVzelGBf+EmglZINU4F4wpkebw9E7iwofvr
+         P9YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IC/TlGTWkhJl4qcceepZ/CYaq+BBm6DPEjqCKhmnCsw=;
-        b=jA+/THVGyO0LrK1rLEcIys4nbjXmUV0LJvKg/0YbM2vKWqIH5xmevgIjTmxhCvOjEU
-         BBlQBa+7wzKVAZ4AXxY+AfiVX29f9kUd/svjjx5lfOH68oWzWMSBeFIcHlq1oKqzj332
-         BMsWeJ14r9/OVYypuTvYpseIacGrxtUa6PLHMKL+mjVymrrj7YSI4eERx5SHuME6Wp89
-         e9+7HWH7oQ6LXDxUindqHYrq0b0k9YQZnknHnkGwKcgUjSGUXtAQEQlLIzTb3StXewh2
-         3zRi3u3AVWrDwH8k+d9fKMveRgmAUgfc7lGqao0WJvPsftyE5vXfaazMrPq+aaE4Nexd
-         VFjA==
-X-Gm-Message-State: AOAM530z2ro8i97BakXMbOmS1G6D/GY2zWAiC/t9ZmQDAqalwT43B5r+
-        uyUe7JQs17GqezINGWySswo=
-X-Google-Smtp-Source: ABdhPJwHt9yyL6r5ZW3SqBbrC/vI1dL2cN7oRt6Sg68+OORzJCNZKs6/mZOH3anYctkkZTctKwGblg==
-X-Received: by 2002:a05:600c:3b27:: with SMTP id m39mr24321389wms.132.1638027634111;
-        Sat, 27 Nov 2021 07:40:34 -0800 (PST)
-Received: from archbook.localnet (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
-        by smtp.gmail.com with ESMTPSA id u23sm9200634wmc.7.2021.11.27.07.40.32
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=X9mTAXN0GDjT0OEVL106WoVdWnzq/NHT7A3sF8XWLAg=;
+        b=V0DVv1Je69h2TW11Kn/YkTDf6sP82DqM1lFQyLGXLnmAOzkNx4564DJOY090zlIt0z
+         v7DheQfqOD0D0GYfuZDK0J/QMOpguhIIYzc8Juhuza9cHr9eatNwSAeKa6Fc6M67rTqe
+         jj+HMw/MV3ZyYx6Paii2aBTYk9c/3MRGDlsfRElZ2JJu4SrTk7gfE7/0u8rZ+TFe9gsE
+         +r17fayxHxz0WkMLfTDK9dveiV5TKFTBnoxhfsB1iMBj4QpOB30lWpVCAxPmJ8glSynf
+         qiMnb1pTSE/8jp1ucRLFLpwO5jupc8ZiR4t3nI9WJ7Jm2E9OIP8vMoZwJ1gfvlNUxfSw
+         2NkQ==
+X-Gm-Message-State: AOAM531+l+ursiS9SKitSI8OfkaXvfr+tckr2h0qXTEQ0gsDC9QFS2Io
+        JFv400BmFIoTVmW57yQnTFiC3lWRCes=
+X-Google-Smtp-Source: ABdhPJy+ILESTIBn64sxbqbS8Hj3UBtHk1uoo7F/y4JPliyr5R+5jU6MyqH+MYjaOCT95tj8ypRBEg==
+X-Received: by 2002:a05:6808:1509:: with SMTP id u9mr31712601oiw.13.1638027886768;
+        Sat, 27 Nov 2021 07:44:46 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t14sm1629056otr.23.2021.11.27.07.44.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Nov 2021 07:40:32 -0800 (PST)
-From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-        Johan Jonker <jbx6244@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] arm64: dts: rockchip: Add spi1 pins on Quartz64 A
-Date:   Sat, 27 Nov 2021 16:40:26 +0100
-Message-ID: <3750380.Q3bl6Pheio@archbook>
-In-Reply-To: <acbd0e0a-b194-7b17-148d-49fdd348077e@gmail.com>
-References: <20211127141910.12649-1-frattaroli.nicolas@gmail.com> <20211127141910.12649-4-frattaroli.nicolas@gmail.com> <acbd0e0a-b194-7b17-148d-49fdd348077e@gmail.com>
+        Sat, 27 Nov 2021 07:44:46 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Anton Altaparmakov <anton@tuxera.com>
+Cc:     linux-ntfs-dev@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Joel Stanley <joel@jms.id.au>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH v3 0/3] Limit NTFS_RW to page sizes smaller than 64k
+Date:   Sat, 27 Nov 2021 07:44:39 -0800
+Message-Id: <20211127154442.3676290-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Samstag, 27. November 2021 16:29:33 CET Johan Jonker wrote:
-> 
-> On 11/27/21 3:19 PM, Nicolas Frattaroli wrote:
-> > The Quartz64 Model A has the SPI pins broken out on its pin
-> > header. The actual pins being used though are not the m0
-> > variant, but the m1 variant, which also lacks the cs1 pin.
-> > 
-> > This commit overrides pinctrl-0 accordingly for this board.
-> > 
-> > spi1 is intentionally left disabled, as anyone wishing to add
-> > SPI devices needs to edit the dts anyway, and the pins are more
-> > useful as GPIOs for the rest of the users.
-> > 
-> > Signed-off-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-> > ---
-> >  arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> > 
-> > diff --git a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-> > index 4d4b2a301b1a..166399b7f13f 100644
-> > --- a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-> > +++ b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-> > @@ -509,6 +509,11 @@ &spdif {
-> >  	status = "okay";
-> >  };
-> >  
-> > +&spi1 {
-> 
-> > +	pinctrl-names = "default";
-> 
-> With the removal off pinctrl-1 the pinctrl-names property is already
-> correctly defined.
-> 
+This is the third attempt to fix the following build error.
 
-If it ever gets re-added in the future, it no longer is, so it's better
-to be explicit right now than to risk one board breaking in the future
-when the SoC's definition changes.
+fs/ntfs/aops.c: In function 'ntfs_write_mst_block':
+fs/ntfs/aops.c:1311:1: error:
+	the frame size of 2240 bytes is larger than 2048 bytes
 
-Regards,
-Nicolas Frattaroli
+The problem is that NTFS_RW code allocates page size dependent arrays on
+the stack. This results in build failures if the page size is 64k or
+larger.
 
+Since commit f22969a66041 ("powerpc/64s: Default to 64K pages for 64 bit
+book3s") this affects ppc:allmodconfig builds, but other architectures
+supporting page sizes of 64k or larger are also affected.
 
+Increasing the maximum frame size for affected architectures just to
+silence this error does not really help. The frame size would have to be
+set to a really large value for 256k pages. Also, a large frame size could
+potentially result in stack overruns in this code and elsewhere and is
+therefore not desirable. Make NTFS_RW dependent on page sizes smaller than
+64k instead.
 
-
+Previous attempts to fix the problem were local to the ntfs subsystem.
+This attempt introduces the architecture independent configuration flag
+PAGE_SIZE_LESS_THAN_64KB and uses it to restrict NTFS_RW. The last patch
+of the series replaces a similar restriction for VMXNET3 with the new
+flag. This patch is not necessary to fix the NTFS_RW problem and is
+provided only for completeness.
