@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE0B45FBA7
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 03:09:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB8845FAEA
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 02:32:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346506AbhK0CMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 21:12:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237707AbhK0CKN (ORCPT
+        id S1349588AbhK0BfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 20:35:16 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:55652 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346353AbhK0Bc6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 21:10:13 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19F8C08EAFC;
-        Fri, 26 Nov 2021 17:29:40 -0800 (PST)
+        Fri, 26 Nov 2021 20:32:58 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2F7BE60B24;
-        Sat, 27 Nov 2021 01:29:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC725C004E1;
-        Sat, 27 Nov 2021 01:29:37 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7FB86B829B1;
+        Sat, 27 Nov 2021 01:29:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BD02C53FAD;
+        Sat, 27 Nov 2021 01:29:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637976579;
-        bh=ssrErp6Zv6UFvQZJ2r4rjzBWHowf96TZAds8iOrIckg=;
+        s=k20201202; t=1637976582;
+        bh=d0ToXu1WBChqHvu9+4OZzoQe9orIt4eiwbLLvSBzF+E=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=VdworWyY+nr8ob9c1aZz3+J4h4Q2ZhkpY0ZixlZ8XBB/yBc+oM4U3YpHODB4G8X77
-         97oFBGyNLTjigf1VjhSZbqx8RBMmGFabYWlLx8GVYMDdKUZFCwq+w/7ql8XyzClaea
-         VV5Fp1qdUg8IUWnl9e8V+GSQKNR5ECbcuxJMm/OEilV85Bah5JAgS/I9kdsnW7BUwo
-         AqHS/mJJGwxTSVlMjA7a+hWQNX8BIKQ9W6kL6l4ZrXmNHIouKmWiSUn3K4g30cGR2X
-         7d/+qGFucVdZvIpprqzxVLT4zXVeAUcRTIdkNpH8yhuLAiFhCfuhYnbbyfTxfT/Mhi
-         5kPH7ahTKW0yA==
+        b=S5EvW7g6WUZH6Ic/KEx7G5fYadnBsky+M02m4yMAzzMQ8VOQ0Z3RvAo3VUqjod71y
+         V1/V2hv3A1rFfU4fOLWEsD6y9J0b2RMynwL+lLKK53fFOD7CGRZ8z39K0hTjb1gdy7
+         sA4urY8iggO3Z6Qbo19X8FwELQXrmMPD55R4F7BRa0hOX6HZyhHiSxEKMjBvr3flnS
+         LqLJZJUwec8V+3aXFmCpyPK/jpMLtlFF1/MzM91OZj1AVEAujXBoQTwzmfHzw/nSzK
+         XjkcrW17RiEUerSRHKjPnFfHETPYyz3UFbjAEJeliMQGtDm2YP6uiBqHeYZnBmNWGa
+         FVIm5XdZ9iR2g==
 From:   Mark Brown <broonie@kernel.org>
-To:     tiwai@suse.com, lgirdwood@gmail.com,
-        Sameer Pujar <spujar@nvidia.com>, perex@perex.cz
-Cc:     jonathanh@nvidia.com, thierry.reding@gmail.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-tegra@vger.kernel.org
-In-Reply-To: <1637676459-31191-1-git-send-email-spujar@nvidia.com>
-References: <1637676459-31191-1-git-send-email-spujar@nvidia.com>
-Subject: Re: [PATCH 0/6] Suspend related fixes on Tegra
-Message-Id: <163797657754.2987896.15112513397487724007.b4-ty@kernel.org>
-Date:   Sat, 27 Nov 2021 01:29:37 +0000
+To:     alsa-devel@alsa-project.org, Rob Clark <robdclark@gmail.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Oder Chiou <oder_chiou@realtek.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Derek Fang <derek.fang@realtek.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Rob Clark <robdclark@chromium.org>
+In-Reply-To: <20211118010453.843286-1-robdclark@gmail.com>
+References: <20211118010453.843286-1-robdclark@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: rt5682: Fix crash due to out of scope stack vars
+Message-Id: <163797657977.2987896.13648492713075934799.b4-ty@kernel.org>
+Date:   Sat, 27 Nov 2021 01:29:39 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -50,13 +51,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Nov 2021 19:37:33 +0530, Sameer Pujar wrote:
-> This series addresses following problems:
->  * The runtime PM is not balanced in MVC driver, whenever
->    mute or volume mixer controls are set.
->  * Some of the AHUB devices (SFC, MVC, Mixer, AMX and ADX)
->    use late system sleep. Suspend failure is seen on Jetson
->    TX2 platform.
+On Wed, 17 Nov 2021 17:04:52 -0800, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
+> 
+> Move the declaration of temporary arrays to somewhere that won't go out
+> of scope before the devm_clk_hw_register() call, lest we be at the whim
+> of the compiler for whether those stack variables get overwritten.
+> 
+> Fixes a crash seen with gcc version 11.2.1 20210728 (Red Hat 11.2.1-1)
 > 
 > [...]
 
@@ -66,18 +68,10 @@ Applied to
 
 Thanks!
 
-[1/6] ASoC: tegra: Balance runtime PM count
-      commit: 70408f755f589f67957b9ec6852e6b01f858d0a2
-[2/6] ASoC: tegra: Use normal system sleep for SFC
-      commit: af120d07bbb0721708b10204beed66ed2cb0cb62
-[3/6] ASoC: tegra: Use normal system sleep for MVC
-      commit: c83d263a89f30d1c0274827c475f3583cf8e477f
-[4/6] ASoC: tegra: Use normal system sleep for Mixer
-      commit: b78400e41653b3a752a4cd17d2fcbd4a96bb4bc2
-[5/6] ASoC: tegra: Use normal system sleep for AMX
-      commit: 638c31d542a576714a52bb6a9a7dedff98e32a1d
-[6/6] ASoC: tegra: Use normal system sleep for ADX
-      commit: cf36de4fc5ce5502ce5070a793addd9d49df4113
+[1/2] ASoC: rt5682: Fix crash due to out of scope stack vars
+      commit: 4999d703c0e66f9f196b6edc0b8fdeca8846b8b6
+[2/2] ASoC: rt5682s: Fix crash due to out of scope stack vars
+      commit: 750dc2f622192c08664a15413bc9746d9cbc4361
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
