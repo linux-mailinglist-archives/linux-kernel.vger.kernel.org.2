@@ -2,114 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D1945FD86
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 10:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3F145FD87
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 10:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353488AbhK0JNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 04:13:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238888AbhK0JLK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 04:11:10 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 873B7C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 01:07:56 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 679956023F
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 09:07:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB419C53FAD;
-        Sat, 27 Nov 2021 09:07:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1638004074;
-        bh=Ie/3rfVTmZa2ZXxQll5fUqzkbmsA88CFP4jKaQOrfZ8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bINfUczZuxKLpueVfhKTC4XZEJ8yJM+yweFzW/U1HH4qCfV16uE+F7sXaCGJzqzul
-         9cpZO9qRg0O0I6840xb4yy0vSNKf/DcSMMgWyBi7bYddJp30kM4LSOTZFtvZatTz1v
-         kJhZ6ymuCyhoOhC+s5rSOhbfIiKL8d6eG0TEf7qw=
-Date:   Sat, 27 Nov 2021 10:07:48 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        linux-kernel@vger.kernel.org, rafael@kernel.org,
-        peterz@infradead.org, cj.chengjian@huawei.com,
-        huawei.libin@huawei.com, weiyongjun1@huawei.com
-Subject: Re: [PATCH] arch_topology: Fix missing clear cluster_cpumask in
- remove_cpu_topology()
-Message-ID: <YaH1ZOr36chJ4DdB@kroah.com>
-References: <20211110095856.469360-1-bobo.shaobowang@huawei.com>
- <YaELI8+QnBeXXIVm@kroah.com>
- <20211126183954.scu2wfirrzlgqxxi@bogus>
+        id S1353159AbhK0JOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 04:14:02 -0500
+Received: from mga14.intel.com ([192.55.52.115]:65370 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1353200AbhK0JMB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 04:12:01 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="235988480"
+X-IronPort-AV: E=Sophos;i="5.87,268,1631602800"; 
+   d="scan'208";a="235988480"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 01:08:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,268,1631602800"; 
+   d="scan'208";a="539474605"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 27 Nov 2021 01:08:45 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqthM-0009IZ-KP; Sat, 27 Nov 2021 09:08:44 +0000
+Date:   Sat, 27 Nov 2021 17:08:09 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:core/entry] BUILD REGRESSION
+ 5796ee48d26a18930a8b86fb865ba195282889d0
+Message-ID: <61a1f579.HUgRrM1YMrabKvMV%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211126183954.scu2wfirrzlgqxxi@bogus>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 06:39:54PM +0000, Sudeep Holla wrote:
-> On Fri, Nov 26, 2021 at 05:28:19PM +0100, Greg KH wrote:
-> > On Wed, Nov 10, 2021 at 05:58:56PM +0800, Wang ShaoBo wrote:
-> > > When testing cpu online and offline, warning happened like this:
-> > > 
-> > > [  146.746743] WARNING: CPU: 92 PID: 974 at kernel/sched/topology.c:2215 build_sched_domains+0x81c/0x11b0
-> > > [  146.749988] CPU: 92 PID: 974 Comm: kworker/92:2 Not tainted 5.15.0 #9
-> > > [  146.750402] Hardware name: Huawei TaiShan 2280 V2/BC82AMDDA, BIOS 1.79 08/21/2021
-> > > [  146.751213] Workqueue: events cpuset_hotplug_workfn
-> > > [  146.751629] pstate: 00400009 (nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> > > [  146.752048] pc : build_sched_domains+0x81c/0x11b0
-> > > [  146.752461] lr : build_sched_domains+0x414/0x11b0
-> > > [  146.752860] sp : ffff800040a83a80
-> > > [  146.753247] x29: ffff800040a83a80 x28: ffff20801f13a980 x27: ffff20800448ae00
-> > > [  146.753644] x26: ffff800012a858e8 x25: ffff800012ea48c0 x24: 0000000000000000
-> > > [  146.754039] x23: ffff800010ab7d60 x22: ffff800012f03758 x21: 000000000000005f
-> > > [  146.754427] x20: 000000000000005c x19: ffff004080012840 x18: ffffffffffffffff
-> > > [  146.754814] x17: 3661613030303230 x16: 30303078303a3239 x15: ffff800011f92b48
-> > > [  146.755197] x14: ffff20be3f95cef6 x13: 2e6e69616d6f642d x12: 6465686373204c4c
-> > > [  146.755578] x11: ffff20bf7fc83a00 x10: 0000000000000040 x9 : 0000000000000000
-> > > [  146.755957] x8 : 0000000000000002 x7 : ffffffffe0000000 x6 : 0000000000000002
-> > > [  146.756334] x5 : 0000000090000000 x4 : 00000000f0000000 x3 : 0000000000000001
-> > > [  146.756705] x2 : 0000000000000080 x1 : ffff800012f03860 x0 : 0000000000000001
-> > > [  146.757070] Call trace:
-> > > [  146.757421]  build_sched_domains+0x81c/0x11b0
-> > > [  146.757771]  partition_sched_domains_locked+0x57c/0x978
-> > > [  146.758118]  rebuild_sched_domains_locked+0x44c/0x7f0
-> > > [  146.758460]  rebuild_sched_domains+0x2c/0x48
-> > > [  146.758791]  cpuset_hotplug_workfn+0x3fc/0x888
-> > > [  146.759114]  process_one_work+0x1f4/0x480
-> > > [  146.759429]  worker_thread+0x48/0x460
-> > > [  146.759734]  kthread+0x158/0x168
-> > > [  146.760030]  ret_from_fork+0x10/0x20
-> > > [  146.760318] ---[ end trace 82c44aad6900e81a ]---
-> > > 
-> > > For some architectures like risc-v and arm64 which use common code
-> > > clear_cpu_topology() in shutting down CPUx, When CONFIG_SCHED_CLUSTER
-> > > is set, cluster_sibling in cpu_topology of each sibling adjacent
-> > > to CPUx is missed clearing, this causes checking failed in
-> > > topology_span_sane() and rebuilding topology failure at end when CPU online.
-> > > 
-> > > Different sibling's cluster_sibling in cpu_topology[] when CPU92 offline
-> > > (CPU 92, 93, 94, 95 are in one cluster):
-> > > 
-> > > Before revision:
-> > > CPU                 [92]      [93]      [94]      [95]
-> > > cluster_sibling     [92]     [92-95]   [92-95]   [92-95]
-> > > 
-> > > After revision:
-> > > CPU                 [92]      [93]      [94]      [95]
-> > > cluster_sibling     [92]     [93-95]   [93-95]   [93-95]
-> > > 
-> > > Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
-> > > ---
-> > >  drivers/base/arch_topology.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > 
-> > What commit id does this fix?
-> >
-> 
-> v2[1] has the information and all the tags IIUC.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git core/entry
+branch HEAD: 5796ee48d26a18930a8b86fb865ba195282889d0  x86: Snapshot thread flags
 
-Odd, I don't see that in my queue :(
+Error/Warning reports:
+
+https://lore.kernel.org/lkml/202111271105.v7pE3REd-lkp@intel.com
+
+Error/Warning in current branch:
+
+arch/powerpc/kernel/interrupt.c:151:64: error: passing argument 2 of 'set_bits' makes pointer from integer without a cast [-Werror=int-conversion]
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- powerpc-adder875_defconfig
+|   `-- arch-powerpc-kernel-interrupt.c:error:passing-argument-of-set_bits-makes-pointer-from-integer-without-a-cast
+|-- powerpc-akebono_defconfig
+|   `-- arch-powerpc-kernel-interrupt.c:error:passing-argument-of-set_bits-makes-pointer-from-integer-without-a-cast
+|-- powerpc-allnoconfig
+|   `-- arch-powerpc-kernel-interrupt.c:error:passing-argument-of-set_bits-makes-pointer-from-integer-without-a-cast
+|-- powerpc-eiger_defconfig
+|   `-- arch-powerpc-kernel-interrupt.c:error:passing-argument-of-set_bits-makes-pointer-from-integer-without-a-cast
+|-- powerpc-ep8248e_defconfig
+|   `-- arch-powerpc-kernel-interrupt.c:error:passing-argument-of-set_bits-makes-pointer-from-integer-without-a-cast
+|-- powerpc-g5_defconfig
+|   `-- arch-powerpc-kernel-interrupt.c:error:passing-argument-of-set_bits-makes-pointer-from-integer-without-a-cast
+|-- powerpc-gamecube_defconfig
+|   `-- arch-powerpc-kernel-interrupt.c:error:passing-argument-of-set_bits-makes-pointer-from-integer-without-a-cast
+|-- powerpc-iss476-smp_defconfig
+|   `-- arch-powerpc-kernel-interrupt.c:error:passing-argument-of-set_bits-makes-pointer-from-integer-without-a-cast
+|-- powerpc-mpc5200_defconfig
+|   `-- arch-powerpc-kernel-interrupt.c:error:passing-argument-of-set_bits-makes-pointer-from-integer-without-a-cast
+|-- powerpc-mpc8272_ads_defconfig
+|   `-- arch-powerpc-kernel-interrupt.c:error:passing-argument-of-set_bits-makes-pointer-from-integer-without-a-cast
+|-- powerpc-mpc832x_rdb_defconfig
+|   `-- arch-powerpc-kernel-interrupt.c:error:passing-argument-of-set_bits-makes-pointer-from-integer-without-a-cast
+|-- powerpc-mpc834x_itxgp_defconfig
+|   `-- arch-powerpc-kernel-interrupt.c:error:passing-argument-of-set_bits-makes-pointer-from-integer-without-a-cast
+|-- powerpc-mpc83xx_defconfig
+|   `-- arch-powerpc-kernel-interrupt.c:error:passing-argument-of-set_bits-makes-pointer-from-integer-without-a-cast
+|-- powerpc-mpc8560_ads_defconfig
+|   `-- arch-powerpc-kernel-interrupt.c:error:passing-argument-of-set_bits-makes-pointer-from-integer-without-a-cast
+`-- powerpc-sam440ep_defconfig
+    `-- arch-powerpc-kernel-interrupt.c:error:passing-argument-of-set_bits-makes-pointer-from-integer-without-a-cast
+
+elapsed time: 721m
+
+configs tested: 152
+configs skipped: 4
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211126
+powerpc              randconfig-c003-20211126
+mips                 randconfig-c004-20211126
+arm                            zeus_defconfig
+arm                  colibri_pxa300_defconfig
+arm                         lpc32xx_defconfig
+ia64                             allyesconfig
+arc                    vdk_hs38_smp_defconfig
+arm                        keystone_defconfig
+arm                          badge4_defconfig
+microblaze                      mmu_defconfig
+s390                       zfcpdump_defconfig
+arm                       omap2plus_defconfig
+powerpc                    adder875_defconfig
+arm                            dove_defconfig
+m68k                        m5272c3_defconfig
+arm                        spear3xx_defconfig
+i386                             alldefconfig
+powerpc                 mpc8272_ads_defconfig
+parisc                generic-32bit_defconfig
+powerpc                     akebono_defconfig
+powerpc                     mpc83xx_defconfig
+sh                        edosk7760_defconfig
+powerpc                 mpc8560_ads_defconfig
+m68k                          sun3x_defconfig
+arm                          ep93xx_defconfig
+arm                          simpad_defconfig
+sh                           se7705_defconfig
+powerpc               mpc834x_itxgp_defconfig
+powerpc                          g5_defconfig
+arm                        mvebu_v5_defconfig
+arm                            hisi_defconfig
+sh                           se7750_defconfig
+arm                         hackkit_defconfig
+sh                             sh03_defconfig
+powerpc                     ep8248e_defconfig
+sh                            titan_defconfig
+arm                            xcep_defconfig
+powerpc                    sam440ep_defconfig
+sh                           se7724_defconfig
+powerpc                       eiger_defconfig
+xtensa                              defconfig
+arm                        neponset_defconfig
+powerpc                     mpc5200_defconfig
+sh                           se7722_defconfig
+sh                          sdk7780_defconfig
+arm                          pcm027_defconfig
+powerpc                    gamecube_defconfig
+sh                          kfr2r09_defconfig
+arm                            lart_defconfig
+arm                       cns3420vb_defconfig
+arm                         mv78xx0_defconfig
+arm                          moxart_defconfig
+powerpc                 mpc832x_rdb_defconfig
+sparc                       sparc64_defconfig
+powerpc                  iss476-smp_defconfig
+m68k                         apollo_defconfig
+m68k                        m5407c3_defconfig
+arm                            pleb_defconfig
+xtensa                    smp_lx200_defconfig
+sh                         microdev_defconfig
+sh                        apsh4ad0a_defconfig
+sh                 kfr2r09-romimage_defconfig
+arm                     eseries_pxa_defconfig
+arc                 nsimosci_hs_smp_defconfig
+sh                           sh2007_defconfig
+arm                  randconfig-c002-20211126
+ia64                             allmodconfig
+ia64                                defconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a014-20211126
+x86_64               randconfig-a011-20211126
+x86_64               randconfig-a012-20211126
+x86_64               randconfig-a016-20211126
+x86_64               randconfig-a013-20211126
+x86_64               randconfig-a015-20211126
+i386                 randconfig-a016-20211126
+i386                 randconfig-a015-20211126
+i386                 randconfig-a012-20211126
+i386                 randconfig-a013-20211126
+i386                 randconfig-a014-20211126
+i386                 randconfig-a011-20211126
+arc                  randconfig-r043-20211126
+s390                 randconfig-r044-20211126
+riscv                randconfig-r042-20211126
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+
+clang tested configs:
+s390                 randconfig-c005-20211126
+i386                 randconfig-c001-20211126
+powerpc              randconfig-c003-20211126
+riscv                randconfig-c006-20211126
+arm                  randconfig-c002-20211126
+x86_64               randconfig-c007-20211126
+mips                 randconfig-c004-20211126
+x86_64               randconfig-a001-20211126
+x86_64               randconfig-a003-20211126
+x86_64               randconfig-a006-20211126
+x86_64               randconfig-a004-20211126
+x86_64               randconfig-a005-20211126
+x86_64               randconfig-a002-20211126
+i386                 randconfig-a002-20211126
+i386                 randconfig-a001-20211126
+i386                 randconfig-a005-20211126
+i386                 randconfig-a006-20211126
+i386                 randconfig-a004-20211126
+i386                 randconfig-a003-20211126
+hexagon              randconfig-r045-20211126
+hexagon              randconfig-r041-20211126
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
