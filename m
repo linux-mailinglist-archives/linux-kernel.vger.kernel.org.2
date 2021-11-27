@@ -2,102 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D58D460051
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 17:50:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D12646005B
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 17:57:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347146AbhK0Qxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 11:53:33 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:50582 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbhK0Qv3 (ORCPT
+        id S240145AbhK0RA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 12:00:57 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:46508 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237515AbhK0Q64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 11:51:29 -0500
+        Sat, 27 Nov 2021 11:58:56 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9494260B91;
-        Sat, 27 Nov 2021 16:48:14 +0000 (UTC)
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        by ams.source.kernel.org (Postfix) with ESMTPS id AFC9CB82A16;
+        Sat, 27 Nov 2021 16:55:40 +0000 (UTC)
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp.kernel.org (Postfix) with ESMTPS id 070C8C53FAD;
-        Sat, 27 Nov 2021 16:48:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.kernel.org 070C8C53FAD
-Authentication-Results: smtp.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.kernel.org; spf=none smtp.mailfrom=goodmis.org
-Received: from rostedt by gandalf.local.home with local (Exim 4.95)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1mr0rt-000Apv-As;
-        Sat, 27 Nov 2021 11:48:05 -0500
-Message-ID: <20211127164805.174346583@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Sat, 27 Nov 2021 11:47:22 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        stable@vger.kernel.org
-Subject: [for-linus][PATCH 2/2] tracing: Fix pid filtering when triggers are attached
-References: <20211127164720.484358409@goodmis.org>
+        by smtp.kernel.org (Postfix) with ESMTPSA id B070AC53FBF;
+        Sat, 27 Nov 2021 16:55:36 +0000 (UTC)
+Date:   Sat, 27 Nov 2021 17:00:37 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+Cc:     <robh+dt@kernel.org>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/4] iio:filter:admv8818: add support for ADMV8818
+Message-ID: <20211127170037.344cdd10@jic23-huawei>
+In-Reply-To: <20211123133900.133027-2-antoniu.miclaus@analog.com>
+References: <20211123133900.133027-1-antoniu.miclaus@analog.com>
+        <20211123133900.133027-2-antoniu.miclaus@analog.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Tue, 23 Nov 2021 15:38:58 +0200
+Antoniu Miclaus <antoniu.miclaus@analog.com> wrote:
 
-If a event is filtered by pid and a trigger that requires processing of
-the event to happen is a attached to the event, the discard portion does
-not take the pid filtering into account, and the event will then be
-recorded when it should not have been.
+> The ADMV8818-EP is a fully monolithic microwave integrated
+> circuit (MMIC) that features a digitally selectable frequency of
+> operation. The device features four independently controlled high-
+> pass filters (HPFs) and four independently controlled low-pass
+> filters (LPFs) that span the 2 GHz to 18 GHz frequency range.
+> 
+> Datasheet:
+> https://www.analog.com/media/en/technical-documentation/data-sheets/admv8818-ep.pdf
+> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
 
-Cc: stable@vger.kernel.org
-Fixes: 3fdaf80f4a836 ("tracing: Implement event pid filtering")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/trace.h | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
+I think the ABI needs tweaking a little if the clk isn't present
++ dt-binding currently says the clk is required but the driver has it optional.
+Should definitely be optional...
 
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 6b60ab9475ed..38715aa6cfdf 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -1366,14 +1366,26 @@ __event_trigger_test_discard(struct trace_event_file *file,
- 	if (eflags & EVENT_FILE_FL_TRIGGER_COND)
- 		*tt = event_triggers_call(file, buffer, entry, event);
- 
--	if (test_bit(EVENT_FILE_FL_SOFT_DISABLED_BIT, &file->flags) ||
--	    (unlikely(file->flags & EVENT_FILE_FL_FILTERED) &&
--	     !filter_match_preds(file->filter, entry))) {
--		__trace_event_discard_commit(buffer, event);
--		return true;
--	}
-+	if (likely(!(file->flags & (EVENT_FILE_FL_SOFT_DISABLED |
-+				    EVENT_FILE_FL_FILTERED |
-+				    EVENT_FILE_FL_PID_FILTER))))
-+		return false;
-+
-+	if (file->flags & EVENT_FILE_FL_SOFT_DISABLED)
-+		goto discard;
-+
-+	if (file->flags & EVENT_FILE_FL_FILTERED &&
-+	    !filter_match_preds(file->filter, entry))
-+		goto discard;
-+
-+	if ((file->flags & EVENT_FILE_FL_PID_FILTER) &&
-+	    trace_event_ignore_this_pid(file))
-+		goto discard;
- 
- 	return false;
-+ discard:
-+	__trace_event_discard_commit(buffer, event);
-+	return true;
- }
- 
- /**
--- 
-2.33.0
+...
+
+> +
+> +static int admv8818_set_mode(struct iio_dev *indio_dev,
+> +			     const struct iio_chan_spec *chan,
+> +			     unsigned int mode)
+> +{
+> +	struct admv8818_state *st = iio_priv(indio_dev);
+> +	int ret = 0;
+> +
+> +	switch (mode) {
+> +	case ADMV8818_AUTO_MODE:
+> +		if (st->filter_mode && st->clkin) {
+> +			ret = clk_prepare_enable(st->clkin);
+> +			if (ret)
+> +				return ret;
+> +
+> +			ret = clk_notifier_register(st->clkin, &st->nb);
+> +			if (ret)
+> +				return ret;
+> +		} else {
+> +			return ret;
+
+If you have a path that will always return 0, then just make it return 0
+and don't set ret to a default value.  More readable to make that explicit
+as I don't need to look at what value ret has.
+
+I wondered about suggesting that you don't have a this attribute if not
+clkin registered, but it's better to have it and just have it always
+set to manual.  However that changes the available values, so you will
+still need to have two seperate chan_spec arrays and pick between them
+depending on whether the clock is supplied.
+
+I'd express the logic here differently as well
+
+	if (!st->clkin)
+		if (mode == ADV8818_MANUAL_MODE)
+			return 0; //you could just skip this case, but maybe it's nice to have.
+
+		return -EINVAL;
+	}
+	//Now we know it might actually makes sense to do something
+
+	switch(mode) {
+	case ADMV8818_AUTO_MODE:
+		if (!st->filter_mode)
+			return 0;
+
+		ret = clk_prepare_enable(st->clk_in);
+		if (ret)
+			return ret;
+
+		ret = clk_notifier_register(st->clkin, &st->nb);
+		if (ret) {
+			clk_disable_unprepare(st->clk_in);
+
+			return ret;
+		}
+
+	}
+
+> +		}
+> +
+> +		break;
+> +	case ADMV8818_MANUAL_MODE:
+> +		if (st->filter_mode == 0 && st->clkin) {
+> +			clk_disable_unprepare(st->clkin);
+> +
+> +			ret = clk_notifier_unregister(st->clkin, &st->nb);
+> +			if (ret)
+> +				return ret;
+> +		} else {
+> +			return ret;
+> +		}
+> +
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	st->filter_mode = mode;
+> +
+> +	return ret;
+> +}
+> +
+
+...
+
+> +
+> +static int admv8818_init(struct admv8818_state *st)
+> +{
+> +	int ret;
+> +	struct spi_device *spi = st->spi;
+> +	unsigned int chip_id;
+> +
+> +	ret = regmap_update_bits(st->regmap, ADMV8818_REG_SPI_CONFIG_A,
+> +				 ADMV8818_SOFTRESET_N_MSK |
+> +				 ADMV8818_SOFTRESET_MSK,
+> +				 FIELD_PREP(ADMV8818_SOFTRESET_N_MSK, 1) |
+> +				 FIELD_PREP(ADMV8818_SOFTRESET_MSK, 1));
+> +	if (ret) {
+> +		dev_err(&spi->dev, "ADMV8818 Soft Reset failed.\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = regmap_update_bits(st->regmap, ADMV8818_REG_SPI_CONFIG_A,
+> +				 ADMV8818_SDOACTIVE_N_MSK |
+> +				 ADMV8818_SDOACTIVE_MSK,
+> +				 FIELD_PREP(ADMV8818_SDOACTIVE_N_MSK, 1) |
+> +				 FIELD_PREP(ADMV8818_SDOACTIVE_MSK, 1));
+> +	if (ret) {
+> +		dev_err(&spi->dev, "ADMV8818 SDO Enable failed.\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = regmap_read(st->regmap, ADMV8818_REG_CHIPTYPE, &chip_id);
+> +	if (ret) {
+> +		dev_err(&spi->dev, "ADMV8818 Chip ID read failed.\n");
+> +		return ret;
+> +	}
+> +
+> +	if (chip_id != 0x1) {
+> +		dev_err(&spi->dev, "ADMV8818 Invalid Chip ID.\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	ret = regmap_update_bits(st->regmap, ADMV8818_REG_SPI_CONFIG_B,
+> +				 ADMV8818_SINGLE_INSTRUCTION_MSK,
+> +				 FIELD_PREP(ADMV8818_SINGLE_INSTRUCTION_MSK, 1));
+> +	if (ret) {
+> +		dev_err(&spi->dev, "ADMV8818 Single Instruction failed.\n");
+> +		return ret;
+> +	}
+> +
+> +	st->freq_scale = HZ_PER_MHZ;
+> +
+> +	if (st->clkin)
+> +		return admv8818_rfin_band_select(st);
+> +	else
+> +		return 0;
+> +}
+> +
+> +static int admv8818_clk_setup(struct admv8818_state *st)
+> +{
+> +	struct spi_device *spi = st->spi;
+> +	int ret;
+> +
+> +	st->clkin = devm_clk_get_optional(&spi->dev, "rf_in");
+> +	if (IS_ERR(st->clkin))
+> +		return dev_err_probe(&spi->dev, PTR_ERR(st->clkin),
+> +				     "failed to get the input clock\n");
+> +	else if (!st->clkin)
+
+You have this as required in the dt-binding which you should relax.
+(note I didn't raise that for the dt-bindings as reviewed them before
+the driver)
+
+> +		return 0;
+> +
+> +	ret = clk_prepare_enable(st->clkin);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = devm_add_action_or_reset(&spi->dev, admv8818_clk_disable, st);
+> +	if (ret)
+> +		return ret;
+> +
+> +	st->nb.notifier_call = admv8818_freq_change;
+> +	ret = clk_notifier_register(st->clkin, &st->nb);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return devm_add_action_or_reset(&spi->dev, admv8818_clk_notifier_unreg, st);
+> +}
+
+...
+
