@@ -2,66 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B1246018C
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 21:59:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C323F460190
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 22:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356251AbhK0VCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 16:02:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356241AbhK0VAl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 16:00:41 -0500
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB7B4C06174A
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 12:57:26 -0800 (PST)
-Received: by mail-ua1-x944.google.com with SMTP id a14so25746300uak.0
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 12:57:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=GIGQ9ePzkxCUcjbi9/rdD1tSRBwMDaYNVGxOzijf0a0=;
-        b=dQ9M1DTVKUjTFTDhqvPftrwDfPCAWa9fliDYTN2Zxv7hs2j8k60AHvB2511pfCHmn0
-         vuPCYLMiAvu5byGLJYCP3/pE4jr55Rxzw1mCpX2mUD+QXetnV7hsIhejEiM2RLhi2X5z
-         DS/mbvOQB2T7hI0wdGCZ5GkZrE+RfbQqobCv6CzO/Lsh6mQxHy97KxsiR/QI+6D/2wWO
-         MWWBUms/PDoswRmjVNWpRJd18h9Y1UoBWu5To0vI5kI0zV6tb3bTBEFT9kv7HHD/ix36
-         ZOHU1OlybYrcmvjwm58stQEwwSgc8chCUjkhZAvhLOTsLoBsgTbFxtse+rKy3IafqT3/
-         ZX3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=GIGQ9ePzkxCUcjbi9/rdD1tSRBwMDaYNVGxOzijf0a0=;
-        b=V9PkvCPHl/imllHzMB679Pfb8KRK+HoZ2P6Xa7zi2VUJubcxaTHEYCyZLcKycNMQZt
-         PbIiuNJT0KPi5GUwXeyPxjaCttPKnRSiBikx6+ZckNi216fCBq4RyVeSE1REN+rqqW3A
-         TbN0fVdYnj2kwucxe2e1qu3j5JbZ/HzDmZGMrj+LGqLu5IAS3LMY9pWTjNIQCQRz/JMu
-         eWWiCJiTYEXCxYiqsS9Pb50kcljeD0KEwmazM1YcTV5p+8Em2QIZ612CIenDJ/cWeJq/
-         JcnzcadTm/PptsDAgiljvhhvGP8jObWD3dhWqMoAJwS62a9NiLWqkFp+uW9DVmNK0juE
-         urBw==
-X-Gm-Message-State: AOAM5338WvW+i61CvshdXbmt85DqFqAIBSN2L9WNeRGIjMtBVpGQekQF
-        P+Kgds3jzeyFuvOh7VqZDocmBh5o7T3KLSjv5WkSDaG1rcE=
-X-Google-Smtp-Source: ABdhPJxyFN6QkJ9FnQ+4AMbGOqnIgQXqpgz1vCRX9HIN9ePTQ66Yz3pQ5Hb+TkasGnlAcYktQvur+nSQF3MM82ZLu50=
-X-Received: by 2002:a67:fa59:: with SMTP id j25mr25922500vsq.30.1638046645924;
- Sat, 27 Nov 2021 12:57:25 -0800 (PST)
+        id S1356289AbhK0VEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 16:04:23 -0500
+Received: from mga14.intel.com ([192.55.52.115]:33953 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229634AbhK0VCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 16:02:22 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10181"; a="236024796"
+X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
+   d="scan'208";a="236024796"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 12:59:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
+   d="scan'208";a="608245982"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 27 Nov 2021 12:59:06 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mr4mn-0009zV-T0; Sat, 27 Nov 2021 20:59:05 +0000
+Date:   Sun, 28 Nov 2021 04:58:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: [rostedt-trace:for-next 2/3] kernel/trace/trace_events.c:2681:25:
+ warning: variable 'no_pid_list' set but not used
+Message-ID: <202111280401.qC0z99JB-lkp@intel.com>
 MIME-Version: 1.0
-Received: by 2002:a59:b7e7:0:b0:23d:a0ee:79eb with HTTP; Sat, 27 Nov 2021
- 12:57:25 -0800 (PST)
-Reply-To: abahgeorge75@gmail.com
-From:   George Abah <ayoubasylla67@gmail.com>
-Date:   Sat, 27 Nov 2021 20:57:25 +0000
-Message-ID: <CACtMJkR+DkzCGEkTXp3e0SzfqbvFVzk7hig2x14gKa9OoLVPLA@mail.gmail.com>
-Subject: hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Hello,
-I am George Abah. There is an important issue I need to discuss with
-you concerning our   Late client (Usd$9.2 Million) unclaimed fund left
-in the  bank before it gets confiscated by the bank officials, kindly
-get back to me asap for more details .
-Regards.
-George Abah
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git for-next
+head:   a55f224ff5f238013de8762c4287117e47b86e22
+commit: 6cb206508b621a9a0a2c35b60540e399225c8243 [2/3] tracing: Check pid filtering when creating events
+config: hexagon-randconfig-r045-20211128 (https://download.01.org/0day-ci/archive/20211128/202111280401.qC0z99JB-lkp@intel.com/config)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 5162b558d8c0b542e752b037e72a69d5fd51eb1e)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git/commit/?id=6cb206508b621a9a0a2c35b60540e399225c8243
+        git remote add rostedt-trace https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+        git fetch --no-tags rostedt-trace for-next
+        git checkout 6cb206508b621a9a0a2c35b60540e399225c8243
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+>> kernel/trace/trace_events.c:2681:25: warning: variable 'no_pid_list' set but not used [-Wunused-but-set-variable]
+           struct trace_pid_list *no_pid_list;
+                                  ^
+   1 warning generated.
+
+
+vim +/no_pid_list +2681 kernel/trace/trace_events.c
+
+  2676	
+  2677	static struct trace_event_file *
+  2678	trace_create_new_event(struct trace_event_call *call,
+  2679			       struct trace_array *tr)
+  2680	{
+> 2681		struct trace_pid_list *no_pid_list;
+  2682		struct trace_pid_list *pid_list;
+  2683		struct trace_event_file *file;
+  2684		unsigned int first;
+  2685	
+  2686		file = kmem_cache_alloc(file_cachep, GFP_TRACE);
+  2687		if (!file)
+  2688			return NULL;
+  2689	
+  2690		pid_list = rcu_dereference_protected(tr->filtered_pids,
+  2691						     lockdep_is_held(&event_mutex));
+  2692		no_pid_list = rcu_dereference_protected(tr->filtered_no_pids,
+  2693						     lockdep_is_held(&event_mutex));
+  2694	
+  2695		if (!trace_pid_list_first(pid_list, &first) ||
+  2696		    !trace_pid_list_first(pid_list, &first))
+  2697			file->flags |= EVENT_FILE_FL_PID_FILTER;
+  2698	
+  2699		file->event_call = call;
+  2700		file->tr = tr;
+  2701		atomic_set(&file->sm_ref, 0);
+  2702		atomic_set(&file->tm_ref, 0);
+  2703		INIT_LIST_HEAD(&file->triggers);
+  2704		list_add(&file->list, &tr->events);
+  2705	
+  2706		return file;
+  2707	}
+  2708	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
