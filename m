@@ -2,93 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C8345F75E
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 01:10:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C686745F766
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 01:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343558AbhK0AN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 19:13:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49130 "EHLO
+        id S245735AbhK0AUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 19:20:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234092AbhK0ALz (ORCPT
+        with ESMTP id S230039AbhK0ASc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 19:11:55 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 624E5C061759
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 16:07:29 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id w6-20020a9d77c6000000b0055e804fa524so16071227otl.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 16:07:29 -0800 (PST)
+        Fri, 26 Nov 2021 19:18:32 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F002C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 16:15:19 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id m25-20020a7bcb99000000b0033aa12cdd33so3213949wmi.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 16:15:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=N2HF76KcOCpHV3kuvi2/xR1KNm8Hz25hSAVb7rqNIgM=;
-        b=PNsJQ/hzI80GS8ChdxrJ8rDSii7NuxrFjHBEyi4D8wfM7x1y62op6LIlJOYn6CKyRg
-         R6HBK9B9H6EVnE05LEs/tp6P5pPeBP1RnHEM6Hiveib2IaYrv/6BWCV3WmwtqofKlR6V
-         mgAw9MeZccGAkFa0yvk2eheL4uYQ1/6So/ubrcMjZol2HZjUN/OKgU+id2YTBGlmco3O
-         Ue5BVOlddld4fLoAYVcOjx4AIHzKMIDZyJlY9AjF4Mw8Odcvb0Tf4cF6YuS0lbxZxtc0
-         Jk/kEQdRZUQ4HbiHDvD4xYywrsH83AT7ARPN7UHoXYT5ReCM83TDvJG4sy1sOi+6gur7
-         JY8A==
+        bh=4CsSSZJr7IaMNsYiIfYeQFQHrKS4adoFzjlUrMJVCME=;
+        b=AlzLFywdi7pDPtHxI7REvM3487+dBq/8vQFsjqjwHX/mDbKZLdIOx3Vx1FziUmxnJn
+         2ixNtY0+ulDOaNR+B7EpJbf2Wqoki8VSlVDoPZGz1+c7SW551UCUDKKW3p0eaVXZV8FF
+         zUFasbbgO6/2x5yf9Ca2xTSebyTkVQguaSLVxB6Ee7ie5X7+j8qc3I9Jh2d/RqMunH3Y
+         FVKR5rXLbsPJ06JF2wpVn68MGLTO61lxamCZ3NEjEeam1/fX2Xb3kDaYawTKvCZ0ywg3
+         k+VHK/ctwMXBBG8j7jj2vAq3YrQsrJTNUpoce2WZ0HiVwRCg39qDrbi9vvetTcNKaiQq
+         OeEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=N2HF76KcOCpHV3kuvi2/xR1KNm8Hz25hSAVb7rqNIgM=;
-        b=CqCKYxfg56i4PGOU5FuXuUFIBl1+sdC/RA51ZPrVzm0VgVKQBcfCI2TNXUXyuffMdQ
-         +fI8xK3u+FMkXXrsG59zuPcRwFnvOliuQqaar+Ht7LFzbwPEDVYLLd7z8h6/NIjOb108
-         pOpvNbIu87Hat1jtE5c9rEHbLSV3AqkwINfEigM/fx+B4HzUtYpCWneG8H0I5hDOYuKc
-         qqq5ToUcltFKjdjgbb+fLVCKyTwhBb7VhECHwZR65xVPOvn2EOtedCcTy1OGHbc4O6fF
-         udhZxs6RT5XgBUR1cWCi/HpDD8xkvDciGJnwFuzAnXe2HrP3hEdzCxe+Cszai7FZmg0u
-         97SQ==
-X-Gm-Message-State: AOAM531r7mkxegP+btee7xXEt3c8z8Wxlb8SKjSvliA/aNpPI33K+eB9
-        3/3ZvWOxmZnnsIwc8y/eEqKLotlP1p/uYsontlatDw==
-X-Google-Smtp-Source: ABdhPJwBhJSWOOSQy9TlF9sCXXA+cQsoSR4z9HhTWvjYkAmQ8zkutOBwqNSsdNKrRe5EYR6jLXQTtTJuVDqiPChO4bk=
-X-Received: by 2002:a9d:74d0:: with SMTP id a16mr30047235otl.237.1637971648785;
- Fri, 26 Nov 2021 16:07:28 -0800 (PST)
+        bh=4CsSSZJr7IaMNsYiIfYeQFQHrKS4adoFzjlUrMJVCME=;
+        b=U7a8Ocg+/DUAovkNgPMMBuHhFhn8kMfMqRPNEOCvp4rNPfh5AubhVgfz0em+xnwWNo
+         joNl0S98erLxyNdFFZa5XLoIFynrXF6aVKpwnuueh1540KSEJhHoFLtBArN5sgFZ7w1/
+         5s2Gg58ZuWQ4Wrmm/YSbublcZdsduxwY1LuGF13G7nxW8MeZCzpMLS6S1vAu/Am8Y2pk
+         NTSH1cx3XFbQCYHh3eRrypMe+cQOLQMIIPEOcraw68FFggeYmQCezcOGGc1pnRKRWcym
+         5WqitKkg5ieS1QW0OKXMsDaKHdVYZUexfUhrnd6OXR/Hik1+K0gKcFDAcXcFCMUuNOjP
+         69/Q==
+X-Gm-Message-State: AOAM531VIhVzCBELVt5+kcmSfEwwbY4UjT09r9kkuCxSGJaluOycg59N
+        kx5fxJh+F1QJ/oKDgqRK9SmRVSU2wsMPqNE/QdZH7EazXt4=
+X-Google-Smtp-Source: ABdhPJyWibawhnlrJxg9/kMXWi/MQPXdBbkV+UAIHgYqq2chnlGMkIJPMoe2h8bg5xQCz0aXjAX+3EcuPUrLthmevlg=
+X-Received: by 2002:a05:600c:3ba3:: with SMTP id n35mr19890854wms.88.1637972117262;
+ Fri, 26 Nov 2021 16:15:17 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1637048107.git.quic_vamslank@quicinc.com>
- <06234768890dc7572226f23d432e5a69a4d5b305.1637048107.git.quic_vamslank@quicinc.com>
- <YaFZTxDcTMqeA/42@robh.at.kernel.org>
-In-Reply-To: <YaFZTxDcTMqeA/42@robh.at.kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 27 Nov 2021 01:07:16 +0100
-Message-ID: <CACRpkdYpCmhXhJV1x42hu6QoncXX7eWcGPk22de19sSEC7B=oQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: pinctrl: qcom: Add SDX65 pinctrl bindings
-To:     Rob Herring <robh@kernel.org>
-Cc:     quic_vamslank@quicinc.com, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        manivannan.sadhasivam@linaro.org
+References: <20211125193852.3617-1-goldstein.w.n@gmail.com>
+ <CANn89iLnH5B11CtzZ14nMFP7b--7aOfnQqgmsER+NYNzvnVurQ@mail.gmail.com>
+ <CAFUsyfK-znRWJN7FTMdJaDTd45DgtBQ9ckKGyh8qYqn0eFMMFA@mail.gmail.com>
+ <CANn89iJA1JOevgLSK019VYXKkLJsMjV-u9ZHvrgZ+XUypRWwfQ@mail.gmail.com>
+ <CAFUsyfLeVGW8etXHuSGvYy_RoS3RGaA1L+NLKnpc7EsSMVORBg@mail.gmail.com>
+ <CANn89iJxMhGfp364rPu6p_ZLrKnM1qWF_NWrw4_oL_KG+piByg@mail.gmail.com>
+ <CAFUsyfJ33cKFQdUagHQ_b4N80CfBtGQZhyA4CN_JLgEmXEX=DA@mail.gmail.com>
+ <CAFUsyf+TuU2Xe5Guy5yiFWsV-JZSjUJxcGZv=f0BYDSmODV+_w@mail.gmail.com>
+ <CANn89iLjw7YeWNGNtVNi690adJfoSVwgLScrtx-zSyh=COZRsQ@mail.gmail.com>
+ <CAFUsyfK5r+P6aQLBpYZoi0FSgvLwfawBUYTHtQL0TJRozujp3g@mail.gmail.com>
+ <CANn89iKkK0eMQkOTSMGbvdtf+G=eRfXJG0Semju5h-C63QytaQ@mail.gmail.com> <CAFUsyf+9F9b2V-YDm8UdbnANrQ0_fYV6cGfRgPciASfvp9p=7w@mail.gmail.com>
+In-Reply-To: <CAFUsyf+9F9b2V-YDm8UdbnANrQ0_fYV6cGfRgPciASfvp9p=7w@mail.gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 26 Nov 2021 16:15:05 -0800
+Message-ID: <CANn89iJb_2666U4qgrqsjqEyT9_rA9SKRThbdy_--4_X8rFMYg@mail.gmail.com>
+Subject: Re: [PATCH v1] x86/lib: Optimize 8x loop and memory clobbers in csum_partial.c
+To:     Noah Goldstein <goldstein.w.n@gmail.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com,
+        Borislav Petkov <bp@alien8.de>, dave.hansen@linux.intel.com,
+        X86 ML <x86@kernel.org>, hpa@zytor.com, peterz@infradead.org,
+        alexanderduyck@fb.com, open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 11:01 PM Rob Herring <robh@kernel.org> wrote:
-> On Mon, Nov 15, 2021 at 11:39:45PM -0800, quic_vamslank@quicinc.com wrote:
-> > From: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
+On Fri, Nov 26, 2021 at 12:33 PM Noah Goldstein <goldstein.w.n@gmail.com> wrote:
+>
+> On Fri, Nov 26, 2021 at 2:07 PM Eric Dumazet <edumazet@google.com> wrote:
 > >
-> > Add device tree binding Documentation details for Qualcomm SDX65
-> > pinctrl driver.
+> > On Fri, Nov 26, 2021 at 11:50 AM Noah Goldstein <goldstein.w.n@gmail.com> wrote:
+> > >
+> > > Bright :) but it will need a BMI support check.
 > >
-> > Signed-off-by: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
-> > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> >  .../bindings/pinctrl/qcom,sdx65-pinctrl.yaml  | 195 ++++++++++++++++++
-> >  1 file changed, 195 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sdx65-pinctrl.yaml
+> > Yes, probably not worth the pain.
 >
-> This fails dt_binding_check:
+> Making a V2 for my patch with your optimization for the loop case. Do you think
+> 1 or 2 accum for the 32 byte case?
 >
-> /builds/robherring/linux-dt/Documentation/devicetree/bindings/pinctrl/qcom,sdx65-pinctrl.example.dt.yaml: pinctrl@f100000: 'serial-pins', 'uart-w-subnodes-state' do not match any of the regexes: '$-state', 'pinctrl-[0-9]+'
->         From schema: /builds/robherring/linux-dt/Documentation/devicetree/bindings/pinctrl/qcom,sdx65-pinctrl.yaml
->
-> The DT list was not Cc'ed so checks never ran nor was this reviewed.
 
-OK that's annoying, I didn't notice it wasn't posted to the DT list.
-I reverted the patch, Vamsi can you please reiterate the patch
-and include devicetree@vger.kernel.org on subsequent postings.
-I have kept the kernel code in place, optimistically assuming the
-bindings will be fixed soon-ish.
+I would vote for something simpler, thus one accum, since this 32byte
+block is only run one time ?
 
-Yours,
-Linus Walleij
+Thanks !
