@@ -2,73 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9C8B45FDB9
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 10:41:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 520B045FDBF
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 10:45:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353876AbhK0JoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 04:44:11 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:14986 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353282AbhK0Jl6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 04:41:58 -0500
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4J1RLt69CBzZd8s;
-        Sat, 27 Nov 2021 17:36:06 +0800 (CST)
-Received: from kwepemm600016.china.huawei.com (7.193.23.20) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Sat, 27 Nov 2021 17:38:43 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- kwepemm600016.china.huawei.com (7.193.23.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Sat, 27 Nov 2021 17:38:42 +0800
-From:   Guangbin Huang <huangguangbin2@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <wangjie125@huawei.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lipeng321@huawei.com>, <huangguangbin2@huawei.com>,
-        <chenhao288@hisilicon.com>
-Subject: [PATCH net-next 2/2] net: hns3: use macro IANA_VXLAN_GPE_UDP_PORT to replace number 4790
-Date:   Sat, 27 Nov 2021 17:34:05 +0800
-Message-ID: <20211127093405.47218-3-huangguangbin2@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211127093405.47218-1-huangguangbin2@huawei.com>
-References: <20211127093405.47218-1-huangguangbin2@huawei.com>
+        id S1353780AbhK0Jsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 04:48:45 -0500
+Received: from elvis.franken.de ([193.175.24.41]:44842 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1353395AbhK0Jqo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 04:46:44 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1mquEz-0004ZM-00; Sat, 27 Nov 2021 10:43:29 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 2C7B9C2F83; Sat, 27 Nov 2021 10:43:17 +0100 (CET)
+Date:   Sat, 27 Nov 2021 10:43:17 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     torvalds@linux-foundation.org
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] MIPS fixes for v5.16
+Message-ID: <20211127094317.GA6302@alpha.franken.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600016.china.huawei.com (7.193.23.20)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hao Chen <chenhao288@hisilicon.com>
+The following changes since commit 136057256686de39cc3a07c2e39ef6bc43003ff6:
 
-This patch uses macro IANA_VXLAN_GPE_UDP_PORT to replace number 4790 for
-cleanup.
+  Linux 5.16-rc2 (2021-11-21 13:47:39 -0800)
 
-Signed-off-by: Hao Chen <chenhao288@hisilicon.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+are available in the Git repository at:
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index 496ddf397bd4..3eb2985b9c8d 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -1302,7 +1302,7 @@ static bool hns3_tunnel_csum_bug(struct sk_buff *skb)
- 	if (!(!skb->encapsulation &&
- 	      (l4.udp->dest == htons(IANA_VXLAN_UDP_PORT) ||
- 	      l4.udp->dest == htons(GENEVE_UDP_PORT) ||
--	      l4.udp->dest == htons(4790))))
-+	      l4.udp->dest == htons(IANA_VXLAN_GPE_UDP_PORT))))
- 		return false;
- 
- 	return true;
+  git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips-fixes_5.16_2
+
+for you to fetch changes up to 41ce097f714401e6ad8f3f5eb30d7f91b0b5e495:
+
+  MIPS: use 3-level pgtable for 64KB page size on MIPS_VA_BITS_48 (2021-11-25 16:52:11 +0100)
+
+----------------------------------------------------------------
+- build fix for ZSTD enabled configs
+- fix for preempt warning
+- fix for loongson FTLB detection
+- fix for page table level selection
+
+----------------------------------------------------------------
+Huang Pei (2):
+      MIPS: loongson64: fix FTLB configuration
+      MIPS: use 3-level pgtable for 64KB page size on MIPS_VA_BITS_48
+
+Paul Cercueil (1):
+      MIPS: boot/compressed/: add __ashldi3 to target for ZSTD compression
+
+Tiezhu Yang (1):
+      MIPS: Fix using smp_processor_id() in preemptible in show_cpuinfo()
+
+ arch/mips/Kconfig                  | 2 +-
+ arch/mips/boot/compressed/Makefile | 2 +-
+ arch/mips/kernel/cpu-probe.c       | 4 ++--
+ arch/mips/kernel/proc.c            | 2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
+
 -- 
-2.33.0
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
