@@ -2,83 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A4EE4600C8
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 18:53:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3AB4600AD
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 18:47:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355809AbhK0R45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 12:56:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355851AbhK0Ryz (ORCPT
+        id S1355412AbhK0Ruw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 12:50:52 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:40452 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240704AbhK0Rsw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 12:54:55 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC44BC06173E
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 09:50:11 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id x15so52579367edv.1
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 09:50:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IvT9A5PgUmmsdPPgmPRktfoLrELQ59r0exofkW/Ii+s=;
-        b=NG/FrhUNB8KbyEz2TDL042nDzHzH+VadLD01K1N9pZwyXL8vXfmRFKJMa+97iUJZwW
-         KBrgbnqr3+j89Q2pkbY5D0aL+tGvXnmERU/bcRrMS6vcBUu2Sb1eW8UgOn5IAYS51JVg
-         i9UpH4LAFB4YhLF1HuYB+dFSkyRJ71mwJ6DUU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IvT9A5PgUmmsdPPgmPRktfoLrELQ59r0exofkW/Ii+s=;
-        b=HsfVzzIEspeZM+V/e2Z740VenLFykbffkdLTf6nbcTqQ5TAr5cCwh0yQXZDLgWnet5
-         WZkODuyNIgRvHOUVHxhR8dAesZUcnSZcJ5U+hnTaaK+GbLGieoC70vlQ41IvlqfLZXzX
-         397CiZh11gMNYXlP6bWCuBuU3CnO+5kX1Lhi/81hR3ZZxa4mZL9nbZ8ORGusTG2250bZ
-         tUYscH4Ra5IQ/EZw/p5CMhmDk3eSOnZh6fGtQcD7lvpaYGZQs+qnPdBAPOXJtm2CsIU8
-         G3zVV6F7NDA7Ve7y7I0daezbFILTz64NF1dz6H1r6zGLd8uaDPGSBmb4sh+WQQr8ccDr
-         mUvg==
-X-Gm-Message-State: AOAM533e9MEUFM0KgNcNxjyD8qCOS76vedZ6nbIJit+NA2FKxDX0II6Y
-        ZURFaMwHRNCHeHCBnTW9jbltAEovVj6iTCfg
-X-Google-Smtp-Source: ABdhPJx+eINi3ndOsOIJFyRXBv70CN4RF516+q9h2l2xFv1KjJq3DVzRLmKnWcgcwV8RtUHTQIPJ+g==
-X-Received: by 2002:aa7:c301:: with SMTP id l1mr58644930edq.20.1638035410010;
-        Sat, 27 Nov 2021 09:50:10 -0800 (PST)
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com. [209.85.221.43])
-        by smtp.gmail.com with ESMTPSA id cw20sm4489360ejc.90.2021.11.27.09.50.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 27 Nov 2021 09:50:08 -0800 (PST)
-Received: by mail-wr1-f43.google.com with SMTP id q3so3359362wru.5
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 09:50:07 -0800 (PST)
-X-Received: by 2002:adf:e5c7:: with SMTP id a7mr22736016wrn.318.1638035407409;
- Sat, 27 Nov 2021 09:50:07 -0800 (PST)
+        Sat, 27 Nov 2021 12:48:52 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 462E460EFC;
+        Sat, 27 Nov 2021 17:45:37 +0000 (UTC)
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp.kernel.org (Postfix) with ESMTPSA id A8EB0C53FAD;
+        Sat, 27 Nov 2021 17:45:31 +0000 (UTC)
+Date:   Sat, 27 Nov 2021 17:50:31 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>,
+        linux-kernel@vger.kernel.org, lars@metafoo.de,
+        linux-iio@vger.kernel.org, git@xilinx.com, michal.simek@xilinx.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        linux-acpi@vger.kernel.org, andriy.shevchenko@linux.intel.com,
+        kbuild-all@lists.01.org
+Subject: Re: [PATCH v11 3/5] iio: adc: Add Xilinx AMS driver
+Message-ID: <20211127175031.6471b43b@jic23-huawei>
+In-Reply-To: <202111271041.Cdu0In2E-lkp@intel.com>
+References: <20211124225407.17793-4-anand.ashok.dumbre@xilinx.com>
+        <202111271041.Cdu0In2E-lkp@intel.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20211127154442.3676290-1-linux@roeck-us.net>
-In-Reply-To: <20211127154442.3676290-1-linux@roeck-us.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 27 Nov 2021 09:49:51 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wh9g5Mu9V=dsQLkfmCZ-O7zjvhE6F=-42BbQuis2qWEpg@mail.gmail.com>
-Message-ID: <CAHk-=wh9g5Mu9V=dsQLkfmCZ-O7zjvhE6F=-42BbQuis2qWEpg@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] Limit NTFS_RW to page sizes smaller than 64k
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Anton Altaparmakov <anton@tuxera.com>,
-        linux-ntfs-dev@lists.sourceforge.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Netdev <netdev@vger.kernel.org>, Joel Stanley <joel@jms.id.au>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 27, 2021 at 7:44 AM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> This is the third attempt to fix the following build error.
+On Sat, 27 Nov 2021 10:43:11 +0800
+kernel test robot <lkp@intel.com> wrote:
 
-Thanks, looks good to me.
+> Hi Anand,
+> 
+> Thank you for the patch! Perhaps something to improve:
+> 
+> [auto build test WARNING on jic23-iio/togreg]
+> [also build test WARNING on linux/master linus/master v5.16-rc2 next-20211126]
+> [cannot apply to xilinx-xlnx/master]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Anand-Ashok-Dumbre/Add-Xilinx-AMS-Driver/20211125-065614
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
+> config: powerpc64-randconfig-s032-20211126 (https://download.01.org/0day-ci/archive/20211127/202111271041.Cdu0In2E-lkp@intel.com/config)
+> compiler: powerpc64-linux-gcc (GCC) 11.2.0
+> reproduce:
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # apt-get install sparse
+>         # sparse version: v0.6.4-dirty
+>         # https://github.com/0day-ci/linux/commit/9b07fe52c07c2e9f6eccd2f2050f69558904ed64
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Anand-Ashok-Dumbre/Add-Xilinx-AMS-Driver/20211125-065614
+>         git checkout 9b07fe52c07c2e9f6eccd2f2050f69558904ed64
+>         # save the config file to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=powerpc SHELL=/bin/bash drivers/clk/ drivers/iio/adc/ drivers/pci/controller/
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> 
+> sparse warnings: (new ones prefixed by >>)
+> >> drivers/iio/adc/xilinx-ams.c:1175:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *data @@  
+>    drivers/iio/adc/xilinx-ams.c:1175:17: sparse:     expected void volatile [noderef] __iomem *addr
+>    drivers/iio/adc/xilinx-ams.c:1175:17: sparse:     got void *data
+> >> drivers/iio/adc/xilinx-ams.c:1192:69: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected void *data @@     got void [noderef] __iomem *ps_base @@  
+>    drivers/iio/adc/xilinx-ams.c:1192:69: sparse:     expected void *data
+>    drivers/iio/adc/xilinx-ams.c:1192:69: sparse:     got void [noderef] __iomem *ps_base
+> >> drivers/iio/adc/xilinx-ams.c:1206:69: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected void *data @@     got void [noderef] __iomem *pl_base @@  
+>    drivers/iio/adc/xilinx-ams.c:1206:69: sparse:     expected void *data
+>    drivers/iio/adc/xilinx-ams.c:1206:69: sparse:     got void [noderef] __iomem *pl_base
+> 
+> vim +1175 drivers/iio/adc/xilinx-ams.c
+> 
+>   1172	
+>   1173	static void ams_iounmap(void *data)
+>   1174	{
+> > 1175		iounmap(data);  
+I guess you probably already fixed this, but I'd do it by passing the
+containing structure in as the *data and then use
+ams->pl_base to access it here.
 
-Should I apply the patches directly, or were you planning on sending a
-pull request when everybody was happy with it?
+It's a bit more code than we'd normally need but cleaner than force
+changes to and from iomem via forcing the pointer conversions.
 
-           Linus
+>   1176	}
+>   1177	
+>   1178	static int ams_init_module(struct iio_dev *indio_dev,
+>   1179				   struct fwnode_handle *fwnode,
+>   1180				   struct iio_chan_spec *channels)
+>   1181	{
+>   1182		struct device *dev = indio_dev->dev.parent;
+>   1183		struct ams *ams = iio_priv(indio_dev);
+>   1184		int num_channels = 0;
+>   1185		int ret;
+>   1186	
+>   1187		if (fwnode_property_match_string(fwnode, "compatible",
+>   1188						 "xlnx,zynqmp-ams-ps") == 0) {
+>   1189			ams->ps_base = fwnode_iomap(fwnode, 0);
+>   1190			if (!ams->ps_base)
+>   1191				return -ENXIO;
+> > 1192			ret = devm_add_action_or_reset(dev, ams_iounmap, ams->ps_base);  
+>   1193			if (ret < 0)
+>   1194				return ret;
+>   1195	
+>   1196			/* add PS channels to iio device channels */
+>   1197			memcpy(channels, ams_ps_channels,
+>   1198			       sizeof(ams_ps_channels));
+>   1199			num_channels += ARRAY_SIZE(ams_ps_channels);
+>   1200		} else if (fwnode_property_match_string(fwnode, "compatible",
+>   1201							"xlnx,zynqmp-ams-pl") == 0) {
+>   1202			ams->pl_base = fwnode_iomap(fwnode, 0);
+>   1203			if (!ams->pl_base)
+>   1204				return -ENXIO;
+>   1205	
+> > 1206			ret = devm_add_action_or_reset(dev, ams_iounmap, ams->pl_base);  
+>   1207			if (ret < 0)
+>   1208				return ret;
+>   1209	
+>   1210			/* Copy only first 10 fix channels */
+>   1211			memcpy(channels, ams_pl_channels,
+>   1212			       AMS_PL_MAX_FIXED_CHANNEL * sizeof(*channels));
+>   1213			num_channels += AMS_PL_MAX_FIXED_CHANNEL;
+>   1214	
+>   1215			num_channels = ams_get_ext_chan(fwnode, channels,
+>   1216							num_channels);
+>   1217		} else if (fwnode_property_match_string(fwnode, "compatible",
+>   1218							"xlnx,zynqmp-ams") == 0) {
+>   1219			/* add AMS channels to iio device channels */
+>   1220			memcpy(channels, ams_ctrl_channels,
+>   1221			       sizeof(ams_ctrl_channels));
+>   1222			num_channels += ARRAY_SIZE(ams_ctrl_channels);
+>   1223		} else {
+>   1224			return -EINVAL;
+>   1225		}
+>   1226	
+>   1227		return num_channels;
+>   1228	}
+>   1229	
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
