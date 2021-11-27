@@ -2,237 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1477460176
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 21:29:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9801D46017E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 21:49:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356239AbhK0Uc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 15:32:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58142 "EHLO
+        id S1356183AbhK0Uqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 15:46:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356121AbhK0UaZ (ORCPT
+        with ESMTP id S1356112AbhK0Uoc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 15:30:25 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F9DC061574;
-        Sat, 27 Nov 2021 12:27:10 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id f20so12289815qtb.4;
-        Sat, 27 Nov 2021 12:27:10 -0800 (PST)
+        Sat, 27 Nov 2021 15:44:32 -0500
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB180C06173E
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 12:41:17 -0800 (PST)
+Received: by mail-ot1-x343.google.com with SMTP id u18-20020a9d7212000000b00560cb1dc10bso19283356otj.11
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 12:41:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0b4dxm2x/bhUZLjF/y2JGL/1UnzQAuzkRHLqUdIXjlo=;
-        b=EmLY+2NKR7ws06EHx1j2dLdpACRpUkcjToVq5NkTsC6gAOh3z8uxQ+tHlAa9jsTwdv
-         cvmsMZABXsxbVoyDPaLqVmYMFAoUGgYCx9w504httJsAc6eYdOfYYsW89w4XIlUbMRer
-         bKpWAsdB4ESbO1PLh+hHKFwZOGYwMCQEnh77xOzrddXuNCvFuKUz2c87h/58gqUMOSAK
-         rLZOOLcCKzdZW3Qj5d2RHvPcBZrU1tFVXB1h+zAqPGyBN3uOu4GBUVf50MJ4z8NvrfQQ
-         LxQnWafTp+/Ydx976nIJe3jrKp1gmSLE8JOljxSV1bvGSFlBFzP4ISqeP/4BTWtkiz+o
-         87Kw==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=egk26ZyuKP6hdtL948MmA7SNlRqkI1VfSBd60XDNYVY=;
+        b=jFI0mSek0rBU9h7PNXx5Zc5w8TzhPxFx9NG7GWaP7BGifvOwJd0N3SIT6gh67ry9fv
+         +uSB7cBQ9wwo2MCtwU60F2Bb/rdJJwkFlnoJZU6E6SkrWg+R50Nf+TB0CCEomiFOp+mB
+         xRt2pSMmrE9AJlHip8yDPSI2meTrYk6Xp04SwFekKl5PPNrOktFBcIFRcmweiFecyJNi
+         IL/HbvxHo0hB8+4MpxnlQh0OJpCJoOttqCUqX0TJZZPGIzx3bSKeDK7JcIfejquBo43O
+         DEx97LbLHqxMq6w6PnDAqAd1iMyE+utT/NqxqOQpiBeWxXAcMyOKgGNDq9UQbNcAiTJI
+         9n2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0b4dxm2x/bhUZLjF/y2JGL/1UnzQAuzkRHLqUdIXjlo=;
-        b=JIpiBkwVGgWBjdlUu1qrUK+zshfU+1b/7Z12MmtV3W6tdy5u87eJrXI3fag7+9OhPR
-         OSiWr/Wo+iAkGdyTz4xdTGBspXLISewMSwkvDgViDv1jBfbx210VPzzADEcUb/Doy2t+
-         SDkEoZTOc2zaBJIJAkeMD00Twk97MHF3xK7M5scAyzjJHp5FCORv4KvvQ7hOq9P90Gtb
-         sAC7R0GbLhJnulI3xFlcbsaPaMWnLlchubsEMjeU6Ddw6REOgy2tO5CGUrDG+033krNR
-         3UnvDZrr2iDQv9DzXYXVC7TZBKYTAvrw/+gh5Bg7+lHLZdcTsTj98crdX0lyZ5tqGvMX
-         PMOg==
-X-Gm-Message-State: AOAM532k7xoIwJ/DByKzFMjw9sHrDdzVtA8KHBknbw9OO+nWuw47WuSg
-        k2P4WbPQPDwni4HjsgaChFBx8j//ErQ=
-X-Google-Smtp-Source: ABdhPJyrOf5tQSSQMeMdrSVnIsa1XDi3q9WvnacPAFICYRYjqOQt5gmhcKWwdYo1P+Hk0h1elHxA3g==
-X-Received: by 2002:ac8:7c4b:: with SMTP id o11mr33411435qtv.358.1638044829260;
-        Sat, 27 Nov 2021 12:27:09 -0800 (PST)
-Received: from shaak (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id u10sm6003213qtx.3.2021.11.27.12.27.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Nov 2021 12:27:08 -0800 (PST)
-Date:   Sat, 27 Nov 2021 15:27:06 -0500
-From:   Liam Beguin <liambeguin@gmail.com>
-To:     Peter Rosin <peda@axentia.se>
-Cc:     jic23@kernel.org, lars@metafoo.de, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org
-Subject: Re: [PATCH v9 00/14] iio: afe: add temperature rescaling support
-Message-ID: <YaKUmha11ft6gip2@shaak>
-References: <20211115034334.1713050-1-liambeguin@gmail.com>
- <156bc2fa-6754-2350-4a12-ff25b23ae8a2@axentia.se>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=egk26ZyuKP6hdtL948MmA7SNlRqkI1VfSBd60XDNYVY=;
+        b=l7pLk/D6KNRpIdQ55deHUBWeXYsOQCLSKiHrpeysfsRUqwaJ4fjBeONsg0DAuNOr8D
+         JdrXbDD52fyLltjYaxXJy17W337F0kXzdIXt/vV6LVTwsfOQPsBWUuCCuG+1C7vL8XHi
+         d2aHjBMwO3b+rvehzohdpfoXjzHCoGcBCvytfwxcptCzCsHpPI12QIAQQVhkvr2dqkeY
+         p8LvnHL0JDyetQ9rJhWDwjWV/1+N+wep3dVoKQ0V3S/twEkrk3v6o4F8jfWg+Vb9xGaw
+         oEv51e7kKtoIJhBXiTWSkEBcJ+jPh3UgLEvzqqDWnAGxAey4AU0SrTvgb/5iACRiHtrb
+         g6Ng==
+X-Gm-Message-State: AOAM532dEKUe0mwVIVP14Jhp3cEMLHqsV2IQim6QMS81QLyss2Pxmqxk
+        cMjbXnw6JXv4zu5cFNH+NWKRRAYpkbRoYsRgE5Y=
+X-Google-Smtp-Source: ABdhPJzMwmrh1TDNIxbTY9sWPS9maUrXp84Y3lDiIJGu/egmK8rOLM2IDCeAa2RWGIa4rN/g6vrCxHx9i71o/Ez+g/8=
+X-Received: by 2002:a05:6830:2aa7:: with SMTP id s39mr36270182otu.151.1638045677090;
+ Sat, 27 Nov 2021 12:41:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <156bc2fa-6754-2350-4a12-ff25b23ae8a2@axentia.se>
+Received: by 2002:a05:6838:264b:0:0:0:0 with HTTP; Sat, 27 Nov 2021 12:41:16
+ -0800 (PST)
+Reply-To: mrspeninnaharielbenaiah263@gmail.com
+From:   "Mrs. Peninnah Ariel Benaiah" <mrsarchanaahmed@gmail.com>
+Date:   Sat, 27 Nov 2021 12:41:16 -0800
+Message-ID: <CAGuh7Mq=t7mvX_BiVX4-mSuCP6yn5jyQQ7n_6UJ87MjvYxDZLw@mail.gmail.com>
+Subject: Greetings in the name of Lord
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+--=20
 
-On Mon, Nov 22, 2021 at 01:53:44AM +0100, Peter Rosin wrote:
-> Hi Liam!
-> 
-> On 2021-11-15 04:43, Liam Beguin wrote:
-> > Hi Jonathan, Peter,
-> > 
-> > Apologies for not getting back to you sooner. I got caught up on other
-> > work and wasn't able to dedicate time to this earlier. Hopefully, this
-> > time around, I'll be able to get this to the finish line :-)
-> > 
-> > I left out IIO_VAL_INT overflows for now, so that I can focus on getting
-> > the rest of these changes pulled in, but I don't mind adding a patch for
-> > that later on.
-> > 
-> > This series focuses on adding temperature rescaling support to the IIO
-> > Analog Front End (AFE) driver.
-> > 
-> > The first few patches address minor bugs in IIO inkernel functions, and
-> > prepare the AFE driver for the additional features.
-> > 
-> > The main changes to the AFE driver include an initial Kunit test suite,
-> > support for IIO_VAL_INT_PLUS_{NANO,MICRO} scales, and support for RTDs
-> > and temperature transducer sensors.
-> > 
-> > Thanks for your time,
-> 
-> And thanks for yours!
-> 
-> > Liam
-> > 
-> > Changes since v8:
-> > - reword comment
-> > - fix erroneous 64-bit division
-> > - optimize and use 32-bit divisions when values are know to not overflow
-> > - keep IIO_VAL_FRACTIONAL scale when possible, if not default to fixed
-> >   point
-> 
-> This is not what is going on. Patch 9/14 will convert all fractional
-> scales to fixed point. But I would really like if you in the "reduce
-> risk of integer overflow" patch (8/14) would hold true to the above
-> and keep the fractional scale when possible and only fall back to
-> the less precise fractional-log case if any of the multiplications
-> needed for an exact fractional scale causes overflow.
 
-Thanks for looking at these patches again.
+Greetings in the name of Lord
 
-> The v8 discussion concluded that this was a valid approach, right?
 
-Yes, I remember you saying that you'd be more comfortable keeping the
-IIO_VAL_FRACTIONAL.
+My name is Mrs. Peninnah Ariel Benaiah I am a Norway Citizen who is living
+in Burkina Faso, I am married to Mr. Benaiah Jeremiah, a politician who
+owns a small gold company in Burkina Faso; He died of Leprosy and Radesyge,
+in the year February 2010, During his lifetime he deposited the sum of =E2=
+=82=AC
+8.5 Million Euro) Eight million, Five hundred thousand Euros in a bank in
+Brussels the capital city of Belgium in Europe The money was from the sale
+of his company and death benefits payment and entitlements of my deceased
+husband by his company.
 
-> I know you also said that the core exposes the scale with nano
-> precision in sysfs anyway, but that is not true for in-kernel
-> consumers. They have an easier time reading the "real" scale value
-> compared to going via the string representation of fixed point
-> returned from iio_format_value. At least the rescaler itself does so,
-> which means that chaining rescalers might suffer needless accuracy
-> degradation.
+I am sending you this message with heavy tears in my eyes and great sorrow
+in my heart, and also praying that it will reach you in good health because
+I am not in good health, I sleep every night without knowing if I may be
+alive to see the next day. I am suffering from long time cancer and
+presently I am partially suffering from Leprosy, which has become difficult
+for me to move around. I was married to my late husband for more than 6
+years without having a child and my doctor confided that I have less chance
+to live, having to know when the cup of death will come, I decided to
+contact you to claim the fund since I don't have any relation I grew up
+from an orphanage home.
 
-Agreed, that makes total sense.
+I have decided to donate this money for the support of helping Motherless
+babies/Less privileged/Widows and churches also to build the house of God
+because I am dying and diagnosed with cancer for about 3 years ago. I have
+decided to donate from what I have inherited from my late husband to you
+for the good work of Almighty God; I will be going in for an operation
+surgery soon.
 
-If I'm not mistaken, the first condition in the case, if (!rem), will
-return IIO_VAL_FRACTIONAL if the division is exact, keeping all the
-precision. No?
+Now I want you to stand as my next of kin to claim the funds for charity
+purposes. Because of this money remains unclaimed after my death, the bank
+executives or the government will take the money as unclaimed fund and
+maybe use it for selfishness and worthless ventures, I need a very honest
+person who can claim this money and use it for Charity works, for
+orphanages, widows and also build schools and churches for less privilege
+that will be named after my late husband and my name.
 
-> So, please add the overflow fallback thingy right away, it would make
-> me feel much better.
-> 
-> > - add test cases
-> > - use nano precision in test cases
-> > - simplify offset calculation in rtd_props()
-> > 
-> > Changes since v7:
-> > - drop gcd() logic in rescale_process_scale()
-> > - use div_s64() instead of do_div() for signed 64-bit divisions
-> > - combine IIO_VAL_FRACTIONAL and IIO_VAL_FRACTIONAL_LOG2 scale cases
-> > - switch to INT_PLUS_NANO when accuracy is lost with FRACTIONAL scales
-> > - rework test logic to allow for small relative error
-> > - rename test variables to align error output messages
-> > 
-> > Changes since v6:
-> > - rework IIO_VAL_INT_PLUS_{NANO,MICRO} based on Peter's suggestion
-> > - combine IIO_VAL_INT_PLUS_{NANO,MICRO} cases
-> > - add test cases for negative IIO_VAL_INT_PLUS_{NANO,MICRO} corner cases
-> > - force use of positive integers with gcd()
-> > - reduce risk of integer overflow in IIO_VAL_FRACTIONAL_LOG2
-> > - fix duplicate symbol build error
-> > - apply Reviewed-by
-> > 
-> > Changes since v5:
-> > - add include/linux/iio/afe/rescale.h
-> > - expose functions use to process scale and offset
-> > - add basic iio-rescale kunit test cases
-> > - fix integer overflow case
-> > - improve precision for IIO_VAL_FRACTIONAL_LOG2
-> > 
-> > Changes since v4:
-> > - only use gcd() when necessary in overflow mitigation
-> > - fix INT_PLUS_{MICRO,NANO} support
-> > - apply Reviewed-by
-> > - fix temperature-transducer bindings
-> > 
-> > Changes since v3:
-> > - drop unnecessary fallthrough statements
-> > - drop redundant local variables in some calculations
-> > - fix s64 divisions on 32bit platforms by using do_div
-> > - add comment describing iio-rescaler offset calculation
-> > - drop unnecessary MAINTAINERS entry
-> > 
-> > Changes since v2:
-> > - don't break implicit offset truncations
-> > - make a best effort to get a valid value for fractional types
-> > - drop return value change in iio_convert_raw_to_processed_unlocked()
-> > - don't rely on processed value for offset calculation
-> > - add INT_PLUS_{MICRO,NANO} support in iio-rescale
-> > - revert generic implementation in favor of temperature-sense-rtd and
-> >   temperature-transducer
-> > - add separate section to MAINTAINERS file
-> > 
-> > Changes since v1:
-> > - rebase on latest iio `testing` branch
-> > - also apply consumer scale on integer channel scale types
-> > - don't break implicit truncation in processed channel offset
-> >   calculation
-> > - drop temperature AFE flavors in favor of a simpler generic
-> >   implementation
-> > 
-> > Liam Beguin (14):
-> >   iio: inkern: apply consumer scale on IIO_VAL_INT cases
-> >   iio: inkern: apply consumer scale when no channel scale is available
-> >   iio: inkern: make a best effort on offset calculation
-> >   iio: afe: rescale: expose scale processing function
-> >   iio: afe: rescale: add INT_PLUS_{MICRO,NANO} support
-> >   iio: afe: rescale: add offset support
-> >   iio: afe: rescale: use s64 for temporary scale calculations
-> >   iio: afe: rescale: reduce risk of integer overflow
-> >   iio: afe: rescale: fix accuracy for small fractional scales
-> 
-> Can you please swap the order of these two patches? (i.e. "reduce
-> risk..." and "fix accuracy...")
-> 
-> Basically, I think the accuracy of the IIO_VAL_FRACTIONAL_LOG2
-> case should be improved before the IIO_VAL_FRACTIONAL case is
-> joined with it. I.e. swap the order of 8/14 and 9/14 (or almost,
-> you need to also move the addition of the
-> scale_type == IIO_VAL_FRACTIONAL condition to the other patch in
-> order for it to make sense).
+I need your urgent answer to know if you will be able to execute this
+project, and I will give you more information on how the fund will be
+transferred to your bank account or online banking.
 
-Makes sense! I'll swap the order of these commits.
-
-> That's all I'm finding. But then again, I don't know what to do
-> about the 0day report on 10/14. It does say that it's a W=1
-> build, maybe we need not worry about it?
-
-I didn't have a chance to look into that more, but will now.
-
-Cheers,
-Liam
-
-> Cheers,
-> Peter
-> 
-> >   iio: test: add basic tests for the iio-rescale driver
-> >   iio: afe: rescale: add RTD temperature sensor support
-> >   iio: afe: rescale: add temperature transducers
-> >   dt-bindings: iio: afe: add bindings for temperature-sense-rtd
-> >   dt-bindings: iio: afe: add bindings for temperature transducers
-> 
+Thanks
+Mrs. Peninnah Ariel Benaiah
