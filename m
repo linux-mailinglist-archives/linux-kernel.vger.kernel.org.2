@@ -2,153 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B15845FBC0
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 03:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E79C145FC16
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 03:28:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350077AbhK0CQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 21:16:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46966 "EHLO
+        id S235809AbhK0Cb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 21:31:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231145AbhK0COD (ORCPT
+        with ESMTP id S229688AbhK0C36 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 21:14:03 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3EF6C0619D7
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 17:30:50 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id n26so10449471pff.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 17:30:50 -0800 (PST)
+        Fri, 26 Nov 2021 21:29:58 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC3EC08ED4B
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 17:33:25 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id u17so7697852plg.9
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 17:33:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20210112.gappssmtp.com; s=20210112;
-        h=date:subject:in-reply-to:cc:from:to:message-id;
-        bh=krSaf44qZp+SCzZWx5eYR1WPcnM46IU0SbFLswTGNpo=;
-        b=vSyg2+OCv8NNr+GVnFx5ZptQI1QqpvWnbX1+2QNgsjhPTPlSwtiSrNJOPJ+G56jO/J
-         KCGi5oyjJdQHyPu+CZOB+JNmbmI7GLFV4SG409bZKm953le3grK8u7ikp8hYkOFCYmdw
-         EXoxTYjm4n3xgtCITEVFU/Zuj+TgGjcGtQDzG7Lt5/E4G1oBWm1XgXMGvDupTa6ALbNL
-         VmKKwbZiC14Qe21ALTq+JFLO9k0N+UOkJHZE8hrle0dYk5psWba7TaZbi19WL95UPoBz
-         zuc5c8AFHwueJIaPxJaMHQM1O4eQiHDmkI1kuAX3Jp4W8yRv9scPgT/OskSri7skMJzp
-         ThBA==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding:content-disposition;
+        bh=X8QlSj+7J7KTHGL3d4vBencwUADDVpyBriTFH4PukKs=;
+        b=mSJ8fJrFPmmxdffytRC+GUJ3cqSCF0AxMspew4IGovmY1kkJQAEcOEZ6OQkPpbM3OK
+         RxjOcE7SBAFsjjrEPgXP5L7JnOX5BEUhlgdxBIU7/rFJwC+0NQbjaaOmfEBNMWhTti+F
+         oHnJgVL+V2ys1uS4xKLuN+/55kjhuNqCDmbJdk8WPpYswsbjozEGTzJMWSot44WPqwAr
+         YzJldmEdzQ39MQLg3nDGC5OktC2S/UPjnn9bK93X7PNusl59FfK9FzEbhPcrHasKdHne
+         MZAb0m8z6LgHZr/UILj8VzkN2t4mTlzyPO/SpJOGAiMrcctBGBsCEZRuDxUBIA3zxT/Q
+         KUIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id;
-        bh=krSaf44qZp+SCzZWx5eYR1WPcnM46IU0SbFLswTGNpo=;
-        b=uH6cusI4Q00qnHaLtzzvUJ6IBWUnCIQ1kkekYs8SJjZRI1TJkPKt511lAE+j59qBxc
-         nYhyi4fmuJjniVfCEqg0UTdE2jwB2scKt/rWh+Iu1r8bkfDG2lzuQ2xlhYPUEw8e46ut
-         dY+cLIUDwsofpeIDF4KRrsl5hKx8RKmV7gimehbpuX6o30byg3kIkvlCCv7z6O6nhB8s
-         zwBxzzR2FQUWSLlFgt3PAQsNe4QytNJ1t4HCUt8fQAvwaE3PSYhEi0nnFkuR5x4mrL7d
-         Fhq8vW167BBaRZH/JzGjxy9XddBzm/Z94kN8wkRm8dCXMojKPlM56W3Z7P2xWCAbPMXz
-         suKg==
-X-Gm-Message-State: AOAM533hd6dUkkJ4qbCKE1v8e+H6r+NK5emi4gJO5VZsLl0B9trBdqp9
-        7niYEfDsMcCkwKUeWj8FRbewoQ==
-X-Google-Smtp-Source: ABdhPJwibnGbqlrciJIlnX43p0ErqmwW6+We/evbbZWxmT1e1YwNNbZ0GMqRZhi/jRB7rXFCr+ZtjA==
-X-Received: by 2002:a05:6a00:1305:b0:4a2:75cd:883b with SMTP id j5-20020a056a00130500b004a275cd883bmr24729294pfu.44.1637976650262;
-        Fri, 26 Nov 2021 17:30:50 -0800 (PST)
-Received: from localhost (c-73-53-62-83.hsd1.wa.comcast.net. [73.53.62.83])
-        by smtp.gmail.com with ESMTPSA id e29sm2129630pge.17.2021.11.26.17.30.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Nov 2021 17:30:49 -0800 (PST)
-Date:   Fri, 26 Nov 2021 17:30:49 -0800 (PST)
-X-Google-Original-Date: Fri, 26 Nov 2021 17:29:57 PST (-0800)
-Subject:     Re: [PATCH v4 00/16] Basic StarFive JH7100 RISC-V SoC support
-In-Reply-To: <CANBLGcykFks+EF2m0bdD+j5w43Qy30LBgVnAYJWU+5-WVJH6PA@mail.gmail.com>
-CC:     Arnd Bergmann <arnd@arndb.de>, linux-riscv@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-serial@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>, robh+dt@kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org, tglx@linutronix.de,
-        Marc Zyngier <maz@kernel.org>, p.zabel@pengutronix.de,
-        linus.walleij@linaro.org, Greg KH <gregkh@linuxfoundation.org>,
-        daniel.lezcano@linaro.org, andriy.shevchenko@linux.intel.com,
-        jirislaby@kernel.org, luzmaximilian@gmail.com,
-        sagar.kadam@sifive.com, drew@beagleboard.org, geert@linux-m68k.org,
-        michael.zhu@starfivetech.com, tekkamanninja@gmail.com,
-        anup.patel@wdc.com, mcroce@microsoft.com,
-        linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@rivosinc.com>
-To:     kernel@esmil.dk
-Message-ID: <mhng-5fc3ff6b-1f6e-4efb-8578-20759733887a@palmer-ri-x1c9>
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding
+         :content-disposition;
+        bh=X8QlSj+7J7KTHGL3d4vBencwUADDVpyBriTFH4PukKs=;
+        b=yXpwxXc7VoNfWgybiolUOupt86+7fOvkYFOC/NWTjalSJ05ToJteFXXvK4t20kQfiM
+         hrQra3X11udLH5UfmdqzEvP08mPCdKCV3Zjyh4WOIg+zo/HH5f8urLarHPhLjHu++hu6
+         rrhWxrelBA74DOig3106Kfv5cobh16Pki9Qec0RqCl/4W17VQqbjHpojq871OOrjS/II
+         uyfieMvao6IVvdyZx33njM1lMbf2mMhROcwjhCvkbZgc7NY+0WKveaO3/Lll8M9DHO9Z
+         UOrVvavJdHF2Je7nTfEQmQ3TvSFOH5GpbNaF1v8cu8GwlDsn2h2wWXmdzT4XgLRfpVcz
+         jMvg==
+X-Gm-Message-State: AOAM530jWSVblPfr95qaZVd6dmlkhUMGjF4ysZdt0Vs19+BU51YgP+5d
+        Y96sC4E29b/qo8e5N6GC2K8=
+X-Google-Smtp-Source: ABdhPJzI+eUkvspJeekb6OOEDPmnxyF8L1bDDVL+PQz2etsOx1uABAB180rQOM/viSL3PN6icMqwSg==
+X-Received: by 2002:a17:90a:c78f:: with SMTP id gn15mr19678485pjb.54.1637976805227;
+        Fri, 26 Nov 2021 17:33:25 -0800 (PST)
+Received: from pc ([223.197.3.99])
+        by smtp.gmail.com with ESMTPSA id z22sm9007173pfe.93.2021.11.26.17.33.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 26 Nov 2021 17:33:24 -0800 (PST)
+Date:   Sat, 27 Nov 2021 09:33:19 +0800
+From:   Zackary Liu <zackary.liu.pro@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     "=?utf-8?Q?masahiroy=40kernel.org?=" <masahiroy@kernel.org>,
+        "=?utf-8?Q?ripxorip=40gmail.com?=" <ripxorip@gmail.com>,
+        "=?utf-8?Q?mpe=40ellerman.id.au?=" <mpe@ellerman.id.au>,
+        "=?utf-8?Q?linux-kernel=40vger.kernel.org?=" 
+        <linux-kernel@vger.kernel.org>
+Message-ID: <A5940078-2624-4F28-859A-9F11C1F5058A@getmailspring.com>
+In-Reply-To: <YaEECIyT3LT7JQzQ@kroah.com>
+References: <YaEECIyT3LT7JQzQ@kroah.com>
+Subject: Re: [PATCH] scripts/tags: merge "TAGS" and "tags" in case
+X-Mailer: Mailspring
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Nov 2021 09:28:41 PST (-0800), kernel@esmil.dk wrote:
-> On Tue, 16 Nov 2021 at 17:08, Arnd Bergmann <arnd@arndb.de> wrote:
->> On Tue, Nov 16, 2021 at 4:01 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
->> >
->> > This series adds support for the StarFive JH7100 RISC-V SoC. The SoC has
->> > many devices that need non-coherent dma operations to work which isn't
->> > upstream yet[1], so this just adds basic support to boot up, get a
->> > serial console, blink an LED and reboot itself. Unlike the Allwinner D1
->> > this chip doesn't use any extra pagetable bits, but instead the DDR RAM
->> > appears twice in the memory map, with and without the cache.
->> >
->> > The JH7100 is a test chip for the upcoming JH7110 and about 300 BeagleV
->> > Starlight Beta boards were sent out with them as part of a now cancelled
->> > BeagleBoard.org project. However StarFive has produced more of the
->> > JH7100s and more boards will be available[2] to buy. I've seen pictures
->> > of the new boards now, so hopefully before the end of the year.
->> >
->> > This series is also available at
->> > https://github.com/esmil/linux/commits/starlight-minimal
->> > ..but a more complete kernel including drivers for non-coherent
->> > peripherals based on this series can be found at
->> > https://github.com/starfive-tech/linux/tree/visionfive
->> >
->> > [1]: https://lore.kernel.org/linux-riscv/20210723214031.3251801-2-atish.patra@wdc.com/
->> > [2]: https://www.linkedin.com/pulse/starfive-release-open-source-single-board-platform-q3-2021-starfive/
->>
->> Thanks for adding me to Cc, I've had a look at the series and didn't
->> see anything
->> wrong with it, and I'm happy to merge it through the SoC tree for the
->> initial support
->> in 5.17, provided you get an Ack from the arch/riscv maintainers for it.
->
-> Cool!
->
-> @Palmer, do you mind looking through this? Probably patch 1, 15 and 16
-> are the most relevant to you.
->
->> Regarding the coherency issue, it's a bit sad to see yet another hacky
->> workaround
->> in the hardware, but as you say this is unrelated to the driver
->> series. I'd actually
->> argue that this one isn't that different from the other hack you
->> describe, except
->> this steals the pagetable bits from the address instead of the reserved flags...
->
-> Yeah, it's definitely a hack, but at least it's not using bits the
-> spec said was reserved. Hopefully the JH7110 will be fully coherent or
-> maybe implement the new Svpbmt extension.
 
-Sorry, this had been sitting on top of my inbox because I hadn't had a 
-chance to figure this stuff out.  Emil poked me on IRC about it, but I 
-figured I'd just write it here so everyone can see:
+On Nov 26 2021, at 11:58 pm, Greg KH <gregkh@linuxfoundation.org> wrote:
 
-IMO there's a huge difference between the StarFive-flavored non-coherent 
-stuff (which relies on physical aliasing) and the T-Head-flavored stuff 
-(which uses page table bits): the PA-aliasing approach is allowed by the 
-ISA, while the page table bits aren't (they're marked as reserved).  IMO 
-we should still figure out a way to take the T-Head stuff, as it's the 
-real-ist hardware we have, but that's a whole different can of worms.
+> On Wed, Nov 03, 2021 at 11:35:29PM +0800, Zhaoyu Liu wrote:
+>> merge "TAGS" and "tags" for the code more concise
+>> 
+>> Signed-off-by: Zhaoyu Liu <zackary.liu.pro@gmail.com>
+>> ---
+>>  scripts/tags.sh | 14 +++++---------
+>>  1 file changed, 5 insertions(+), 9 deletions(-)
+>> 
+>> diff --git a/scripts/tags.sh b/scripts/tags.sh
+>> index 16d475b3e203..a9181dd0fee2 100755
+>> --- a/scripts/tags.sh
+>> +++ b/scripts/tags.sh
+>> @@ -315,15 +315,11 @@ case "$1" in
+>>  		dogtags
+>>  		;;
+>>  
+>> -	"tags")
+>> -		rm -f tags
+>> -		xtags ctags
+>> -		remove_structs=y
+>> -		;;
+>> -
+>> -	"TAGS")
+>> -		rm -f TAGS
+>> -		xtags etags
+>> +	"TAGS" | "tags")
+>> +		rm -f $1
+>> +		xtags $([ $1 = "tags" ]	\
+>> +			&& echo ctags		\
+>> +			|| echo etags)
+>>  		remove_structs=y
+>>  		;;
+> 
+> Ick, that's much harder to read and understand.
+> 
+> What is wrong with the existing code?  It's obvious and makes sense, it
+> is not duplicating any lines here except the one "remove_structs=y"
+> which is fine.
+> 
+> I'm not going to take this, sorry.
+> 
+> greg k-h
+> 
 
-My worry with this is I've yet to actually be convinced that either of 
-these approaches work.  Specifically, neither of them prevents M-mode 
-from performing (either directly or as a side effect of something like 
-speculation) accesses that violate the attributes we're ascribing to 
-regions in Linux.  IIRC I pointed that out in the Svpmbt patch set, 
-which has exactly the same set of problems.
+Ok you're right, Easy to understand is better.
+Thank you.
 
-That said, I don't really care all that much -- having something here is 
-better than nothing, and we've always relied on the HW vendors just 
-producing HW that works when it comes to any of the IO stuff (ie, even 
-on coherent systems).  These are all drivers so it's really up to those 
-folks where the bar is, so as long as everyone's on the page about that 
-you're not going to get any objections from me so
-
-Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
-
-The SOC tree works for me.  It'd be great to have a shared tag I where I 
-can pull in at least the Kconfig.socs stuff, but if that's not easy then 
-it's no big deal -- what's in flight there is pretty trivial on my end, 
-so we can just deal with the merge conflicts.
-
-Thanks!
+zackary
