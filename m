@@ -2,101 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34CDE45F7B3
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 01:54:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6CDB45F7B9
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 01:58:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344182AbhK0A57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 19:57:59 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:27300 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344035AbhK0Az6 (ORCPT
+        id S1344537AbhK0BCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 20:02:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236626AbhK0BAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 19:55:58 -0500
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4J1Ckv19CkzbhXT;
-        Sat, 27 Nov 2021 08:52:39 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Sat, 27 Nov 2021 08:52:43 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Sat, 27 Nov 2021 08:52:41 +0800
-Subject: Re: [PATCH 4.19 000/320] 4.19.218-rc3 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20211125160544.661624121@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <05547e4d-6e66-33f5-13f1-70219c397899@huawei.com>
-Date:   Sat, 27 Nov 2021 08:52:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 26 Nov 2021 20:00:02 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0291C061759
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 16:54:59 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id x43-20020a056830246b00b00570d09d34ebso16235359otr.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 16:54:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vLaxgooHi9QLp5Ez0U6aCNHoJaipVjvQ2YI7OPA5KFU=;
+        b=H9aLlRuzRtkoK+WjArGY/UwvwG/EGHEngk12lrcK7UqgVWKmOBZSd9PzTMpYEkWINH
+         qJG/PHekCro6yUIQBPO7Eow8BJU7mwfpRBIukgJHoEsC7TJzV5kiRn/yuNXY0bZdF8K5
+         s4ftZ6Ctlsgss7CUbIBNTgQsNZ1YOPLCDb3OgqzXh/c6o+niwj/eUUIOdFfIgOxEBBJK
+         HCrspG9VqPvyX0TNwU/zKKwtP4XzLefm55S4Goc6rMRX+4yE6Lj5Qtg2L1T4uBT4OteT
+         Qh3deK7KScCK9aQwHy+sRJ3Y1yhaRfkFY4OMOwZPgOmc8fdwHLN2Hm3l7V2IrmCHT0XU
+         VYhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vLaxgooHi9QLp5Ez0U6aCNHoJaipVjvQ2YI7OPA5KFU=;
+        b=EE4AFlvPEVp7npmfylCOvXQ17c9W4mQvR8sWjjzPfjQfabEs8Deq3Gt7hRx3UqlXk8
+         PIMjJzH8LRl5PJYKTJo95UKEh1YItQQcV5+3qmlVbFdL4IcI7/cZGhJVTMV9WhFAefN3
+         LQbN0G11iICSL/WmRjHFUglfT0ko2jMaBtbvqYBQZCI8Gd23y2FLveTn0+6p0+9lFFdQ
+         WAojw/HRejUYuBHhUPlRTG7i4uxwvSZDXvlvRO7e4bD9NK5sqlbNfYm7xQf7PtNta+KL
+         kMaVVpNFTnYb+KWdt/92ByDQMJq+x0BmsvWvcUEaqSUKAW2UFpW4x50tFbzhaHsvmL6V
+         u3Mw==
+X-Gm-Message-State: AOAM5303FC9lQDsv52bwo23ggBPl2CACcMtELPdSSCp9BDoDgPHk9moA
+        Eu9NVAeMMpj9aG8+VPWpl3U+wqNgpyCEyaNlBB5i+A==
+X-Google-Smtp-Source: ABdhPJyl4CWjfUu5Dd5IBitp9ynLH4Yn5kT8f178Dhs4GP4HnEIYIqKv7X4kU/Y4PsRBVL7QEQUo6Ed+Zhzb1zMW2Fk=
+X-Received: by 2002:a9d:ed6:: with SMTP id 80mr31220877otj.35.1637974499131;
+ Fri, 26 Nov 2021 16:54:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211125160544.661624121@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
+References: <cover.1637061794.git.matti.vaittinen@fi.rohmeurope.com>
+ <6123f62ac44e6513a498d15034a4b6b22abe5f5b.1637061794.git.matti.vaittinen@fi.rohmeurope.com>
+ <CACRpkdbKeW+pJ8SZ0fPD+9kEtgHgi2A9U=f6XyKTHogKU-9F9g@mail.gmail.com>
+ <7b34e88f-54f3-6d0a-293e-b2b411d1c5c2@fi.rohmeurope.com> <676253b9-ff69-7891-1f26-a8b5bb5a421b@fi.rohmeurope.com>
+In-Reply-To: <676253b9-ff69-7891-1f26-a8b5bb5a421b@fi.rohmeurope.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 27 Nov 2021 01:54:46 +0100
+Message-ID: <CACRpkdZXhw9+txdLv-k01nzH3+GvGivyAoCO1JCf2VyYK96CnQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 3/9] power: supply: Support DT originated
+ temperature-capacity tables
+To:     "Vaittinen, Matti" <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        "rostokus@gmail.com" <rostokus@gmail.com>,
+        "fan.chen@mediatek.com" <fan.chen@mediatek.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Matti,
 
+don't worry you are probably right. You are the domain expert working
+on stuff like this inside a company that actually makes charger ICs.
+I am just some guy on the street. So I certainly trust you on this.
 
-On 2021/11/26 0:07, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.218 release.
-> There are 320 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 27 Nov 2021 16:05:05 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.218-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Fri, Nov 26, 2021 at 12:56 PM Vaittinen, Matti
+<Matti.Vaittinen@fi.rohmeurope.com> wrote:
 
-Tested on arm64 and x86 for 4.19.218-rc3,
+> I don't see providing OCV tables at different temperature gives the
+> degradation of battery capacity. Whoah. A big thought for Friday.
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-4.19.y
-Version: 4.19.218-rc3
-Commit: 616d1abb623837b0f3740984b9209ce6d488c24f
-Compiler: gcc version 7.3.0 (GCC)
+I think we are getting close to academic definitions of the problem,
+so we'd need input from people who actually work on charging and
+knows how this works? Or we need to read up on it :/
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8943
-passed: 8943
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+> We get the OCV => SOC correspondance at different temperatures.
 
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8943
-passed: 8943
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+I read
+OCV = Open Circuit Voltage (which we can't measure but must calculate)
+and
+SOC = State of Charge (a percentage of the capacity)
 
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+And we agree what the bindings and code gives today is
+(temp, OCV) -> SoC (%)
+
+And this assumption is:
+
+A) wrong as in the earth is flat or it makes the same sens to
+   take a random number and use as capacity
+
+B) wrong as in not good enough and a bit rough around the
+   edges and you have an idea how to improve it
+
+I assume (B) and what we are seeing on the battery indicator on
+most of the worlds mobile phones etc is sometimes a bit so-so
+because they have only used the above. (I think some people can
+attest to experiencing this problem.)
+
+And now we want something better, think medical equipment.
+
+> I
+> however don't see how this gives the OCV => energy relation. As far as I
+> know both the OCV and the 'amount of uAhs battery is able to store' are
+> impacted by temperature change. This means, seeing the OCV => SOC at
+> different temperatures does not tell us what is the impact of
+> temperature to the OCV, and what is the impact to SOC.
+
+It is definitely true that both the OCV and SOC changes according to
+temperature.
+
+But it is also true that these tables for a certain temperature are written
+with an OCV measured at this temperature, so the OCV used in the
+table is already compensated for the temperature, right?
+
+> For cases like the ROHM Chargers, we are interested on how much has the
+> 'ability to store uAhs' changed due to the temperature. When we know the
+> amount of uAhs we can store, we can use the coulomb counter value to
+> estimate what we still have left in the battery.
+>
+> In addition to this we do use the OCV information for the "nearly
+> depleted battery" - to improve the estimation by zero-correction
+> algorithm. I must admit Friday afternoon is not the time I can quite
+> recap this part. I think it was something like:
+>
+> 1. Measure VBat with system load (VBAT)
+> 2. Find OCV corresponding the current SOC estimate (SOC based on coulomb
+> counter value) - OCV_NOW
+> 3. Compute VDROP caused by the load (OCV_NOW - VBAT)
+> 4. Assume VDROP stays constant (or use ROHM VDR parameters if provided)
+> 5. Using VDROP compute the OCV_MIN which matches the minimum battery
+> voltage where system is still operational
+> 6. Use the OCV_MIN and "OCV at SOC0 from calibration data" difference to
+> adjust the battery capacity.
+
+That's a neat trick!
+If you look at drivers/power/supply/ab8500_fg.c function
+ab8500_fg_load_comp_volt_to_capacity() you find how
+someone else chose to do this with a bit of averaging etc.
+
+> >> I'd just calculate a few tables per temperature and be done with
+> >> it.
+> >>
+> >> At least documentation needs to be updated to reflect that the two
+> >> methods
+> >> are exclusive and you can only use one of them.
+>
+> I don't see these exclusive (at Friday afternoon at least). I think they
+> can complement each-others. The temp_degradation table gives us the
+> temperature impact on <energy storing ability>, eg, how much the battery
+> capacity has changed from designed one due to the temperature.
+>
+> OCV-SOC tables at various temperatures tell us how OCV looks like when
+> we have X% of battery left at different temperatures. Estimation of how
+> much the X% is in absolute uAhs can be done by taking into account the
+> designed_cap, aging degradation and the temperature degradation (and the
+> position of moon, amount of muons created by cosmic rays hitting
+> athmosphere at knee energy region and so on...)
+>
+> Or am I just getting something terribly wrong (again)? :)
+> (I still for example like internal functions named as __foo() )
+
+OK so yeah I think you are at something here. Which is generic.
+
+The battery indicator in my Tesla in Swedish winter times looks
+like this:
+
++-------------------+---+
+|       25%         | * |
++-------------------+---+
+
+So the star * indicates some extra capacity that is taken away
+because of the low temperature.
+
+This must be because the system is aware about the impact on
+the battery available uAh of the temperature. As you use the
+battery it will get warmer and the capacity will increase and the
+little star goes away.
+
+Current random mobile phones are not this great and do not
+estimate the capacity fall because of the temperature, just shows
+a percentage of the full capacity at the temperature right now
+whatever that capacity may be, so it is a relative scale and we
+can never show anything as nice as what the Tesla does with
+this.
+
+Then the question is: is the method used by Rohm universal and
+well-known and something many chargers will do exactly this
+way, so it should be in the core, or is it a particularity that should
+be in your driver?
+
+Yours,
+Linus Walleij
