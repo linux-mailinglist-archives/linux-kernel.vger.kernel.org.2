@@ -2,65 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B463746010B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 20:00:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD36460150
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 20:54:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356166AbhK0TDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 14:03:40 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:35816 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351614AbhK0TBe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 14:01:34 -0500
-Received: from mail.kernel.org (unknown [198.145.29.99])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 539AD60F0D;
-        Sat, 27 Nov 2021 18:58:19 +0000 (UTC)
-Received: by mail.kernel.org (Postfix) with ESMTPS id CEE4260041;
-        Sat, 27 Nov 2021 18:58:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638039498;
-        bh=L83gqZQZFYTR1oXyDsn+vA4NX49tplA0Uv8/YfSJCXU=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=EsST3EJFWW3HupPZWoeKj3xMBITciDb0EM8D7isvEJw7fgYN0v5+6zIWaPSqcOCIW
-         hqrSUlSfe3EvHwK4Z8Q3W8YFpJ9kWTaFVG7oq5zuHxEDZvLQXfynUXGN9lM/PDo4MX
-         sesAOgqphOEMQ9EJL5pJLeILvluCY7949DFLPDJ3YC8DAAVUx5L9Sbx+vu97MAiZVb
-         m0Voe9CkI+kKJ2OguLDmgjrQLsPEdFZTbQPiUVysmDPg9bsrGj3iY1ZjhQcDnqup0/
-         FEhx3qcVygtQUZ7wD5vnWRiNHmvWa0AbtPgVJ2V1UBlwso0HdvatWEqzC81oz00Cr9
-         wrFL0cPW2D+/w==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C8DB360074;
-        Sat, 27 Nov 2021 18:58:18 +0000 (UTC)
-Subject: Re: [GIT PULL] MIPS fixes for v5.16
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211127094317.GA6302@alpha.franken.de>
-References: <20211127094317.GA6302@alpha.franken.de>
-X-PR-Tracked-List-Id: <linux-mips.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211127094317.GA6302@alpha.franken.de>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips-fixes_5.16_2
-X-PR-Tracked-Commit-Id: 41ce097f714401e6ad8f3f5eb30d7f91b0b5e495
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6be088036c0b95044e42a8cef977b90824732eb7
-Message-Id: <163803949881.17852.7067581330993729228.pr-tracker-bot@kernel.org>
-Date:   Sat, 27 Nov 2021 18:58:18 +0000
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     torvalds@linux-foundation.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S241590AbhK0T5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 14:57:19 -0500
+Received: from pegase2.c-s.fr ([93.17.235.10]:56147 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238690AbhK0TzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 14:55:19 -0500
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4J1j1Z38gtz9sSB;
+        Sat, 27 Nov 2021 20:52:02 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ilUkimyitbCl; Sat, 27 Nov 2021 20:52:02 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4J1j1Z28KWz9sS0;
+        Sat, 27 Nov 2021 20:52:02 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DC0E48B7C5;
+        Sat, 27 Nov 2021 13:00:33 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 4V67AX2ocv56; Sat, 27 Nov 2021 13:00:33 +0100 (CET)
+Received: from [192.168.232.41] (po21514.idsi0.si.c-s.fr [192.168.232.41])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 76C558B7B2;
+        Sat, 27 Nov 2021 13:00:33 +0100 (CET)
+Message-ID: <944046f0-f656-4eea-e8f0-c3bf2b6a9885@csgroup.eu>
+Date:   Sat, 27 Nov 2021 13:00:33 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH] powerpc/mm: fix early initialization failure for MMUs
+ with no hash table
+Content-Language: fr-FR
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20211127020448.4008507-1-vladimir.oltean@nxp.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+In-Reply-To: <20211127020448.4008507-1-vladimir.oltean@nxp.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 27 Nov 2021 10:43:17 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips-fixes_5.16_2
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6be088036c0b95044e42a8cef977b90824732eb7
+Le 27/11/2021 à 03:04, Vladimir Oltean a écrit :
+> The blamed patch attempted to do a trivial conversion of
+> map_mem_in_cams() by adding an extra "bool init" argument, but by
+> mistake, changed the way in which two call sites pass the other boolean
+> argument, "bool dry_run".
+> 
+> As a result, early_init_this_mmu() now calls map_mem_in_cams() with
+> dry_run=true, and setup_initial_memory_limit() calls with dry_run=false,
+> both of which are unintended changes.
+> 
+> This makes the kernel boot process hang here:
+> 
+> [    0.045211] e500 family performance monitor hardware support registered
+> [    0.051891] rcu: Hierarchical SRCU implementation.
+> [    0.057791] smp: Bringing up secondary CPUs ...
+> 
+> Issue noticed on a Freescale T1040.
+> 
+> Fixes: 52bda69ae8b5 ("powerpc/fsl_booke: Tell map_mem_in_cams() if init is done")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-Thank you!
+Thanks for you patch.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+However, it should already be fixed in 5.16-rc2 with the following 
+commit : 
+https://github.com/torvalds/linux/commit/5b54860943dc4681be5de2fc287408c7ce274dfc
+
+Christophe
+
+> ---
+>   arch/powerpc/mm/nohash/tlb.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/powerpc/mm/nohash/tlb.c b/arch/powerpc/mm/nohash/tlb.c
+> index 89353d4f5604..647bf454a0fa 100644
+> --- a/arch/powerpc/mm/nohash/tlb.c
+> +++ b/arch/powerpc/mm/nohash/tlb.c
+> @@ -645,7 +645,7 @@ static void early_init_this_mmu(void)
+>   
+>   		if (map)
+>   			linear_map_top = map_mem_in_cams(linear_map_top,
+> -							 num_cams, true, true);
+> +							 num_cams, false, true);
+>   	}
+>   #endif
+>   
+> @@ -766,7 +766,7 @@ void setup_initial_memory_limit(phys_addr_t first_memblock_base,
+>   		num_cams = (mfspr(SPRN_TLB1CFG) & TLBnCFG_N_ENTRY) / 4;
+>   
+>   		linear_sz = map_mem_in_cams(first_memblock_size, num_cams,
+> -					    false, true);
+> +					    true, true);
+>   
+>   		ppc64_rma_size = min_t(u64, linear_sz, 0x40000000);
+>   	} else
+> 
