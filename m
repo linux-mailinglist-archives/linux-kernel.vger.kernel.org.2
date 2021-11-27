@@ -2,155 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF0845FE2A
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 11:39:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5391045FE31
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 11:50:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350703AbhK0KmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 05:42:11 -0500
-Received: from mail-eopbgr50134.outbound.protection.outlook.com ([40.107.5.134]:16705
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        id S232725AbhK0KyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 05:54:01 -0500
+Received: from mail-db8eur05on2135.outbound.protection.outlook.com ([40.107.20.135]:27841
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1354266AbhK0KkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 05:40:11 -0500
+        id S231611AbhK0Kv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 05:51:58 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HSo/w/I4PgtroxvR35C53UAQk4gwdgB6ivQx7vjv2rv/1T/m+LCv58mdSy+FWvCXULQ/3aqyklU4+a82Ia0kWl1TTyHsI7yenPCgBjhT0YvgwyOpqSe4728/+iGbaw38moDsW+VHf3QCXwqd4gNMZpxQJBPs+DC10KDKYFYh1JV7AAFXfkxygxcenE0p3YFcp74n5CmSARezkP4J3iYXT/ADnlxhy9a3WKnBlhtuQJ8l/gEwbL+XkovY6Am1H5rq8H0CtcVvKiQWQ9O5p3qzE1AuEktmKVQ0cjftz2fADaMKcvTiPJRMUn5sBTTT9njXAlrReymx7AnkXZrz1WuB4g==
+ b=AcYyWa7GZenaEo4AylbXbKdA9XYNySDtlIHgKRuTn4OM5Cnuwj9YkP8SE+vPdOHD+DP7767RnJUftWzh/2olJtQQFbf7dPO331iyWVWd7DQOcDKup7M6PFEv9/69zpwqHxNErFRbzUJIdm/uWsfCdrjCK8FgmNOtGnBJGs4g+IcEwpxniZMCKMvJq6T9Y5hzbWUIgVyhFxxs0VlXerLZYucB22fTlRIbrcV3TJNmr+zlrrGa/kcgmNHUGXvLNZybZd5mRNDPBIpWlp9bvHiHWyJNjfdxJ/w9q2ah7oebmuaV1Y/8bA5OjrhJyn6TA2lUpgv3QOnOW5bpNobCbZZGLQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+u2HYU+eYEX6RW/sEMxBy1/goxyMP/nuMx4coQ2R9s4=;
- b=Rn0Qzq7HISuaCCZyeQHxd/Nq6wKVqw3pkR9tm5ODj1HzEjBhEgP6gZL20Sq8b8zp4d/oAyuhfE+U6ixo11mcLN31+71cOHdkdM5XFLXYBIilnys2p+5mPwt9n3ZfLEMrtxHH3SqlMLIqYVXEo+ru5q1TImUiy9WhyBwGIeFQViutd05TjgyEZuqS04ogjfA5bY/os+5QQuXwToZQ7+3a3TInCvPg+praH6LVWpfm5ec987Augfw5B0DaskV2vGIBnaZMIF7oAe+fHYAsnLioyWv+TQPHqGs2P69S5bIQV6I9njpVVOfsz0MOusy6rewbO4jMzyFyTlAkK1++X2xJoQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=schleissheimer.de; dmarc=pass action=none
- header.from=schleissheimer.de; dkim=pass header.d=schleissheimer.de; arc=none
+ bh=AzTc+Ky3twYxoalB9EmWkcthoIWrmrW1gPHJzZkumOs=;
+ b=Xz+P7r5bC9fLodUI/GcsSBfroW4r/30aNKajrElddD5scXc39Ga43TPlDMTVpBH0RWLXcpIXKk0YIDfpNKoQHmMA9IOmapP0LLMBdipBhdwic7ji5aSUCy3x7DQPiYlpd7v8mvvIg0zLe/STplH7lkshI+QhraWUPjIng04lXWvExHawoz8d7RV7le2g/PLDQfKp3py94BMAN/zecv8bhwNw9JKfUPYX2x5eXHauW9JXJTrfIQfrU+leMooLC74vHtA9vII2kGJgAUIm/kf/zc+ity4myvlJnVhkpdW9YznN0jcsHpREemfDNR7u6Y0KWCnbKoUGf0RonqvPza+zbw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 62.153.209.162) smtp.rcpttodomain=vger.kernel.org
+ smtp.mailfrom=schleissheimer.de; dmarc=none action=none
+ header.from=schleissheimer.de; dkim=fail (no key for signature)
+ header.d=schleissheimer.de; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=schleissheimer.onmicrosoft.com; s=selector1-schleissheimer-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+u2HYU+eYEX6RW/sEMxBy1/goxyMP/nuMx4coQ2R9s4=;
- b=L5OYprAkcjeZ4IDvlcrXOUVofjlEb1/A5uRz0r/wMYBqOhqmk4lYKFKtMEskAB2ojcQFcJob1tckR3vkMe5EayMWRsNXmWLthIXXDrMTAVs2lyaR34vdV5oAAXHDp4K7+ZS2dAS3ExoZrd87pJZygZhrYxmDEf0XlzCxi8MyoBY=
-Received: from PA4P190MB1390.EURP190.PROD.OUTLOOK.COM (2603:10a6:102:103::8)
- by PR3P190MB0923.EURP190.PROD.OUTLOOK.COM (2603:10a6:102:91::7) with
+ bh=AzTc+Ky3twYxoalB9EmWkcthoIWrmrW1gPHJzZkumOs=;
+ b=djXo/BgCscfx/uqJ01Ul5bmgCZIU7KDHhAMPNv3f6kFWmqouqTB3njL60GoWLF5UKTYqhrYr6OPmLnFFuLIn527OjWKAW+we9N/d6fRc7VfvF/zFBOsVDy+P2qJJPLfCnTdUb9mTgMpjpvCVbTW/g608DeKX5tjmeujx4p6Zfrs=
+Received: from SV0P279CA0066.NORP279.PROD.OUTLOOK.COM (2603:10a6:f10:14::17)
+ by VE1P190MB0912.EURP190.PROD.OUTLOOK.COM (2603:10a6:800:1b2::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.23; Sat, 27 Nov
- 2021 10:36:54 +0000
-Received: from PA4P190MB1390.EURP190.PROD.OUTLOOK.COM
- ([fe80::ac46:910d:6989:a309]) by PA4P190MB1390.EURP190.PROD.OUTLOOK.COM
- ([fe80::ac46:910d:6989:a309%4]) with mapi id 15.20.4734.023; Sat, 27 Nov 2021
- 10:36:54 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.22; Sat, 27 Nov
+ 2021 10:48:41 +0000
+Received: from HE1EUR04FT040.eop-eur04.prod.protection.outlook.com
+ (2603:10a6:f10:14:cafe::74) by SV0P279CA0066.outlook.office365.com
+ (2603:10a6:f10:14::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.20 via Frontend
+ Transport; Sat, 27 Nov 2021 10:48:41 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 62.153.209.162)
+ smtp.mailfrom=schleissheimer.de; dkim=fail (no key for signature)
+ header.d=schleissheimer.de;dmarc=none action=none
+ header.from=schleissheimer.de;
+Received-SPF: Fail (protection.outlook.com: domain of schleissheimer.de does
+ not designate 62.153.209.162 as permitted sender)
+ receiver=protection.outlook.com; client-ip=62.153.209.162;
+ helo=mail.schleissheimer.de;
+Received: from mail.schleissheimer.de (62.153.209.162) by
+ HE1EUR04FT040.mail.protection.outlook.com (10.152.26.160) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4734.20 via Frontend Transport; Sat, 27 Nov 2021 10:48:41 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=schleissheimer.de; s=dkim1; h=Message-Id:Date:Subject:Cc:To:From:Sender:
+        Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=AzTc+Ky3twYxoalB9EmWkcthoIWrmrW1gPHJzZkumOs=; b=Kduj2jMh6tmTJPX6MgBv6Lq2GF
+        m9152LF2vKjRv13wpk5o954myGm0Akwq+eF60AZWvLUWQdn7U9PVOFLpLpRnt8IkPY0NySKgU+t1u
+        IcR3XIGP4Xcw4SEnsslDJrYabsXCT3PS+91nnFsk5vj/jUuKso/U1nHVYDCNPvUJ3wQg=;
+Received: from [192.168.10.165] (port=59684 helo=contiredmine.schleissheimer.de)
+        by mail.schleissheimer.de with esmtp (Exim 4.94.2)
+        (envelope-from <schuchmann@schleissheimer.de>)
+        id 1mqvFw-0007XO-2Z; Sat, 27 Nov 2021 11:48:33 +0100
+X-SASI-Hits: BODYTEXTP_SIZE_3000_LESS 0.000000, BODY_SIZE_1000_LESS 0.000000,
+        BODY_SIZE_2000_LESS 0.000000, BODY_SIZE_5000_LESS 0.000000,
+        BODY_SIZE_7000_LESS 0.000000, BODY_SIZE_900_999 0.000000,
+        HTML_00_01 0.050000, HTML_00_10 0.050000, LEGITIMATE_SIGNS 0.000000,
+        MULTIPLE_RCPTS 0.100000, MULTIPLE_REAL_RCPTS 0.000000,
+        NO_CTA_URI_FOUND 0.000000, NO_FUR_HEADER 0.000000, NO_URI_HTTPS 0.000000,
+        OUTBOUND 0.000000, OUTBOUND_SOPHOS 0.000000, SENDER_NO_AUTH 0.000000,
+        __ANY_URI 0.000000, __BODY_NO_MAILTO 0.000000, __CC_NAME 0.000000,
+        __CC_NAME_DIFF_FROM_ACC 0.000000, __CC_REAL_NAMES 0.000000,
+        __DQ_NEG_HEUR 0.000000, __DQ_NEG_IP 0.000000, __FUR_RDNS_SOPHOS 0.000000,
+        __HAS_CC_HDR 0.000000, __HAS_FROM 0.000000, __HAS_MSGID 0.000000,
+        __HAS_X_MAILER 0.000000, __MIME_TEXT_ONLY 0.000000, __MIME_TEXT_P 0.000000,
+        __MIME_TEXT_P1 0.000000, __MULTIPLE_RCPTS_CC_X2 0.000000,
+        __MULTIPLE_RCPTS_TO_X2 0.000000, __NO_HTML_TAG_RAW 0.000000,
+        __OUTBOUND_SOPHOS_FUR 0.000000, __OUTBOUND_SOPHOS_FUR_IP 0.000000,
+        __OUTBOUND_SOPHOS_FUR_RDNS 0.000000, __PHISH_SPEAR_REASONS 0.000000,
+        __PHISH_SPEAR_REASONS2 0.000000, __SANE_MSGID 0.000000,
+        __SUBJ_ALPHA_END 0.000000, __SUBJ_STARTS_S_BRACKETS 0.000000,
+        __TO_MALFORMED_2 0.000000, __TO_NO_NAME 0.000000, __URI_MAILTO 0.000000,
+        __URI_NO_WWW 0.000000, __URI_NS 0.000000
+X-SASI-Probability: 8%
+X-SASI-RCODE: 200
+X-SASI-Version: Antispam-Engine: 4.1.4, AntispamData: 2021.11.27.95716
 From:   Sven Schuchmann <schuchmann@schleissheimer.de>
-To:     Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>
-CC:     Woojung Huh <woojung.huh@microchip.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: AW: [PATCH] net: usb: lan78xx: lan78xx_phy_init(): use PHY_POLL
- instead of "0" if no IRQ is available
-Thread-Topic: [PATCH] net: usb: lan78xx: lan78xx_phy_init(): use PHY_POLL
- instead of "0" if no IRQ is available
-Thread-Index: AQHX4tk+edkqRJbdE0CwrXboJp/yRKwV9wcAgAA8pICAAPu9IA==
-Date:   Sat, 27 Nov 2021 10:36:53 +0000
-Message-ID: <PA4P190MB1390D5F29BEAF13BC3B25097D9649@PA4P190MB1390.EURP190.PROD.OUTLOOK.COM>
-References: <20211126152040.29058-1-schuchmann@schleissheimer.de>
-        <YaED/p7O0iYQF6bW@lunn.ch>
- <20211126113440.5463ff74@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211126113440.5463ff74@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=schleissheimer.de;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d75df2ba-c76d-49eb-1d8f-08d9b191d466
-x-ms-traffictypediagnostic: PR3P190MB0923:
-x-microsoft-antispam-prvs: <PR3P190MB0923402B603C0EA3B9EC7767D9649@PR3P190MB0923.EURP190.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: A+g/r6KQPY8bPZaUksNg3v/Q6HWwCGES39/HhoPvNdZKtkHv5OqZSGqJ7oudTQM+7QXPEj2rL4/dHH81y4ivlBFC0lKtijrfVTNAaBOnSCspGKJ2nQ0xkv9cW2gaNt2g+EMOcikdcGqIxEGPnFrHwdMU/9QcbSab9bc5T4xvjjAM7QG8MVW3bNSuN+CiZBP078gMjiGBdlac2/PvnD0HGY9gxdU1pMLoIW8+gSzIyOg01DspAPemEhV9WkAZzFjw8JYH7/kGL/ndrxzVH8wvGd7lI97PJY4dUKzM0zfzxtrMLkBHbqfJyd1+VcFErEZPLTbc40JNiC+zBi9EI8k3W1VtP0re8icYnUt1IfGAZP9yUccPZKGhRa0tbJpGFf+g1Rbs2bfj7ousCkLMzgP5attAJDowmOf/I5tXFrfoKzLr00pNNJRtqqfGCMTzP0iXqFBosB7b2dpQAofV8Mv/mLt4pnyT6GS5Ra5puTb3ipFSF2AZP1ivOAqplPaIMov+imAYuuYYv9f83bRYcDCtgTmsbu2Ls3HgOP9LKycoUuEfKpHANX/bZhe2X1eOwbNfK0pwtricMVgk6SHzu51Lxg9lHfvasJHjHyFMoA79lw9Y83qAuVjLqAOLAy6d+xO8osjRbNu7O4Uodn0CXMVVBLXUFR2n4krKFoI7rRWNN7B5p1KjTUB9VQzkhNBieO99cu6qc3uUdmeu19O27iAnCA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4P190MB1390.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(376002)(136003)(366004)(39830400003)(4326008)(52536014)(8936002)(26005)(316002)(7696005)(76116006)(83380400001)(66946007)(2906002)(4744005)(38100700002)(5660300002)(33656002)(66476007)(71200400001)(38070700005)(9686003)(55016003)(86362001)(6506007)(8676002)(64756008)(54906003)(508600001)(122000001)(66446008)(66556008)(186003)(110136005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?CmkLcfrtuKF+SC2cA8jHLvfmnreeLNQz9NySLOYEywNmKdtexmISI8hGimNX?=
- =?us-ascii?Q?/LPTtLMUqpe0gMAsJDRFD6Xe9+o/rihawQrGCUOpR+JkFafjJy5+2HPnIfxn?=
- =?us-ascii?Q?vWuaDnbwzQEWs2LF+o7ZbB1e7po7HBuw4llal83T7RVbh2F9CToPmfb3CDC/?=
- =?us-ascii?Q?DKsF3aE0nHto6EpDh451dBglnEVONewWWQktPmL58OGlQg+R/u9ZZmuDo5Ic?=
- =?us-ascii?Q?hy/pz0V1Z6Lfmblox9fZqj+8kF5vjKjuus+fj0QlaX+IJ55m6lCNlCXJPUZo?=
- =?us-ascii?Q?0IBGaR3EtdzZVA/SZJcUvLZjmc+Xsl25X0IjsHTuBeepRWalFIzY5hlQZvAQ?=
- =?us-ascii?Q?v9S3calxSqBZuHSbfdL38tY+jGosepgR7AwcAF3wgI6qE5QOOoFY7654/cC1?=
- =?us-ascii?Q?Hc9EFpAg0xsI1+XZSuhEqf0sBzAx3ExdTq8Gu6fewUr4axXLT4A8NJfulsFC?=
- =?us-ascii?Q?hKMT3zLvCUMdAKCHmcgfSeo6g9z0yjf0Gp/skDh6BVZJheAnXD2PF73tJVGn?=
- =?us-ascii?Q?gwg3en3I6gU+qS/EM9oMNrjeUsWpZO5zWIcIkUdPmhZxJKRDHFCnkqU1Lpxi?=
- =?us-ascii?Q?cdARmoNBt9YVQdu4ty9ceqOeyy1r0i7efr9MjmU+O6PlwJN3HChBr6FZ+/dm?=
- =?us-ascii?Q?AVj/yEH+vrhWUOQkmHNkNbOVyli+BFr8CHB22WLSPfsx6anZON2ufXtR9kny?=
- =?us-ascii?Q?Mh4+v81Uk+ij5sh1NPGRkD1vs3jFznIz7wtvX2+35HrpCaQP4BJZI7L31i92?=
- =?us-ascii?Q?W+Z27DPaYKiawwSzfESEaWrygIONVK8RTOyzF+0Rt/60yEQd/XI/FroL/QQj?=
- =?us-ascii?Q?3p92zu2TfEeWNTBZASyNYH8b2kYT3I2IC5+7EmN6z/yReyit9+mvIDJs/fzv?=
- =?us-ascii?Q?RBS40gd9j6zv65u/gM+bj7dXt72n+O4jRLzdTZAq7a4u0jGSm2zXJUim+9TH?=
- =?us-ascii?Q?fo2cvkuwijA3Vmi8XVCgc/9OuxMljQAti0IGToxYh4eyq/iYiUVHqEsI+9mh?=
- =?us-ascii?Q?OPnw5erBCDDHPuzlU3DhrB3NeweSoHX4s8Xmxmc/J2nveDcCQ9hNejw38Buy?=
- =?us-ascii?Q?r2cOJiFW3GGvBi4oETHZlEXtr4VGa2gnrqQ/XpnVd9YCNyN5RpCypel7u/10?=
- =?us-ascii?Q?TLHinK+pPHulN8Kkn4KlVB6saf0djUX30JzKASW2fEvN1BYoId9Ro7LBXOew?=
- =?us-ascii?Q?7j+BzUDwZd9KP9Gzce58L/s0oiM3SmWC9AgNrZSKjO3M/8tfz1oAr9q+fbTb?=
- =?us-ascii?Q?UcqI0nYvMWIxDaBSORmAZQCOvt4lHReMHiY+JOaWc8CTTDtcuxTzXqLURY5h?=
- =?us-ascii?Q?+AXk+jnNWSdBvq5LLvAm7r+V/fWWB/r6QSbLlMUynsNJeJgIgzndUUJhnjfy?=
- =?us-ascii?Q?gABbQvQIyzx9Tr/JKVlOc9nO1Pwzq9oZeNSyB/3pbktoo5h8WQ0GdUbKau1X?=
- =?us-ascii?Q?5/yblOEb217H3nIx4f+ZtMGtS+jVIYj3jmtZdGCB5GoFeSRaCQDPbnvxd4BF?=
- =?us-ascii?Q?DMKg4MyPSJ0oDMoXFHZCErepp91x8aNHVVKjnht4/+ZERjyjUjrZ/jGDXnoZ?=
- =?us-ascii?Q?tHqNoTvaZWPvVLtXO4pl78I9pkZlzQrO464Ec40tJ3KySbzpQFryEezgHVQV?=
- =?us-ascii?Q?so+uwwOQf+mHsC8zfQN6pfmzcbIDAKhmINtcJnYMb9oIoDE3IkEcDMRqAQkJ?=
- =?us-ascii?Q?9JONxg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+To:     john.efstathiades@pebblebay.com, kuba@kernel.org, andrew@lunn.ch
+Cc:     Sven Schuchmann <schuchmann@schleissheimer.de>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] net: usb: lan78xx: lan78xx_phy_init(): use PHY_POLL instead of "0" if no IRQ is available
+Date:   Sat, 27 Nov 2021 11:47:07 +0100
+Message-Id: <20211127104707.2546-1-schuchmann@schleissheimer.de>
+X-Mailer: git-send-email 2.17.1
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0cf8570f-54c2-4999-1a43-08d9b1937a09
+X-MS-TrafficTypeDiagnostic: VE1P190MB0912:
+X-Microsoft-Antispam-PRVS: <VE1P190MB09121C71C3F468EF0451B06EDA649@VE1P190MB0912.EURP190.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9rekyjPXrE+hLP7G8+eSoYoeveJ5ffwyJ4656BJ22WSy9+TaWLzcpy4efeDoK0qo7qjSHScI1IzJNECjKfJBkh7R0UduBm9beKwcdR3KQsm9Tvojfwc88G3UWsaf12s60KwUA2VstNi0yy0Vq2wgWF4kh3UcTlg1tpbZcwhLEZo93UhWDAtY7msvlBZFGw6GISi/HCn5Q2FIccTfGJZ5QW7Cy6BXBBjotlA7z23uQ7BvSIdd9xyxj1e6z25s34nXSVGMoNypMFwwRBvrsKdv5Rhpl4ctnhNQ3NAxENuiAC+IfCHo49aNiOugXl7+C6JD6X4jCvISR8jACTFmUiFQ92mK3AmvDOBMNUzKPOwPjKC8nD4dkF+xP8Q6T2KFDTxG7ahsfkWFeLG8SzK6XTMzb1w6ITOODpXPzLAf9kdOBNJvX/wecxOCuffJKzBU/qDVsE/zVjQCTC/t0O1oqWWOC5/vzF2QPTbz6UdmgtmbMd7bMiEfZ8kC/yIVg/ffW3v68bFuMC3hYZL0t43nX4ntYp37hyQZGZmTcjGAh2vidgVQYhukR9BLf4eANHW5K7ZBL2C5Becd0R3xkp/VH6ndw3jDuDUEMijZcLdml4JFgnqUnzR5yt9h571sgqfEBgcVdjL4P7gzKRtng/W4pO9CG/80fON1Crt/5EPJMd9N8d0ZNOsOY5gkrAcHr9CXg7hHKU6mU3mWyzlkwOyf0F6e9Q==
+X-Forefront-Antispam-Report: CIP:62.153.209.162;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:mail.schleissheimer.de;PTR:mail.schleissheimer.de;CAT:NONE;SFS:(4636009)(136003)(39830400003)(346002)(376002)(396003)(46966006)(36840700001)(83380400001)(36860700001)(9786002)(47076005)(186003)(54906003)(7636003)(7596003)(8936002)(316002)(4744005)(508600001)(2906002)(70206006)(356005)(70586007)(36756003)(26005)(6666004)(2616005)(7696005)(426003)(5660300002)(82310400004)(1076003)(8676002)(4326008)(336012);DIR:OUT;SFP:1102;
 X-OriginatorOrg: schleissheimer.de
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PA4P190MB1390.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: d75df2ba-c76d-49eb-1d8f-08d9b191d466
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Nov 2021 10:36:54.0098
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2021 10:48:41.4352
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: ba05321a-a007-44df-8805-c7e62d5887b5
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: nLd7e9i6xkuDPWhbbC+nGKzpJUPTBWhqU8tt0PZUrCfM86sQMjJvSdkR4DQaWnWnQu1i7ZstZQo5OPx7mN7vOvkvTleu7uIMDGI0z7kER3M=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3P190MB0923
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0cf8570f-54c2-4999-1a43-08d9b1937a09
+X-MS-Exchange-CrossTenant-Id: ba05321a-a007-44df-8805-c7e62d5887b5
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=ba05321a-a007-44df-8805-c7e62d5887b5;Ip=[62.153.209.162];Helo=[mail.schleissheimer.de]
+X-MS-Exchange-CrossTenant-AuthSource: HE1EUR04FT040.eop-eur04.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1P190MB0912
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Jakub,
+On most systems request for IRQ 0 will fail, phylib will print an error message
+and fall back to polling. To fix this set the phydev->irq to PHY_POLL if no IRQ
+is available.
 
-> Von: Jakub Kicinski <kuba@kernel.org>
-> Gesendet: Freitag, 26. November 2021 20:35
-> An: Andrew Lunn <andrew@lunn.ch>; Sven Schuchmann <schuchmann@schleisshei=
-mer.de>
-> Cc: Woojung Huh <woojung.huh@microchip.com>; UNGLinuxDriver@microchip.com=
-; David S. Miller
-> <davem@davemloft.net>; netdev@vger.kernel.org; linux-usb@vger.kernel.org;=
- linux-
-> kernel@vger.kernel.org
-> Betreff: Re: [PATCH] net: usb: lan78xx: lan78xx_phy_init(): use PHY_POLL =
-instead of "0" if
-> no IRQ is available
->=20
-> On Fri, 26 Nov 2021 16:57:50 +0100 Andrew Lunn wrote:
-> > On Fri, Nov 26, 2021 at 04:20:40PM +0100, Sven Schuchmann wrote:
-> > > On most systems request for IRQ 0 will fail, phylib will print an err=
-or message
-> > > and fall back to polling. To fix this set the phydev->irq to PHY_POLL=
- if no IRQ
-> > > is available.
-> > >
-> > > Signed-off-by: Sven Schuchmann <schuchmann@schleissheimer.de>
-> >
-> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
->=20
-> Fixes: cc89c323a30e ("lan78xx: Use irq_domain for phy interrupt from USB =
-Int. EP")
->=20
-> right?
+Fixes: cc89c323a30e ("lan78xx: Use irq_domain for phy interrupt from USB Int. EP")
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Sven Schuchmann <schuchmann@schleissheimer.de>
+---
+Changes v1->v2: Added "Fixes" and "Reviewed-by"
+---
+ drivers/net/usb/lan78xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Seems right, will send a v2
+diff --git a/drivers/net/usb/lan78xx.c b/drivers/net/usb/lan78xx.c
+index 2bfb59ae0eaf..185e08c1af31 100644
+--- a/drivers/net/usb/lan78xx.c
++++ b/drivers/net/usb/lan78xx.c
+@@ -2398,7 +2398,7 @@ static int lan78xx_phy_init(struct lan78xx_net *dev)
+ 	if (dev->domain_data.phyirq > 0)
+ 		phydev->irq = dev->domain_data.phyirq;
+ 	else
+-		phydev->irq = 0;
++		phydev->irq = PHY_POLL;
+ 	netdev_dbg(dev->net, "phydev->irq = %d\n", phydev->irq);
+ 
+ 	/* set to AUTOMDIX */
+-- 
+2.17.1
 
-Sven
