@@ -2,48 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB8845FAEA
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 02:32:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1338545FAFF
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 02:32:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349588AbhK0BfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 20:35:16 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:55652 "EHLO
+        id S1350441AbhK0Bfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 20:35:45 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:55740 "EHLO
         ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346353AbhK0Bc6 (ORCPT
+        with ESMTP id S1351060AbhK0BdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 20:32:58 -0500
+        Fri, 26 Nov 2021 20:33:08 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7FB86B829B1;
-        Sat, 27 Nov 2021 01:29:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BD02C53FAD;
-        Sat, 27 Nov 2021 01:29:39 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 53C0DB8299A
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 01:29:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B005C53FC1;
+        Sat, 27 Nov 2021 01:29:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637976582;
-        bh=d0ToXu1WBChqHvu9+4OZzoQe9orIt4eiwbLLvSBzF+E=;
+        s=k20201202; t=1637976590;
+        bh=XJhSZlLuBETGQP56bfuntv9zCxe4SskI6kt8Sv9zIz4=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=S5EvW7g6WUZH6Ic/KEx7G5fYadnBsky+M02m4yMAzzMQ8VOQ0Z3RvAo3VUqjod71y
-         V1/V2hv3A1rFfU4fOLWEsD6y9J0b2RMynwL+lLKK53fFOD7CGRZ8z39K0hTjb1gdy7
-         sA4urY8iggO3Z6Qbo19X8FwELQXrmMPD55R4F7BRa0hOX6HZyhHiSxEKMjBvr3flnS
-         LqLJZJUwec8V+3aXFmCpyPK/jpMLtlFF1/MzM91OZj1AVEAujXBoQTwzmfHzw/nSzK
-         XjkcrW17RiEUerSRHKjPnFfHETPYyz3UFbjAEJeliMQGtDm2YP6uiBqHeYZnBmNWGa
-         FVIm5XdZ9iR2g==
+        b=GwxpOKUBOO74xMaGt/gvl4xWEfi8AEIsd4DBNQ1e2sFoTmFzprNsXZzE9t7+cJGoY
+         kyq05Eew08WhVnE33IpSraXD2OjMZPL8YL066elgXldvyV/8x05yIsL1GUj7oCSvnk
+         YfwOSl+mqhJPvHeco6gVG1GqK06s5PVAnHMX1HzvI8Fwlpjw+vc9hYBlRooOS22BqX
+         LHzd3Jbm95KGZ2FxkCjPRy10uFhzFGa8WUT+eREkIGK2/+qFntpNmPk/6+OxuM8D+1
+         xPipAkCNym9G2wHVIguMrNu7yGhZvNrmD5xxDI8mcZjx7w0Lz6mYUMTpWYojngPXpl
+         0HwlBoTc9PS4w==
 From:   Mark Brown <broonie@kernel.org>
-To:     alsa-devel@alsa-project.org, Rob Clark <robdclark@gmail.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Derek Fang <derek.fang@realtek.com>,
-        Stephen Boyd <swboyd@chromium.org>,
+To:     Jaroslav Kysela <perex@perex.cz>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
         Takashi Iwai <tiwai@suse.com>,
-        Rob Clark <robdclark@chromium.org>
-In-Reply-To: <20211118010453.843286-1-robdclark@gmail.com>
-References: <20211118010453.843286-1-robdclark@gmail.com>
-Subject: Re: [PATCH 1/2] ASoC: rt5682: Fix crash due to out of scope stack vars
-Message-Id: <163797657977.2987896.13648492713075934799.b4-ty@kernel.org>
-Date:   Sat, 27 Nov 2021 01:29:39 +0000
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        YC Hung <yc.hung@mediatek.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        sound-open-firmware@alsa-project.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20211123103013.73645-1-geert@linux-m68k.org>
+References: <20211123103013.73645-1-geert@linux-m68k.org>
+Subject: Re: [PATCH] ASoC: SOF: mediatek: Use %pR/%pa to print resources/physical addresses
+Message-Id: <163797658773.2987942.13053830278646799334.b4-ty@kernel.org>
+Date:   Sat, 27 Nov 2021 01:29:47 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -51,27 +56,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Nov 2021 17:04:52 -0800, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
+On Tue, 23 Nov 2021 11:30:13 +0100, Geert Uytterhoeven wrote:
+> On 32-bit with CONFIG_ARCH_DMA_ADDR_T_64BIT=n:
 > 
-> Move the declaration of temporary arrays to somewhere that won't go out
-> of scope before the devm_clk_hw_register() call, lest we be at the whim
-> of the compiler for whether those stack variables get overwritten.
-> 
-> Fixes a crash seen with gcc version 11.2.1 20210728 (Red Hat 11.2.1-1)
+>     sound/soc/sof/mediatek/mt8195/mt8195.c: In function ‘platform_parse_resource’:
+>     sound/soc/sof/mediatek/mt8195/mt8195.c:51:15: error: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 4 has type ‘unsigned int’ [-Werror=format=]
+>        51 |  dev_dbg(dev, "DMA pbase=0x%llx, size=0x%llx\n",
+> 	  |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 > 
 > [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-linus
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/2] ASoC: rt5682: Fix crash due to out of scope stack vars
-      commit: 4999d703c0e66f9f196b6edc0b8fdeca8846b8b6
-[2/2] ASoC: rt5682s: Fix crash due to out of scope stack vars
-      commit: 750dc2f622192c08664a15413bc9746d9cbc4361
+[1/1] ASoC: SOF: mediatek: Use %pR/%pa to print resources/physical addresses
+      commit: 4dcddadf5530a0da00e6b2eb8194297b49d33506
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
