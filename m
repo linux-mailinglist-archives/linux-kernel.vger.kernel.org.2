@@ -2,169 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0907245FC7F
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 04:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F1C45FC91
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 05:46:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237225AbhK0D5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 22:57:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42720 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240305AbhK0Dzo (ORCPT
+        id S238914AbhK0EbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 23:31:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235657AbhK0E3E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 22:55:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637985150;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YBu0TKYMlDzNfaw4nFRDjKWkibjxrtPGawGYuWjQVLU=;
-        b=ZUhsFK98+PqNMn8QhcDP3VtVTd5tBpMTE1OzedYmnM0W59VdeRq0bkZxXf5sQViNlgaPXZ
-        OFZGWkSUhA33n4I8dLFgmDhmURozi0JiwOM8E0zPDU9aHC5pzERUlZwdyo2ziMjn6gkv9K
-        bvLi/+Vz8FxUxwu2p3SG0tDpdHeyRh4=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-550-cWly7lsMMAyKChBr1OgCmA-1; Fri, 26 Nov 2021 22:52:29 -0500
-X-MC-Unique: cWly7lsMMAyKChBr1OgCmA-1
-Received: by mail-wm1-f70.google.com with SMTP id a64-20020a1c7f43000000b003335e5dc26bso6067491wmd.8
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 19:52:29 -0800 (PST)
+        Fri, 26 Nov 2021 23:29:04 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 476E1C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 20:25:51 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id a11so10733793ilj.6
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 20:25:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=QkttftVZSwbVvQ9kvWQ6PVFeRjyGBdI52s62oB5JDRQ=;
+        b=VYb6V9H2D+tteoI0eewq2QJxmRKhtZnYmzMAudTbWJHvQPIWIsu0MDPpaxehxfkMma
+         B9rtj2XVRmzRbQS+qROm+6ztU0c1ae7voBLJlrwPYahn1ZiwJRB5a+ubPJdqzj38Gemm
+         Z574NE2DbpmjvClbRYthTAVoIHxPD9COybnnLcuwz76BMscVfUXa2ce68M/Cm0zsCvkw
+         5eUHF/ezsD4bAqWUKCLTSSL2Y/bph0p07B2kgBjjTAhdPD9PwKIv/APi+nvw58MB7GkT
+         IiFc5SiXg1rsBEAXdKumc7cRS7YlzHx8qCg+MWDcNnQOGg4LIRjYH1EwzvyT+TfrBRoP
+         p8sA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YBu0TKYMlDzNfaw4nFRDjKWkibjxrtPGawGYuWjQVLU=;
-        b=cUYtQwtSYxiq7vrDI90rq+FQFiJaeaslEcbA1ApJ0RrH+Qlvvl0189byOWSPgRlnj5
-         9G5nrIU/RWn/JtFrzOMDuq70g0YRfJHlk6PR+WqZiqOlGGPy2BSq7ahmQ9HunG5olFf/
-         Z27rfuhdMXpQtFYUEfDMOEb+HEPMJ69aqi9PQTm/Y5f6/2/HF7oxhwLwa5RRTE4uwfmT
-         oTOtwu5zm93pG225HfOJuAOSQUFxATrdPWVjbkdR1Nd1yEt8fL/LJP+icTbwwNsyXSLT
-         B+INvSKPUeLgVYdo8c36FNezW6Od4E/jHiPVl4Wejx8G2/kViqOAiDi5sB/dASSbYNyG
-         BzgA==
-X-Gm-Message-State: AOAM531vVfp1370AyDBmiZ17mzQCzHXPp/+CbjXD8dDugEIYVhkhcjD9
-        AIdbmNI5Nza350h7ofMg+A74sWiykMsOIG0Jod4l+uNKGnKwq6X8vVxLGRppNmWYEZ7crW9vwFQ
-        5K+IXEZUUKnB0kkalYYsPDjQJLNRo1z6dxgEuQrJK
-X-Received: by 2002:adf:e984:: with SMTP id h4mr18926639wrm.149.1637985147898;
-        Fri, 26 Nov 2021 19:52:27 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyj5ejF2MTJuOBwknZH7cs+IbWSpXM0GIc+4jvarthQmIS7p0k4t7IBSL1W9v++oZhg83W8N2CiFY3kykhMSD4=
-X-Received: by 2002:adf:e984:: with SMTP id h4mr18926613wrm.149.1637985147635;
- Fri, 26 Nov 2021 19:52:27 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=QkttftVZSwbVvQ9kvWQ6PVFeRjyGBdI52s62oB5JDRQ=;
+        b=0CvPeofOuCEjb9MFZvTpBeEAdsA/AaZvHBB61cH7gXQ0k1MBVC/nZEEl0Y0O3zFKA0
+         8HQPYtysOymoFDLWB1EJJozJ4YxpKwbTkeRBo2kY9DIZiEV5l/akP3As/78L9q8idDNC
+         S8rCLRPpS1rkM8Mg/pJpssV7Oidw6z8FLR7gg5mIlFsF9GKgWtEgRJWIzz3lp4Nn1p0x
+         MgtmO9myVDS2U1cXHEnvyTKhDQDwTkD+JGh3SBSaOaCDQYEVAkch+js9/jwfctd645XI
+         /gZhXzhC3XwrQ250T1Yc8lUVan/Evhm3k5EGJOJx5+NnF/J0XemarWHcIxjH3/L9j/iX
+         oTEQ==
+X-Gm-Message-State: AOAM532bvM269j3ouA5LTXE1Uxb4yPjyzINjTpYvv6IECGCx6BmbBvIE
+        thKDPOmeElClHTkQglyGqKo=
+X-Google-Smtp-Source: ABdhPJxB0T3urKtqhkfcGs7WZQWWW/BVeEfNBJVPQgECHfHsFdsolhsB+BDcE102XEWWMuo+R8mrIA==
+X-Received: by 2002:a05:6e02:2199:: with SMTP id j25mr39263689ila.90.1637987150612;
+        Fri, 26 Nov 2021 20:25:50 -0800 (PST)
+Received: from localhost.localdomain (node-17-161.flex.volo.net. [76.191.17.161])
+        by smtp.googlemail.com with ESMTPSA id p16sm5695043iov.3.2021.11.26.20.25.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Nov 2021 20:25:50 -0800 (PST)
+From:   Noah Goldstein <goldstein.w.n@gmail.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        peterz@infradead.org, alexanderduyck@fb.com,
+        goldstein.w.n@gmail.com, edumazet@google.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] x86/lib: Optimize 8x loop and memory clobbers in csum_partial.c
+Date:   Fri, 26 Nov 2021 22:25:40 -0600
+Message-Id: <20211127042540.96249-1-goldstein.w.n@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211125193852.3617-1-goldstein.w.n@gmail.com>
+References: <20211125193852.3617-1-goldstein.w.n@gmail.com>
 MIME-Version: 1.0
-References: <YaAROdPCqNzSKCjh@arm.com> <20211124192024.2408218-1-catalin.marinas@arm.com>
- <20211124192024.2408218-4-catalin.marinas@arm.com> <YZ6arlsi2L3LVbFO@casper.infradead.org>
- <YZ6idVy3zqQC4atv@arm.com> <CAHc6FU4-P9sVexcNt5CDQxROtMAo=kH8hEu==AAhZ_+Zv53=Ag@mail.gmail.com>
- <20211126222945.549971-1-agruenba@redhat.com> <YaFmaJqyie6KZ2bY@arm.com>
-In-Reply-To: <YaFmaJqyie6KZ2bY@arm.com>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Sat, 27 Nov 2021 04:52:16 +0100
-Message-ID: <CAHc6FU53gdXR4VjSQJUtUigVkgDY6yfRkNBYuBj4sv3eT=MBSQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
- with sub-page faults
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 27, 2021 at 12:06 AM Catalin Marinas
-<catalin.marinas@arm.com> wrote:
-> On Fri, Nov 26, 2021 at 11:29:45PM +0100, Andreas Gruenbacher wrote:
-> > On Thu, Nov 25, 2021 at 11:42 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > > As per Linus' reply, we can work around this by doing
-> > > a sub-page fault_in_writable(point_of_failure, align) where 'align'
-> > > should cover the copy_to_user() impreciseness.
-> > >
-> > > (of course, fault_in_writable() takes the full size argument but behind
-> > > the scene it probes the 'align' prefix at sub-page fault granularity)
-> >
-> > That doesn't make sense; we don't want fault_in_writable() to fail or
-> > succeed depending on the alignment of the address range passed to it.
->
-> If we know that the arch copy_to_user() has an error of say maximum 16
-> bytes (or 15 rather on arm64), we can instead get fault_in_writeable()
-> to probe the first 16 bytes rather than 1.
+Modify the 8x loop to that it uses two independent
+accumulators. Despite adding more instructions the latency and
+throughput of the loop is improved because the `adc` chains can now
+take advantage of multiple execution units.
 
-That isn't going to help one bit: [raw_]copy_to_user() is allowed to
-copy as little or as much as it wants as long as it follows the rules
-documented in include/linux/uaccess.h:
+Make the memory clobbers more precise. 'buff' is read only and we know
+the exact usage range. There is no reason to write-clobber all memory.
 
-[] If copying succeeds, the return value must be 0.  If some data cannot be
-[] fetched, it is permitted to copy less than had been fetched; the only
-[] hard requirement is that not storing anything at all (i.e. returning size)
-[] should happen only when nothing could be copied.  In other words, you don't
-[] have to squeeze as much as possible - it is allowed, but not necessary.
+Relative performance changes on Tigerlake:
 
-When fault_in_writeable() tells us that an address range is accessible
-in principle, that doesn't mean that copy_to_user() will allow us to
-access it in arbitrary chunks. It's also not the case that
-fault_in_writeable(addr, size) is always followed by
-copy_to_user(addr, ..., size) for the exact same address range, not
-even in this case.
+Time Unit: Ref Cycles
+Size Unit: Bytes
 
-These alignment restrictions have nothing to do with page or sub-page faults.
+size, lat old, lat new,    tput old,    tput new
+   0,   4.961,   4.901,       4.887,       4.951
+   8,   5.590,   5.620,       4.227,       4.252
+  16,   6.182,   6.202,       4.233,       4.278
+  24,   7.392,   7.380,       4.256,       4.279
+  32,   7.371,   7.390,       4.550,       4.537
+  40,   8.621,   8.601,       4.862,       4.836
+  48,   9.406,   9.374,       5.206,       5.234
+  56,  10.535,  10.522,       5.416,       5.447
+  64,  10.000,   7.590,       6.946,       6.989
+ 100,  14.218,  12.476,       9.429,       9.441
+ 200,  22.115,  16.937,      13.088,      12.852
+ 300,  31.826,  24.640,      19.383,      18.230
+ 400,  39.016,  28.133,      23.223,      21.304
+ 500,  48.815,  36.186,      30.331,      27.104
+ 600,  56.732,  40.120,      35.899,      30.363
+ 700,  66.623,  48.178,      43.044,      36.400
+ 800,  73.259,  51.171,      48.564,      39.173
+ 900,  82.821,  56.635,      58.592,      45.162
+1000,  90.780,  63.703,      65.658,      48.718
 
-I'm also fairly sure that passing in an unaligned buffer will send
-search_ioctl into an endless loop on architectures with copy_to_user()
-alignment restrictions; there don't seem to be any buffer alignment
-checks.
+Signed-off-by: Noah Goldstein <goldstein.w.n@gmail.com>
 
-> > Have a look at the below code to see what I mean.  Function
-> > copy_to_user_nofault_unaligned() should be further optimized, maybe as
-> > mm/maccess.c:copy_from_kernel_nofault() and/or per architecture
-> > depending on the actual alignment rules; I'm not sure.
-> [...]
-> > --- a/fs/btrfs/ioctl.c
-> > +++ b/fs/btrfs/ioctl.c
-> > @@ -2051,13 +2051,30 @@ static noinline int key_in_sk(struct btrfs_key *key,
-> >       return 1;
-> >  }
-> >
-> > +size_t copy_to_user_nofault_unaligned(void __user *to, void *from, size_t size)
-> > +{
-> > +     size_t rest = copy_to_user_nofault(to, from, size);
-> > +
-> > +     if (rest) {
-> > +             size_t n;
-> > +
-> > +             for (n = size - rest; n < size; n++) {
-> > +                     if (copy_to_user_nofault(to + n, from + n, 1))
-> > +                             break;
-> > +             }
-> > +             rest = size - n;
-> > +     }
-> > +     return rest;
->
-> That's what I was trying to avoid. That's basically a fall-back to byte
-> at a time copy (we do this in copy_mount_options(); at some point we
-> even had a copy_from_user_exact() IIRC).
+tmp
+---
+ arch/x86/lib/csum-partial_64.c | 38 +++++++++++++++++-----------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
-We could try 8/4/2 byte chunks if both buffers are 8/4/2-byte aligned.
-It's just not clear that it's worth it.
-
-> Linus' idea (if I got it correctly) was instead to slightly extend the
-> probing in fault_in_writeable() for the beginning of the buffer from 1
-> byte to some per-arch range.
->
-> I attempted the above here and works ok:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/log/?h=devel/btrfs-live-lock-fix
->
-> but too late to post it this evening, I'll do it in the next day or so
-> as an alternative to this series.
->
-> --
-> Catalin
->
-
-Thanks,
-Andreas
+diff --git a/arch/x86/lib/csum-partial_64.c b/arch/x86/lib/csum-partial_64.c
+index ded842cd1020..52540f148ebb 100644
+--- a/arch/x86/lib/csum-partial_64.c
++++ b/arch/x86/lib/csum-partial_64.c
+@@ -48,18 +48,21 @@ __wsum csum_partial(const void *buff, int len, __wsum sum)
+ 	}
+ 
+ 	while (unlikely(len >= 64)) {
+-		asm("addq 0*8(%[src]),%[res]\n\t"
+-		    "adcq 1*8(%[src]),%[res]\n\t"
+-		    "adcq 2*8(%[src]),%[res]\n\t"
+-		    "adcq 3*8(%[src]),%[res]\n\t"
+-		    "adcq 4*8(%[src]),%[res]\n\t"
+-		    "adcq 5*8(%[src]),%[res]\n\t"
++		u64 temp_accum;
++
++		asm("movq 0*8(%[src]),%[res_tmp]\n\t"
++		    "addq 1*8(%[src]),%[res_tmp]\n\t"
++		    "adcq 2*8(%[src]),%[res_tmp]\n\t"
++		    "adcq 3*8(%[src]),%[res_tmp]\n\t"
++		    "adcq 4*8(%[src]),%[res_tmp]\n\t"
++		    "adcq $0,%[res_tmp]\n\t"
++		    "addq 5*8(%[src]),%[res]\n\t"
+ 		    "adcq 6*8(%[src]),%[res]\n\t"
+ 		    "adcq 7*8(%[src]),%[res]\n\t"
+-		    "adcq $0,%[res]"
+-		    : [res] "+r" (temp64)
+-		    : [src] "r" (buff)
+-		    : "memory");
++		    "adcq %[res_tmp], %[res]\n\t"
++		    "adcq $0,%[res]\n\t"
++		    : [res] "+r"(temp64), [res_tmp] "=&r"(temp_accum)
++		    : [src] "r"(buff), "m"(*(const char(*)[64])buff));
+ 		buff += 64;
+ 		len -= 64;
+ 	}
+@@ -70,26 +73,23 @@ __wsum csum_partial(const void *buff, int len, __wsum sum)
+ 		    "adcq 2*8(%[src]),%[res]\n\t"
+ 		    "adcq 3*8(%[src]),%[res]\n\t"
+ 		    "adcq $0,%[res]"
+-			: [res] "+r" (temp64)
+-			: [src] "r" (buff)
+-			: "memory");
++		    : [res] "+r"(temp64)
++		    : [src] "r"(buff), "m"(*(const char(*)[32])buff));
+ 		buff += 32;
+ 	}
+ 	if (len & 16) {
+ 		asm("addq 0*8(%[src]),%[res]\n\t"
+ 		    "adcq 1*8(%[src]),%[res]\n\t"
+ 		    "adcq $0,%[res]"
+-			: [res] "+r" (temp64)
+-			: [src] "r" (buff)
+-			: "memory");
++		    : [res] "+r"(temp64)
++		    : [src] "r"(buff), "m"(*(const char(*)[16])buff));
+ 		buff += 16;
+ 	}
+ 	if (len & 8) {
+ 		asm("addq 0*8(%[src]),%[res]\n\t"
+ 		    "adcq $0,%[res]"
+-			: [res] "+r" (temp64)
+-			: [src] "r" (buff)
+-			: "memory");
++		    : [res] "+r"(temp64)
++		    : [src] "r"(buff), "m"(*(const char(*)[8])buff));
+ 		buff += 8;
+ 	}
+ 	if (len & 7) {
+-- 
+2.25.1
 
