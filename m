@@ -2,66 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ABC346013D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 20:44:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 794F5460142
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 20:47:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236794AbhK0Trc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 14:47:32 -0500
-Received: from fgw20-4.mail.saunalahti.fi ([62.142.5.107]:53701 "EHLO
-        fgw20-4.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229663AbhK0Tpb (ORCPT
+        id S234799AbhK0Tug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 14:50:36 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:44326 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229768AbhK0Tsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 14:45:31 -0500
-Received: from localhost.localdomain (85-76-76-77-nat.elisa-mobile.fi [85.76.76.77])
-        by fgw20.mail.saunalahti.fi (Halon) with ESMTP
-        id 1ee2b9b9-4fba-11ec-8d6d-005056bd6ce9;
-        Sat, 27 Nov 2021 21:42:14 +0200 (EET)
-From:   Aaro Koskinen <aaro.koskinen@iki.fi>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-i2c@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Tony Lindgren <tony@atomide.com>
-Subject: [PATCH] i2c: cbus-gpio: set atomic transfer callback
-Date:   Sat, 27 Nov 2021 21:42:14 +0200
-Message-Id: <20211127194214.26785-1-aaro.koskinen@iki.fi>
-X-Mailer: git-send-email 2.17.0
+        Sat, 27 Nov 2021 14:48:35 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1638042319;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=b8WWNXMmW79pVSrPL0FWh6ZTHY3JhoVaogmqsWvu1CY=;
+        b=YpU2GaGNIsgiAwIE6TN7TQoRulWDkvpT/mU7+2cjUQCsG8/PAHAnanKqLrVRzal+4QQWFa
+        p5d2YlraFk22JKq6Rnvdk4UDEBX2reh8mkJgFInfB+F1lV0TvWCr3SkUYY0dr9A1NMeTyk
+        bV3BvmOGwcl1+C+CDvBknVjf7kt4VMx0q8no/QgJELgCQIqYjez0ZUkWW9zwxIhw/xaTHB
+        YZhYhP2akWbEcm+omIuQjpXfqBSCi3ZTwi8tVpj4vSI9UO4baZ/tnaYqOfEaf4s4dJ6dhl
+        MpQC68ysDBW+zgs7JQDpQj3k2VFZiQV4o6ZciQ7heFPEdJk4hglgiQYP3PNY0g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1638042319;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=b8WWNXMmW79pVSrPL0FWh6ZTHY3JhoVaogmqsWvu1CY=;
+        b=jwdySK+JWphhWmD4zIG3S6sjgLdS7cTJOrVJus4e9NWxCRIPTM3qtYneclhxNS688nNu5G
+        TbFzpgYoGqon+6Dg==
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Marc Zygnier <maz@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Megha Dey <megha.dey@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, linux-pci@vger.kernel.org,
+        linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com
+Subject: Re: [patch 07/32] genirq/msi: Count the allocated MSI descriptors
+In-Reply-To: <87o865flot.ffs@tglx>
+References: <20211126230957.239391799@linutronix.de>
+ <20211126232734.708730446@linutronix.de> <YaIiPISLr7VokL8P@kroah.com>
+ <87o865flot.ffs@tglx>
+Date:   Sat, 27 Nov 2021 20:45:18 +0100
+Message-ID: <87ilwdfkmp.ffs@tglx>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CBUS transfers have always been atomic, but after commit 63b96983a5dd
-("i2c: core: introduce callbacks for atomic transfers") we started to see
-warnings during e.g. poweroff as the atomic callback is not explicitly set.
-Fix that.
+On Sat, Nov 27 2021 at 20:22, Thomas Gleixner wrote:
 
-Fixes the following WARNING seen during Nokia N810 power down:
+> On Sat, Nov 27 2021 at 13:19, Greg Kroah-Hartman wrote:
+>> On Sat, Nov 27, 2021 at 02:22:38AM +0100, Thomas Gleixner wrote:
+>>> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+>>
+>> No changelog?
+>
+> Bah. This one should not be there at all.
+>
+>> Anyway, why do we care about the number of decriptors?
 
-[  786.570617] reboot: Power down
-[  786.573913] ------------[ cut here ]------------
-[  786.578826] WARNING: CPU: 0 PID: 672 at drivers/i2c/i2c-core.h:40 i2c_smbus_xfer+0x100/0x110
-[  786.587799] No atomic I2C transfer handler for 'i2c-2'
+The last part of this really cares about it for the dynamic extension
+part, but that's core code which looks at the counter under the lock.
 
-Fixes: 63b96983a5dd ("i2c: core: introduce callbacks for atomic transfers")
-Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
----
- drivers/i2c/busses/i2c-cbus-gpio.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Thanks,
 
-diff --git a/drivers/i2c/busses/i2c-cbus-gpio.c b/drivers/i2c/busses/i2c-cbus-gpio.c
-index 72df563477b1..f8639a4457d2 100644
---- a/drivers/i2c/busses/i2c-cbus-gpio.c
-+++ b/drivers/i2c/busses/i2c-cbus-gpio.c
-@@ -195,8 +195,9 @@ static u32 cbus_i2c_func(struct i2c_adapter *adapter)
- }
- 
- static const struct i2c_algorithm cbus_i2c_algo = {
--	.smbus_xfer	= cbus_i2c_smbus_xfer,
--	.functionality	= cbus_i2c_func,
-+	.smbus_xfer		= cbus_i2c_smbus_xfer,
-+	.smbus_xfer_atomic	= cbus_i2c_smbus_xfer,
-+	.functionality		= cbus_i2c_func,
- };
- 
- static int cbus_i2c_remove(struct platform_device *pdev)
--- 
-2.17.0
-
+        tglx
