@@ -2,169 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83A4B46023B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 23:54:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED442460248
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 00:15:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356506AbhK0W5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 17:57:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356594AbhK0Wzm (ORCPT
+        id S232738AbhK0XPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 18:15:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:57909 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230082AbhK0XNT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 17:55:42 -0500
-Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78155C061761
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 14:52:27 -0800 (PST)
-Received: by mail-vk1-xa29.google.com with SMTP id s17so8359347vka.5
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 14:52:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4wKJvOm8IruyroN8j9RTFJDd7z3mS6WOaJr8ElWGXdw=;
-        b=Gpc/Tot8h/tACoorWTPoGhgDwTASg5Nv07pRuK6SU1Y8YmFsWQOJBuMS+DgQogHDeJ
-         wVIUvCLWdAf/ZXU4WP0Ql3DLM9I5np4y9+PyC0chdPBeHjl0bxVmxTQpSUBJPpDufXvI
-         BI7Ah+rpsxwyQJ57cY8FM328TJg+3C5ZSIwiy9JI9441AlDaZlaIVc2lMs9Yw0JDGmZJ
-         iTgvvZzidQGQRRVNJxRPd2AccXO9NFV7waJgxnD1k8McOnGbvmIRX24tRRfUKz60KN7P
-         m777NgJ1q6XF3uJuhQItEujt6qVOyy8mhEAP5QinJRucUl28ydMJuxOcrm/I721Hva9S
-         /lug==
+        Sat, 27 Nov 2021 18:13:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1638054603;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1EKa07C9btxCh09mEEz7bXhy2ReeCiovE+mbyXMOvJk=;
+        b=d38KLuZIgOyPlfOSMhfHTF7Nuyr+7slFwvk4D+GkSOsKBw0oTI+Y6Ms1psyJccXq1KNfFj
+        y4fxOlD8q/8XhCDb9C0jt9eJKluODXdZUbyUt/38klPXQrbyQ/nWoFsOFwW2N0NUTN9A5t
+        xW5VEPBwdYBgAuIZvtuEPBatofjCTJQ=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-569-bZmo6hwdOCS5NPUqCk9G0g-1; Sat, 27 Nov 2021 18:10:02 -0500
+X-MC-Unique: bZmo6hwdOCS5NPUqCk9G0g-1
+Received: by mail-wm1-f69.google.com with SMTP id g11-20020a1c200b000000b003320d092d08so7159134wmg.9
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 15:10:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4wKJvOm8IruyroN8j9RTFJDd7z3mS6WOaJr8ElWGXdw=;
-        b=uO+/cNRQvS3BQ0eU2UW1PKmXko4cOKqos/BhkcDsgg5psIapYhZ4tqq6ccKj1iRGsM
-         a9fDzdAwA0waJTv7POj+E220kYBwHinv3TW9HO4Eh6ftWQVAMNUkvQTv7u7SufSHzR8F
-         z3KRcFZpp1S9Fov6IXtB0Jeuv6oo7Gt6VE5aGzIW6iJv09epspkH2BgXv008hzaMeA3D
-         9sPl8RmVjRi5igqG8KyrAh3BVPuiJA0EKRiqWudCJN2vfccK/O2Uk2WZuLFVdIMGZunG
-         MHLjtJovDwOrnvOw/VT7aYlw6WNpZn5ZfJLWUO1qq7EeoaM4QUouAZ5Ajju1HzwrgmAX
-         mjDA==
-X-Gm-Message-State: AOAM531OqLwXQiOyY9Zm7SDuC7t1yIXLRXDFLeDcrq+pbGXJcibZO1Hu
-        8j6fJqBBlpV+L6Wb/YcypqlvxPgyuHIV9hBtVRzNFw==
-X-Google-Smtp-Source: ABdhPJzBx6s4kT6UW5GnAJ/cyWC3ddYe1EFU9hgXoP+J1aTVtzPkD/PM20iP+06Hq5oCgnfK2B75MovoEurNR+HgS94=
-X-Received: by 2002:a1f:a08c:: with SMTP id j134mr23928437vke.35.1638053546496;
- Sat, 27 Nov 2021 14:52:26 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1EKa07C9btxCh09mEEz7bXhy2ReeCiovE+mbyXMOvJk=;
+        b=mOOyaA0eyKAIzGtFbMBOt1AwDdJVpHZJtIJmepSO4S7I8hEeogSSsptrp5Du7XAww2
+         8bvI44ZU4sd0x/OJbVYMJs0wd9TBsB6/5KOW0NZLAv4PtH10K34tE8A7n40tzGiUSZ9N
+         0zPC8tWAS5LK8P6w7mah2W5J2Z4ZH+wmFEfsj7l5M4bbY6GzKkGHWv0CaygdqXdR9w22
+         D0YJpfcxE/fXk5eYieuzu94R1DDyzcICWWUuleDcz82hP12IbJcb29lqsL8K32KneHlx
+         3LsokDDeuo8ji5Nu9mIEo0jfcDbNH0INr6IVmvE0WXWZCxuXmpwjv4MlHj+86kn15LX+
+         c8xg==
+X-Gm-Message-State: AOAM531QctGqut/wEGFHzLqj3vyqxTNKiuxmM9Pk/BBRFBOcX4/nEikn
+        hafiyIdM4joILQJ+ikIV3+7JWz+zRLKxP2s4y7N9uLl8Qi7j9TOy78Dp1nanhJUe9/h3z6iPd97
+        WR8cQJXh/X052QxL5IG1rFed8
+X-Received: by 2002:a05:6000:18a3:: with SMTP id b3mr23540214wri.343.1638054601060;
+        Sat, 27 Nov 2021 15:10:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzms3nBiSGgLSlbVrcBrfL3xe3M9wymYpfR9ud7pfgrJAw8q/TcFAUVVL2cyPsBTALpRaDwUg==
+X-Received: by 2002:a05:6000:18a3:: with SMTP id b3mr23540196wri.343.1638054600882;
+        Sat, 27 Nov 2021 15:10:00 -0800 (PST)
+Received: from redhat.com ([2.55.9.9])
+        by smtp.gmail.com with ESMTPSA id e8sm9296105wrr.26.2021.11.27.15.09.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Nov 2021 15:10:00 -0800 (PST)
+Date:   Sat, 27 Nov 2021 18:09:56 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Eric Auger <eric.auger@redhat.com>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>, joro@8bytes.org,
+        will@kernel.org, jasowang@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        sebastien.boeuf@intel.com, kevin.tian@intel.com,
+        pasic@linux.ibm.com
+Subject: Re: [PATCH v2 4/5] iommu/virtio: Pass end address to
+ viommu_add_mapping()
+Message-ID: <20211127180742-mutt-send-email-mst@kernel.org>
+References: <20211123155301.1047943-1-jean-philippe@linaro.org>
+ <20211123155301.1047943-5-jean-philippe@linaro.org>
+ <7b79fe9b-9d51-8bda-2868-b48781f07fc9@redhat.com>
 MIME-Version: 1.0
-References: <20211121165647.26706-1-semen.protsenko@linaro.org>
- <20211121165647.26706-10-semen.protsenko@linaro.org> <20211123160623.GB2326185@roeck-us.net>
- <CAPLW+4mwhH5C6zSxWDboNucZPvt2c=F7Qaa9V_XJHbJzbFNL3w@mail.gmail.com>
- <c16afd75-f54c-6c2b-7f61-1f1c7a4b3c46@roeck-us.net> <CAPLW+4kmUqg=2vYOiWfMhQFqFw1sh0Eo6Yqv8nPEbV_0MObn5A@mail.gmail.com>
-In-Reply-To: <CAPLW+4kmUqg=2vYOiWfMhQFqFw1sh0Eo6Yqv8nPEbV_0MObn5A@mail.gmail.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Sun, 28 Nov 2021 00:52:15 +0200
-Message-ID: <CAPLW+4=pqZMry-O6_XT=V5AeZ+FfUwZLVp_=QjqudDrbxbZrCg@mail.gmail.com>
-Subject: Re: [PATCH v4 09/12] watchdog: s3c2410: Cleanup PMU related code
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7b79fe9b-9d51-8bda-2868-b48781f07fc9@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 at 01:30, Sam Protsenko <semen.protsenko@linaro.org> wrote:
->
-> On Wed, 24 Nov 2021 at 00:33, Guenter Roeck <linux@roeck-us.net> wrote:
+On Sat, Nov 27, 2021 at 06:09:40PM +0100, Eric Auger wrote:
+> 
+> 
+> On 11/23/21 4:53 PM, Jean-Philippe Brucker wrote:
+> > To support identity mappings, the virtio-iommu driver must be able to
+> > represent full 64-bit ranges internally. Pass (start, end) instead of
+> > (start, size) to viommu_add/del_mapping().
 > >
-> > On 11/23/21 8:17 AM, Sam Protsenko wrote:
-> > > On Tue, 23 Nov 2021 at 18:06, Guenter Roeck <linux@roeck-us.net> wrote:
-> > >>
-> > >> On Sun, Nov 21, 2021 at 06:56:44PM +0200, Sam Protsenko wrote:
-> > >>> Now that PMU enablement code was extended for new Exynos SoCs, it
-> > >>> doesn't look very cohesive and consistent anymore. Do a bit of renaming,
-> > >>> grouping and style changes, to make it look good again. While at it, add
-> > >>> quirks documentation as well.
-> > >>>
-> > >>> No functional change, just a refactoring commit.
-> > >>>
-> > >>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > >>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> > >>> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-> > >>> ---
-> > >>> Changes in v4:
-> > >>>    - Added R-b tag by Guenter Roeck
-> > >>>
-> > >>> Changes in v3:
-> > >>>    - Added quirks documentation
-> > >>>    - Added R-b tag by Krzysztof Kozlowski
-> > >>>
-> > >>> Changes in v2:
-> > >>>    - (none): it's a new patch
-> > >>>
-> > >>>   drivers/watchdog/s3c2410_wdt.c | 83 ++++++++++++++++++++++++----------
-> > >>>   1 file changed, 58 insertions(+), 25 deletions(-)
-> > >>>
-> > >>> diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
-> > >>> index ec341c876225..f211be8bf976 100644
-> > >>> --- a/drivers/watchdog/s3c2410_wdt.c
-> > >>> +++ b/drivers/watchdog/s3c2410_wdt.c
-> > >>> @@ -56,17 +56,51 @@
-> > >>>   #define EXYNOS5_RST_STAT_REG_OFFSET          0x0404
-> > >>>   #define EXYNOS5_WDT_DISABLE_REG_OFFSET               0x0408
-> > >>>   #define EXYNOS5_WDT_MASK_RESET_REG_OFFSET    0x040c
-> > >>> -#define QUIRK_HAS_PMU_CONFIG                 (1 << 0)
-> > >>> -#define QUIRK_HAS_RST_STAT                   (1 << 1)
-> > >>> -#define QUIRK_HAS_WTCLRINT_REG                       (1 << 2)
-> > >>> +
-> > >>> +/**
-> > >>
-> > >> 0-day complains:
-> > >>
-> > >> drivers/watchdog/s3c2410_wdt.c:94: warning: expecting prototype for Quirk flags for different Samsung watchdog IP(). Prototype was for QUIRK_HAS_WTCLRINT_REG() instead
-> > >>
-> > >> It doesn't seem to like the idea of documented bit masks. Not really sure
-> > >> what to do here. I am inclined to ignore it, but I don't want to get flooded
-> > >> by 0-day complaints until I retire either. Any idea ?
-> > >>
-> > >
-> > > Seems like 0-day thinks this kernel-doc comment is for the first
-> > > define only, and thus the comment has wrong format, or something like
-> > > that. I tried to follow the same style as GFP_KERNEL and others are
-> > > documented.
-> > >
-> > > Anyway, if you don't like 0-day complaints, can you please just
-> > > replace kernel-doc comment (/**) with regular comment (/*), by
-> > > removing one asterisk in the patch? Or I can re-send the patch
-> > > correspondingly -- then just let me know.
-> > >
+> > Clean comments. The one about the returned size was never true: when
+> > sweeping the whole address space the returned size will most certainly
+> > be smaller than 2^64.
 > >
-> > Oh, never mind. Let's just hope that 0-day stops complaining at some point.
+> > Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+> > Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Reviewed-by: Eric Auger <eric.auger@redhat.com>
+> 
+> Eric
+> 
+> > ---
+> >  drivers/iommu/virtio-iommu.c | 31 +++++++++++++++----------------
+> >  1 file changed, 15 insertions(+), 16 deletions(-)
 > >
->
-> Just sent v5 for this patch, fixing that 0-day warning properly. Found
-> info about it here: [1]. So to check that warning, apparently it's
-> enough to run "make W=n" build, or dry-run for kernel-doc script like
-> this:
->
->     $ scripts/kernel-doc -v -none drivers/watchdog/s3c2410_wdt.c
->
-> Anyway, please take v4 series + v5 for this patch. Hope that'll be all
-> for 0-day swearing :)
->
-> [1] https://github.com/torvalds/linux/blob/master/Documentation/doc-guide/kernel-doc.rst
->
+> > diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+> > index d63ec4d11b00..eceb9281c8c1 100644
+> > --- a/drivers/iommu/virtio-iommu.c
+> > +++ b/drivers/iommu/virtio-iommu.c
+> > @@ -311,8 +311,8 @@ static int viommu_send_req_sync(struct viommu_dev *viommu, void *buf,
+> >   *
+> >   * On success, return the new mapping. Otherwise return NULL.
+> >   */
+> > -static int viommu_add_mapping(struct viommu_domain *vdomain, unsigned long iova,
+> > -			      phys_addr_t paddr, size_t size, u32 flags)
+> > +static int viommu_add_mapping(struct viommu_domain *vdomain, u64 iova, u64 end,
+> > +			      phys_addr_t paddr, u32 flags)
+> >  {
+> >  	unsigned long irqflags;
+> >  	struct viommu_mapping *mapping;
 
-Hi Guenter,
+I am worried that API changes like that will cause subtle
+bugs since types of arguments change but not their
+number. If we forgot to update some callers it will all be messed up.
 
-Can you please take this patch:
+How about passing struct Range instead?
 
-    [PATCH v4 12/12] watchdog: s3c2410: Add Exynos850 support
+> > @@ -323,7 +323,7 @@ static int viommu_add_mapping(struct viommu_domain *vdomain, unsigned long iova,
+> >  
+> >  	mapping->paddr		= paddr;
+> >  	mapping->iova.start	= iova;
+> > -	mapping->iova.last	= iova + size - 1;
+> > +	mapping->iova.last	= end;
+> >  	mapping->flags		= flags;
+> >  
+> >  	spin_lock_irqsave(&vdomain->mappings_lock, irqflags);
+> > @@ -338,26 +338,24 @@ static int viommu_add_mapping(struct viommu_domain *vdomain, unsigned long iova,
+> >   *
+> >   * @vdomain: the domain
+> >   * @iova: start of the range
+> > - * @size: size of the range. A size of 0 corresponds to the entire address
+> > - *	space.
+> > + * @end: end of the range
+> >   *
+> > - * On success, returns the number of unmapped bytes (>= size)
+> > + * On success, returns the number of unmapped bytes
+> >   */
+> >  static size_t viommu_del_mappings(struct viommu_domain *vdomain,
+> > -				  unsigned long iova, size_t size)
+> > +				  u64 iova, u64 end)
+> >  {
+> >  	size_t unmapped = 0;
+> >  	unsigned long flags;
+> > -	unsigned long last = iova + size - 1;
+> >  	struct viommu_mapping *mapping = NULL;
+> >  	struct interval_tree_node *node, *next;
+> >  
+> >  	spin_lock_irqsave(&vdomain->mappings_lock, flags);
+> > -	next = interval_tree_iter_first(&vdomain->mappings, iova, last);
+> > +	next = interval_tree_iter_first(&vdomain->mappings, iova, end);
+> >  	while (next) {
+> >  		node = next;
+> >  		mapping = container_of(node, struct viommu_mapping, iova);
+> > -		next = interval_tree_iter_next(node, iova, last);
+> > +		next = interval_tree_iter_next(node, iova, end);
+> >  
+> >  		/* Trying to split a mapping? */
+> >  		if (mapping->iova.start < iova)
+> > @@ -656,8 +654,8 @@ static void viommu_domain_free(struct iommu_domain *domain)
+> >  {
+> >  	struct viommu_domain *vdomain = to_viommu_domain(domain);
+> >  
+> > -	/* Free all remaining mappings (size 2^64) */
+> > -	viommu_del_mappings(vdomain, 0, 0);
+> > +	/* Free all remaining mappings */
+> > +	viommu_del_mappings(vdomain, 0, ULLONG_MAX);
+> >  
+> >  	if (vdomain->viommu)
+> >  		ida_free(&vdomain->viommu->domain_ids, vdomain->id);
+> > @@ -742,6 +740,7 @@ static int viommu_map(struct iommu_domain *domain, unsigned long iova,
+> >  {
+> >  	int ret;
+> >  	u32 flags;
+> > +	u64 end = iova + size - 1;
+> >  	struct virtio_iommu_req_map map;
+> >  	struct viommu_domain *vdomain = to_viommu_domain(domain);
+> >  
+> > @@ -752,7 +751,7 @@ static int viommu_map(struct iommu_domain *domain, unsigned long iova,
+> >  	if (flags & ~vdomain->map_flags)
+> >  		return -EINVAL;
+> >  
+> > -	ret = viommu_add_mapping(vdomain, iova, paddr, size, flags);
+> > +	ret = viommu_add_mapping(vdomain, iova, end, paddr, flags);
+> >  	if (ret)
+> >  		return ret;
+> >  
+> > @@ -761,7 +760,7 @@ static int viommu_map(struct iommu_domain *domain, unsigned long iova,
+> >  		.domain		= cpu_to_le32(vdomain->id),
+> >  		.virt_start	= cpu_to_le64(iova),
+> >  		.phys_start	= cpu_to_le64(paddr),
+> > -		.virt_end	= cpu_to_le64(iova + size - 1),
+> > +		.virt_end	= cpu_to_le64(end),
+> >  		.flags		= cpu_to_le32(flags),
+> >  	};
+> >  
+> > @@ -770,7 +769,7 @@ static int viommu_map(struct iommu_domain *domain, unsigned long iova,
+> >  
+> >  	ret = viommu_send_req_sync(vdomain->viommu, &map, sizeof(map));
+> >  	if (ret)
+> > -		viommu_del_mappings(vdomain, iova, size);
+> > +		viommu_del_mappings(vdomain, iova, end);
+> >  
+> >  	return ret;
+> >  }
+> > @@ -783,7 +782,7 @@ static size_t viommu_unmap(struct iommu_domain *domain, unsigned long iova,
+> >  	struct virtio_iommu_req_unmap unmap;
+> >  	struct viommu_domain *vdomain = to_viommu_domain(domain);
+> >  
+> > -	unmapped = viommu_del_mappings(vdomain, iova, size);
+> > +	unmapped = viommu_del_mappings(vdomain, iova, iova + size - 1);
+> >  	if (unmapped < size)
+> >  		return 0;
+> >  
 
-and replace "Cleanup PMU related code" patch you already applied with this one:
-
-    [PATCH v5] watchdog: s3c2410: Cleanup PMU related code
-
-I can see you already took most of WDT patches I sent, but those two
-seem to be missing.
-
-Also, I can't see my patches (which are already present in your
-"watchdog-next" branch) in linux-next/master. Is that expected, or I'm
-missing something?
-
-Thanks!
-
-> > Guenter
