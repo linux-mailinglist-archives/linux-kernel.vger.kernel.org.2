@@ -2,73 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D88C45FE71
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 13:14:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBA0545FE73
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 13:15:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354338AbhK0MRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 07:17:55 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:60442 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350954AbhK0MPz (ORCPT
+        id S1354463AbhK0MSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 07:18:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354079AbhK0MQh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 07:15:55 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9A197B817AC;
-        Sat, 27 Nov 2021 12:12:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CACCC53FAD;
-        Sat, 27 Nov 2021 12:12:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1638015158;
-        bh=Nsypz1pbkrnBiWqd93zUKpPoJWu4uG4aFKzWclKNc9A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zzMjx7oKYUBaSqI7Q8w0u1AgdSfR07MfyEkU7XIvbNq5Z99yeq3J4Ls/QMed/W4SP
-         Eba1zDMeN9zfI4spkq4X+daCizQux5tAT+r3n8r6Ku+d9bimqPGycb4C4JVbp6uXIm
-         qSTj78+6e5GnhJjPjP0rbDK368g5U+kzGjFnnUew=
-Date:   Sat, 27 Nov 2021 13:12:35 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Marc Zygnier <maz@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Megha Dey <megha.dey@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>, linux-pci@vger.kernel.org,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        iommu@lists.linux-foundation.org, dmaengine@vger.kernel.org,
-        Stuart Yoder <stuyoder@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-        Vinod Koul <vkoul@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>, Sinan Kaya <okaya@kernel.org>
-Subject: Re: [patch 02/37] device: Add device::msi_data pointer and struct
- msi_device_data
-Message-ID: <YaIgsyae/J0XJbHQ@kroah.com>
-References: <20211126224100.303046749@linutronix.de>
- <20211126230524.045836616@linutronix.de>
+        Sat, 27 Nov 2021 07:16:37 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9619C06174A;
+        Sat, 27 Nov 2021 04:13:22 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id g18so11497618pfk.5;
+        Sat, 27 Nov 2021 04:13:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CYTss4uDcyydBSo43mqDgnezuE5sTvAFFevF63UoL6c=;
+        b=G2llcNJS6DP6phoIe1aneOPGnpAo4J7N10bpsbolRTn2ePBkVmAm5i/ozxxXiliYCj
+         5Pa4W8PP+F/ITf7GTmowZxztefT1N7EvHEQBMjuytc1LoevSmRYk8t/7CxkFdYrClRo6
+         8n0vN2xkNlM1XpPl//dSamW4SrmR+C1/cSnVUhBw9So1phiZUTI7Zsmr9PVstHSDCRFj
+         rigg1TF1toWq6uuX69Ys5dLkL6sc2iUCxbhmcUvPLxwKcCE/TTXghblfyC9mFmw9sKqX
+         TQCFxxP6bbBGUUoFfgaNDfoMX4mi9PTiq9FXtY0Z8ZE3cDxy2NqBNXru71llfXjzD7F9
+         J3Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CYTss4uDcyydBSo43mqDgnezuE5sTvAFFevF63UoL6c=;
+        b=zrC9Gn2aaJMJ4UeM+yIQtWNHdhgAgDk5DwGiG9rTy51bRsqC4cwWEtHnYAYhSa3JTO
+         032bBnWZSDwN+CrBpR8lTmhvhLig2GMcaqREuBibZXwuF2mlg5zMfqdap9wwvo7jDpC5
+         gyRpRZQM8ZKGpCFOkJwh8+rfujZzXX1Ouq9MQ1FcC9zG6igpL9wW1KBmFOKteZnX8Mei
+         HTiWsfmz8PUa+dnC7aGSgrGtcFTXBS1jMBIZTxIK15l9KApUe5suvTmY5bdVZyTWLGBO
+         6z+kGZVoyqSJ4nBj7AwfcpBINpyCqB9Ofi27xKSv1/4ACAbHFeHrceHmZYw3kjWrWaJz
+         BnyQ==
+X-Gm-Message-State: AOAM530fc3jje6rR8Jm32OxqcT5kIg3mLxN1GNNjR+SXHiN+9shYPb3N
+        IboLGrQgQrzWzJ8C1ZEK4lGwu149FJc=
+X-Google-Smtp-Source: ABdhPJwPO4pWvWX6ZjdDIEcADyEN3Zh6EmLSxj6RMzEMA/0pyEeWH/8lkoLs5+4XnUPQviEPx2gCDg==
+X-Received: by 2002:a63:b515:: with SMTP id y21mr11781563pge.615.1638015202534;
+        Sat, 27 Nov 2021 04:13:22 -0800 (PST)
+Received: from [192.168.11.5] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id mh1sm9182847pjb.6.2021.11.27.04.13.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 27 Nov 2021 04:13:22 -0800 (PST)
+Subject: Re: [PATCH v2 1/1] docs: conf.py: fix support for Readthedocs v 1.0.0
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+References: <cover.1638004294.git.mchehab+huawei@kernel.org>
+ <80009f0d17ea0840d81e7e16fff6e7677919fdfc.1638004294.git.mchehab+huawei@kernel.org>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Message-ID: <1d057059-d44d-a439-91b3-2a497015a8e8@gmail.com>
+Date:   Sat, 27 Nov 2021 21:13:18 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211126230524.045836616@linutronix.de>
+In-Reply-To: <80009f0d17ea0840d81e7e16fff6e7677919fdfc.1638004294.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 27, 2021 at 02:20:09AM +0100, Thomas Gleixner wrote:
-> Create struct msi_device_data and add a pointer of that type to struct
-> dev_msi_info, which is part of struct device. Provide an allocator function
-> which can be invoked from the MSI interrupt allocation code pathes.
+On Sat, 27 Nov 2021 10:14:49 +0100, Mauro Carvalho Chehab wrote:
+> As described at:
+> 	https://stackoverflow.com/questions/23211695/modifying-content-width-of-the-sphinx-theme-read-the-docs
 > 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> since Sphinx 1.8, the standard way to setup a custom theme is
+> to use html_css_files. While using html_context is OK with RTD
+> 0.5.2, it doesn't work with 1.0.0, causing the theme to not load,
+> producing a very weird html.
+> 
+> Tested with:
+> 	- Sphinx 1.7.9 + sphinx-rtd-theme 0.5.2
+> 	- Sphinx 2.4.4 + sphinx-rtd-theme 0.5.2
+> 	- Sphinx 2.4.4 + sphinx-rtd-theme 1.0.0
+> 	- Sphinx 4.3.0 + sphinx-rtd-theme 1.0.0
+> 
+> Reported-by: Hans Verkuil <hverkuil@xs4all.nl>
+> Tested-by: Hans Verkuil <hverkuil@xs4all.nl>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
->  include/linux/device.h |    5 +++++
->  include/linux/msi.h    |   12 +++++++++++-
->  kernel/irq/msi.c       |   33 +++++++++++++++++++++++++++++++++
->  3 files changed, 49 insertions(+), 1 deletion(-)
+> 
+> See [PATCH v2 0/1] at: https://lore.kernel.org/all/cover.1638004294.git.mchehab+huawei@kernel.org/
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Hi Mauro,
+
+Good to see the nice looking HTML pages as before!
+
+Tested-by: Akira Yokosawa <akiyks@gmail.com>
+
+        Thanks, Akira
+
+> 
+>  Documentation/conf.py | 15 ++++++++++-----
+>  1 file changed, 10 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/conf.py b/Documentation/conf.py
+> index 17f7cee56987..76e5eb5cb62b 100644
+> --- a/Documentation/conf.py
+> +++ b/Documentation/conf.py
+> @@ -249,11 +249,16 @@ except ImportError:
+>  
+>  html_static_path = ['sphinx-static']
+>  
+> -html_context = {
+> -    'css_files': [
+> -        '_static/theme_overrides.css',
+> -    ],
+> -}
+> +html_css_files = [
+> +    'theme_overrides.css',
+> +]
+> +
+> +if major <= 1 and minor < 8:
+> +    html_context = {
+> +        'css_files': [
+> +            '_static/theme_overrides.css',
+> +        ],
+> +    }
+>  
+>  # Add any extra paths that contain custom files (such as robots.txt or
+>  # .htaccess) here, relative to this directory. These files are copied
+> 
