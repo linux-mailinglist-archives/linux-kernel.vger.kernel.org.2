@@ -2,134 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B3C460104
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 19:59:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B971460107
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 20:00:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356046AbhK0TCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 14:02:39 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:46750 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239614AbhK0TAi (ORCPT
+        id S1355923AbhK0TDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 14:03:30 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:60840 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355981AbhK0TB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 14:00:38 -0500
-Received: by mail-io1-f71.google.com with SMTP id z21-20020a5e8615000000b005e22e531c8aso16955649ioj.13
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 10:57:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=3lkU9HP9e3xxiLpCA+BlAceZUjMs7h7UuNJjabJrOM0=;
-        b=xDfOyr0h9M8IzunSirB32aGpIQ/ECqQBaWZ+iZLu5UBvFI2dP6nbKSsM4Uchz6RjBQ
-         PtgRclrZA+ySvESZaGxwrF+U8FI2nx5Nc1hPbnYZIJ+p95cft28qtIooIwNviW5E0MNA
-         +oW2HqxpiBMv/kcV2OuLzd3QpVtvYVSMkjv7YPuFtMZ+A73opS6CMe6CGPHKy7MYzilT
-         MG0cYrXpc3VnTc0g0kNY+MlSyZVkQUXmaZG8YejNKlNScMHKFmLudXECndJ8RumpHkya
-         7iipFCaQEYiYh7yLIy2lhnjH3hfuJchVQaDoP/uv7udiX7gHH+thuS8aYVZud8WB4+D5
-         nsRA==
-X-Gm-Message-State: AOAM533vFti7XSMTpqe9kdHaCwE6S0HzV2FDXEp1TgOzcAH/oFKZ3N+7
-        Xa1bemTf16uTZzkFkhFckDmgj6iYleZXS5rWP7UssdrsbQw8
-X-Google-Smtp-Source: ABdhPJxvv/efQnvUAEQ9kc0mvTJ9zT/D6GPQYgSH7MhCO4QsxlFrmei6lmBz9KTTxX6hgfj7aHYExMDMKK9FzqSZCN/+64JgIE25
-MIME-Version: 1.0
-X-Received: by 2002:a05:6638:3048:: with SMTP id u8mr38901358jak.148.1638039443876;
- Sat, 27 Nov 2021 10:57:23 -0800 (PST)
-Date:   Sat, 27 Nov 2021 10:57:23 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002e2fc005d1c9c798@google.com>
-Subject: [syzbot] general protection fault in reset_interrupt
-From:   syzbot <syzbot+b1f15b24307fd6df6021@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, efremov@linux.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        Sat, 27 Nov 2021 14:01:29 -0500
+Received: from mail.kernel.org (unknown [198.145.29.99])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7C765B80931;
+        Sat, 27 Nov 2021 18:58:13 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id E6B2C60041;
+        Sat, 27 Nov 2021 18:58:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638039491;
+        bh=fJnJOos6hKxOm1WT8DmeYABgAiLyQjyHd5tyT2FZdpQ=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=DnOFYt5FeDQ1igT1DDeQuYcui496NCMmlE+jqUphxkmi0jpHawJ5JLDxgc9/Jg7cW
+         j6Se3usznjLoqBtDdY/pMyEngTLvRALb4IUKPUTJ8lJ3mmRceJ1S+VoTM08AYZUW/0
+         SdE31iRvdTbAGydX2JMObH7ZNXZbuS+7sftW5/ROp+kNBC7cvsaLgmClINsCNVhjPx
+         7cSS9ITAMdM+SElma4Z30qw/DOmblxGNiHQPcnNw53oRQbMyWr//TfPBWGbcpOWLQ/
+         Hfcbj22SyMJHN+Le/yUbeB6eVc8kIxbTXunJYSU864dB9OG7YqCuRUB3Fji5N1qZ0p
+         NUcvAU1LRjm8w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D20EB60074;
+        Sat, 27 Nov 2021 18:58:11 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull NFS client fixes for 5.16
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <8b451da7c237eae6e008f00cfc3b8aad6f5d8b67.camel@hammerspace.com>
+References: <8b451da7c237eae6e008f00cfc3b8aad6f5d8b67.camel@hammerspace.com>
+X-PR-Tracked-List-Id: <linux-nfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <8b451da7c237eae6e008f00cfc3b8aad6f5d8b67.camel@hammerspace.com>
+X-PR-Tracked-Remote: git://git.linux-nfs.org/projects/trondmy/linux-nfs.git tags/nfs-for-5.16-2
+X-PR-Tracked-Commit-Id: 064a91771f7aae4ea2d13033b64e921951d216ce
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 7413927713388c21d844b38444fb2b91e077ab2f
+Message-Id: <163803949180.17852.5028387960112630711.pr-tracker-bot@kernel.org>
+Date:   Sat, 27 Nov 2021 18:58:11 +0000
+To:     Trond Myklebust <trondmy@hammerspace.com>
+Cc:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The pull request you sent on Sat, 27 Nov 2021 15:32:01 +0000:
 
-syzbot found the following issue on:
+> git://git.linux-nfs.org/projects/trondmy/linux-nfs.git tags/nfs-for-5.16-2
 
-HEAD commit:    c5c17547b778 Merge tag 'net-5.16-rc3' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16d12e9ab00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bf85c53718a1e697
-dashboard link: https://syzkaller.appspot.com/bug?extid=b1f15b24307fd6df6021
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/7413927713388c21d844b38444fb2b91e077ab2f
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Thank you!
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b1f15b24307fd6df6021@syzkaller.appspotmail.com
-
-floppy1: disk absent or changed during operation
-floppy1: disk absent or changed during operation
-floppy1: disk absent or changed during operation
-floppy1: disk absent or changed during operation
-general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
-CPU: 0 PID: 9 Comm: kworker/u16:0 Not tainted 5.16.0-rc2-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-Workqueue: floppy floppy_work_workfn
-RIP: 0010:reset_interrupt+0xef/0x140 drivers/block/floppy.c:1793
-Code: fc 84 db 0f 85 ab 5e 9b 04 e8 5d 4f fc fc 48 8b 1d 76 4b 00 0c 48 b8 00 00 00 00 00 fc ff df 48 8d 7b 08 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 40 48 8b 43 08 5b ff e0 e8 6f 85 42 fd eb a8 e8 68
-RSP: 0018:ffffc900005cfd10 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000001 RSI: ffffffff847a8383 RDI: 0000000000000008
-RBP: ffffffff8c6a4240 R08: 0000000000000080 R09: 0000000000000000
-R10: ffffffff847a8376 R11: 0000000000000000 R12: ffffc900005cfdb0
-R13: ffffffff8c6a4250 R14: ffff888011850600 R15: ffff888010c75800
-FS:  0000000000000000(0000) GS:ffff88802ca00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fa679dac058 CR3: 00000000194aa000 CR4: 0000000000150ef0
-DR0: 0000000000002000 DR1: 0000000000000000 DR2: 0000000000000001
-DR3: 0000000000006000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
- kthread+0x405/0x4f0 kernel/kthread.c:327
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
- </TASK>
-Modules linked in:
----[ end trace f0abc9321f84d854 ]---
-RIP: 0010:reset_interrupt+0xef/0x140 drivers/block/floppy.c:1793
-Code: fc 84 db 0f 85 ab 5e 9b 04 e8 5d 4f fc fc 48 8b 1d 76 4b 00 0c 48 b8 00 00 00 00 00 fc ff df 48 8d 7b 08 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 40 48 8b 43 08 5b ff e0 e8 6f 85 42 fd eb a8 e8 68
-RSP: 0018:ffffc900005cfd10 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000001 RSI: ffffffff847a8383 RDI: 0000000000000008
-RBP: ffffffff8c6a4240 R08: 0000000000000080 R09: 0000000000000000
-R10: ffffffff847a8376 R11: 0000000000000000 R12: ffffc900005cfdb0
-R13: ffffffff8c6a4250 R14: ffff888011850600 R15: ffff888010c75800
-FS:  0000000000000000(0000) GS:ffff88802cb00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f2645abc6b8 CR3: 00000000194aa000 CR4: 0000000000150ee0
-DR0: 0000000000002000 DR1: 0000000000000000 DR2: 0000000000000001
-DR3: 0000000000006000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	fc                   	cld
-   1:	84 db                	test   %bl,%bl
-   3:	0f 85 ab 5e 9b 04    	jne    0x49b5eb4
-   9:	e8 5d 4f fc fc       	callq  0xfcfc4f6b
-   e:	48 8b 1d 76 4b 00 0c 	mov    0xc004b76(%rip),%rbx        # 0xc004b8b
-  15:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  1c:	fc ff df
-  1f:	48 8d 7b 08          	lea    0x8(%rbx),%rdi
-  23:	48 89 fa             	mov    %rdi,%rdx
-  26:	48 c1 ea 03          	shr    $0x3,%rdx
-* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2e:	75 40                	jne    0x70
-  30:	48 8b 43 08          	mov    0x8(%rbx),%rax
-  34:	5b                   	pop    %rbx
-  35:	ff e0                	jmpq   *%rax
-  37:	e8 6f 85 42 fd       	callq  0xfd4285ab
-  3c:	eb a8                	jmp    0xffffffe6
-  3e:	e8                   	.byte 0xe8
-  3f:	68                   	.byte 0x68
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
