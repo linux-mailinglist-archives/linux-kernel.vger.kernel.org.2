@@ -2,16 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E26145FEBC
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 14:11:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC4045FEC1
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 14:14:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354397AbhK0NOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 08:14:34 -0500
-Received: from vulcan.natalenko.name ([104.207.131.136]:42564 "EHLO
+        id S1354984AbhK0NQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 08:16:05 -0500
+Received: from vulcan.natalenko.name ([104.207.131.136]:48724 "EHLO
         vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354505AbhK0NMc (ORCPT
+        with ESMTP id S234018AbhK0NN7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 08:12:32 -0500
+        Sat, 27 Nov 2021 08:13:59 -0500
 Received: from spock.localnet (unknown [83.148.33.151])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
