@@ -2,68 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13D6945FEE7
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 14:44:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E162045FEEB
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 14:47:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355122AbhK0Nrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 08:47:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55006 "EHLO
+        id S1354879AbhK0Nud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 08:50:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351129AbhK0Npi (ORCPT
+        with ESMTP id S237102AbhK0Nsc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 08:45:38 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5428C061759
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 05:41:49 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id e144so14909416iof.3
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 05:41:49 -0800 (PST)
+        Sat, 27 Nov 2021 08:48:32 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056D1C06175A
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 05:45:18 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id t8so11967041ilu.8
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 05:45:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=from:to:in-reply-to:references:subject:message-id:date:mime-version
-         :content-transfer-encoding;
-        bh=xXFdK9mEptTHz6eoVHHWEZw7HjC/F4jPtycZhIGLmPc=;
-        b=YG4K0jfRf0aZOk0n93U7Yiry4DdIqoGNv6AjAGGT1FjXy+6y8F6a2jxxLi4Z4y7zd4
-         HvJ+9R7u8gYhp18RlRS5R+isJ4Z9sxxNI7rZ4oTLIjqrN8MTQ/EFTxX3eyjHX3hZs8iY
-         me2UqvIQWgE+5ZJfuAIjVuS0rtvfZXeycLQeu9TNLv0ZWjTBvYpDPmLNIN2ke++92Thc
-         tGJ88taFCen5uv/cvWihoQE89Rwg0hybrGapuTnIcfnhmmZQbIzt2gawPdjgeVXnxTFi
-         0B5smoRNeqBpqipoAI6Ca/+e07N98jEQOfIK6I+Y3y/FfSIJx2p1/UI8d6WHe8ZeT+2w
-         W5Ww==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=rKneMjBOvS+P00oj3sggoRg13Lqf4qE6aDU5pd1JxPk=;
+        b=0VPEn08TiGj43BmTMmfvPnDDbf6VNHidyhvKexhWE6VLHcZILjAsZgUoeIQO5ScA0e
+         fpA2j8zlyZrNKbKtLZ1dMutIVroByZEfQiAN/78PlyscCknaoAuIFtCmrTpI9CrBJxyE
+         eZ2O5rIYlSQvPFZI6bcQCFNTJbrtTG/mc9VjDj7GJ8C4O/+hneeDZ0k5cRz0r8x1odcW
+         xpbf7mEZNeq+50zsC07P6Nf98WJgjqWhFN0LcZCBF5w1sDxQykl9LyB3oShSltV5JTW0
+         Z/YXJZJiDxKL9gUtC0UAlv3TkKNq/rtqNAaslfr7MzjHNMW02UPSJ9Pq1ATY56vfftXs
+         EWUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:in-reply-to:references:subject
-         :message-id:date:mime-version:content-transfer-encoding;
-        bh=xXFdK9mEptTHz6eoVHHWEZw7HjC/F4jPtycZhIGLmPc=;
-        b=nHhTnBL4pfT9f+GL58CUwNp25iAaj64qhvE8qaXZQby84Brxg6MUC6CC2MO3Ag+wua
-         Hu6Nn2SeYuCOtFHicFwlhOYSY7Kwhc4eDGJLeExSo/JhiY4HqUcaBRAd72YLh/IV/D6U
-         PVZV8PewGRAOHGS5KP05OLGyrCbbWrHbHrtU3tiDKk1v4k4QcfFOWvG0sSmdnTZxoKfx
-         0mkFLt4Iy9OqC+CMr50hvRn0EentPZcys4CXiLbOdkgKT11qMl7n4s+jZAWeJXq8kqRl
-         wTxVCN3mQM9JtMDG+WNkf3Z2zL/LaFHaAi/2ta28E89y1V3nmaJLgBXmMqccs8HFXIEs
-         VCyQ==
-X-Gm-Message-State: AOAM532aKDXon6WK4RfxgmDGAYAOIO/ru0y7jyrYgnJN8p/Hk3EcPs7g
-        JV/xMCr3sfQ6aF929XbD9TuEmZi6qzSVHEJB
-X-Google-Smtp-Source: ABdhPJyZokGlQ9AHSuYYIR8BH4cuewT/e89oogcwqd3c4BCLVreEWcUNMJRPazGujyB1l6L0K26C5g==
-X-Received: by 2002:a05:6638:3048:: with SMTP id u8mr37259280jak.148.1638020509019;
-        Sat, 27 Nov 2021 05:41:49 -0800 (PST)
-Received: from [127.0.1.1] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id m12sm5859718iow.54.2021.11.27.05.41.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Nov 2021 05:41:48 -0800 (PST)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     io-uring@vger.kernel.org, asml.silence@gmail.com,
-        Ye Bin <yebin10@huawei.com>, linux-kernel@vger.kernel.org
-In-Reply-To: <20211118015907.844807-1-yebin10@huawei.com>
-References: <20211118015907.844807-1-yebin10@huawei.com>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rKneMjBOvS+P00oj3sggoRg13Lqf4qE6aDU5pd1JxPk=;
+        b=bShWPbzeBdQnFu9TH8Cassp+pkksphhx97Eyuy02hvOemDIOrdB7jWnFP44J8WNAUy
+         z6Cg5fEH8MUTAx9gfvG+BY1VHu1/jvoO4Gj5IRCLOPol8OViD1Q4uZ/ThjraxqAD/Wkb
+         iX3kE3WBSMrs390rc7sJIr3j+YdCrodVt+3JIUP3Wd7FIRhGPcN62I9pkmdvviZTWi4M
+         HMrxU3PJ3f8cLamd07a1hWCzMq5ZZlymd6fw+M0wYLCnuGXUBpk5WuQbVwt0mxFjKsMp
+         IpFkKdccGQVm7b9l+iIjJa8C6b4u552NBP7Jb+gZloNmEvpltqXc3ENcJkoIiKEcvjTP
+         ny0Q==
+X-Gm-Message-State: AOAM5333cS9lzrXFrb0ViWSGOLn7Fv+HOIUs4CnW12sk3qNJp42DKCYr
+        zI6tCt35M3sQJbXz+tXGs7ABtNqB1icCdOa6
+X-Google-Smtp-Source: ABdhPJy/91OEeAjvicfPuz9n4GTU3cpoj0Yi18cWWFstgFlwtwHuxwikK7seT1unVDLk08sNIjGYkw==
+X-Received: by 2002:a92:cda6:: with SMTP id g6mr20071115ild.83.1638020717105;
+        Sat, 27 Nov 2021 05:45:17 -0800 (PST)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id z6sm6319253ioq.35.2021.11.27.05.45.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 27 Nov 2021 05:45:16 -0800 (PST)
 Subject: Re: [PATCH -next] io_uring: Fix undefined-behaviour in io_issue_sqe
-Message-Id: <163802050825.624396.15004136636367239529.b4-ty@kernel.dk>
-Date:   Sat, 27 Nov 2021 06:41:48 -0700
+To:     Ye Bin <yebin10@huawei.com>, asml.silence@gmail.com,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211118015907.844807-1-yebin10@huawei.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <d264f41a-2940-f1f8-1371-a24be6f2ad13@kernel.dk>
+Date:   Sat, 27 Nov 2021 06:45:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211118015907.844807-1-yebin10@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Nov 2021 09:59:07 +0800, Ye Bin wrote:
+On 11/17/21 6:59 PM, Ye Bin wrote:
 > We got issue as follows:
 > ================================================================================
 > UBSAN: Undefined behaviour in ./include/linux/ktime.h:42:14
@@ -96,15 +100,32 @@ On Thu, 18 Nov 2021 09:59:07 +0800, Ye Bin wrote:
 >  el0_svc+0x10/0x218 arch/arm64/kernel/entry.S:1017
 > ================================================================================
 > 
-> [...]
+> As ktime_set only judge 'secs' if big than KTIME_SEC_MAX, but if we pass
+> negative value maybe lead to overflow.
+> To address this issue, we must check if 'sec' is negative.
+> 
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> ---
+>  fs/io_uring.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index f9e720595860..d8a6446a7921 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -6157,6 +6157,9 @@ static int io_timeout_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe,
+>  	if (get_timespec64(&data->ts, u64_to_user_ptr(sqe->addr)))
+>  		return -EFAULT;
+>  
+> +	if (data->ts.tv_sec < 0 || data->ts.tv_nsec < 0)
+> +		return -EINVAL;
+> +
+>  	data->mode = io_translate_timeout_mode(flags);
+>  	hrtimer_init(&data->timer, io_timeout_get_clock(data), data->mode);
 
-Applied, thanks!
+This seems to only fix one instance of when a timespec is copied in, what
+about the ones in io_timeout_remove_prep()?
 
-[1/1] io_uring: Fix undefined-behaviour in io_issue_sqe
-      commit: f6223ff799666235a80d05f8137b73e5580077b9
-
-Best regards,
 -- 
 Jens Axboe
-
 
