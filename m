@@ -2,106 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5782145FC64
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 04:41:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BCF445FC6A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 04:41:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351860AbhK0DmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 22:42:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37160 "EHLO
+        id S1352091AbhK0DoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 22:44:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350844AbhK0DkY (ORCPT
+        with ESMTP id S232808AbhK0DmY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 22:40:24 -0500
-Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA6C0C0619E5
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 18:23:44 -0800 (PST)
-Received: by mail-vk1-xa29.google.com with SMTP id b192so7098727vkf.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 18:23:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ven33Yb2pguWuvssw/AGyslALQS0DpWB86lUymG/icY=;
-        b=wdv7YIuPe1YgQn6DtbnGiFpQPssIsX84DeJlK1tcrFBdk/IroRaSui6KIjdOhAiC7o
-         pXztHbc3tBaGc3WRn28tp9aSZy0vZLT8KqXjcfuvjbZ9X+SF/RW8CMndatjeNGwgvlM3
-         K/oETGslseqBjq/6VNUbt6KqgNCjzxxtIfcDg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ven33Yb2pguWuvssw/AGyslALQS0DpWB86lUymG/icY=;
-        b=vx/hnv8LoP09EtuQm3vgRb1sGq9uNpM/907Gu8jeqUQ95MdlQX2gKocvUj2KfwLPXs
-         ffMgbz8txPyP1DtiqQjnuKlOC9RdFAkxhmm4lxa7cfr8Oiupx3nri1UUsasC+vELAOJO
-         bXDk4UCzvuy3lim8W/ha3/I/BNxexxnlVaQ3XpCitPKp82+Qpif1fSBgkbe8BZ7Z5dPT
-         NVLyuPkrVISMwunDDMMfUCFKzDk5vbm+0tI7AarQIeV2qKmgyJGBD1/Gq4IeAYoA10DJ
-         W0OVZGv+bMD+IP/HwjaLhXOAf5JK4ITq3VLwEz6vJMXq6Wr81/IVjrZcIgkc3Z2rHBOe
-         myvQ==
-X-Gm-Message-State: AOAM532/KgISP93EBSVuctV5+5gkx3wlasqTNNjlBG4VvYjYy/thEQ4H
-        BZC7gaIpf185EF93A1IJ85tqcD9pgCWFMZdW1eIQL3B/Sss=
-X-Google-Smtp-Source: ABdhPJzCmaPPPLCzCTjWtZ6aHeB7EX3WpyPaE0fVpTKNt9hdY0c+eBWZ14qEu91SHMtyRKaqQSCiwaeuslwmnCo1F18=
-X-Received: by 2002:a05:6122:237:: with SMTP id e23mr19764905vko.41.1637979823919;
- Fri, 26 Nov 2021 18:23:43 -0800 (PST)
+        Fri, 26 Nov 2021 22:42:24 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0990EC08ECA9;
+        Fri, 26 Nov 2021 18:32:23 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C300060B0C;
+        Sat, 27 Nov 2021 02:32:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2850DC53FC9;
+        Sat, 27 Nov 2021 02:32:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637980342;
+        bh=k8LPEgdOrY1JwBzenXCurgiwoYPg9UZhK//hAysuHbY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QyUuswkQ+eRwMDpaAxk+9wHrqAQtw8Za8PaRwO8j5EQU2tilOgrI7TmGd/oYtQ0Tr
+         6bhZcLjDpSAp8hyJQB+v/kjIelFjFgai9/LgZSrxuNs+4lwAuZzPh9bCQiX9tojwoZ
+         gNIAKi1krvekP15uVvzSoSYgngMJRi3jVu5eO/pz9LcDcymCBj7HZeV0vqkM9+1PcC
+         boiD+qRiOgCWDTO8vWi/QYP24t6/s1ecbPdro08wGYXPQUdw6guyKJcw77kXaY8BJR
+         9wpxi4ySxl30aHZs0Dk0KpE4CIlJ+IQ/Q8hrF/d/hb8d7sYh+2KlCi1KugSfyv9dW/
+         n+2jH4HDiFp4g==
+Received: by mail-yb1-f176.google.com with SMTP id f186so24722168ybg.2;
+        Fri, 26 Nov 2021 18:32:22 -0800 (PST)
+X-Gm-Message-State: AOAM533dgzq9f6UkKEgFp8Q/PvBaURux/i3xUNHccl1ow0T6Zt5w69z1
+        aQziXWIO6I5MKB/4DXtaNi/kRiEnnd4Hwh5NJx0=
+X-Google-Smtp-Source: ABdhPJwWnYS34Lk4+MdywnVNl1ggmxTzMSgFmz1hcYDbfnrnw37rp1Dxgp2qjPYdfrN6sh5bYfHyYF9rlBIPcm1XVuM=
+X-Received: by 2002:a25:324d:: with SMTP id y74mr20085550yby.526.1637980341173;
+ Fri, 26 Nov 2021 18:32:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20211126202144.72936-1-romain.perier@gmail.com> <20211126202144.72936-5-romain.perier@gmail.com>
-In-Reply-To: <20211126202144.72936-5-romain.perier@gmail.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Sat, 27 Nov 2021 11:23:33 +0900
-Message-ID: <CAFr9PXm76vvUVVt8gfhfJwx3RcDUcuusZmY231euGr6RHo0CdQ@mail.gmail.com>
-Subject: Re: [PATCH 3/5] dt-bindings: timer: Add Mstar MSC313e timer
- devicetree bindings documentation
-To:     Romain Perier <romain.perier@gmail.com>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211123230632.1503854-1-zenczykowski@gmail.com>
+In-Reply-To: <20211123230632.1503854-1-zenczykowski@gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Fri, 26 Nov 2021 18:32:10 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW7AYkW5-5Labsj9ziFQzcEaqcZU0xCqTfhqJhNJf8kuxA@mail.gmail.com>
+Message-ID: <CAPhsuW7AYkW5-5Labsj9ziFQzcEaqcZU0xCqTfhqJhNJf8kuxA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] net-bpf: bpf_skb_change_proto() - add support
+ for ipv6 fragments
+To:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
+Cc:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Linux Network Development Mailing List 
+        <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Lorenzo Colitti <lorenzo@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Romain,
-
-On Sat, 27 Nov 2021 at 05:22, Romain Perier <romain.perier@gmail.com> wrote:
+On Tue, Nov 23, 2021 at 3:06 PM Maciej =C5=BBenczykowski
+<zenczykowski@gmail.com> wrote:
 >
-> This adds the documentation for the devicetree bindings of the Mstar
-> MSC313e timer driver, found from MSC313e SoCs and newer.
+> From: Maciej =C5=BBenczykowski <maze@google.com>
 >
-> Signed-off-by: Romain Perier <romain.perier@gmail.com>
-> ---
->  .../bindings/timer/mstar,msc313e-timer.yaml   | 48 +++++++++++++++++++
->  1 file changed, 48 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/timer/mstar,msc313e-timer.yaml
+> IPv4 fragments (20 byte IPv4 header) need to be translated to/from
+> IPv6 fragments (40 byte IPv6 header with additional 8 byte IPv6
+> fragmentation header).
 >
-> diff --git a/Documentation/devicetree/bindings/timer/mstar,msc313e-timer.yaml b/Documentation/devicetree/bindings/timer/mstar,msc313e-timer.yaml
-> new file mode 100644
-> index 000000000000..f4d43e141dd0
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/timer/mstar,msc313e-timer.yaml
-> @@ -0,0 +1,48 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/timer/mstar,msc313e-timer.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Mstar MSC313e Timer Device Tree Bindings
-> +
-> +maintainers:
-> +  - Daniel Palmer <daniel@0x0f.com>
-> +  - Romain Perier <romain.perier@gmail.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - mstar,msc313e-timer
-> +      - mstar,ssd20xd-timer
+> This allows this to be done by adding an extra flag BPF_F_IPV6_FRAGMENT
+> to bpf_skb_change_proto().
+>
+> I think this is already technically achievable via the use of
+> bpf_skb_adjust_room() which was added in v4.12 commit 2be7e212d541,
+> but this is far easier to use and eliminates the need to call two
+> helper functions, so it's also faster.
+>
+> Cc: Lorenzo Colitti <lorenzo@google.com>
+> Signed-off-by: Maciej =C5=BBenczykowski <maze@google.com>
 
-I think s/mstar,ssd20xd-timer/sstar-ssd20xd-timer/ as the SSD201 and
-SSD202D were never MStar parts.
-The SigmaStar prefix is already in the vendor prefixes.
+Please add a selftest to exercise the new flag.
 
-Cheers,
-
-Daniel
+Thanks,
+Song
