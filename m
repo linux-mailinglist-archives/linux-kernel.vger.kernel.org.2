@@ -2,105 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 050FC45FD4B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 08:51:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1DF545FD53
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 08:54:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352337AbhK0Hr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 02:47:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238637AbhK0HpZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 02:45:25 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C8AC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 23:42:11 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id o29so9868922wms.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 23:42:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=GHe52lQPyJJcrRcFsdf3wAXpXuwv3FGQUmnMtxuk+G8=;
-        b=VtzAsDXfjoTowTHm486eEv9oZ9SXtBKqpfKgoqiNZme6gClmEXTZlx0imx26pQU/CM
-         mKGePUUh0MrmiqlYQaKxBmCnSZphG9e8vD4qxJ6n6VTJvz6rrDuNPXFx2SiaxJ7wxKTQ
-         1LZ2qfN573++Zi687lfrfcYsKkPNJCQCBn/KJBnDCe81zBdNIYRRfx4QHYDisbx1ej9z
-         qPOQjV+mBnaJABor2lRBgfMp6RiF8Iem/Iyh4Dm8IjZBG9Ape6HPVVmlBfrCDIZ+brt0
-         Hxc7m7zPYXuFz4FkZQ56wC+0NbeAPb95CsmEvGAgnzRgOzkKL4tO8E9XoEnNLEvgu2o4
-         gnwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=GHe52lQPyJJcrRcFsdf3wAXpXuwv3FGQUmnMtxuk+G8=;
-        b=OEcD8gaRXOREMm5WMLLGnPmgpWPqoVtAiqed2wUtcupaYFFJZIPIUiYLa6TdwcrPtb
-         nvFVcldloAk3A2I3elJaq6ABh7LFZZjoO34VJ9A8ZqxfUX/PUQ4Y4VN8se6ACWKx2oVi
-         SiPBW6GsMMOV9EOh+t2UizIEPPwMeb/ptRQ507umDzWlFO4pPxC9m1ek46QUAvFifnH9
-         zBstEOcIuSNo+Erd6sTEF9TNlffvoWBYMfyk45gIkhL551HecMcQlsKT6mWT64LTsdOz
-         Y2agxBnD0lQHgICBy2+u1RR+GjjfhEUQhEvkGhzgz/p7Vi5+pHNfaGMuFCAtETDltD0d
-         O/Ug==
-X-Gm-Message-State: AOAM5316dg0Zne4becR3svMKd23FTt71CiJWh8w/5LC3ynY/H3y8Wzt6
-        JkF89UostJD7OgjNXsOc01A=
-X-Google-Smtp-Source: ABdhPJwnSybSh98WNe17wf1KvZPFIpkFdLAQ4eiNBL5u+yTAlgICK9BbKyCsUh07uTdCHK68QJZyDQ==
-X-Received: by 2002:a1c:287:: with SMTP id 129mr21683083wmc.49.1637998929855;
-        Fri, 26 Nov 2021 23:42:09 -0800 (PST)
-Received: from ?IPV6:2a02:8108:96c0:3b88::ac86? ([2a02:8108:96c0:3b88::ac86])
-        by smtp.gmail.com with ESMTPSA id w17sm7860730wrp.79.2021.11.26.23.42.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Nov 2021 23:42:09 -0800 (PST)
-Message-ID: <c4ea42f1-bacb-e7d2-1a97-ba8dd3853ffe@gmail.com>
-Date:   Sat, 27 Nov 2021 08:42:08 +0100
+        id S1352686AbhK0H5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 02:57:37 -0500
+Received: from mga01.intel.com ([192.55.52.88]:42355 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352616AbhK0Hzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 02:55:36 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="259654569"
+X-IronPort-AV: E=Sophos;i="5.87,268,1631602800"; 
+   d="scan'208";a="259654569"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 23:50:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,268,1631602800"; 
+   d="scan'208";a="675746632"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 26 Nov 2021 23:50:44 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqsTr-0009E5-8C; Sat, 27 Nov 2021 07:50:43 +0000
+Date:   Sat, 27 Nov 2021 15:49:53 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Shawn Guo <shawn.guo@linaro.org>, Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v2 2/2] irqchip: Add Qualcomm MPM controller driver
+Message-ID: <202111271507.zYc4AvpT-lkp@intel.com>
+References: <20211126093529.31661-3-shawn.guo@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: [PATCH v2] staging: r8188eu: use a delayed worker for led updates
-Content-Language: en-US
-To:     Martin Kaiser <martin@kaiser.cx>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20211125162513.25039-1-martin@kaiser.cx>
- <20211126114135.18228-1-martin@kaiser.cx>
-From:   Michael Straube <straube.linux@gmail.com>
-In-Reply-To: <20211126114135.18228-1-martin@kaiser.cx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211126093529.31661-3-shawn.guo@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/26/21 12:41, Martin Kaiser wrote:
-> The led layer uses a combination of timer and worker for periodic led
-> updates, e.g. for blinking. The reason seems to be that blocking
-> operations like a usb read are not allowed in a timer handler.
-> 
-> Replace the combination of timer and worker with a delayed worker.
-> 
-> Convert the timeout defines from milliseconds to jiffies to make them
-> usable as delays for the delayed worker. Shorten the names of the defines
-> and rename the work item to make checkpatch happy.
-> 
-> Other layers may call SwLedControlMode1 to update the led state. Such
-> an update may result in cancelling the delayed worker. SwLedControlMode1
-> might be called in interrupt context, we must use cancel_delayed_work to
-> cancel the worker. cancel_delayed_work_sync waits until the worker is
-> finished, this is not allowed in interrupt context.
-> 
-> DeInitLed871x is called when the driver is removed or when the system
-> goes into standby. We may use cancel_delayed_work_sync here to cancel
-> the delayed worker.
-> 
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> ---
-> v2:
->   - do not block if we cancel a delayed worker in interrupt context
-> 
+Hi Shawn,
 
-Hi Martin,
+I love your patch! Perhaps something to improve:
 
-v2 works for me without any sleeping/scheduling while atomic bugs.
+[auto build test WARNING on tip/irq/core]
+[also build test WARNING on robh/for-next v5.16-rc2 next-20211126]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-Thanks,
-Michael
+url:    https://github.com/0day-ci/linux/commits/Shawn-Guo/Add-Qualcomm-MPM-irqchip-driver-support/20211126-174350
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git 2258a6fc33d56227a981a45069fc651d85a0076f
+config: arm64-buildonly-randconfig-r006-20211126 (https://download.01.org/0day-ci/archive/20211127/202111271507.zYc4AvpT-lkp@intel.com/config)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 5162b558d8c0b542e752b037e72a69d5fd51eb1e)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install arm64 cross compiling tool for clang build
+        # apt-get install binutils-aarch64-linux-gnu
+        # https://github.com/0day-ci/linux/commit/c6f0c60a2d210e09a08be7a8f6e64d291fc708fd
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Shawn-Guo/Add-Qualcomm-MPM-irqchip-driver-support/20211126-174350
+        git checkout c6f0c60a2d210e09a08be7a8f6e64d291fc708fd
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm64 SHELL=/bin/bash drivers/iio/ drivers/irqchip/ drivers/spi/
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/irqchip/qcom-mpm.c:389:6: warning: variable 'ret' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+           if (!mpm_gpio_domain) {
+               ^~~~~~~~~~~~~~~~
+   drivers/irqchip/qcom-mpm.c:422:9: note: uninitialized use occurs here
+           return ret;
+                  ^~~
+   drivers/irqchip/qcom-mpm.c:389:2: note: remove the 'if' if its condition is always false
+           if (!mpm_gpio_domain) {
+           ^~~~~~~~~~~~~~~~~~~~~~~
+   drivers/irqchip/qcom-mpm.c:343:9: note: initialize the variable 'ret' to silence this warning
+           int ret;
+                  ^
+                   = 0
+   1 warning generated.
+
+
+vim +389 drivers/irqchip/qcom-mpm.c
+
+   333	
+   334	static int qcom_mpm_probe(struct platform_device *pdev)
+   335	{
+   336		struct irq_domain *parent_domain, *mpm_gic_domain, *mpm_gpio_domain;
+   337		struct device *dev = &pdev->dev;
+   338		struct device_node *np = dev->of_node;
+   339		struct device_node *parent = of_irq_find_parent(np);
+   340		struct qcom_mpm_priv *priv;
+   341		unsigned int pin_num;
+   342		int irq;
+   343		int ret;
+   344	
+   345		/* See comments in platform_irqchip_probe() */
+   346		if (parent && !irq_find_matching_host(parent, DOMAIN_BUS_ANY))
+   347			return -EPROBE_DEFER;
+   348	
+   349		priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+   350		if (!priv)
+   351			return -ENOMEM;
+   352	
+   353		priv->data = of_device_get_match_data(dev);
+   354		if (!priv->data)
+   355			return -ENODEV;
+   356	
+   357		pin_num = priv->data->pin_num;
+   358		priv->pin_to_irq = devm_kcalloc(dev, pin_num, sizeof(*priv->pin_to_irq),
+   359						GFP_KERNEL);
+   360		if (!priv)
+   361			return -ENOMEM;
+   362	
+   363		priv->reg_stride = DIV_ROUND_UP(pin_num, 32);
+   364		spin_lock_init(&priv->lock);
+   365	
+   366		priv->base = devm_platform_ioremap_resource(pdev, 0);
+   367		if (!priv->base)
+   368			return PTR_ERR(priv->base);
+   369	
+   370		irq = platform_get_irq(pdev, 0);
+   371		if (irq < 0)
+   372			return irq;
+   373	
+   374		parent_domain = irq_find_host(parent);
+   375		if (!parent_domain) {
+   376			dev_err(dev, "failed to find MPM parent domain\n");
+   377			return -ENXIO;
+   378		}
+   379	
+   380		mpm_gic_domain = irq_domain_create_hierarchy(parent_domain, 0, pin_num,
+   381					of_node_to_fwnode(np), &qcom_mpm_gic_ops, priv);
+   382		if (!mpm_gic_domain) {
+   383			dev_err(dev, "failed to create GIC domain\n");
+   384			return -ENOMEM;
+   385		}
+   386	
+   387		mpm_gpio_domain = irq_domain_create_linear(of_node_to_fwnode(np),
+   388					pin_num, &qcom_mpm_gpio_ops, priv);
+ > 389		if (!mpm_gpio_domain) {
+   390			dev_err(dev, "failed to create GPIO domain\n");
+   391			goto remove_gic_domain;
+   392		}
+   393	
+   394		irq_domain_update_bus_token(mpm_gpio_domain, DOMAIN_BUS_WAKEUP);
+   395	
+   396		priv->mbox_client.dev = dev;
+   397		priv->mbox_chan = mbox_request_channel(&priv->mbox_client, 0);
+   398		if (IS_ERR(priv->mbox_chan)) {
+   399			ret = PTR_ERR(priv->mbox_chan);
+   400			dev_err(dev, "failed to acquire IPC channel: %d\n", ret);
+   401			goto remove_gpio_domain;
+   402		}
+   403	
+   404		ret = devm_request_irq(dev, irq, qcom_mpm_handler,
+   405				       IRQF_TRIGGER_RISING | IRQF_NO_SUSPEND,
+   406				       "qcom_mpm", priv);
+   407		if (ret) {
+   408			dev_err(dev, "failed to request irq: %d\n", ret);
+   409			goto free_mbox;
+   410		}
+   411	
+   412		dev_set_drvdata(dev, priv);
+   413	
+   414		return 0;
+   415	
+   416	free_mbox:
+   417		mbox_free_channel(priv->mbox_chan);
+   418	remove_gpio_domain:
+   419		irq_domain_remove(mpm_gpio_domain);
+   420	remove_gic_domain:
+   421		irq_domain_remove(mpm_gic_domain);
+   422		return ret;
+   423	}
+   424	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
