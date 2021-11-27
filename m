@@ -2,69 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C979C460250
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 00:15:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCFBD460253
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 00:15:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351723AbhK0XSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 18:18:48 -0500
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:45568 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243219AbhK0XQr (ORCPT
+        id S1356544AbhK0XSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 18:18:54 -0500
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:44775 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243890AbhK0XQt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 18:16:47 -0500
-Received: by mail-ot1-f45.google.com with SMTP id a23-20020a9d4717000000b0056c15d6d0caso19635027otf.12;
-        Sat, 27 Nov 2021 15:13:32 -0800 (PST)
+        Sat, 27 Nov 2021 18:16:49 -0500
+Received: by mail-oi1-f178.google.com with SMTP id be32so26395815oib.11;
+        Sat, 27 Nov 2021 15:13:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=0CqooEwQjaQ6d3gyq3QtixiAuZ8rOkpxDhFLWQnaq8I=;
-        b=0EsM/EESmQyT//gZOzYmpL+1CVhirCkjv2ns7put4GHCBCIQ6md/213fhwIJknzreD
-         i6OTfj8gijrt4TNr+wE9G/oKtZwWQ5n5Vrm5BrS5yFH8N8/BCyIUFyoOar+yzaLHGLSL
-         K2Fzy6lzoFWznVV+qgrHR/LnmbLf7BGz21VAQz3zTHFAEHCdTglMHe0RhaZTpqlzPHWa
-         YPiQcmDyAqv0XrzVhRzIp9iXNJeOkSxZxsJYzmg4IAarTfFNK8VEbcdBIAxRVDAA0dlq
-         HK6GmymuFMdF4ldxwHhK/JKg0wayIdgZiLnjj8zXTzb+KA+ufexRQUCohJ86cIuximDz
-         VdDg==
-X-Gm-Message-State: AOAM530zElf7t9HtRnAXKuZSonp/PiDePW6/TRsvXp1uYLi9YSXyXSCB
-        Xxit7ELP3X4CvBIkxrPs6RJIqARB0g==
-X-Google-Smtp-Source: ABdhPJy9vXn484UCM2Yea/IT95p+SQqinlq5jlXR5HBqiZxXNrBZxOHg/PXNNxuJ8DVyTcEerSy5yw==
-X-Received: by 2002:a05:6830:1004:: with SMTP id a4mr36593613otp.294.1638054811926;
-        Sat, 27 Nov 2021 15:13:31 -0800 (PST)
+        bh=mNLXmAuw2le1DMdoTmdRUdw966ZM06MjQHIDAN6H6sc=;
+        b=Ot8R1ACZHJailN4TOVuod1dstfDSNhdBpjMMwTxhCkgUzVjWcwN8Rx4rKS75dNgL0I
+         NoLRMwinv50FdCsdcmokiqgbTLpZwKHOW1gZaJ16PmRnldCVe6URXIi8C3hI6T0+kIWN
+         v4MAkC3PMfcmcKWWXUrP4GK9BRCswk4xFmOiAxQC5KOu4Ogi/4XZXkE+ITo8OrHYnOpq
+         HhQ2t+1QppaHYdB6cYsQblUdpZ1aMGKjNnAij/PWLvaAW+mD7/0DyloxDN3MOVhHmP3h
+         kzjTx9rudeODYRBG/WOmzUSZSMkWUk5TMWJSuvAJqTobWcH379KoYUWVPifEHBXEk/cB
+         DQRw==
+X-Gm-Message-State: AOAM5317v9oWyn9kbib6AO9nfQs5jPB678Vk9e261J1XOiLp6j4D/glU
+        S26K8Zxz8mBS934UsmKbtI/XI/BHMA==
+X-Google-Smtp-Source: ABdhPJwLzQha3gR0/9AGa/spXfNJ2uRy6JioEynsPKhT3FucyEg7mQhtiD3wb4/JGxTbSDFwVYB9uQ==
+X-Received: by 2002:a05:6808:3b7:: with SMTP id n23mr32525918oie.160.1638054814398;
+        Sat, 27 Nov 2021 15:13:34 -0800 (PST)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id l39sm1825525otv.63.2021.11.27.15.13.30
+        by smtp.gmail.com with ESMTPSA id j5sm1694720oou.23.2021.11.27.15.13.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Nov 2021 15:13:31 -0800 (PST)
-Received: (nullmailer pid 1973547 invoked by uid 1000);
+        Sat, 27 Nov 2021 15:13:33 -0800 (PST)
+Received: (nullmailer pid 1973545 invoked by uid 1000);
         Sat, 27 Nov 2021 23:13:22 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        linux-pci@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20211126083119.16570-2-kishon@ti.com>
-References: <20211126083119.16570-1-kishon@ti.com> <20211126083119.16570-2-kishon@ti.com>
-Subject: Re: [PATCH v2 1/5] dt-bindings: PCI: ti,am65: Fix "ti,syscon-pcie-id"/"ti,syscon-pcie-mode" to take argument
+To:     Jayesh Choudhary <j-choudhary@ti.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, alsa-devel@alsa-project.org,
+        broonie@kernel.org, lgirdwood@gmail.com
+In-Reply-To: <20211126050228.6257-1-j-choudhary@ti.com>
+References: <20211126050228.6257-1-j-choudhary@ti.com>
+Subject: Re: [PATCH v3] ASoC: dt-bindings: davinci-mcasp: convert McASP bindings to yaml schema
 Date:   Sat, 27 Nov 2021 16:13:22 -0700
-Message-Id: <1638054802.141849.1973546.nullmailer@robh.at.kernel.org>
+Message-Id: <1638054802.120379.1973544.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Nov 2021 14:01:15 +0530, Kishon Vijay Abraham I wrote:
-> Fix binding documentation of "ti,syscon-pcie-id" and "ti,syscon-pcie-mode"
-> to take phandle with argument. The argument is the register offset within
-> "syscon" used to configure PCIe controller. Similar change for j721e is
-> discussed in [1]
+On Fri, 26 Nov 2021 10:32:28 +0530, Jayesh Choudhary wrote:
+> Convert the bindings for McASP controllers for TI SOCs
+> from txt to YAML schema.
 > 
-> [1] -> http://lore.kernel.org/r/CAL_JsqKiUcO76bo1GoepWM1TusJWoty_BRy2hFSgtEVMqtrvvQ@mail.gmail.com
+> Adds additional properties 'clocks', 'clock-names', 'power-domains',
+> '#sound-dai-cells', 'num-serializer' and 'port' which were not there
+> in the txt file.
+> Adds 'dmas' and 'dma-names' in the example which were not there in
+> the txt file.
+> Changes 'interrupts' and 'interrupt-names' from optional to
+> required properties.
 > 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
 > ---
->  .../devicetree/bindings/pci/ti,am65-pci-ep.yaml  |  8 ++++++--
->  .../bindings/pci/ti,am65-pci-host.yaml           | 16 ++++++++++++----
->  2 files changed, 18 insertions(+), 6 deletions(-)
+> Changelog:
+> v3:
+> - removes maxItems from 'clock-names'
+> 
+> v2:
+> - changes the commit message
+> - modifies the properties 'clocks', 'clock-names', 'dma-names',
+>   'dmas', 'interrupts' and 'interrupt-names' according to the
+>   arm SOCs
+> - adds 'port' and 'num-serializer' as node properties
+> 
+>  .../bindings/sound/davinci-mcasp-audio.txt    |  86 ---------
+>  .../bindings/sound/davinci-mcasp-audio.yaml   | 178 ++++++++++++++++++
+>  2 files changed, 178 insertions(+), 86 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml
 > 
 
 Running 'make dtbs_check' with the schema in this patch gives the
@@ -74,96 +89,63 @@ incorrect. These may not be new warnings.
 Note that it is not yet a requirement to have 0 warnings for dtbs_check.
 This will change in the future.
 
-Full log is available here: https://patchwork.ozlabs.org/patch/1559994
+Full log is available here: https://patchwork.ozlabs.org/patch/1559951
 
 
-pcie@21020000: compatible: Additional items are not allowed ('snps,dw-pcie' was unexpected)
-	arch/arm/boot/dts/keystone-k2e-evm.dt.yaml
+mcasp@0: 'rt-num-evt' does not match any of the regexes: 'pinctrl-[0-9]+'
+	arch/arm/boot/dts/am335x-wega-rdk.dt.yaml
 
-pcie@21020000: compatible: ['ti,keystone-pcie', 'snps,dw-pcie'] is too long
-	arch/arm/boot/dts/keystone-k2e-evm.dt.yaml
-
-pcie@21020000: reg: [[553783296, 8192], [553779200, 4096], [39977256, 4]] is too short
-	arch/arm/boot/dts/keystone-k2e-evm.dt.yaml
-
-pcie@21800000: compatible: Additional items are not allowed ('snps,dw-pcie' was unexpected)
-	arch/arm/boot/dts/keystone-k2e-evm.dt.yaml
-	arch/arm/boot/dts/keystone-k2hk-evm.dt.yaml
-	arch/arm/boot/dts/keystone-k2l-evm.dt.yaml
-
-pcie@21800000: compatible: ['ti,keystone-pcie', 'snps,dw-pcie'] is too long
-	arch/arm/boot/dts/keystone-k2e-evm.dt.yaml
-	arch/arm/boot/dts/keystone-k2hk-evm.dt.yaml
-	arch/arm/boot/dts/keystone-k2l-evm.dt.yaml
-
-pcie@21800000: reg: [[562040832, 8192], [562036736, 4096], [39977256, 4]] is too short
-	arch/arm/boot/dts/keystone-k2e-evm.dt.yaml
-	arch/arm/boot/dts/keystone-k2hk-evm.dt.yaml
-	arch/arm/boot/dts/keystone-k2l-evm.dt.yaml
-
-pcie@5500000: ti,syscon-pcie-id:0: [52] is too short
-	arch/arm64/boot/dts/ti/k3-am654-base-board.dt.yaml
-
-pcie@5500000: ti,syscon-pcie-id:0: [60] is too short
+mcasp@2b00000: 'op-mode' is a required property
 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
-	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
-
-pcie@5500000: ti,syscon-pcie-id:0: [61] is too short
 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
 
-pcie@5500000: ti,syscon-pcie-mode:0: [53] is too short
-	arch/arm64/boot/dts/ti/k3-am654-base-board.dt.yaml
-
-pcie@5500000: ti,syscon-pcie-mode:0: [61] is too short
+mcasp@2b00000: 'serial-dir' is a required property
 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
-	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
-
-pcie@5500000: ti,syscon-pcie-mode:0: [62] is too short
 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
 
-pcie@5600000: ti,syscon-pcie-id:0: [52] is too short
-	arch/arm64/boot/dts/ti/k3-am654-base-board.dt.yaml
-
-pcie@5600000: ti,syscon-pcie-id:0: [60] is too short
+mcasp@2b00000: 'tdm-slots' is a required property
 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
-	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
-
-pcie@5600000: ti,syscon-pcie-id:0: [61] is too short
 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
 
-pcie@5600000: ti,syscon-pcie-mode:0: [55] is too short
-	arch/arm64/boot/dts/ti/k3-am654-base-board.dt.yaml
-
-pcie@5600000: ti,syscon-pcie-mode:0: [63] is too short
+mcasp@2b10000: 'op-mode' is a required property
 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
-	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
-
-pcie@5600000: ti,syscon-pcie-mode:0: [64] is too short
 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
 
-pcie-ep@5500000: ti,syscon-pcie-mode:0: [53] is too short
-	arch/arm64/boot/dts/ti/k3-am654-base-board.dt.yaml
-
-pcie-ep@5500000: ti,syscon-pcie-mode:0: [61] is too short
+mcasp@2b10000: 'serial-dir' is a required property
 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
-	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
-
-pcie-ep@5500000: ti,syscon-pcie-mode:0: [62] is too short
 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
 
-pcie-ep@5600000: ti,syscon-pcie-mode:0: [55] is too short
-	arch/arm64/boot/dts/ti/k3-am654-base-board.dt.yaml
-
-pcie-ep@5600000: ti,syscon-pcie-mode:0: [63] is too short
+mcasp@2b10000: 'tdm-slots' is a required property
 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
-	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
-
-pcie-ep@5600000: ti,syscon-pcie-mode:0: [64] is too short
 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
+
+mcasp@2b20000: 'op-mode' is a required property
+	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
+
+mcasp@2b20000: 'serial-dir' is a required property
+	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
+
+mcasp@2b20000: 'tdm-slots' is a required property
+	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
 
