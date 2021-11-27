@@ -2,159 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E98445FEB8
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 14:03:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7604645FEBB
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 14:11:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244599AbhK0NGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 08:06:40 -0500
-Received: from ixit.cz ([94.230.151.217]:58522 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234018AbhK0NEj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 08:04:39 -0500
-Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 1D0EB20064;
-        Sat, 27 Nov 2021 14:01:22 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1638018082;
+        id S1351270AbhK0NL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 08:11:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55399 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239018AbhK0NJ6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 08:09:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1638018403;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=TL5Z0v3ROjL1VN0kk5T9RzyinmEmWC4BFheAFJjFzNM=;
-        b=PVuxMRDBWOG6/Pyw8AxqLdlVD6yNjLKsnza21sk3xFphm0ZWND+BJGuWPN8bcYGlTf7hT3
-        eXif+8lNXdD0H102lV4eVwYsVpLTH9ORrIM1q3u6e6KSD/ftZeeVxg7eLaAdBnt4oc8Tb4
-        SVHGHXNnL/O6Hi4+pmwPDJG5tNO+7UE=
-From:   David Heidelberg <david@ixit.cz>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Cc:     ~okias/devicetree@lists.sr.ht, David Heidelberg <david@ixit.cz>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] arm64: dts: imx8mq: fix the schema check errors for fsl,tmu-calibration
-Date:   Sat, 27 Nov 2021 14:01:18 +0100
-Message-Id: <20211127130118.37525-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6VQ4eFuFA88Z/vyM544qWCqrvAwEDFB665w5oCGPY18=;
+        b=TvAj1MxpYN0lNmbqoxYG21kkqYMtgXxQDwBVOqtVxltGKZfUXz03C86cjN5tFNkihbbpBt
+        VJ5fyQCDOdLAqgEW9FbcLUhI9ha9k9Rdi6a6E8GwP9MiJO9Gshvd+GZxPQXga8IwpCzdjy
+        2ZnsTH/oljIUKmW3BXHChjIHl9VG+08=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-408-QfjQNCA3P7WOEeGU3qXzvA-1; Sat, 27 Nov 2021 08:06:41 -0500
+X-MC-Unique: QfjQNCA3P7WOEeGU3qXzvA-1
+Received: by mail-wm1-f72.google.com with SMTP id p12-20020a05600c1d8c00b0033a22e48203so6996154wms.6
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 05:06:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=6VQ4eFuFA88Z/vyM544qWCqrvAwEDFB665w5oCGPY18=;
+        b=iaKxoUMolk6QyZfCXx0WdTxucUVfzY5DJ3hiAgioTzx0Dq1wVD43dF5A4DvZsMWSi7
+         /kHIxDMuH4/zkkKmf5IEOt9I7GgydXTuu76vZ5VpPlW8go+yJtuOUlDFAY2jyfwNmmlX
+         4qVoib2i3g5InassJ7rfEg4RV4JJw/+Q9ckHmkiLRlyIBQZFMgpiq3uVFQbF3Hw8PmMY
+         /3ODN9MLlaxDQo/lKCj/mEmHXKmsVhV+cr2t7h1Ofkcb0Y5tsEy3a7pYfLw0/ZYwdR3L
+         7Busd5wKIJdnW5pJDSKZXtTvlQCVS3Ib9prbAS3wjJ2WHyrZvgi65YhM3hRgm/tZMqsA
+         En3Q==
+X-Gm-Message-State: AOAM530N7RN5o/GpXD39XSEUeC//Ht4JWEBcshSvnT795gAICkDeG9Dm
+        aH3C3aiWb3rzHJ8/EKGsIvzq9tlTnYhZzjCJ4iWooetPn5RgitXO5Aig6u+xWqeX30FB2rOR28e
+        m9kAXVnGhVcsedWcOUN0lfBJpR+ErU9A8wUr0zlPLpLYkSM9Qwwnv4oBVXu4mo7XlMeaWW1L98A
+        A=
+X-Received: by 2002:adf:e286:: with SMTP id v6mr20452427wri.565.1638018400534;
+        Sat, 27 Nov 2021 05:06:40 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw73lHUswf1TQ0qSgyrPkATonCL8J2Id2gCMmnoQOXqgBtWVc7cWocX3/6BaLRJF7ZHFuQ1vA==
+X-Received: by 2002:adf:e286:: with SMTP id v6mr20452384wri.565.1638018400256;
+        Sat, 27 Nov 2021 05:06:40 -0800 (PST)
+Received: from [192.168.1.102] ([92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id 138sm14206473wma.17.2021.11.27.05.06.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 27 Nov 2021 05:06:39 -0800 (PST)
+Message-ID: <8bc41099-9063-94d0-1a5a-a06c265497e4@redhat.com>
+Date:   Sat, 27 Nov 2021 14:06:38 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH v5 0/6] Cleanups for the nomodeset kernel command line
+ parameter logic
+Content-Language: en-US
+To:     linux-kernel@vger.kernel.org
+Cc:     Jani Nikula <jani.nikula@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
+        dri-devel@lists.freedesktop.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>
+References: <20211112133230.1595307-1-javierm@redhat.com>
+From:   Javier Martinez Canillas <javierm@redhat.com>
+In-Reply-To: <20211112133230.1595307-1-javierm@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fsl,tmu-calibration is in u32-matrix. Use matching property syntax.
-No functional changes. Fixes warnings as:
-$ make dtbs_check
-...
-arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dt.yaml: tmu@30260000: fsl,tmu-calibration:0: Additional items are not allowed (1, 41, 2, 47, 3, 53, 4, 61, 5, 67, 6, 75, 7, 81, 8, 87, 9, 95, 10, 103, 11, 111, 65536, 27, 65537, 35, 65538, 43, 65539, 51, 65540, 59, 65541, 67, 65542, 75, 65543, 85, 65544, 93, 65545, 103, 65546, 112, 131072, 23, 131073, 35, 131074, 45, 131075, 55, 131076, 65, 131077, 75, 131078, 87, 131079, 99, 131080, 111, 196608, 21, 196609, 33, 196610, 45, 196611, 57, 196612, 69, 196613, 83, 196614, 95, 196615, 113 were unexpected)
-        From schema: /home/ubuntu/projects_remote/linux/Documentation/devicetree/bindings/thermal/qoriq-thermal.yaml
-...
+On 11/12/21 14:32, Javier Martinez Canillas wrote:
+> There is a lot of historical baggage on this parameter. It is defined in
+> the vgacon driver as nomodeset, but its set function is called text_mode()
+> and the value queried with a function named vgacon_text_force().
+> 
+> All this implies that it's about forcing text mode for VGA, yet it is not
+> used in neither vgacon nor other console driver. The only users for these
+> are DRM drivers, that check for the vgacon_text_force() return value to
+> determine whether the driver should be loaded or not.
+> 
+> That makes it quite confusing to read the code, because the variables and
+> function names don't reflect what they actually do and also are not in the
+> same subsystem as the drivers that make use of them.
+> 
+> This patch-set attempts to cleanup the code by moving the nomodseset param
+> to the DRM subsystem and do some renaming to make their intention clearer.
+> 
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
- arch/arm64/boot/dts/freescale/imx8mq.dtsi | 86 +++++++++++------------
- 1 file changed, 43 insertions(+), 43 deletions(-)
+I have pushed these patches to the drm-misc-next branch.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-index 95d8b95d6120..c90a8befdd95 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-@@ -457,49 +457,49 @@ tmu: tmu@30260000 {
- 				clocks = <&clk IMX8MQ_CLK_TMU_ROOT>;
- 				little-endian;
- 				fsl,tmu-range = <0xb0000 0xa0026 0x80048 0x70061>;
--				fsl,tmu-calibration = <0x00000000 0x00000023
--						       0x00000001 0x00000029
--						       0x00000002 0x0000002f
--						       0x00000003 0x00000035
--						       0x00000004 0x0000003d
--						       0x00000005 0x00000043
--						       0x00000006 0x0000004b
--						       0x00000007 0x00000051
--						       0x00000008 0x00000057
--						       0x00000009 0x0000005f
--						       0x0000000a 0x00000067
--						       0x0000000b 0x0000006f
--
--						       0x00010000 0x0000001b
--						       0x00010001 0x00000023
--						       0x00010002 0x0000002b
--						       0x00010003 0x00000033
--						       0x00010004 0x0000003b
--						       0x00010005 0x00000043
--						       0x00010006 0x0000004b
--						       0x00010007 0x00000055
--						       0x00010008 0x0000005d
--						       0x00010009 0x00000067
--						       0x0001000a 0x00000070
--
--						       0x00020000 0x00000017
--						       0x00020001 0x00000023
--						       0x00020002 0x0000002d
--						       0x00020003 0x00000037
--						       0x00020004 0x00000041
--						       0x00020005 0x0000004b
--						       0x00020006 0x00000057
--						       0x00020007 0x00000063
--						       0x00020008 0x0000006f
--
--						       0x00030000 0x00000015
--						       0x00030001 0x00000021
--						       0x00030002 0x0000002d
--						       0x00030003 0x00000039
--						       0x00030004 0x00000045
--						       0x00030005 0x00000053
--						       0x00030006 0x0000005f
--						       0x00030007 0x00000071>;
-+				fsl,tmu-calibration = <0x00000000 0x00000023>,
-+						<0x00000001 0x00000029>,
-+						<0x00000002 0x0000002f>,
-+						<0x00000003 0x00000035>,
-+						<0x00000004 0x0000003d>,
-+						<0x00000005 0x00000043>,
-+						<0x00000006 0x0000004b>,
-+						<0x00000007 0x00000051>,
-+						<0x00000008 0x00000057>,
-+						<0x00000009 0x0000005f>,
-+						<0x0000000a 0x00000067>,
-+						<0x0000000b 0x0000006f>,
-+
-+						<0x00010000 0x0000001b>,
-+						<0x00010001 0x00000023>,
-+						<0x00010002 0x0000002b>,
-+						<0x00010003 0x00000033>,
-+						<0x00010004 0x0000003b>,
-+						<0x00010005 0x00000043>,
-+						<0x00010006 0x0000004b>,
-+						<0x00010007 0x00000055>,
-+						<0x00010008 0x0000005d>,
-+						<0x00010009 0x00000067>,
-+						<0x0001000a 0x00000070>,
-+
-+						<0x00020000 0x00000017>,
-+						<0x00020001 0x00000023>,
-+						<0x00020002 0x0000002d>,
-+						<0x00020003 0x00000037>,
-+						<0x00020004 0x00000041>,
-+						<0x00020005 0x0000004b>,
-+						<0x00020006 0x00000057>,
-+						<0x00020007 0x00000063>,
-+						<0x00020008 0x0000006f>,
-+
-+						<0x00030000 0x00000015>,
-+						<0x00030001 0x00000021>,
-+						<0x00030002 0x0000002d>,
-+						<0x00030003 0x00000039>,
-+						<0x00030004 0x00000045>,
-+						<0x00030005 0x00000053>,
-+						<0x00030006 0x0000005f>,
-+						<0x00030007 0x00000071>;
- 				#thermal-sensor-cells =  <1>;
- 			};
- 
+Thanks a lot everyone for the help with this series!
+
+Best regards,
 -- 
-2.33.0
+Javier Martinez Canillas
+Linux Engineering
+Red Hat
 
