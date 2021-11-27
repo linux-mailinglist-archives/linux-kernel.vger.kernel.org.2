@@ -2,153 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C90645FCE8
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 06:40:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4205C45FCA8
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 06:18:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243288AbhK0FnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 00:43:24 -0500
-Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17230 "EHLO
-        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238036AbhK0FlX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 00:41:23 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1637932178; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=YCD9Qy/t2w3SG/dzfftvb30u8EtAqWFB0/v7Gz5mdsDG1lqyu9jplrgieI983y96ACu3TkHCX8b01GKHM55T/OU6FAQ8dcNYRTmnarjSbxT9g2a5aVINpvv7DC7wRJoXwqz59IREFqMDrvFpKNhVagDKOIiykKK/0ZcWsa3ukFE=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1637932178; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
-        bh=DKINIDnMGkMKeLcTBYO3BxCbPU2T+QmP00nUmcd3ZJM=; 
-        b=Er6e0/lkmSRSDyV226mD5NFNTE/ZyV1j6Sg4apZ8oYShb5o7o/EuMxFx6NPd3wIaEr3a34zyjqlEa5amf7z0Elcsdj/6FjwkhpNuytXuHv6z29aHOZgioU8SOVfHCs4LkJrbOdseCedcLEQLiSxbsKHOHOML12KgAWoPIAlxFoU=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1637932178;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=DKINIDnMGkMKeLcTBYO3BxCbPU2T+QmP00nUmcd3ZJM=;
-        b=TSAddY81PkFDLj1aC2Geq5A7DpzYXqjiqX2cd1JiU6+p8vo+ip6IQL0AJwqYzL8q
-        SL/EUFY7eXLVgpH6U+sChP4Mp9AvTMG1SmkiGP7ZB/e4e59TCqEV3ypRXpjFSaUYX4Q
-        jlj9W1EHKYPABmA1E5luDrb6We20clxMVRqlY6V0=
-Received: from mail.baihui.com by mx.zoho.com.cn
-        with SMTP id 163793217656496.81082384691524; Fri, 26 Nov 2021 21:09:36 +0800 (CST)
-Date:   Fri, 26 Nov 2021 21:09:36 +0800
-From:   Chengguang Xu <cgxu519@mykernel.net>
-Reply-To: cgxu519@mykernel.net
-To:     "Jan Kara" <jack@suse.cz>
-Cc:     "miklos" <miklos@szeredi.hu>, "amir73il" <amir73il@gmail.com>,
-        "linux-unionfs" <linux-unionfs@vger.kernel.org>,
-        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "Chengguang Xu" <charliecgxu@tencent.com>,
-        "ronyjin" <ronyjin@tencent.com>
-Message-ID: <17d5c5d9498.134e725b210976.7805957202314611987@mykernel.net>
-In-Reply-To: <20211126091430.GC13004@quack2.suse.cz>
-References: <20211122030038.1938875-1-cgxu519@mykernel.net>
- <20211122030038.1938875-4-cgxu519@mykernel.net> <20211126091430.GC13004@quack2.suse.cz>
-Subject: Re: [RFC PATCH V6 3/7] ovl: implement overlayfs' own ->write_inode
- operation
+        id S233665AbhK0FLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 00:11:54 -0500
+Received: from mga11.intel.com ([192.55.52.93]:43748 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229452AbhK0FJw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 00:09:52 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="233236154"
+X-IronPort-AV: E=Sophos;i="5.87,268,1631602800"; 
+   d="scan'208";a="233236154"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 21:06:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,268,1631602800"; 
+   d="scan'208";a="593662770"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 26 Nov 2021 21:06:37 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqpv2-00095R-Rk; Sat, 27 Nov 2021 05:06:36 +0000
+Date:   Sat, 27 Nov 2021 13:05:58 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tero Kristo <tero.kristo@linux.intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: [t-kristo-pm:usi-5.16-rfc-v2-bpf 27/30] syscall.c:undefined
+ reference to `hid_prog_detach'
+Message-ID: <202111271317.2WIt2rDW-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Importance: Medium
-User-Agent: ZohoCN Mail
-X-Mailer: ZohoCN Mail
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=BA=94, 2021-11-26 17:14:30 Jan Kara <=
-jack@suse.cz> =E6=92=B0=E5=86=99 ----
- > On Mon 22-11-21 11:00:34, Chengguang Xu wrote:
- > > From: Chengguang Xu <charliecgxu@tencent.com>
- > >=20
- > > Sync dirty data and meta of upper inode in overlayfs' ->write_inode()
- > > and redirty overlayfs' inode.
- > >=20
- > > Signed-off-by: Chengguang Xu <charliecgxu@tencent.com>
- >=20
- > Looks good. I'm still not 100% convinced keeping inodes dirty all the ti=
-me
- > will not fire back in excessive writeback activity (e.g. flush worker wi=
-ll
- > traverse the list of all dirty inodes every 30 seconds and try to write
- > them) but I guess we can start with this and if people complain, dirtine=
-ss
- > handling can be improved.=20
+tree:   https://github.com/t-kristo/linux-pm usi-5.16-rfc-v2-bpf
+head:   241207b4769fca049dfcc4dbde0bda92e4f67027
+commit: a6e125d8c63a6fd1214ecadcce4b317e57475f81 [27/30] DEBUG: bpf: syscall: add some debug traces
+config: m68k-defconfig (https://download.01.org/0day-ci/archive/20211127/202111271317.2WIt2rDW-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/t-kristo/linux-pm/commit/a6e125d8c63a6fd1214ecadcce4b317e57475f81
+        git remote add t-kristo-pm https://github.com/t-kristo/linux-pm
+        git fetch --no-tags t-kristo-pm usi-5.16-rfc-v2-bpf
+        git checkout a6e125d8c63a6fd1214ecadcce4b317e57475f81
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=m68k SHELL=/bin/bash
 
-Hi Jan,
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Thanks for the review and suggestion.
+All errors (new ones prefixed by >>):
 
+   m68k-linux-ld: kernel/bpf/syscall.o: in function `bpf_prog_attach':
+   syscall.c:(.text+0x3888): undefined reference to `hid_prog_attach'
+   m68k-linux-ld: kernel/bpf/syscall.o: in function `__sys_bpf':
+>> syscall.c:(.text+0x4ae2): undefined reference to `hid_prog_detach'
+   m68k-linux-ld: syscall.c:(.text+0x4b64): undefined reference to `hid_prog_query'
 
-Thanks,
-Chengguang
-
-
-
- > So feel free to add:
- >=20
- > Reviewed-by: Jan Kara <jack@suse.cz>
- >=20
- >                                 Honza
- >=20
- > > ---
- > >  fs/overlayfs/super.c | 21 +++++++++++++++++++++
- > >  1 file changed, 21 insertions(+)
- > >=20
- > > diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
- > > index 18a12088a37b..12acf0ec7395 100644
- > > --- a/fs/overlayfs/super.c
- > > +++ b/fs/overlayfs/super.c
- > > @@ -15,6 +15,7 @@
- > >  #include <linux/seq_file.h>
- > >  #include <linux/posix_acl_xattr.h>
- > >  #include <linux/exportfs.h>
- > > +#include <linux/writeback.h>
- > >  #include "overlayfs.h"
- > > =20
- > >  MODULE_AUTHOR("Miklos Szeredi <miklos@szeredi.hu>");
- > > @@ -406,12 +407,32 @@ static int ovl_remount(struct super_block *sb, i=
-nt *flags, char *data)
- > >      return ret;
- > >  }
- > > =20
- > > +static int ovl_write_inode(struct inode *inode,
- > > +               struct writeback_control *wbc)
- > > +{
- > > +    struct ovl_fs *ofs =3D inode->i_sb->s_fs_info;
- > > +    struct inode *upper_inode =3D ovl_inode_upper(inode);
- > > +    int ret =3D 0;
- > > +
- > > +    if (!upper_inode)
- > > +        return 0;
- > > +
- > > +    if (!ovl_should_sync(ofs))
- > > +        return 0;
- > > +
- > > +    ret =3D write_inode_now(upper_inode, wbc->sync_mode =3D=3D WB_SYN=
-C_ALL);
- > > +    mark_inode_dirty(inode);
- > > +
- > > +    return ret;
- > > +}
- > > +
- > >  static const struct super_operations ovl_super_operations =3D {
- > >      .alloc_inode    =3D ovl_alloc_inode,
- > >      .free_inode    =3D ovl_free_inode,
- > >      .destroy_inode    =3D ovl_destroy_inode,
- > >      .drop_inode    =3D generic_delete_inode,
- > >      .put_super    =3D ovl_put_super,
- > > +    .write_inode    =3D ovl_write_inode,
- > >      .sync_fs    =3D ovl_sync_fs,
- > >      .statfs        =3D ovl_statfs,
- > >      .show_options    =3D ovl_show_options,
- > > --=20
- > > 2.27.0
- > >=20
- > >=20
- > --=20
- > Jan Kara <jack@suse.com>
- > SUSE Labs, CR
- >=20
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
