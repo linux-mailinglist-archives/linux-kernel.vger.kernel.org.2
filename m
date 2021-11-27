@@ -2,166 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA9445FB45
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 02:34:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB7745FB3D
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 02:34:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350476AbhK0Bhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 20:37:34 -0500
-Received: from mga02.intel.com ([134.134.136.20]:57463 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351096AbhK0Bfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 20:35:33 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="222960268"
-X-IronPort-AV: E=Sophos;i="5.87,267,1631602800"; 
-   d="scan'208";a="222960268"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 17:25:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,267,1631602800"; 
-   d="scan'208";a="498613168"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 26 Nov 2021 17:25:23 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqmSw-0008rv-Mw; Sat, 27 Nov 2021 01:25:22 +0000
-Date:   Sat, 27 Nov 2021 09:24:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ayala Beker <ayala.beker@intel.com>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Luca Coelho <luciano.coelho@intel.com>
-Subject: [iwlwifi-next:mac80211-next 4/5] net/wireless/scan.c:1803:6: error:
- use of undeclared identifier 'channel'
-Message-ID: <202111270902.oVy0Aumb-lkp@intel.com>
+        id S1353552AbhK0BhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 20:37:15 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:40742 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346098AbhK0BfN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 20:35:13 -0500
+Message-ID: <20211126233124.618283684@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637976297;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=db+bEd42/odCLFRuWnqbyMqKNP8CPK8Qgl6k8EnxiD4=;
+        b=1JlpTSX4Oy1wxfkRGfi3MFe15urC2p2+OrjfJgRh8RUL+84OSGSciJke659tDU3sGZWAPK
+        kl9oaW52ONLaQ3HdTC/tL2eZb0dBKAlCTOBLxqnsHzvTkHnb2zmWh2mf67D0QDpvGh+PDN
+        HYafcSl5dWtgEzn6jQ4MFoQ1CykTAYxLJzPL3dhreYF90toQe1lMo8dPAx8l/oXk/4Oe4R
+        kAsJxgjoMqD641Zs66b3plcM9681VXaFP2G4W9DXXHvZegFqWPMRjXsdkuu/B4mAqmGsHL
+        +nMcmL4XP8tl2H/u4Jfcrn2L2H6APZ9shAZy/iqsDKIBWqfUN22XWDpbzNMYFw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637976297;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=db+bEd42/odCLFRuWnqbyMqKNP8CPK8Qgl6k8EnxiD4=;
+        b=aqqfLHlqslFm90N1E+AAibzpkiPNtQQ0MsJBpzh2OzQqLTRDn821RvKr0rjBDdb4IhJ4XQ
+        RhGdp4ZZeW3Q1bBQ==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, Marc Zygnier <maz@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Megha Dey <megha.dey@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Cooper <amc96@cam.ac.uk>,
+        Juergen Gross <jgross@suse.com>, linux-pci@vger.kernel.org,
+        xen-devel@lists.xenproject.org
+Subject: [patch 00/10] genirq/msi, PCI/MSI: Support for dynamic MSI-X vector
+ expansion - Part 4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Date:   Sat, 27 Nov 2021 02:24:57 +0100 (CET)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/iwlwifi/iwlwifi-next.git mac80211-next
-head:   690c735dc56561a2cf331dcded3eecdbad1edd7f
-commit: 8efcf18569753acc522e58966fedd773ad358ee3 [4/5] cfg80211: Use the HE operation IE to determine a 6GHz BSS channel
-config: arm-randconfig-r011-20211126 (https://download.01.org/0day-ci/archive/20211127/202111270902.oVy0Aumb-lkp@intel.com/config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 5162b558d8c0b542e752b037e72a69d5fd51eb1e)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install arm cross compiling tool for clang build
-        # apt-get install binutils-arm-linux-gnueabi
-        # https://git.kernel.org/pub/scm/linux/kernel/git/iwlwifi/iwlwifi-next.git/commit/?id=8efcf18569753acc522e58966fedd773ad358ee3
-        git remote add iwlwifi-next https://git.kernel.org/pub/scm/linux/kernel/git/iwlwifi/iwlwifi-next.git
-        git fetch --no-tags iwlwifi-next mac80211-next
-        git checkout 8efcf18569753acc522e58966fedd773ad358ee3
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm SHELL=/bin/bash net/wireless/
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
->> net/wireless/scan.c:1803:6: error: use of undeclared identifier 'channel'
-           if (channel->band == NL80211_BAND_6GHZ) {
-               ^
-   net/wireless/scan.c:1815:12: error: use of undeclared identifier 'channel'
-                                   return channel;
-                                          ^
->> net/wireless/scan.c:1817:4: error: use of undeclared identifier 'freq'
-                           freq = ieee80211_channel_to_frequency(he_6ghz_oper->primary,
-                           ^
-   net/wireless/scan.c:1824:12: error: use of undeclared identifier 'freq'
-                               abs(freq - channel->center_freq) <= 80 &&
-                                   ^
-   net/wireless/scan.c:1824:19: error: use of undeclared identifier 'channel'
-                               abs(freq - channel->center_freq) <= 80 &&
-                                          ^
-   net/wireless/scan.c:1824:12: error: use of undeclared identifier 'freq'
-                               abs(freq - channel->center_freq) <= 80 &&
-                                   ^
-   net/wireless/scan.c:1824:19: error: use of undeclared identifier 'channel'
-                               abs(freq - channel->center_freq) <= 80 &&
-                                          ^
-   net/wireless/scan.c:1823:8: error: use of undeclared identifier 'freq'
-                           if (freq != channel->center_freq &&
-                               ^
-   net/wireless/scan.c:1823:16: error: use of undeclared identifier 'channel'
-                           if (freq != channel->center_freq &&
-                                       ^
->> net/wireless/scan.c:1825:9: error: use of undeclared identifier 'ftype'; did you mean '_ctype'?
-                               (ftype != CFG80211_BSS_FTYPE_BEACON ||
-                                ^~~~~
-                                _ctype
-   include/linux/ctype.h:21:28: note: '_ctype' declared here
-   extern const unsigned char _ctype[];
-                              ^
-   10 errors generated.
-
-
-vim +/channel +1803 net/wireless/scan.c
-
-  1796	
-  1797	int cfg80211_get_ies_channel_number(const u8 *ie, size_t ielen,
-  1798					    enum nl80211_band band)
-  1799	{
-  1800		const u8 *tmp;
-  1801		int channel_number = -1;
-  1802	
-> 1803		if (channel->band == NL80211_BAND_6GHZ) {
-  1804			const struct element *elem;
-  1805	
-  1806			elem = cfg80211_find_ext_elem(WLAN_EID_EXT_HE_OPERATION, ie,
-  1807						      ielen);
-  1808			if (elem && elem->datalen >= ieee80211_he_oper_size(&elem->data[1])) {
-  1809				struct ieee80211_he_operation *he_oper =
-  1810					(void *)(&elem->data[1]);
-  1811				const struct ieee80211_he_6ghz_oper *he_6ghz_oper;
-  1812	
-  1813				he_6ghz_oper = ieee80211_he_6ghz_oper(he_oper);
-  1814				if (!he_6ghz_oper)
-  1815					return channel;
-  1816	
-> 1817				freq = ieee80211_channel_to_frequency(he_6ghz_oper->primary,
-  1818								      NL80211_BAND_6GHZ);
-  1819	
-  1820				/* duplicated beacon indication is relevant for beacons
-  1821				 * only
-  1822				 */
-  1823				if (freq != channel->center_freq &&
-  1824				    abs(freq - channel->center_freq) <= 80 &&
-> 1825				    (ftype != CFG80211_BSS_FTYPE_BEACON ||
-  1826				     he_6ghz_oper->control & IEEE80211_HE_6GHZ_OPER_CTRL_DUP_BEACON))
-  1827					channel_number = he_6ghz_oper->primary;
-  1828			}
-  1829		} else if (band == NL80211_BAND_S1GHZ) {
-  1830			tmp = cfg80211_find_ie(WLAN_EID_S1G_OPERATION, ie, ielen);
-  1831			if (tmp && tmp[1] >= sizeof(struct ieee80211_s1g_oper_ie)) {
-  1832				struct ieee80211_s1g_oper_ie *s1gop = (void *)(tmp + 2);
-  1833	
-  1834				channel_number = s1gop->primary_ch;
-  1835			}
-  1836		} else {
-  1837			tmp = cfg80211_find_ie(WLAN_EID_DS_PARAMS, ie, ielen);
-  1838			if (tmp && tmp[1] == 1) {
-  1839				channel_number = tmp[2];
-  1840			} else {
-  1841				tmp = cfg80211_find_ie(WLAN_EID_HT_OPERATION, ie, ielen);
-  1842				if (tmp && tmp[1] >= sizeof(struct ieee80211_ht_operation)) {
-  1843					struct ieee80211_ht_operation *htop = (void *)(tmp + 2);
-  1844	
-  1845					channel_number = htop->primary_chan;
-  1846				}
-  1847			}
-  1848		}
-  1849	
-  1850		return channel_number;
-  1851	}
-  1852	EXPORT_SYMBOL(cfg80211_get_ies_channel_number);
-  1853	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+VGhpcyBpcyBmaW5hbGx5IHRoZSBwb2ludCB3aGVyZSBkeW5hbWljYWxseSBleHBhbmRpbmcgTVNJ
+LVggdmVjdG9ycyBhZnRlcgplbmFibGluZyBNU0ktWCBpcyBpbXBsZW1lbnRlZC4KClRoZSBmaXJz
+dCB0aHJlZSBwYXJ0cyBvZiB0aGlzIHdvcmsgY2FuIGJlIGZvdW5kIGhlcmU6CgogICAgaHR0cHM6
+Ly9sb3JlLmtlcm5lbC5vcmcvci8yMDIxMTEyNjIyMjcwMC44NjI0MDc5NzdAbGludXRyb25peC5k
+ZQogICAgaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci8yMDIxMTEyNjIyNDEwMC4zMDMwNDY3NDlA
+bGludXRyb25peC5kZQogICAgaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci8yMDIxMTEyNjIzMDk1
+Ny4yMzkzOTE3OTlAbGludXRyb25peC5kZQoKVGhpcyBsYXN0IGFuZCBzbWFsbGVzdCBwYXJ0IG9m
+IHRoZSBvdmVyYWxsIHNlcmllcyBjb250YWlucyB0aGUgZm9sbG93aW5nCmNoYW5nZXM6CgogICAx
+KSBQcmVwYXJlIHRoZSBjb3JlIE1TSSBpcnEgZG9tYWluIGNvZGUgdG8gaGFuZGxlIHJhbmdlIGJh
+c2VkIGFsbG9jYXRpb24KICAgICAgYW5kIGZyZWUKCiAgIDIpIFByZXBhcmUgdGhlIFBDSS9NU0kg
+Y29kZSB0byBoYW5kbGUgcmFuZ2UgYmFzZWQgYWxsb2NhdGlvbiBhbmQgZnJlZQogIAogICAzKSBJ
+bXBsZW1lbnQgYSBuZXcgaW50ZXJmYWNlIHdoaWNoIGFsbG93cyB0byBleHBhbmQgdGhlIE1TSS1Y
+IHZlY3RvcgogICAgICBzcGFjZSBhZnRlciBpbml0aWFsaXphdGlvbgoKICAgNCkgRW5hYmxlIHN1
+cHBvcnQgZm9yIHRoZSBYODYgUENJL01TSSBpcnEgZG9tYWlucwoKICAgICAgVGhpcyBpcyB1bmZv
+cnR1bmF0ZSwgYnV0IHNvbWUgUENJL01TSSBpcnEgZG9tYWluIGltcGxlbWVudGF0aW9ucywKICAg
+ICAgZS5nLiBwb3dlcnBjIGFuZCB0aGUgeDg2L1hFTiBpcnFkb21haW4gd3JhcHBlcnMgYXJlIG5v
+dCByZWFsbHkgcmVhZHkKICAgICAgdG8gc3VwcG9ydCB0aGlzIG91dCBvZiB0aGUgYm94LgoKICAg
+ICAgSSBsb29rZWQgYXQgdGhlIDMwIHBsYWNlcyB3aGljaCBpbXBsZW1lbnQgUENJL01TSSBpcnEg
+ZG9tYWlucyBhbmQKICAgICAgbWFueSBvZiB0aGVtIGxvb2sgbGlrZSB0aGV5IGNvdWxkIHN1cHBv
+cnQgaXQgb3V0IG9mIHRoZSBib3gsIGJ1dCBhcwogICAgICB3ZSBoYXZlIHR3byB3aGljaCBkZWZp
+bml0ZWx5IGRvbid0LCBtYWtpbmcgdGhpcyBvcHQtaW4gaXMgdGhlIG9ubHkKICAgICAgc2FmZSBv
+cHRpb24uCgpJJ3ZlIHRlc3RlZCB0aGlzIGJ5IGhhY2tpbmcgdXAgdGhlIFhIQ0kgZHJpdmVyIGFu
+ZCBpdCB3b3JrcyBsaWtlIGEgY2hhcm0uCgpUaGVyZSBpcyBjZXJ0YWlubHkgc29tZSBtb3JlIHJv
+b20gZm9yIGNvbnNvbGlkYXRpbmcgdGhlIFBDSS9NU0ktWCB1c2FnZSBpbgpkcml2ZXJzLCBpLmUu
+IGdldHRpbmcgcmlkIG9mIHBjaV9lbmFibGVfbXNpeCooKSwgYnV0IHRoaXMgd291bGQgaGF2ZSBt
+YWRlCnRoaXMgc2VyaWVzIGV2ZW4gbGFyZ2VyIGFuZCBpcyBhbiBvcnRob2dvbmFsIGlzc3VlLgoK
+VGhlIHNlcmllcyBpcyBiYXNlZCBvbjoKCiAgICAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3Nj
+bS9saW51eC9rZXJuZWwvZ2l0L3RnbHgvZGV2ZWwuZ2l0IG1zaS12MS1wYXJ0LTMKCmFuZCBhbHNv
+IGF2YWlsYWJsZSBmcm9tIGdpdDoKCiAgICAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9s
+aW51eC9rZXJuZWwvZ2l0L3RnbHgvZGV2ZWwuZ2l0IG1zaS12MS1wYXJ0LTQKClRoYW5rcywKCgl0
+Z2x4Ci0tLQogYXJjaC9wb3dlcnBjL3BsYXRmb3Jtcy9wc2VyaWVzL21zaS5jIHwgICAgNiArLQog
+YXJjaC94ODYva2VybmVsL2FwaWMvbXNpLmMgICAgICAgICAgIHwgICAgNCAtCiBhcmNoL3g4Ni9w
+Y2kveGVuLmMgICAgICAgICAgICAgICAgICAgfCAgIDEwICstLQogZHJpdmVycy9iYXNlL3BsYXRm
+b3JtLW1zaS5jICAgICAgICAgIHwgICAgMyAtCiBkcml2ZXJzL3BjaS9tc2kvaXJxZG9tYWluLmMg
+ICAgICAgICAgfCAgIDM5ICsrKysrKysrKystLS0tCiBkcml2ZXJzL3BjaS9tc2kvbXNpLmMgICAg
+ICAgICAgICAgICAgfCAgIDk3ICsrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tCiBk
+cml2ZXJzL3BjaS9tc2kvbXNpLmggICAgICAgICAgICAgICAgfCAgICA0IC0KIGluY2x1ZGUvbGlu
+dXgvbXNpLmggICAgICAgICAgICAgICAgICB8ICAgNDYgKysrKysrKysrKystLS0tLQogaW5jbHVk
+ZS9saW51eC9wY2kuaCAgICAgICAgICAgICAgICAgIHwgICAxMyArKysrCiBrZXJuZWwvaXJxL21z
+aS5jICAgICAgICAgICAgICAgICAgICAgfCAgIDc1ICsrKysrKysrKysrKysrKy0tLS0tLS0tLS0t
+LQogMTAgZmlsZXMgY2hhbmdlZCwgMjA4IGluc2VydGlvbnMoKyksIDg5IGRlbGV0aW9ucygtKQo=
