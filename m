@@ -2,171 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFC845FE39
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 12:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F0EB45FE4A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 12:26:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234723AbhK0LRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 06:17:05 -0500
-Received: from mga14.intel.com ([192.55.52.115]:13507 "EHLO mga14.intel.com"
+        id S238816AbhK0LaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 06:30:06 -0500
+Received: from mga11.intel.com ([192.55.52.93]:52024 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230197AbhK0LPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 06:15:03 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="235993290"
+        id S233200AbhK0L2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 06:28:05 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="233249438"
 X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
-   d="scan'208";a="235993290"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 03:11:49 -0800
+   d="scan'208";a="233249438"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 03:24:51 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
-   d="scan'208";a="476124573"
+   d="scan'208";a="498707234"
 Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 27 Nov 2021 03:11:47 -0800
+  by orsmga007.jf.intel.com with ESMTP; 27 Nov 2021 03:24:48 -0800
 Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mqvcR-0009PG-1Z; Sat, 27 Nov 2021 11:11:47 +0000
-Date:   Sat, 27 Nov 2021 19:10:52 +0800
+        id 1mqvp1-0009Q8-DK; Sat, 27 Nov 2021 11:24:47 +0000
+Date:   Sat, 27 Nov 2021 19:23:48 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars:for-next/kspp-misc-fixes] BUILD REGRESSION
- 004a9cea9666ecd470e442ef776a22d24870bba9
-Message-ID: <61a2123c.n6SXgGuWh677wnnm%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+To:     Felix Fietkau <nbd@nbd.name>, linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     kbuild-all@lists.01.org, john@phrozen.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH v4 07/12] clk: en7523: Add clock driver for Airoha EN7523
+ SoC
+Message-ID: <202111271912.FCpB3UGa-lkp@intel.com>
+References: <20211125110738.41028-8-nbd@nbd.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20211125110738.41028-8-nbd@nbd.name>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/kspp-misc-fixes
-branch HEAD: 004a9cea9666ecd470e442ef776a22d24870bba9  treewide: Replace zero-length arrays with flexible-array members
+Hi Felix,
 
-Error/Warning reports:
+I love your patch! Perhaps something to improve:
 
-https://lore.kernel.org/lkml/202111260100.ucJw3jNQ-lkp@intel.com
+[auto build test WARNING on robh/for-next]
+[also build test WARNING on clk/clk-next v5.16-rc2 next-20211126]
+[cannot apply to linusw-gpio/for-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-Error/Warning in current branch:
+url:    https://github.com/0day-ci/linux/commits/Felix-Fietkau/dt-bindings-Add-vendor-prefix-for-Airoha/20211125-200806
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+config: powerpc64-randconfig-s032-20211126 (https://download.01.org/0day-ci/archive/20211127/202111271912.FCpB3UGa-lkp@intel.com/config)
+compiler: powerpc64-linux-gcc (GCC) 11.2.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.4-dirty
+        # https://github.com/0day-ci/linux/commit/ff9f74e46043aecee2d7373f978a99ce9a3f1e27
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Felix-Fietkau/dt-bindings-Add-vendor-prefix-for-Airoha/20211125-200806
+        git checkout ff9f74e46043aecee2d7373f978a99ce9a3f1e27
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=powerpc SHELL=/bin/bash drivers/clk/
 
-sound/soc/sof/topology.c:2230:26: error: invalid use of flexible array member
-sound/soc/sof/topology.c:2230:47: error: invalid use of flexible array member
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Error/Warning ids grouped by kconfigs:
 
-gcc_recent_errors
-|-- alpha-randconfig-r012-20211126
-|   `-- sound-soc-sof-topology.c:error:invalid-use-of-flexible-array-member
-|-- arc-allyesconfig
-|   `-- sound-soc-sof-topology.c:error:invalid-use-of-flexible-array-member
-|-- arm-allmodconfig
-|   `-- sound-soc-sof-topology.c:error:invalid-use-of-flexible-array-member
-|-- arm-allyesconfig
-|   `-- sound-soc-sof-topology.c:error:invalid-use-of-flexible-array-member
-|-- arm64-allyesconfig
-|   `-- sound-soc-sof-topology.c:error:invalid-use-of-flexible-array-member
-|-- i386-randconfig-a015-20211126
-|   `-- sound-soc-sof-topology.c:error:invalid-use-of-flexible-array-member
-|-- ia64-allyesconfig
-|   `-- sound-soc-sof-topology.c:error:invalid-use-of-flexible-array-member
-|-- mips-allmodconfig
-|   `-- sound-soc-sof-topology.c:error:invalid-use-of-flexible-array-member
-|-- mips-allyesconfig
-|   `-- sound-soc-sof-topology.c:error:invalid-use-of-flexible-array-member
-|-- parisc-allyesconfig
-|   `-- sound-soc-sof-topology.c:error:invalid-use-of-flexible-array-member
-|-- powerpc-allmodconfig
-|   `-- sound-soc-sof-topology.c:error:invalid-use-of-flexible-array-member
-|-- powerpc-allyesconfig
-|   `-- sound-soc-sof-topology.c:error:invalid-use-of-flexible-array-member
-|-- s390-allyesconfig
-|   `-- sound-soc-sof-topology.c:error:invalid-use-of-flexible-array-member
-|-- sh-allmodconfig
-|   `-- sound-soc-sof-topology.c:error:invalid-use-of-flexible-array-member
-|-- sparc-allyesconfig
-|   `-- sound-soc-sof-topology.c:error:invalid-use-of-flexible-array-member
-`-- x86_64-allyesconfig
-    `-- sound-soc-sof-topology.c:error:invalid-use-of-flexible-array-member
+sparse warnings: (new ones prefixed by >>)
+>> drivers/clk/clk-en7523.c:202:27: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void *np_base @@     got void [noderef] __iomem *base @@
+   drivers/clk/clk-en7523.c:202:27: sparse:     expected void *np_base
+   drivers/clk/clk-en7523.c:202:27: sparse:     got void [noderef] __iomem *base
+>> drivers/clk/clk-en7523.c:206:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/clk/clk-en7523.c:206:29: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/clk/clk-en7523.c:206:29: sparse:     got void *
+>> drivers/clk/clk-en7523.c:208:29: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/clk/clk-en7523.c:208:29: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/clk/clk-en7523.c:208:29: sparse:     got void *
+   drivers/clk/clk-en7523.c:213:29: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/clk/clk-en7523.c:213:29: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/clk/clk-en7523.c:213:29: sparse:     got void *
+   drivers/clk/clk-en7523.c:217:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/clk/clk-en7523.c:217:29: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/clk/clk-en7523.c:217:29: sparse:     got void *
+   drivers/clk/clk-en7523.c:220:37: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/clk/clk-en7523.c:220:37: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/clk/clk-en7523.c:220:37: sparse:     got void *
+   drivers/clk/clk-en7523.c:222:36: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/clk/clk-en7523.c:222:36: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/clk/clk-en7523.c:222:36: sparse:     got void *
+   drivers/clk/clk-en7523.c:224:37: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/clk/clk-en7523.c:224:37: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/clk/clk-en7523.c:224:37: sparse:     got void *
+   drivers/clk/clk-en7523.c:229:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/clk/clk-en7523.c:229:29: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/clk/clk-en7523.c:229:29: sparse:     got void *
+   drivers/clk/clk-en7523.c:230:37: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/clk/clk-en7523.c:230:37: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/clk/clk-en7523.c:230:37: sparse:     got void *
+   drivers/clk/clk-en7523.c:232:36: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/clk/clk-en7523.c:232:36: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/clk/clk-en7523.c:232:36: sparse:     got void *
+   drivers/clk/clk-en7523.c:241:27: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void *np_base @@     got void [noderef] __iomem *base @@
+   drivers/clk/clk-en7523.c:241:27: sparse:     expected void *np_base
+   drivers/clk/clk-en7523.c:241:27: sparse:     got void [noderef] __iomem *base
+   drivers/clk/clk-en7523.c:244:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/clk/clk-en7523.c:244:29: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/clk/clk-en7523.c:244:29: sparse:     got void *
+   drivers/clk/clk-en7523.c:246:29: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/clk/clk-en7523.c:246:29: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/clk/clk-en7523.c:246:29: sparse:     got void *
 
-elapsed time: 3616m
+vim +202 drivers/clk/clk-en7523.c
 
-configs tested: 72
-configs skipped: 3
-
-gcc tested configs:
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm64                               defconfig
-arm64                            allyesconfig
-i386                 randconfig-c001-20211126
-ia64                             allmodconfig
-ia64                             allyesconfig
-ia64                                defconfig
-m68k                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-csky                                defconfig
-alpha                               defconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-s390                             allyesconfig
-sparc                               defconfig
-i386                   debian-10.3-kselftests
-sparc                            allyesconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a014-20211126
-x86_64               randconfig-a011-20211126
-x86_64               randconfig-a012-20211126
-x86_64               randconfig-a013-20211126
-x86_64               randconfig-a015-20211126
-x86_64               randconfig-a016-20211126
-i386                 randconfig-a012-20211126
-i386                 randconfig-a013-20211126
-i386                 randconfig-a014-20211126
-i386                 randconfig-a011-20211126
-i386                 randconfig-a015-20211126
-i386                 randconfig-a016-20211126
-arc                  randconfig-r043-20211126
-s390                 randconfig-r044-20211126
-riscv                randconfig-r042-20211126
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                          rhel-8.3-func
-x86_64                    rhel-8.3-kselftests
-
-clang tested configs:
-hexagon              randconfig-r045-20211126
-hexagon              randconfig-r041-20211126
+   198	
+   199	static int en7523_pci_enable(struct clk_hw *hw)
+   200	{
+   201		struct en_clk_gate *cg = container_of(hw, struct en_clk_gate, hw);
+ > 202		void *np_base = cg->base;
+   203		u32 val, mask;
+   204	
+   205		/* Need to pull device low before reset */
+ > 206		val = readl(np_base + REG_PCI_CONTROL);
+   207		val &= ~(REG_PCI_CONTROL_PERSTOUT1 | REG_PCI_CONTROL_PERSTOUT);
+ > 208		writel(val, np_base + REG_PCI_CONTROL);
+   209		usleep_range(1000, 2000);
+   210	
+   211		/* Enable PCIe port 1 */
+   212		val |= REG_PCI_CONTROL_REFCLK_EN1;
+   213		writel(val, np_base + REG_PCI_CONTROL);
+   214		usleep_range(1000, 2000);
+   215	
+   216		/* Reset to default */
+   217		val = readl(np_base + REG_RESET_CONTROL);
+   218		mask = REG_RESET_CONTROL_PCIE1 | REG_RESET_CONTROL_PCIE2 |
+   219		       REG_RESET_CONTROL_PCIEHB;
+   220		writel(val & ~mask, np_base + REG_RESET_CONTROL);
+   221		usleep_range(1000, 2000);
+   222		writel(val | mask, np_base + REG_RESET_CONTROL);
+   223		msleep(100);
+   224		writel(val & ~mask, np_base + REG_RESET_CONTROL);
+   225		usleep_range(5000, 10000);
+   226	
+   227		/* Release device */
+   228		mask = REG_PCI_CONTROL_PERSTOUT1 | REG_PCI_CONTROL_PERSTOUT;
+   229		val = readl(np_base + REG_PCI_CONTROL);
+   230		writel(val & ~mask, np_base + REG_PCI_CONTROL);
+   231		usleep_range(1000, 2000);
+   232		writel(val | mask, np_base + REG_PCI_CONTROL);
+   233		msleep(250);
+   234	
+   235		return 0;
+   236	}
+   237	
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
