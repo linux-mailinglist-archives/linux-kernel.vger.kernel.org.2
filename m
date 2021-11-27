@@ -2,71 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 358364600D4
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 19:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F974600D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 19:07:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355860AbhK0SKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 13:10:20 -0500
-Received: from mga05.intel.com ([192.55.52.43]:11255 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235498AbhK0SIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 13:08:19 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10181"; a="322006868"
-X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
-   d="scan'208";a="322006868"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 10:05:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
-   d="scan'208";a="458570673"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 27 Nov 2021 10:05:03 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mr24M-0009qM-PW; Sat, 27 Nov 2021 18:05:02 +0000
-Date:   Sun, 28 Nov 2021 02:04:49 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: [drm-misc:for-linux-next 4/6] make[4]: *** No rule to make target
- 'drivers/gpu/drm/drm_nomodeset.o', needed by 'drivers/gpu/drm/built-in.a'.
-Message-ID: <202111280200.ZO66VwpH-lkp@intel.com>
+        id S1355954AbhK0SKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 13:10:36 -0500
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:39340 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245402AbhK0SI3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 13:08:29 -0500
+IronPort-Data: =?us-ascii?q?A9a23=3AKQ4CGKIYk43WKmrUFE+Rm5QlxSXFcZb7ZxGrkP8?=
+ =?us-ascii?q?bfHCw0T90hGYFzWsfXD+CM6mOM2SgL9kiPtznpEhQ75KAnYNqS1BcGVNFHysb8?=
+ =?us-ascii?q?5KdbTi6Bh6tZH3KdpWroHqKXqzyU/GYRCwPZiKa9kjF3oTJ9yEmjPjRHOWkUoY?=
+ =?us-ascii?q?oBwgqLeNaYHZ44f5cs75h6mJYqYDR7zKl4bsekeWHULOW82Ic3lYv1k62gEgHU?=
+ =?us-ascii?q?MIeF98vlgdWifhj5DcynpSOZX4VDfnZw3DQGuG4EgMmLtsvwo1V/kuBl/ssItO?=
+ =?us-ascii?q?snqz6f0tirrz6bVXI1CoQAvL7xEEd/UTe0Y5iXBYYQUVKjzSA2dR419xJsbSxT?=
+ =?us-ascii?q?x0oN+vCgozxVjEGTn0gbfwZkFPACT3l2SCJ9GXZcn/o0t1vCk8sNIEV8+oxBnt?=
+ =?us-ascii?q?BndQTJz0JKAKfisq5xbu6Tq9ngcFLBMDoJIY3vnBm0CGcA/E7R5zKX6TN45lfx?=
+ =?us-ascii?q?jhYrsRPG+vOIs8cQTlxZR/DJRpVNT8/DJM4gffthXTldTBcgEyaqLBx4GXJygF?=
+ =?us-ascii?q?1lr/3P7L9cdyLA8BUmEmYr2Xu7Xj0RBodMZqUz1Kt4H+lguTOtTHnVcQZE7j+/?=
+ =?us-ascii?q?fgCqF+Owm0aThkfSlK/pdG9i1bgHdxFQ2QR/yM0oKsa71GwQ5/2WBjQnZIulnb?=
+ =?us-ascii?q?wQPIJTLZ8sVvUjPSEpVbEQHIJUHhaZsZgssIqLQHGH2Shx7vBbQGDepXMIZ5Fy?=
+ =?us-ascii?q?oqpkA=3D=3D?=
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AeUwEzKouzd589RMvc5uyz0QaV5rYeYIsimQD?=
+ =?us-ascii?q?101hICG9Ffbo6/xG/c5rqCMc7Qx7NU3I9urwQ5VoPkmsjKKdjbN8AV7AZnidhI?=
+ =?us-ascii?q?LXFvAb0WKK+VSJcUPDH4hmpMJdmsNFZ+EYY2IK7/rS0U2cE9EjxdmB/rrtrerS?=
+ =?us-ascii?q?1Ht2Vw1nApsA0y5JTiOaFU9yRA5JH94YE5Wbj/A3xAaISDAzbsO4A3kDUfKGnd?=
+ =?us-ascii?q?HNmZ78CCRnO/ZngjP+6w9AH4SKd2n+4isj?=
+X-IronPort-AV: E=Sophos;i="5.87,269,1631570400"; 
+   d="scan'208";a="6546897"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 19:05:14 +0100
+Date:   Sat, 27 Nov 2021 19:05:13 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Matthew Wilcox <willy@infradead.org>
+cc:     cgel.zte@gmail.com, akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, chiminghao <chi.minghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>,
+        Julia Lawall <julia.lawall@lip6.fr>,
+        Michal Marek <mmarek@suse.com>
+Subject: Re: [PATCH] mm: Use BUG_ON instead of if condition followed by BUG
+In-Reply-To: <YZ7SJ8sXtXF4lZ4L@casper.infradead.org>
+Message-ID: <alpine.DEB.2.22.394.2111271905050.2864@hadrien>
+References: <20211124030849.34998-1-chi.minghao@zte.com.cn> <YZ483gwnwTysPt0G@casper.infradead.org> <YZ7SJ8sXtXF4lZ4L@casper.infradead.org>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Javier,
 
-First bad commit (maybe != root cause):
 
-tree:   git://anongit.freedesktop.org/drm/drm-misc for-linux-next
-head:   db08490fc4b6695ada6c21e40343307f08d9620e
-commit: e9aeeba26a8de1f553305722d017022ae7e79280 [4/6] drm: Decouple nomodeset from CONFIG_VGA_CONSOLE
-config: hexagon-randconfig-r041-20211127 (https://download.01.org/0day-ci/archive/20211128/202111280200.ZO66VwpH-lkp@intel.com/config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 5162b558d8c0b542e752b037e72a69d5fd51eb1e)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        git remote add drm-misc git://anongit.freedesktop.org/drm/drm-misc
-        git fetch --no-tags drm-misc for-linux-next
-        git checkout e9aeeba26a8de1f553305722d017022ae7e79280
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash
+On Thu, 25 Nov 2021, Matthew Wilcox wrote:
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+> On Wed, Nov 24, 2021 at 01:23:42PM +0000, Matthew Wilcox wrote:
+> > On Wed, Nov 24, 2021 at 03:08:49AM +0000, cgel.zte@gmail.com wrote:
+> > > From: chiminghao <chi.minghao@zte.com.cn>
+> > >
+> > > Fix the following coccinelle report:
+> > > ./mm/memory_hotplug.c:2210:2-5:
+> > > WARNING  Use BUG_ON instead of if condition followed by BUG.
+> >
+> > What coccinelle script is reporting this?
+>
+> Maybe I found it?
+>
+> scripts/coccinelle/misc/bugon.cocci:msg="WARNING: Use BUG_ON instead of if condition followed by BUG.\nPlease make sure the condition has no side effects (see conditional BUG_ON definition in include/asm-generic/bug.h)"
+>
+> Julia, Michal, can we delete this script, please?  It's being abused.
 
-All errors (new ones prefixed by >>):
+OK
 
->> make[4]: *** No rule to make target 'drivers/gpu/drm/drm_nomodeset.o', needed by 'drivers/gpu/drm/built-in.a'.
-   make[4]: Target '__build' not remade because of errors.
+julia
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+> > > -	if (try_remove_memory(start, size))
+> > > -		BUG();
+> > > +	BUG_ON(try_remove_memory(start, size));
+> >
+> > I really, really, really do not like this.  For functions with
+> > side-effects, this is bad style.  If it's a pure predicate, then
+> > sure, but this is bad.
+> >
+>
