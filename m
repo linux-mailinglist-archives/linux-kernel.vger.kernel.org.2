@@ -2,94 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 315F4460114
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 20:19:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3596A460117
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 20:21:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245211AbhK0TWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 14:22:22 -0500
-Received: from mga04.intel.com ([192.55.52.120]:10321 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234146AbhK0TUV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 14:20:21 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10181"; a="234510466"
-X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
-   d="scan'208";a="234510466"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 11:17:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
-   d="scan'208";a="458579020"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 27 Nov 2021 11:17:04 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mr3C3-0009uG-Sf; Sat, 27 Nov 2021 19:17:03 +0000
-Date:   Sun, 28 Nov 2021 03:16:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [luxis1999-iommufd:iommufd-v5.16-rc2 18/50]
- drivers/gpu/drm/tegra/drm.c:974:17: error: implicit declaration of function
- 'iommu_detatch_device'; did you mean 'iommu_detach_device'?
-Message-ID: <202111280324.l3kGUbgS-lkp@intel.com>
+        id S1344146AbhK0TYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 14:24:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:29531 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350814AbhK0TWe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 14:22:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1638040759;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=FmEONlRLRS7Q3m1/IGZ8/wAcZ9/vJrKLoCBv/npZi2U=;
+        b=StJK0sWZkUyrUhLPuIkKwa9jN5cm4jGRWxu0ZKChCaEYu1AG8lwrdGmJxPs+nX+QeLyHAs
+        9fH/1j/vDjBXtG/Pbe8YSnvK5X1sPiQy6a6NzAkCTLlgfWqKTVhXvnpNfaGwuc1J0p0dVW
+        t7WaRwqLryR2S+7xobP3kUYBE4zVpYE=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-397-7VgOhMIQPEu76NxFWZZrHw-1; Sat, 27 Nov 2021 14:19:17 -0500
+X-MC-Unique: 7VgOhMIQPEu76NxFWZZrHw-1
+Received: by mail-wm1-f69.google.com with SMTP id c8-20020a7bc848000000b0033bf856f0easo9087650wml.1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 11:19:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FmEONlRLRS7Q3m1/IGZ8/wAcZ9/vJrKLoCBv/npZi2U=;
+        b=agDPsqVVxT4jGpx4Q6VWOFLgqgu4mZSdWPzbOIkcXzrFZ9XTbvW5JuK/E0h8s0m50e
+         lL0EqskgxwAkRPO5d/2c8fYQtOTIV9d1MRAetWoBo3oROxPRLgP8qZ/DAZ9pRRFGh6yN
+         oYKRGPoSyX6v1PdtwB05C4l8mcDMzzxmkeMDaGJaXh5Md8kZojwSyv5QcNXf/TM9fbu6
+         RUtuoBNuLO8ubk5NnzE95b2eRGeng6BqE06KOMwHsaKx3R2gdktpSL7iS2CYj4TPxpuQ
+         XvjDX9zzArGSAH8FO+ZDKuQ7TiG7OlaWJ+Gm8IzculXrzXm3rW00KCfdK2XsH9kJCR0h
+         M0Wg==
+X-Gm-Message-State: AOAM533aEHdwyHFBU2npQKl3ih9S2aSu/xruQRivPAe4sx6R6F7fxQhf
+        HlBKZBxM0F+t8dCu841/O+hj/b0cMHjk3IEtMoPZfujR6jFfDgEQEJn5MF6VDtpxtiabH5WFwF4
+        2KkoVepzSdPhLqL554cVoUatrekmxWjurEHDeuSsCMd8wG2IdR+fWU0c8nbGGIk0+bGYyg1k2pt
+        4=
+X-Received: by 2002:adf:eac8:: with SMTP id o8mr22999004wrn.337.1638040756599;
+        Sat, 27 Nov 2021 11:19:16 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxabUOTDhc5FjxR7ONoe8Du3sRBNo52FTEfP5Zf+UIg18HyEeIugSjNA5q9jOQ28IpzglwJhQ==
+X-Received: by 2002:adf:eac8:: with SMTP id o8mr22998975wrn.337.1638040756301;
+        Sat, 27 Nov 2021 11:19:16 -0800 (PST)
+Received: from minerva.home ([92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id i17sm11391314wmq.48.2021.11.27.11.19.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Nov 2021 11:19:15 -0800 (PST)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        kernel test robot <lkp@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH] drm: Fix build error caused by missing drm_nomodeset.o
+Date:   Sat, 27 Nov 2021 20:19:10 +0100
+Message-Id: <20211127191910.709356-1-javierm@redhat.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://github.com/luxis1999/iommufd iommufd-v5.16-rc2
-head:   9821bacf94cee7dd38c9f919a0a38fd48a6f3ae7
-commit: 7011c70a936e99eea5c03c44e03e359b1bd58de6 [18/50] drm/tegra: Use the iommu dma_owner mechanism
-config: arm-defconfig (https://download.01.org/0day-ci/archive/20211128/202111280324.l3kGUbgS-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/luxis1999/iommufd/commit/7011c70a936e99eea5c03c44e03e359b1bd58de6
-        git remote add luxis1999-iommufd https://github.com/luxis1999/iommufd
-        git fetch --no-tags luxis1999-iommufd iommufd-v5.16-rc2
-        git checkout 7011c70a936e99eea5c03c44e03e359b1bd58de6
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=arm SHELL=/bin/bash
+The patch for commit ("6a2d2ddf2c34 drm: Move nomodeset kernel parameter
+to the DRM subsystem") was generated with config 'diff.noprefix true'.
 
-If you fix the issue, kindly add following tag as appropriate
+But later was applied using 'cat nomodeset.mbox | dim apply-branch' on a
+machine with 'diff.noprefix false'. And command 'git am --scissors -3' as
+used by the dim tool doesn't handle that case well, since the 3-way merge
+wrongly resolves the path for new file drivers/gpu/drm/drm_nomodeset.c as
+gpu/drm/drm_nomodeset.c instead.
+
+It led to the following build error as reported by the kernel test robot:
+
+  make[4]: *** No rule to make target 'drivers/gpu/drm/drm_nomodeset.o', needed by 'drivers/gpu/drm/built-in.a'.
+
+Fixes: ("6a2d2ddf2c34 drm: Move nomodeset kernel parameter to the DRM subsystem")
 Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   drivers/gpu/drm/tegra/drm.c: In function 'host1x_client_iommu_detach':
->> drivers/gpu/drm/tegra/drm.c:974:17: error: implicit declaration of function 'iommu_detatch_device'; did you mean 'iommu_detach_device'? [-Werror=implicit-function-declaration]
-     974 |                 iommu_detatch_device(tegra->domain, client->dev);
-         |                 ^~~~~~~~~~~~~~~~~~~~
-         |                 iommu_detach_device
-   cc1: some warnings being treated as errors
-
-
-vim +974 drivers/gpu/drm/tegra/drm.c
-
-   962	
-   963	void host1x_client_iommu_detach(struct host1x_client *client)
-   964	{
-   965		struct iommu_domain *domain = iommu_get_domain_for_dev(client->dev);
-   966		struct drm_device *drm = dev_get_drvdata(client->host);
-   967		struct tegra_drm *tegra = drm->dev_private;
-   968	
-   969		if (domain && domain != tegra->domain)
-   970			return iommu_device_release_dma_owner(client->dev,
-   971							      DMA_OWNER_DMA_API);
-   972	
-   973		if (client->group) {
- > 974			iommu_detatch_device(tegra->domain, client->dev);
-   975			client->group = NULL;
-   976		}
-   977	}
-   978	
-
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+ {gpu => drivers/gpu}/drm/drm_nomodeset.c | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ rename {gpu => drivers/gpu}/drm/drm_nomodeset.c (100%)
+
+diff --git a/gpu/drm/drm_nomodeset.c b/drivers/gpu/drm/drm_nomodeset.c
+similarity index 100%
+rename from gpu/drm/drm_nomodeset.c
+rename to drivers/gpu/drm/drm_nomodeset.c
+-- 
+2.33.1
+
