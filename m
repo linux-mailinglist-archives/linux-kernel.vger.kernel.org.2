@@ -2,104 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDEF446009D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 18:40:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8094600B5
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 18:50:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355420AbhK0RoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 12:44:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234533AbhK0Rl5 (ORCPT
+        id S1343557AbhK0Rxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 12:53:53 -0500
+Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17297 "EHLO
+        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238708AbhK0Rvx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 12:41:57 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90520C061746;
-        Sat, 27 Nov 2021 09:38:42 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id fv9-20020a17090b0e8900b001a6a5ab1392so10334385pjb.1;
-        Sat, 27 Nov 2021 09:38:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=muEV41oGv4dCXu6T0pBAwtMsCi0zA6yAWl0ncN03ssw=;
-        b=ELNJTmDbhtdH+T48RrB+KCCm2X/Ky075szsYsS+ZAZv8JCLapZFv9iCiqsNRy/sQFZ
-         ghW1tvD9A4x50zkAPuWYfdJGsVnkz/CU6S8/IDpSYtYfIqWiUkHw5yS+aFdckm843CnV
-         Kstt4wXRdvvhR8Q9iaF9rsR3xKBY2viNw2QU/UPVHrE175KgEZ+MzK424N3Br+mMVx91
-         VpgWTn968HG35ery5EGB+JFYCd6EyHUtuzJz4pLH4Hlp43ZV5U1eWNtCsv3ZOhVS1wBT
-         fW4PrVijiUFiSc8m8RVm8lLre4g7m+MgfTuRb0b0gn6wmSEW6a9j10w50Eec30PZKjKg
-         zH7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=muEV41oGv4dCXu6T0pBAwtMsCi0zA6yAWl0ncN03ssw=;
-        b=kmi6Hzvr1qTh+ags570tjbVu8M73iIBuiaFSNyl5OnphtSGFTbAV8YxVHIF8lrOO4j
-         1IhAtwEwPIlTK+0oPbj8fLjkYZGFw/tVXBJIEMx5Uhpjfjs86lZF0Xvp2Ix1rm2jR/Ng
-         1HnVq0d7iuXkPnJ9hfK2NVqKg+Nm88ifnUJAu2xCMhE6/juYLYlsbiI/svtCEXZxzczx
-         R0EGi43Zt84Ahg5G96BRU91URIq07BUpYF+wAYUsvx7sU1YmCTsz3wt98YHxdN449c5Q
-         wCJT16BA14y8DDffTTFlKZzXuDElSe9OxKAuAGAz7XoEJtk2kDc9h/j/3kwwrBtlkSET
-         yWIQ==
-X-Gm-Message-State: AOAM531tss9DX1VGWQ6a09bAZmNJBy4akmZgW1CoYh23srMo5YNOK+sc
-        oJEQu/0zvpEc3QAnZKX0ndf9D+OctTTGJA==
-X-Google-Smtp-Source: ABdhPJzTLlK8vbWzwyWP4NjwL6Fds42LHIYpXygP2nvsOPHZkzR79c0EvoWrDhBvYexSBb8bkqdPOw==
-X-Received: by 2002:a17:90b:1bcb:: with SMTP id oa11mr24815160pjb.140.1638034721764;
-        Sat, 27 Nov 2021 09:38:41 -0800 (PST)
-Received: from 7YHHR73.igp.broadcom.net (70-36-60-214.dyn.novuscom.net. [70.36.60.214])
-        by smtp.gmail.com with ESMTPSA id t19sm8051776pgn.7.2021.11.27.09.38.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Nov 2021 09:38:41 -0800 (PST)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        kernel test robot <lkp@intel.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        Manish Rangankar <mrangankar@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com (supporter:QLOGIC QL41xxx ISCSI
-        DRIVER), "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org (open list:QLOGIC QL41xxx ISCSI DRIVER)
-Subject: [PATCH v2 2/2] scsi: qedi: Fix SYSFS_FLAG_FW_SEL_BOOT formatting
-Date:   Fri, 26 Nov 2021 12:17:08 -0800
-Message-Id: <20211126201708.27140-3-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211126201708.27140-1-f.fainelli@gmail.com>
-References: <20211126201708.27140-1-f.fainelli@gmail.com>
+        Sat, 27 Nov 2021 12:51:53 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1638005196; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=n3tN4S2pUQeHcaidBskaxPvMtDHKVAxGlzpV4gGhKRw0ZRPexTpe+9491ASfmg0HTmlzpcGklxp+HMRiNT0nz7WB3yRDEgMXIVlbk6nppF5tsd9+xwYvYa+sqjKuO3IG1VFKI2d/3UUUTEAStZqRuO2G7fPvidPxfb9wuISL+GM=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1638005196; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
+        bh=Gx78nwaiX6IcgNHFjD7iZoX/9w5JdvaOCjUYq7EIGF8=; 
+        b=L+x/I3014bH31MUiJjwlMUIA0OFhsckS6h6hv6axN+6zUKZ3hEWIrtJxc9FBqQ6Qibg6YP4JsjtX6NX4JOTcEAN2havNabHJChd8GNBZB0Un8LvTEUsJdciVm1vdlMiA5HCTyeHhT3WETZ5Uv7oleWAWjCIqSZgTHB0xWTty7g8=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1638005196;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=Gx78nwaiX6IcgNHFjD7iZoX/9w5JdvaOCjUYq7EIGF8=;
+        b=AOUteeEka8coVmSi4zQzORqE5JY1MaV08/LAMtbTc27DCvaprB+pMimMaBupCWxB
+        O+FA0+jbAUUvYwibbnxdThAmY5Ue8tUKtJFxMKJfWYfyRApCoywzOrqMRC2+ZkgXx95
+        aD4148NrPXGMaIDIGuyGKpO95c4vIFvh8io47D5E=
+Received: from mail.baihui.com by mx.zoho.com.cn
+        with SMTP id 1638005193699274.15327156530714; Sat, 27 Nov 2021 17:26:33 +0800 (CST)
+Date:   Sat, 27 Nov 2021 17:26:33 +0800
+From:   Chengguang Xu <cgxu519@mykernel.net>
+Reply-To: cgxu519@mykernel.net
+To:     "miklos" <miklos@szeredi.hu>
+Cc:     "linux-unionfs" <linux-unionfs@vger.kernel.org>,
+        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>,
+        "Chengguang Xu" <charliecgxu@tencent.com>,
+        "ronyjin" <ronyjin@tencent.com>, "amir73il" <amir73il@gmail.com>,
+        "jack" <jack@suse.cz>
+Message-ID: <17d60b7bbc2.caee608a13298.8366222634423039066@mykernel.net>
+In-Reply-To: <20211122030038.1938875-1-cgxu519@mykernel.net>
+References: <20211122030038.1938875-1-cgxu519@mykernel.net>
+Subject: =?UTF-8?Q?=E5=9B=9E=E5=A4=8D:[RFC_PATCH_V6_0/7]_implement_c?=
+ =?UTF-8?Q?ontainerized_syncfs_for_overlayfs?=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Importance: Medium
+User-Agent: ZohoCN Mail
+X-Mailer: ZohoCN Mail
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The format used for formatting SYSFS_FLAG_FW_SEL_BOOT creates the
-following warning:
+ ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=80, 2021-11-22 11:00:31 Chengguang=
+ Xu <cgxu519@mykernel.net> =E6=92=B0=E5=86=99 ----
+ > From: Chengguang Xu <charliecgxu@tencent.com>
+ >=20
+ > Current syncfs(2) syscall on overlayfs just calls sync_filesystem()
+ > on upper_sb to synchronize whole dirty inodes in upper filesystem
+ > regardless of the overlay ownership of the inode. In the use case of
+ > container, when multiple containers using the same underlying upper
+ > filesystem, it has some shortcomings as below.
+ >=20
+ > (1) Performance
+ > Synchronization is probably heavy because it actually syncs unnecessary
+ > inodes for target overlayfs.
+ >=20
+ > (2) Interference
+ > Unplanned synchronization will probably impact IO performance of
+ > unrelated container processes on the other overlayfs.
+ >=20
+ > This series try to implement containerized syncfs for overlayfs so that
+ > only sync target dirty upper inodes which are belong to specific overlay=
+fs
+ > instance. By doing this, it is able to reduce cost of synchronization an=
+d=20
+ > will not seriously impact IO performance of unrelated processes.
+ >=20
+ > v1->v2:
+ > - Mark overlayfs' inode dirty itself instead of adding notification
+ > mechanism to vfs inode.
+ >=20
+ > v2->v3:
+ > - Introduce overlayfs' extra syncfs wait list to wait target upper inode=
+s
+ > in ->sync_fs.
+ >=20
+ > v3->v4:
+ > - Using wait_sb_inodes() to wait syncing upper inodes.
+ > - Mark overlay inode dirty only when having upper inode and VM_SHARED
+ > flag in ovl_mmap().
+ > - Check upper i_state after checking upper mmap state
+ > in ovl_write_inode.
+ >=20
+ > v4->v5:
+ > - Add underlying inode dirtiness check after mnt_drop_write().
+ > - Handle both wait/no-wait mode of syncfs(2) in overlayfs' ->sync_fs().
+ >=20
+ > v5->v6:
+ > - Rebase to latest overlayfs-next tree.
+ > - Mark oerlay inode dirty when it has upper instead of marking dirty on
+ >   modification.
+ > - Trigger dirty page writeback in overlayfs' ->write_inode().
+ > - Mark overlay inode 'DONTCACHE' flag.
+ > - Delete overlayfs' ->writepages() and ->evict_inode() operations.
 
-drivers/scsi/qedi/qedi_main.c:2259:35: warning: format specifies type
-'char' but the argument has type 'int' [-Wformat]
-                   rc = snprintf(buf, 3, "%hhd\n",
-SYSFS_FLAG_FW_SEL_BOOT);
 
-Fix this to cast the constant as an u8 since the intention is to print
-it via sysfs as a byte.
+Hi Miklos,
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/scsi/qedi/qedi.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Have you got time to have a look at this V6 series? I think this version ha=
+s already fixed
+the issues in previous feedbacks of you guys and passed fstests (generic/ov=
+erlay cases).
 
-diff --git a/drivers/scsi/qedi/qedi.h b/drivers/scsi/qedi/qedi.h
-index ce199a7a16b8..421b3a69fd37 100644
---- a/drivers/scsi/qedi/qedi.h
-+++ b/drivers/scsi/qedi/qedi.h
-@@ -358,7 +358,7 @@ struct qedi_ctx {
- 	bool use_fast_sge;
- 
- 	atomic_t num_offloads;
--#define SYSFS_FLAG_FW_SEL_BOOT 2
-+#define SYSFS_FLAG_FW_SEL_BOOT (u8)2
- #define IPV6_LEN	41
- #define IPV4_LEN	17
- 	struct iscsi_boot_kset *boot_kset;
--- 
-2.25.1
+I did some stress long time tests (tar & syncfs & diff on w/wo copy-up) and=
+ found no obvious problem.
+For syncfs time with 1M clean upper inodes, there was extra 1.3s wasted on =
+waiting scheduling.
+I guess this 1.3s will not bring significant impact to container instance i=
+n most cases, I also
+agree with Jack that we can start with this approach and do some improvemen=
+ts afterwards if there is
+complain from any real users.
 
+
+
+Thanks,
+Chengguang
+
+
+ >=20
+ > Chengguang Xu (7):
+ >   ovl: setup overlayfs' private bdi
+ >   ovl: mark overlayfs inode dirty when it has upper
+ >   ovl: implement overlayfs' own ->write_inode operation
+ >   ovl: set 'DONTCACHE' flag for overlayfs inode
+ >   fs: export wait_sb_inodes()
+ >   ovl: introduce ovl_sync_upper_blockdev()
+ >   ovl: implement containerized syncfs for overlayfs
+ >=20
+ >  fs/fs-writeback.c         |  3 ++-
+ >  fs/overlayfs/inode.c      |  5 +++-
+ >  fs/overlayfs/super.c      | 49 ++++++++++++++++++++++++++++++++-------
+ >  fs/overlayfs/util.c       |  1 +
+ >  include/linux/writeback.h |  1 +
+ >  5 files changed, 48 insertions(+), 11 deletions(-)
+ >=20
+ > --=20
+ > 2.27.0
+ >=20
+ >=20
