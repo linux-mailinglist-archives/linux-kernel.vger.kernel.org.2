@@ -2,78 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 794F5460142
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 20:47:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE7A8460146
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 20:49:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234799AbhK0Tug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 14:50:36 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:44326 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229768AbhK0Tsf (ORCPT
+        id S239973AbhK0Twh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 14:52:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233588AbhK0Tud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 14:48:35 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1638042319;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b8WWNXMmW79pVSrPL0FWh6ZTHY3JhoVaogmqsWvu1CY=;
-        b=YpU2GaGNIsgiAwIE6TN7TQoRulWDkvpT/mU7+2cjUQCsG8/PAHAnanKqLrVRzal+4QQWFa
-        p5d2YlraFk22JKq6Rnvdk4UDEBX2reh8mkJgFInfB+F1lV0TvWCr3SkUYY0dr9A1NMeTyk
-        bV3BvmOGwcl1+C+CDvBknVjf7kt4VMx0q8no/QgJELgCQIqYjez0ZUkWW9zwxIhw/xaTHB
-        YZhYhP2akWbEcm+omIuQjpXfqBSCi3ZTwi8tVpj4vSI9UO4baZ/tnaYqOfEaf4s4dJ6dhl
-        MpQC68ysDBW+zgs7JQDpQj3k2VFZiQV4o6ZciQ7heFPEdJk4hglgiQYP3PNY0g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1638042319;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b8WWNXMmW79pVSrPL0FWh6ZTHY3JhoVaogmqsWvu1CY=;
-        b=jwdySK+JWphhWmD4zIG3S6sjgLdS7cTJOrVJus4e9NWxCRIPTM3qtYneclhxNS688nNu5G
-        TbFzpgYoGqon+6Dg==
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Marc Zygnier <maz@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Megha Dey <megha.dey@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>, linux-pci@vger.kernel.org,
-        linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com
-Subject: Re: [patch 07/32] genirq/msi: Count the allocated MSI descriptors
-In-Reply-To: <87o865flot.ffs@tglx>
-References: <20211126230957.239391799@linutronix.de>
- <20211126232734.708730446@linutronix.de> <YaIiPISLr7VokL8P@kroah.com>
- <87o865flot.ffs@tglx>
-Date:   Sat, 27 Nov 2021 20:45:18 +0100
-Message-ID: <87ilwdfkmp.ffs@tglx>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Sat, 27 Nov 2021 14:50:33 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0ECC061574;
+        Sat, 27 Nov 2021 11:47:19 -0800 (PST)
+Received: from mail.kernel.org (unknown [198.145.29.99])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 15060B80936;
+        Sat, 27 Nov 2021 19:47:17 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id A0E4160174;
+        Sat, 27 Nov 2021 19:47:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638042435;
+        bh=i/hUkuUd5W/6Mdtj9LCJ/EVBa0j7WQYyzULjC3OLsDM=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=ISVpzA4s74YMAEeeVAWgrbR4gJ9oHZ8r+7jQBK7FVar7UHte90BZYjAQIsT4/S8V8
+         OAAQn54Sb0Ywi2h3pcHrMnjVlZe1UEsNrz+s+4qbpt9L97LX+TZEpGF2RIpQLi1tGR
+         MtzEYUvOXIwjLwE40QSazXUiNk3/xWgmNDbaFaIYHTBwWNOClhkGKA6qDis+9BUIuq
+         6jMQ45qgTsVLZwFYLF8wo9+C6XGqGUbESjrwcOI6LTpSXknBJhCc+vmUct9Wh2QqOG
+         fR6ciydW4jOEh2ZQLOViEFgDCpCOjU+tl7S+9HcMajz2ZhMsa9J7SeU2riONZ6idBt
+         ntwwwNH1fKQ3w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 88A3E608AF;
+        Sat, 27 Nov 2021 19:47:15 +0000 (UTC)
+Subject: Re: [GIT PULL] SCSI fixes for 5.16-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <88066061f5f16e91cdfe2a5794b0a8b533909787.camel@HansenPartnership.com>
+References: <88066061f5f16e91cdfe2a5794b0a8b533909787.camel@HansenPartnership.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <88066061f5f16e91cdfe2a5794b0a8b533909787.camel@HansenPartnership.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+X-PR-Tracked-Commit-Id: 2d62253eb1b60f4ce8b39125eee282739b519297
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 9e9fbe44bef986fffb514656e5842c341528c8d4
+Message-Id: <163804243549.4525.3591852979552995850.pr-tracker-bot@kernel.org>
+Date:   Sat, 27 Nov 2021 19:47:15 +0000
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 27 2021 at 20:22, Thomas Gleixner wrote:
+The pull request you sent on Sat, 27 Nov 2021 09:11:20 -0500:
 
-> On Sat, Nov 27 2021 at 13:19, Greg Kroah-Hartman wrote:
->> On Sat, Nov 27, 2021 at 02:22:38AM +0100, Thomas Gleixner wrote:
->>> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
->>
->> No changelog?
->
-> Bah. This one should not be there at all.
->
->> Anyway, why do we care about the number of decriptors?
+> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
-The last part of this really cares about it for the dynamic extension
-part, but that's core code which looks at the counter under the lock.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/9e9fbe44bef986fffb514656e5842c341528c8d4
 
-Thanks,
+Thank you!
 
-        tglx
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
