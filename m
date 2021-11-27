@@ -2,103 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A8E460138
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 20:34:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9D1460139
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 20:40:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236721AbhK0Th5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 14:37:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234158AbhK0Tf4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 14:35:56 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E16B1C061746;
-        Sat, 27 Nov 2021 11:32:41 -0800 (PST)
-Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1mr3R8-0002C8-Je; Sat, 27 Nov 2021 20:32:38 +0100
-Message-ID: <42ff6b8d-0b7c-12e0-4648-a9232b0f577c@leemhuis.info>
-Date:   Sat, 27 Nov 2021 20:32:37 +0100
+        id S232644AbhK0TnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 14:43:13 -0500
+Received: from shark4.inbox.lv ([194.152.32.84]:40260 "EHLO shark4.inbox.lv"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229663AbhK0TlJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 14:41:09 -0500
+Received: from shark4.inbox.lv (localhost [127.0.0.1])
+        by shark4-out.inbox.lv (Postfix) with ESMTP id F2BA2C00C0;
+        Sat, 27 Nov 2021 21:37:52 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.lv; s=30062014;
+        t=1638041873; bh=CxVW5OyFnBF8LJCDQd92GbUhILP9QZS1qZEDurcCUg8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References;
+        b=PxGm7q9bj1vfiWO5phyo8TwyzQbV8aAD5GQYY7Nx4gdD7tVbZ46xldZgYjwZ0rjAY
+         YUH1uxGEK223D88zaghMi8cqqbusbuxh93D4tp0yjQjEq+bNo4jPIDdecSZ848gI3b
+         0rlqSM/d87OtEEMeQuuZEEbF0SjkgudjjtsqN3J0=
+Received: from localhost (localhost [127.0.0.1])
+        by shark4-in.inbox.lv (Postfix) with ESMTP id E5096C0079;
+        Sat, 27 Nov 2021 21:37:52 +0200 (EET)
+Received: from shark4.inbox.lv ([127.0.0.1])
+        by localhost (shark4.inbox.lv [127.0.0.1]) (spamfilter, port 35)
+        with ESMTP id uHOOBu8TJTQA; Sat, 27 Nov 2021 21:37:52 +0200 (EET)
+Received: from mail.inbox.lv (pop1 [127.0.0.1])
+        by shark4-in.inbox.lv (Postfix) with ESMTP id A56C5C0077;
+        Sat, 27 Nov 2021 21:37:52 +0200 (EET)
+Date:   Sun, 28 Nov 2021 04:37:36 +0900
+From:   Alexey Avramov <hakavlad@inbox.lv>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org, mhocko@suse.com,
+        vbabka@suse.cz, neilb@suse.de, akpm@linux-foundation.org,
+        corbet@lwn.net, riel@surriel.com, hannes@cmpxchg.org,
+        david@fromorbit.com, willy@infradead.org, hdanton@sina.com,
+        penguin-kernel@i-love.sakura.ne.jp, oleksandr@natalenko.name,
+        kernel@xanmod.org, michael@michaellarabel.com, aros@gmx.com,
+        hakavlad@gmail.com
+Subject: Re: mm: 5.16 regression: reclaim_throttle leads to stall in
+ near-OOM conditions
+Message-ID: <20211128043736.5a6dcc39@mail.inbox.lv>
+In-Reply-To: <20211124143303.GH3366@techsingularity.net>
+References: <20211124011954.7cab9bb4@mail.inbox.lv>
+        <20211124103550.GE3366@techsingularity.net>
+        <20211124195449.33f31e7f@mail.inbox.lv>
+        <20211124115007.GG3366@techsingularity.net>
+        <20211124214443.5c179d34@mail.inbox.lv>
+        <20211124143303.GH3366@techsingularity.net>
+X-Mailer: Claws Mail 3.14.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Content-Language: en-BS
-To:     Eric Wong <e@80x24.org>
-Cc:     workflows@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>, git@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Kees Cook <keescook@chromium.org>
-References: <cover.1637566224.git.linux@leemhuis.info>
- <6b760115ecdd3687d4b82680b284f55a04f3ad90.1637566224.git.linux@leemhuis.info>
- <20211123185237.M476855@dcvr>
- <12cefa81-495b-3083-5f19-b319c704ebf7@leemhuis.info>
- <20211126171141.GA21826@dcvr>
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Subject: Re: [RFC PATCH v1 1/1] docs: add the new commit-msg tags 'Reported:'
- and 'Reviewed:'
-In-Reply-To: <20211126171141.GA21826@dcvr>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1638041562;6ca12670;
-X-HE-SMSGID: 1mr3R8-0002C8-Je
+X-Virus-Scanned: OK
+X-ESPOL: AJqEQ3AB6gpL2qWiSfBh5uXlxd+0XlwguDuDrrA34GxYtrbfst9zbm2WHJicZw/5LSPD
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.11.21 18:11, Eric Wong wrote:
-> Thorsten Leemhuis <linux@leemhuis.info> wrote:
->> Ccing Linus Walleij, who added this, and Kees, who apparently came up
->> with this originally.
->>
->> On 23.11.21 19:52, Eric Wong wrote:
->>> Thorsten Leemhuis <linux@leemhuis.info> wrote:
->>>> diff --git a/Documentation/maintainer/configure-git.rst b/Documentation/maintainer/configure-git.rst
->>>> index 80ae5030a590..8429d45d661c 100644
->>>> --- a/Documentation/maintainer/configure-git.rst
->>>> +++ b/Documentation/maintainer/configure-git.rst
->>>
->>> <snip>, +cc git@vger
->>>
->>>> @@ -56,7 +56,7 @@ by adding the following hook into your git:
->>>>  	$ cat >.git/hooks/applypatch-msg <<'EOF'
->>>>  	#!/bin/sh
->>>>  	. git-sh-setup
->>>> -	perl -pi -e 's|^Message-Id:\s*<?([^>]+)>?$|Link: https://lore.kernel.org/r/$1|g;' "$1"
->>>> +	perl -pi -e 's|^Message-Id:\s*<?([^>]+)>?$|Reviewed: https://lore.kernel.org/r/$1|g;' "$1"
->>>
->>> Side note: that regexp should match "Message-ID" case-insensitively.
->>> git send-email is an outlier in its capitalization of "Message-Id",
->>> most RFCs capitalize it "Message-ID", as do common MUAs.
->>
->> Argh :-/
->>
->> It's still totally unclear if that or a similar patch will be accepted.
->> And even if it is: the "don't do two different things in one commit"
->> rule might not be that strict enforced when it comes to the Linux
->> kernel's docs, but changing this regexp as part of another patch crosses
->> the line.
->>
->> IOW: we afaics need a separate patch to make the regexp
->> case-insensitively. Eric, do you want to submit one, as you brought it
->> up? Or are there any other volunteers?
-> 
-> I suggest you turn this into a 2 patch series to avoid conflicts
-> for a trivial change.  I don't even have a kernel worktree handy
-> at the moment (ENOSPC :x)
+> I think there might be an unwritten mm law now that someone is always
+> unhappy with OOM behaviour :(
 
-:-D
+It's okay if someone isn't happy with the default values.
 
-Will do this in a couple of days, unless Linus or Kees speak up.
+It is not okay if there is no way to get the desired behavior using
+tunables. And the problem is quite solvable [1].
 
-Just to be sure I'll do what you expect to be done: I assume you want to see
-it changed like this?
-
--	perl -pi -e 's|^Message-Id:\s*<?([^>]+)>?$|Link: https://lore.kernel.org/r/$1|g;' "$1"
-+	perl -pi -e 's|^Message-I[dD]:\s*<?([^>]+)>?$|Link: https://lore.kernel.org/r/$1|g;' "$1"
-
-Or are there even more variants of Message-ID out there known that
-need to be taken into account?
-
-Ciao, Thorsten
+[1] https://lore.kernel.org/linux-mm/20101028191523.GA14972@google.com/
