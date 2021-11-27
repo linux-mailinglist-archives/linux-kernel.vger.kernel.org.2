@@ -2,89 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E6845F983
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 02:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D661845FA20
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 02:27:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347338AbhK0B1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 20:27:19 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:50834 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346730AbhK0BYp (ORCPT
+        id S1348662AbhK0BaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 20:30:13 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:37388 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348686AbhK0B2M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 20:24:45 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UyQ7PKr_1637976089;
-Received: from 192.168.43.193(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0UyQ7PKr_1637976089)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 27 Nov 2021 09:21:30 +0800
-Message-ID: <2091ec8e-299a-8b3d-596e-75cf4b68fde1@linux.alibaba.com>
-Date:   Sat, 27 Nov 2021 09:21:29 +0800
+        Fri, 26 Nov 2021 20:28:12 -0500
+Message-ID: <20211126230524.416227100@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637976090;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         references:references; bh=gPGwhzABUUuyh4AiGm3N1S2AvFjbvgj2SBJATF8Ta9k=;
+        b=tSSAck+iAsZ9+1LdM8d3aysmZvy1m5vkl5bocA/WJxlyTDE4q+mZbsdEjgaXX5iqhc88W+
+        Puv97zLINILbFNTz+f1Dmlr8t9QyS8Jv+Svs+IN1qWM+SzCZGiT+NbgXEJvF5+D57dZJL+
+        Ce0RUIJetsQnTGAD79MV6+rqz2/pQFc/pV/oAR21jBHOtHvXUXEkk/YvMs7Xy4OfpE3sWX
+        pLpi36UJgHbV52etY0rXvw/vEncHi9Dcf/2O+ta7vhEHSwUxSS7L+t63zF0+novG5sm8M2
+        ew0u06hdp3kDWMGC9bJr3Zu+aCbi3hk+zXdwXfc8OJD9YJ5s3+IcBNiOkzGHUw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637976090;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         references:references; bh=gPGwhzABUUuyh4AiGm3N1S2AvFjbvgj2SBJATF8Ta9k=;
+        b=LHolcTKJPPUBYCRATNIMFQS5Abm5k31EBkjw5CWmjmMxgh8Ezqq4hQe/XkG2JIuJpuBfMJ
+        xf1CkaZW2XsKDKCw==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, Marc Zygnier <maz@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Megha Dey <megha.dey@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, linux-pci@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        iommu@lists.linux-foundation.org, dmaengine@vger.kernel.org,
+        Stuart Yoder <stuyoder@gmail.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+        Vinod Koul <vkoul@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>, Sinan Kaya <okaya@kernel.org>
+Subject: [patch 08/37] genirq/msi: Provide msi_device_populate/destroy_sysfs()
+References: <20211126224100.303046749@linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH] KVM: MMU: shadow nested paging does not have PKU
-Content-Language: en-US
-To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     stable@vger.kernel.org
-References: <20211126132131.26077-1-pbonzini@redhat.com>
-From:   Lai Jiangshan <laijs@linux.alibaba.com>
-In-Reply-To: <20211126132131.26077-1-pbonzini@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Date:   Sat, 27 Nov 2021 02:21:30 +0100 (CET)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add new allocation functions which can be activated by domain info
+flags. They store the groups pointer in struct msi_device_data.
 
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ include/linux/msi.h |   12 +++++++++++-
+ kernel/irq/msi.c    |   42 ++++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 51 insertions(+), 3 deletions(-)
 
-On 2021/11/26 21:21, Paolo Bonzini wrote:
-> Initialize the mask for PKU permissions as if CR4.PKE=0, avoiding
-> incorrect interpretations of the nested hypervisor's page tables.
+--- a/include/linux/msi.h
++++ b/include/linux/msi.h
+@@ -174,9 +174,11 @@ struct msi_desc {
+ /**
+  * msi_device_data - MSI per device data
+  * @lock:		Spinlock to protect register access
++ * @attrs:		Pointer to the sysfs attribute group
+  */
+ struct msi_device_data {
+-	raw_spinlock_t		lock;
++	raw_spinlock_t			lock;
++	const struct attribute_group    **attrs;
+ };
+ 
+ int msi_setup_device_data(struct device *dev);
+@@ -242,10 +244,16 @@ void pci_msi_mask_irq(struct irq_data *d
+ void pci_msi_unmask_irq(struct irq_data *data);
+ 
+ #ifdef CONFIG_SYSFS
++int msi_device_populate_sysfs(struct device *dev);
++void msi_device_destroy_sysfs(struct device *dev);
++
+ const struct attribute_group **msi_populate_sysfs(struct device *dev);
+ void msi_destroy_sysfs(struct device *dev,
+ 		       const struct attribute_group **msi_irq_groups);
+ #else
++static inline int msi_device_populate_sysfs(struct device *dev) { return 0; }
++static inline void msi_device_destroy_sysfs(struct device *dev) { }
++
+ static inline const struct attribute_group **msi_populate_sysfs(struct device *dev)
+ {
+ 	return NULL;
+@@ -393,6 +401,8 @@ enum {
+ 	MSI_FLAG_MUST_REACTIVATE	= (1 << 5),
+ 	/* Is level-triggered capable, using two messages */
+ 	MSI_FLAG_LEVEL_CAPABLE		= (1 << 6),
++	/* Populate sysfs on alloc() and destroy it on free() */
++	MSI_FLAG_DEV_SYSFS		= (1 << 7),
+ };
+ 
+ int msi_domain_set_affinity(struct irq_data *data, const struct cpumask *mask,
+--- a/kernel/irq/msi.c
++++ b/kernel/irq/msi.c
+@@ -214,6 +214,20 @@ const struct attribute_group **msi_popul
+ }
+ 
+ /**
++ * msi_device_populate_sysfs - Populate msi_irqs sysfs entries for a device
++ * @dev:	The device(PCI, platform etc) which will get sysfs entries
++ */
++int msi_device_populate_sysfs(struct device *dev)
++{
++	const struct attribute_group **group = msi_populate_sysfs(dev);
++
++	if (IS_ERR(group))
++		return PTR_ERR(group);
++	dev->msi.data->attrs = group;
++	return 0;
++}
++
++/**
+  * msi_destroy_sysfs - Destroy msi_irqs sysfs entries for devices
+  * @dev:		The device(PCI, platform etc) who will remove sysfs entries
+  * @msi_irq_groups:	attribute_group for device msi_irqs entries
+@@ -239,6 +253,17 @@ void msi_destroy_sysfs(struct device *de
+ 		kfree(msi_irq_groups);
+ 	}
+ }
++
++/**
++ * msi_device_destroy_sysfs - Destroy msi_irqs sysfs entries for a device
++ * @dev:		The device(PCI, platform etc) for which to remove
++ *			sysfs entries
++ */
++void msi_device_destroy_sysfs(struct device *dev)
++{
++	msi_destroy_sysfs(dev, dev->msi.data->attrs);
++	dev->msi.data->attrs = NULL;
++}
+ #endif
+ 
+ #ifdef CONFIG_GENERIC_MSI_IRQ_DOMAIN
+@@ -686,8 +711,19 @@ int msi_domain_alloc_irqs(struct irq_dom
+ {
+ 	struct msi_domain_info *info = domain->host_data;
+ 	struct msi_domain_ops *ops = info->ops;
++	int ret;
+ 
+-	return ops->domain_alloc_irqs(domain, dev, nvec);
++	ret = ops->domain_alloc_irqs(domain, dev, nvec);
++	if (ret)
++		return ret;
++
++	if (!(info->flags & MSI_FLAG_DEV_SYSFS))
++		return 0;
++
++	ret = msi_device_populate_sysfs(dev);
++	if (ret)
++		msi_domain_free_irqs(domain, dev);
++	return ret;
+ }
+ 
+ void __msi_domain_free_irqs(struct irq_domain *domain, struct device *dev)
+@@ -726,7 +762,9 @@ void msi_domain_free_irqs(struct irq_dom
+ 	struct msi_domain_info *info = domain->host_data;
+ 	struct msi_domain_ops *ops = info->ops;
+ 
+-	return ops->domain_free_irqs(domain, dev);
++	if (info->flags & MSI_FLAG_DEV_SYSFS)
++		msi_device_destroy_sysfs(dev);
++	ops->domain_free_irqs(domain, dev);
+ }
+ 
+ /**
 
-I think the AMD64 volume2 Architecture Programmer’s Manual does not
-specify it, but it seems that for a sane NPT walk, PKU should not work
-in NPT.
-
-I once planed to set
-	
-	cr0 = X86_CR0_PG | X86_CR0_WP;
-	cr4 = cr4 & ~(X86_CR4_SMEP | X86_CR4_SMAP | X86_CR4_PKE);
-
-It adds X86_CR0_WP and removes smep smap just because it is always usermode
-access, and it has no meaning for CR0_WP, smep, smap.  Setting it like this
-ways can reduce the role combination.
-
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->   arch/x86/kvm/mmu/mmu.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 5942e9c6dd6e..a33b5361bc67 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -4855,7 +4855,7 @@ void kvm_init_shadow_npt_mmu(struct kvm_vcpu *vcpu, unsigned long cr0,
->   	struct kvm_mmu *context = &vcpu->arch.guest_mmu;
->   	struct kvm_mmu_role_regs regs = {
->   		.cr0 = cr0,
-> -		.cr4 = cr4,
-> +		.cr4 = cr4 & ~X86_CR4_PKE,
->   		.efer = efer,
->   	};
->   	union kvm_mmu_role new_role;
-> @@ -4919,7 +4919,7 @@ void kvm_init_shadow_ept_mmu(struct kvm_vcpu *vcpu, bool execonly,
->   	context->direct_map = false;
->   
->   	update_permission_bitmask(context, true);
-> -	update_pkru_bitmask(context);
-> +	context->pkru_mask = 0;
-
-It is not worth to optimize it since update_pkru_bitmask() will also just
-set context->pkru_mask = 0 and then return.
-
->   	reset_rsvds_bits_mask_ept(vcpu, context, execonly);
->   	reset_ept_shadow_zero_bits_mask(vcpu, context, execonly);
->   }
-> 
