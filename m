@@ -2,125 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E573345FD54
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 08:57:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C48345FD5A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 09:01:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352758AbhK0IAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 03:00:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349664AbhK0H6t (ORCPT
+        id S1352841AbhK0IEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 03:04:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45021 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1352928AbhK0ICp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 02:58:49 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8368DC06173E
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 23:55:35 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id i5so23619463wrb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 23:55:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=ztUfsM3SCWC3T/1ssUN94OZah+ZrqUmO5RAaQ/3oAdQ=;
-        b=bEmLbNv4bFVJx2M+bi+NTotdFyuLewPa3hpoxcyfimGQ6IrrBEujoqiwowtnK6v2DN
-         zvhJI/0AUf32enTzqF0VeRfYlrbifVsS+P7q738oVgwFIgGVxpNWhg2suOaVLg2Qo7zP
-         oQDdjk9sBbX1Xu4t+NMQ+J8ueEiC+UGg9jLzXdhbzo3RoMfxqvMjONEeFVCS7bGcHrbV
-         G3I2noCCXTaUw/Tg4xSsvk0V8MswC1Wn2Bt/sSYhO3moRIfcCXQf3uV4msAFdBTkuoML
-         MaUuWk31mAqwF3GDQlpP26WE4yRkQ8lMDlC9HfIacMHRMATI7yqL4ZUNkDENNlWNcalo
-         Fzog==
+        Sat, 27 Nov 2021 03:02:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637999970;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=58Kjh48+rA0mz4yMMMVKby2HPiPhnf/RAdjUHo4rrk8=;
+        b=Wjhqm85aXcYC5GLn/pZhrp3OPwiu/dAjoVS6W7S7iCWoJ1x+lmxj1GIo5ENRVK9RI0MZkS
+        gtwCHxUJjVXOhrtpSlWRUQ4nHtaYH+XQwvxPR3wp0vE3r2DJLNzvNo74AH40FZaCj6p2lH
+        IM69R0ewldSsZU2G82wvXkYDttI88WE=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-204-hDywgbodPqGd4S7kcNQ3Eg-1; Sat, 27 Nov 2021 02:59:29 -0500
+X-MC-Unique: hDywgbodPqGd4S7kcNQ3Eg-1
+Received: by mail-wm1-f71.google.com with SMTP id z138-20020a1c7e90000000b003319c5f9164so8279396wmc.7
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 23:59:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=ztUfsM3SCWC3T/1ssUN94OZah+ZrqUmO5RAaQ/3oAdQ=;
-        b=XYoSlB2/2eg72QbajBRlMkQ6tjjNxy3f5p9IHpd51OeLELUIBFEUsaXzt1152sjvg4
-         0vjjTSadTNTo6Wp/0EWNmDo7NgzvO5MZp5seEBSURqbCF2iWIazHQzWQOeTBB+M3IAtJ
-         7DKspJ1jVHl5/YjYsiW+xufWefvQzsSc2eAIymJ9Wf+lxOa+PUcpLaiwReg8tR6UBfOW
-         ZG8VCb0S0wbIgIf0VZ+uLq7KamUQEjLvHZKq2qjuNolsyGptu7ICVSpvtxia/zYicp3s
-         dc9D6Zu53D0BlNOSlwyAPJBeY9bhW8odUxlR9gyWTG2tY7ZJdUj1pw0IjLha2p1a23Qr
-         Mh9w==
-X-Gm-Message-State: AOAM533dYY7IbxofiHrGGT+E9/WWmDc8aSBpNfGeMpN9Q4REF4lwTQxo
-        z5RdC6dMkHkYilt/3uuC6FA04A8HBwA=
-X-Google-Smtp-Source: ABdhPJzJDaAsvTssbI58AndTpFmzasC2jF/GJ7nbOCsjdP9VsoibqWQ+ioY8mMelkqgNpeGdMedaAg==
-X-Received: by 2002:a5d:51cf:: with SMTP id n15mr19348772wrv.106.1637999734158;
-        Fri, 26 Nov 2021 23:55:34 -0800 (PST)
-Received: from ?IPV6:2a02:8108:96c0:3b88::ac86? ([2a02:8108:96c0:3b88::ac86])
-        by smtp.gmail.com with ESMTPSA id g18sm16180524wmq.4.2021.11.26.23.55.33
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-transfer-encoding:content-language;
+        bh=58Kjh48+rA0mz4yMMMVKby2HPiPhnf/RAdjUHo4rrk8=;
+        b=0FyFT/1Qk9EN1obOI1pkAODqU7zoWywuPm7UuWRgQun75ejk7oMD1vx3Kt1vRQmG2I
+         vwCgJA5KdNJFSFW7TT58h+b0AZraTeHWnk0BSCfvxl54+wHcIQTceyBDZ2bDupIMPSby
+         eEDYJky6Ju0DnDXJh2WihOl1ugmdRd0O7MS/oPwEmxHNd6pKtGUsKEKkyFJ9x5Wluj8/
+         +ix/jkesZWqvdlpflRXcbjcC9GMZJPMrSof1QJmkwYAOPjhW3tTKzpLPAVA/7MjOu+8A
+         I5Sm39/ppqLzsOzA9QwChh7MHoHaWlH0/DBw1vk0eZDLiTj2dtTB6w9EmhTTg5yZOVNd
+         Mwog==
+X-Gm-Message-State: AOAM533Qm9qaOPvSFakngp/r4hwJ7r1fHT8hJP2Tjn/bnTmr201dMdo4
+        ktIHnZ/BQ3eHmJsO6LsJdUnFRwCUQ/D88roRXJo5jFPwnbFOTQHsV6fhI+sPlA4J+6+Jla9WNas
+        FBBfm8PnWzo7Un7TsXSTZ2mMB
+X-Received: by 2002:a05:6000:1043:: with SMTP id c3mr19152235wrx.64.1637999967652;
+        Fri, 26 Nov 2021 23:59:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxoFdzhtbBQJqlr9QWdg9YHontW3Tzr3Rv+AFm3mKY7LUujJNHPKIkOvpyLAG9zOSPSOxJ1Ug==
+X-Received: by 2002:a05:6000:1043:: with SMTP id c3mr19152225wrx.64.1637999967502;
+        Fri, 26 Nov 2021 23:59:27 -0800 (PST)
+Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id d1sm7359363wrz.92.2021.11.26.23.59.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Nov 2021 23:55:33 -0800 (PST)
-Message-ID: <dad54a5a-3f75-8f45-ce78-3d8313c6a451@gmail.com>
-Date:   Sat, 27 Nov 2021 08:55:33 +0100
+        Fri, 26 Nov 2021 23:59:26 -0800 (PST)
+Reply-To: eric.auger@redhat.com
+Subject: Re: [PATCH v2 1/5] iommu/virtio: Add definitions for
+ VIRTIO_IOMMU_F_BYPASS_CONFIG
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>, joro@8bytes.org,
+        will@kernel.org, mst@redhat.com, jasowang@redhat.com
+Cc:     virtualization@lists.linux-foundation.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        sebastien.boeuf@intel.com, kevin.tian@intel.com,
+        pasic@linux.ibm.com
+References: <20211123155301.1047943-1-jean-philippe@linaro.org>
+ <20211123155301.1047943-2-jean-philippe@linaro.org>
+From:   Eric Auger <eric.auger@redhat.com>
+Message-ID: <b9068111-bc1e-cc0a-155d-04585d6f4138@redhat.com>
+Date:   Sat, 27 Nov 2021 08:59:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: [PATCH v2 2/4] staging: r8188eu: remove _ps_open_RF
-Content-Language: en-US
-To:     Martin Kaiser <martin@kaiser.cx>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20211125164745.8188-1-martin@kaiser.cx>
- <20211126130400.26151-1-martin@kaiser.cx>
- <20211126130400.26151-3-martin@kaiser.cx>
-From:   Michael Straube <straube.linux@gmail.com>
-In-Reply-To: <20211126130400.26151-3-martin@kaiser.cx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <20211123155301.1047943-2-jean-philippe@linaro.org>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/26/21 14:03, Martin Kaiser wrote:
-> The _ps_open_RF function is empty. Remove it.
-> 
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> ---
-> v2:
->   - remove _ps_open_RF prototype
-> 
->   drivers/staging/r8188eu/hal/usb_halinit.c      | 8 --------
->   drivers/staging/r8188eu/include/rtl8188e_hal.h | 1 -
->   2 files changed, 9 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/hal/usb_halinit.c b/drivers/staging/r8188eu/hal/usb_halinit.c
-> index 04518e9838ea..995ea4a55435 100644
-> --- a/drivers/staging/r8188eu/hal/usb_halinit.c
-> +++ b/drivers/staging/r8188eu/hal/usb_halinit.c
-> @@ -615,8 +615,6 @@ u32 rtl8188eu_hal_init(struct adapter *Adapter)
->   	HAL_INIT_PROFILE_TAG(HAL_INIT_STAGES_BEGIN);
->   
->   	if (Adapter->pwrctrlpriv.bkeepfwalive) {
-> -		_ps_open_RF(Adapter);
-> -
->   		if (haldata->odmpriv.RFCalibrateInfo.bIQKInitialized) {
->   			PHY_IQCalibrate_8188E(Adapter, true);
->   		} else {
-> @@ -852,12 +850,6 @@ u32 rtl8188eu_hal_init(struct adapter *Adapter)
->   	return status;
->   }
->   
-> -void _ps_open_RF(struct adapter *adapt)
-> -{
-> -	/* here call with bRegSSPwrLvl 1, bRegSSPwrLvl 2 needs to be verified */
-> -	/* phy_SsPwrSwitch92CU(adapt, rf_on, 1); */
-> -}
-> -
->   static void _ps_close_RF(struct adapter *adapt)
->   {
->   	/* here call with bRegSSPwrLvl 1, bRegSSPwrLvl 2 needs to be verified */
-> diff --git a/drivers/staging/r8188eu/include/rtl8188e_hal.h b/drivers/staging/r8188eu/include/rtl8188e_hal.h
-> index 5848f1d4191a..176b82219459 100644
-> --- a/drivers/staging/r8188eu/include/rtl8188e_hal.h
-> +++ b/drivers/staging/r8188eu/include/rtl8188e_hal.h
-> @@ -331,6 +331,5 @@ void rtl8188e_read_chip_version(struct adapter *padapter);
->   
->   s32 rtl8188e_iol_efuse_patch(struct adapter *padapter);
->   void rtw_cancel_all_timer(struct adapter *padapter);
-> -void _ps_open_RF(struct adapter *adapt);
->   
->   #endif /* __RTL8188E_HAL_H__ */
-> 
+Hi Jean,
 
-Reviewed-by: Michael Straube <straube.linux@gmail.com>
+On 11/23/21 4:52 PM, Jean-Philippe Brucker wrote:
+> Add definitions for the VIRTIO_IOMMU_F_BYPASS_CONFIG, which supersedes
+> VIRTIO_IOMMU_F_BYPASS.
+>
+> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> ---
+>  include/uapi/linux/virtio_iommu.h | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/uapi/linux/virtio_iommu.h b/include/uapi/linux/virtio_iommu.h
+> index 237e36a280cb..cafd8cf7febf 100644
+> --- a/include/uapi/linux/virtio_iommu.h
+> +++ b/include/uapi/linux/virtio_iommu.h
+> @@ -16,6 +16,7 @@
+>  #define VIRTIO_IOMMU_F_BYPASS			3
+>  #define VIRTIO_IOMMU_F_PROBE			4
+>  #define VIRTIO_IOMMU_F_MMIO			5
+> +#define VIRTIO_IOMMU_F_BYPASS_CONFIG		6
+>  
+>  struct virtio_iommu_range_64 {
+>  	__le64					start;
+> @@ -36,6 +37,8 @@ struct virtio_iommu_config {
+>  	struct virtio_iommu_range_32		domain_range;
+>  	/* Probe buffer size */
+>  	__le32					probe_size;
+> +	__u8					bypass;
+> +	__u8					reserved[7];
+in [PATCH v3] virtio-iommu: Rework the bypass feature I see
+
++  u8 bypass;
++  u8 reserved[3];
+
+What was exactly voted?
+
+Thanks
+
+Eric
+
+>  };
+>  
+>  /* Request types */
+> @@ -66,11 +69,14 @@ struct virtio_iommu_req_tail {
+>  	__u8					reserved[3];
+>  };
+>  
+> +#define VIRTIO_IOMMU_ATTACH_F_BYPASS		(1 << 0)
+> +
+>  struct virtio_iommu_req_attach {
+>  	struct virtio_iommu_req_head		head;
+>  	__le32					domain;
+>  	__le32					endpoint;
+> -	__u8					reserved[8];
+> +	__le32					flags;
+> +	__u8					reserved[4];
+>  	struct virtio_iommu_req_tail		tail;
+>  };
+>  
+
