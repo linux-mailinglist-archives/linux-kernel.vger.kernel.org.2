@@ -2,135 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6384845FC1D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 03:37:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF49045FB5B
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 02:39:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349261AbhK0CkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 21:40:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348203AbhK0CiQ (ORCPT
+        id S1350033AbhK0BmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 20:42:13 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:28179 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242280AbhK0BkJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 21:38:16 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B11DEC061A19
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 17:36:19 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id m6so21986225oim.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 17:36:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rEMAgFe1xF4hp22LENWc/j6FIq+ETQTSR6aU0f7r36o=;
-        b=tjtWbMgGWuTrP5zCPfw2SeFF2ANp/JlXdUyAn+MuI808Dr8uagTwNpDVG2cPjUUpjs
-         kkoWblWb40HPkRBPNhqtPag9Z+NbsfzMqBIspVrzgRFXPj2/CJ6R+lJ0HB+xNRRoXUke
-         cjDFJpDuDoGSwaCz0LpcN7tzIChNVMUC+uElQ6HXrQY3x1ExhQHcQB5qMRKnOEyuEHcA
-         Ey8fOw2C1GosodK7JLKwQ1y1Wpa22r3c3coLMvsMpQ4BBPsq4d7xOjkpVAwJWq2s4vtG
-         zugFCeG7kIjPbp5lHcAxMjrVOkXmwKN+6va0lEahet0oTI5AKsVF7ENlm0a5gMN8F2h7
-         2tDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rEMAgFe1xF4hp22LENWc/j6FIq+ETQTSR6aU0f7r36o=;
-        b=6rLIrBIgwos3Pp5mVTuKfrjBndMpu6Y1LDfcEZ37B/d94Bv512zljdXtwHtvr0aMll
-         7GIP6CjSCRDCvNVHXCrarnBxou5tUO/YF8RMEWzpIXkMKlis0X6y33JEugfX2q9QNBrG
-         hrTm1GzefsREyDr8Kuab6h01G+6UwmaBg50dCjRtxObICWlsAY4/FpFua+hL14Ks1R/a
-         HHe7YoSQmLm2iEYABqCDcI8NgQs3w/UieplML9eb/U/DXpJ851PG2qj33mYoy1LMClMB
-         YCW0wx019vjW88xEftCMvinYXfOHX0LgUbU3Zb1MVF1GbqZSTI6meLzpjQE7uNqf1kgZ
-         B+Nw==
-X-Gm-Message-State: AOAM530yUdnF0G9eJXqhePIgxLKm2JMQSiWLCT36+4DRtNeQepgf6WPJ
-        kouysy8WaRk5O2vxIP8EgsFO//1j3gRQ4h2LW/F/lg==
-X-Google-Smtp-Source: ABdhPJwSs5s2sLCzpFnvMDUBE0FB/x7d32Nh2tYWwrvGI9v+b6rBjLQ+IcD3ohO6BwPg0fhdCSc0bEDKfkUUuDbBNIU=
-X-Received: by 2002:a54:4791:: with SMTP id o17mr27768305oic.114.1637976978838;
- Fri, 26 Nov 2021 17:36:18 -0800 (PST)
+        Fri, 26 Nov 2021 20:40:09 -0500
+Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4J1Dgm0P9zz8vfN;
+        Sat, 27 Nov 2021 09:35:00 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Sat, 27 Nov 2021 09:36:38 +0800
+Subject: Re: [PATCH -next V5 2/2] sata_fsl: fix warning in remove_proc_entry
+ when rmmod sata_fsl
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        <damien.lemoal@opensource.wdc.com>, <axboe@kernel.dk>,
+        <tj@kernel.org>, <linux-ide@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <yebin10@huawei.com>, <yukuai3@huawei.com>,
+        <stable@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
+References: <20211126020307.2168767-1-libaokun1@huawei.com>
+ <20211126020307.2168767-3-libaokun1@huawei.com>
+ <d54fd029-77e3-524a-65ab-90761338e1db@gmail.com>
+From:   "libaokun (A)" <libaokun1@huawei.com>
+Message-ID: <2a8d0992-9f14-86ea-f473-167453b6f43b@huawei.com>
+Date:   Sat, 27 Nov 2021 09:36:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <20211126160219.674665-1-demonsingur@gmail.com> <20211126160219.674665-4-demonsingur@gmail.com>
-In-Reply-To: <20211126160219.674665-4-demonsingur@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 27 Nov 2021 02:36:06 +0100
-Message-ID: <CACRpkdawb_WWdjg0J-AmXBk3N2JZUb1yptrqD4sOnh_+unwR1Q@mail.gmail.com>
-Subject: Re: [PATCH v6 3/3] iio: addac: add AD74413R driver
-To:     Cosmin Tanislav <demonsingur@gmail.com>
-Cc:     cosmin.tanislav@analog.com, Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        linux-gpio@vger.kernel.org, Michael Walle <michael@walle.cc>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <d54fd029-77e3-524a-65ab-90761338e1db@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cosmin,
+在 2021/11/27 3:44, Sergei Shtylyov 写道:
+> On 11/26/21 5:03 AM, Baokun Li wrote:
+>
+>> Trying to remove the fsl-sata module in the PPC64 GNU/Linux
+>> leads to the following warning:
+>>   ------------[ cut here ]------------
+>>   remove_proc_entry: removing non-empty directory 'irq/69',
+>>     leaking at least 'fsl-sata[ff0221000.sata]'
+>>   WARNING: CPU: 3 PID: 1048 at fs/proc/generic.c:722
+>>     .remove_proc_entry+0x20c/0x220
+>>   IRQMASK: 0
+>>   NIP [c00000000033826c] .remove_proc_entry+0x20c/0x220
+>>   LR [c000000000338268] .remove_proc_entry+0x208/0x220
+>>   Call Trace:
+>>    .remove_proc_entry+0x208/0x220 (unreliable)
+>>    .unregister_irq_proc+0x104/0x140
+>>    .free_desc+0x44/0xb0
+>>    .irq_free_descs+0x9c/0xf0
+>>    .irq_dispose_mapping+0x64/0xa0
+>>    .sata_fsl_remove+0x58/0xa0 [sata_fsl]
+>>    .platform_drv_remove+0x40/0x90
+>>    .device_release_driver_internal+0x160/0x2c0
+>>    .driver_detach+0x64/0xd0
+>>    .bus_remove_driver+0x70/0xf0
+>>    .driver_unregister+0x38/0x80
+>>    .platform_driver_unregister+0x14/0x30
+>>    .fsl_sata_driver_exit+0x18/0xa20 [sata_fsl]
+>>   ---[ end trace 0ea876d4076908f5 ]---
+>>
+>> The driver creates the mapping by calling irq_of_parse_and_map(),
+>> so it also has to dispose the mapping. But the easy way out is to
+>> simply use platform_get_irq() instead of irq_of_parse_map(). Also
+>> we should adapt return value checking and propagate error values.
+>>
+>> In this case the mapping is not managed by the device but by
+>> the of core, so the device has not to dispose the mapping.
+>>
+>> Fixes: faf0b2e5afe7 ("drivers/ata: add support to Freescale 3.0Gbps SATA Controller")
+>> Cc: stable@vger.kernel.org
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+>
+> MBR, Sergei
+> .
 
-thanks for your patch!
+Thank you for your review.
 
-I noticed this has a GPIO chip inside of it :)
+-- 
+With Best Regards,
+Baokun Li
+.
 
-On Fri, Nov 26, 2021 at 5:03 PM Cosmin Tanislav <demonsingur@gmail.com> wrote:
-
-These:
-
-> +static void ad74413r_gpio_set(struct gpio_chip *chip,
-> +                             unsigned int offset, int val)
-> +static void ad74413r_gpio_set_multiple(struct gpio_chip *chip,
-> +                                      unsigned long *mask,
-> +                                      unsigned long *bits)
-> +static int ad74413r_gpio_get(struct gpio_chip *chip, unsigned int offset)
-> +static int ad74413r_gpio_get_multiple(struct gpio_chip *chip,
-> +                                     unsigned long *mask,
-> +                                     unsigned long *bits)
-
-(...)
-> +       if (st->num_gpo_gpios) {
-> +               st->gpo_gpiochip.owner = THIS_MODULE;
-> +               st->gpo_gpiochip.label = st->chip_info->name;
-> +               st->gpo_gpiochip.base = -1;
-> +               st->gpo_gpiochip.ngpio = st->num_gpo_gpios;
-> +               st->gpo_gpiochip.parent = st->dev;
-> +               st->gpo_gpiochip.can_sleep = true;
-> +               st->gpo_gpiochip.set = ad74413r_gpio_set;
-> +               st->gpo_gpiochip.set_multiple = ad74413r_gpio_set_multiple;
-> +               st->gpo_gpiochip.set_config = ad74413r_gpio_set_gpo_config;
-> +               st->gpo_gpiochip.get_direction =
-> +                       ad74413r_gpio_get_gpo_direction;
-> +
-> +               ret = devm_gpiochip_add_data(st->dev, &st->gpo_gpiochip, st);
-> +               if (ret)
-> +                       return ret;
-> +       }
-> +
-> +       if (st->num_comparator_gpios) {
-> +               st->comp_gpiochip.owner = THIS_MODULE;
-> +               st->comp_gpiochip.label = st->chip_info->name;
-> +               st->comp_gpiochip.base = -1;
-> +               st->comp_gpiochip.ngpio = st->num_comparator_gpios;
-> +               st->comp_gpiochip.parent = st->dev;
-> +               st->comp_gpiochip.can_sleep = true;
-> +               st->comp_gpiochip.get = ad74413r_gpio_get;
-> +               st->comp_gpiochip.get_multiple = ad74413r_gpio_get_multiple;
-> +               st->comp_gpiochip.set_config = ad74413r_gpio_set_comp_config;
-> +               st->comp_gpiochip.get_direction =
-> +                       ad74413r_gpio_get_comp_direction;
-
-Look a bit like the generic drivers/gpio/gpio-regmap.c
-GPIO_REGMAP.
-
-Example:
-drivers/gpio/gpio-sl28cpld.c
-drivers/pinctrl/bcm/pinctrl-bcm63xx.c
-
-Or is it too particular for this?
-
-I don't know if the regmap gpio can deal with adding a few functions
-like a custom .set_config() on top of the templates to be honest, maybe
-that is something we can fix in that case?
-
-Cc:ing Michael Walle so he can pitch in if I'm onto something here or not.
-
-Anyways the GPIO portions look good otherwise.
-
-Yours,
-Linus Walleij
