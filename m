@@ -2,76 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C597545F77E
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 01:38:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51BA845F786
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 01:41:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343992AbhK0Ali (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 19:41:38 -0500
-Received: from mga05.intel.com ([192.55.52.43]:24536 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343547AbhK0Ajh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 19:39:37 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="321961944"
-X-IronPort-AV: E=Sophos;i="5.87,267,1631602800"; 
-   d="scan'208";a="321961944"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 16:34:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,267,1631602800"; 
-   d="scan'208";a="476030681"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 26 Nov 2021 16:34:22 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqlfZ-0008pD-MA; Sat, 27 Nov 2021 00:34:21 +0000
-Date:   Sat, 27 Nov 2021 08:34:00 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     kbuild-all@lists.01.org, Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH v2 1/3] staging: zynpu: Add driver support for ARM(China)
- ZHOUYI AI accelerator
-Message-ID: <202111270828.tUBxzc9e-lkp@intel.com>
-References: <20211124084620.628-2-caihuoqing@baidu.com>
+        id S1343875AbhK0Ao5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 19:44:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229693AbhK0Am4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 19:42:56 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4013C061748;
+        Fri, 26 Nov 2021 16:39:42 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3D16A623BB;
+        Sat, 27 Nov 2021 00:39:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10ECDC004E1;
+        Sat, 27 Nov 2021 00:39:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637973581;
+        bh=PcOF56GVPiU5QNHH54WQ/qVEsJfSIIehARqsTZnkvTQ=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=YYZm04gJJW8OseHRe5cYN9BoXPSeUWlZUCbFRzLWEUsDmtK+U5FhAqz5q7CVwR2BU
+         qUaeqm08KvcJne3/mzr4QDiuR1lV7km04kdEUBxgxqorEXtnSK7pNP/9QzrI46y2Is
+         Ff2+zUzi+ZmSrJZpC2oeXmbBh8JbenfJmY41rXv5Wgy6vXus3NMl/BvVo/BWqep3Qu
+         Zq3/MphpE0Bq2ymYfwCenvC00hmSzussq4ttkkX35BloHhDjUXFxNV17MEpPkD3Kz+
+         pAInmj11An10LehGnB1p+ds4sTye1km1wCaA+RnWr6m+q5MNWEHLbx+PAkP4mScs3S
+         h43lkz6KrPv+Q==
+Message-ID: <8ae595e00a1af8af398d99b5eea980011535334a.camel@kernel.org>
+Subject: Re: [PATCH v8 03/17] integrity: Introduce a Linux keyring called
+ machine
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
+        linux-integrity@vger.kernel.org, zohar@linux.ibm.com,
+        dhowells@redhat.com, dwmw2@infradead.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        jmorris@namei.org, serge@hallyn.com
+Cc:     keescook@chromium.org, torvalds@linux-foundation.org,
+        weiyongjun1@huawei.com, nayna@linux.ibm.com, ebiggers@google.com,
+        ardb@kernel.org, nramas@linux.microsoft.com, lszubowi@redhat.com,
+        jason@zx2c4.com, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-efi@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
+        konrad.wilk@oracle.com
+Date:   Sat, 27 Nov 2021 02:39:39 +0200
+In-Reply-To: <20211124044124.998170-4-eric.snowberg@oracle.com>
+References: <20211124044124.998170-1-eric.snowberg@oracle.com>
+         <20211124044124.998170-4-eric.snowberg@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211124084620.628-2-caihuoqing@baidu.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cai,
+On Tue, 2021-11-23 at 23:41 -0500, Eric Snowberg wrote:
+> Many UEFI Linux distributions boot using shim.=C2=A0 The UEFI shim provid=
+es
+> what is called Machine Owner Keys (MOK). Shim uses both the UEFI Secure
+> Boot DB and MOK keys to validate the next step in the boot chain.=C2=A0 T=
+he
+> MOK facility can be used to import user generated keys.=C2=A0 These keys =
+can
+> be used to sign an end-users development kernel build.=C2=A0 When Linux
+> boots, both UEFI Secure Boot DB and MOK keys get loaded in the Linux
+> .platform keyring.
+>=20
+> Define a new Linux keyring called machine.=C2=A0 This keyring shall conta=
+in just
+> MOK CA keys and not the remaining keys in the platform keyring. This new
+> machine keyring will be used in follow on patches.=C2=A0 Unlike keys in t=
+he
+> platform keyring, keys contained in the machine keyring will be trusted
+> within the kernel if the end-user has chosen to do so.
+>=20
+> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
+> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
 
-I love your patch! Yet something to improve:
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-[auto build test ERROR on staging/staging-testing]
-
-url:    https://github.com/0day-ci/linux/commits/Cai-Huoqing/staging-zynpu-Add-driver-support-for-ARM-China-ZHOUYI-AI-accelerator/20211124-164741
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git 1189d2fb15a4b09b2e8dd01d60a0817d985d933d
-config: csky-buildonly-randconfig-r004-20211126 (https://download.01.org/0day-ci/archive/20211127/202111270828.tUBxzc9e-lkp@intel.com/config)
-compiler: csky-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/95965c589ea2e279e082e3c9aa18c2ddd8494d64
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Cai-Huoqing/staging-zynpu-Add-driver-support-for-ARM-China-ZHOUYI-AI-accelerator/20211124-164741
-        git checkout 95965c589ea2e279e082e3c9aa18c2ddd8494d64
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=csky SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
->> csky-linux-ld: drivers/staging/zynpu/zynpu_drv.o:(.rodata+0xc0): undefined reference to `z2_platform_priv'
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+/Jarkko
