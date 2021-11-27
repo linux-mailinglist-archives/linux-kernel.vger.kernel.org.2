@@ -2,108 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9801D46017E
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 21:49:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 112A946017F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 21:49:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356183AbhK0Uqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 15:46:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356112AbhK0Uoc (ORCPT
+        id S1356225AbhK0Urp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 15:47:45 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:41684 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240806AbhK0Upo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 15:44:32 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB180C06173E
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 12:41:17 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id u18-20020a9d7212000000b00560cb1dc10bso19283356otj.11
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 12:41:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=egk26ZyuKP6hdtL948MmA7SNlRqkI1VfSBd60XDNYVY=;
-        b=jFI0mSek0rBU9h7PNXx5Zc5w8TzhPxFx9NG7GWaP7BGifvOwJd0N3SIT6gh67ry9fv
-         +uSB7cBQ9wwo2MCtwU60F2Bb/rdJJwkFlnoJZU6E6SkrWg+R50Nf+TB0CCEomiFOp+mB
-         xRt2pSMmrE9AJlHip8yDPSI2meTrYk6Xp04SwFekKl5PPNrOktFBcIFRcmweiFecyJNi
-         IL/HbvxHo0hB8+4MpxnlQh0OJpCJoOttqCUqX0TJZZPGIzx3bSKeDK7JcIfejquBo43O
-         DEx97LbLHqxMq6w6PnDAqAd1iMyE+utT/NqxqOQpiBeWxXAcMyOKgGNDq9UQbNcAiTJI
-         9n2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=egk26ZyuKP6hdtL948MmA7SNlRqkI1VfSBd60XDNYVY=;
-        b=l7pLk/D6KNRpIdQ55deHUBWeXYsOQCLSKiHrpeysfsRUqwaJ4fjBeONsg0DAuNOr8D
-         JdrXbDD52fyLltjYaxXJy17W337F0kXzdIXt/vV6LVTwsfOQPsBWUuCCuG+1C7vL8XHi
-         d2aHjBMwO3b+rvehzohdpfoXjzHCoGcBCvytfwxcptCzCsHpPI12QIAQQVhkvr2dqkeY
-         p8LvnHL0JDyetQ9rJhWDwjWV/1+N+wep3dVoKQ0V3S/twEkrk3v6o4F8jfWg+Vb9xGaw
-         oEv51e7kKtoIJhBXiTWSkEBcJ+jPh3UgLEvzqqDWnAGxAey4AU0SrTvgb/5iACRiHtrb
-         g6Ng==
-X-Gm-Message-State: AOAM532dEKUe0mwVIVP14Jhp3cEMLHqsV2IQim6QMS81QLyss2Pxmqxk
-        cMjbXnw6JXv4zu5cFNH+NWKRRAYpkbRoYsRgE5Y=
-X-Google-Smtp-Source: ABdhPJzMwmrh1TDNIxbTY9sWPS9maUrXp84Y3lDiIJGu/egmK8rOLM2IDCeAa2RWGIa4rN/g6vrCxHx9i71o/Ez+g/8=
-X-Received: by 2002:a05:6830:2aa7:: with SMTP id s39mr36270182otu.151.1638045677090;
- Sat, 27 Nov 2021 12:41:17 -0800 (PST)
+        Sat, 27 Nov 2021 15:45:44 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C5AA660EBA
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 20:42:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35F01C53FBF;
+        Sat, 27 Nov 2021 20:42:28 +0000 (UTC)
+Date:   Sat, 27 Nov 2021 15:42:26 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Subject: Re: [GIT PULL] tracing: Two event pid filtering bug fixes
+Message-ID: <20211127154226.60aea92a@oasis.local.home>
+In-Reply-To: <CAHk-=wiJn3L26=1m4RAeGJ-PFQkrqGNCgdH1bWu7+XJKtwfvgw@mail.gmail.com>
+References: <20211127132822.5d4d2a8b@gandalf.local.home>
+        <CAHk-=wiJn3L26=1m4RAeGJ-PFQkrqGNCgdH1bWu7+XJKtwfvgw@mail.gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Received: by 2002:a05:6838:264b:0:0:0:0 with HTTP; Sat, 27 Nov 2021 12:41:16
- -0800 (PST)
-Reply-To: mrspeninnaharielbenaiah263@gmail.com
-From:   "Mrs. Peninnah Ariel Benaiah" <mrsarchanaahmed@gmail.com>
-Date:   Sat, 27 Nov 2021 12:41:16 -0800
-Message-ID: <CAGuh7Mq=t7mvX_BiVX4-mSuCP6yn5jyQQ7n_6UJ87MjvYxDZLw@mail.gmail.com>
-Subject: Greetings in the name of Lord
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
+On Sat, 27 Nov 2021 12:12:55 -0800
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
+> On Sat, Nov 27, 2021 at 10:28 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > Two fixes to event pid filtering:
+> >
+> > - Have created events reflect the current state of pid filtering
+> >
+> > - Test pid filtering on discard test of recorded logic.
+> >   (Also clean up the if statement to be cleaner).  
+> 
+> I could not parse either of those statements. The second one in
+> particular is just a jumble of random words in a random order.
 
-Greetings in the name of Lord
+Ouch, rereading that I see what you mean. I guess it was a combination
+of Thanksgiving Turkey, then finding out my email isn't going out due
+to the updates to mail.kernel.org (which was acting as my smarthost
+relay), and my wife wondering where I am (as I wasn't doing the chores
+she asked me to), so I was in a bit of a rush to get the pull request
+out after it had passed all my tests.
 
+> 
+> I tried to make it make sense by looking at the commits themselves,
+> but who knows. Maybe I made it worse by turning it from
+> incomprehensible to actively wrong.
 
-My name is Mrs. Peninnah Ariel Benaiah I am a Norway Citizen who is living
-in Burkina Faso, I am married to Mr. Benaiah Jeremiah, a politician who
-owns a small gold company in Burkina Faso; He died of Leprosy and Radesyge,
-in the year February 2010, During his lifetime he deposited the sum of =E2=
-=82=AC
-8.5 Million Euro) Eight million, Five hundred thousand Euros in a bank in
-Brussels the capital city of Belgium in Europe The money was from the sale
-of his company and death benefits payment and entitlements of my deceased
-husband by his company.
+First change:
 
-I am sending you this message with heavy tears in my eyes and great sorrow
-in my heart, and also praying that it will reach you in good health because
-I am not in good health, I sleep every night without knowing if I may be
-alive to see the next day. I am suffering from long time cancer and
-presently I am partially suffering from Leprosy, which has become difficult
-for me to move around. I was married to my late husband for more than 6
-years without having a child and my doctor confided that I have less chance
-to live, having to know when the cup of death will come, I decided to
-contact you to claim the fund since I don't have any relation I grew up
-from an orphanage home.
+ - If pid filtering is enabled, a flag is set to the file descriptor of
+   the event for the instance buffer that has pid filtering enabled.
+   This flag is checked at the time of triggering to know if the event
+   should be traced or not. The problem was when an event was created
+   (by module load, kprobe, eprobe, etc), a file descriptor is create
+   in each instance, but it wasn't updating the pid filtering flag for
+   that event. Hence, those events would start tracing on every
+   task and not honor the pid filter.
 
-I have decided to donate this money for the support of helping Motherless
-babies/Less privileged/Widows and churches also to build the house of God
-because I am dying and diagnosed with cancer for about 3 years ago. I have
-decided to donate from what I have inherited from my late husband to you
-for the good work of Almighty God; I will be going in for an operation
-surgery soon.
+Second change:
 
-Now I want you to stand as my next of kin to claim the funds for charity
-purposes. Because of this money remains unclaimed after my death, the bank
-executives or the government will take the money as unclaimed fund and
-maybe use it for selfishness and worthless ventures, I need a very honest
-person who can claim this money and use it for Charity works, for
-orphanages, widows and also build schools and churches for less privilege
-that will be named after my late husband and my name.
+ - Even if an event is filtered out, it could have a "trigger"
+   associated it it (triggers do actions based on the event fields,
+   like a stack dump into the tracing buffer, or a histogram, or even
+   disable tracing). Thus, the event is recorded into a temporary
+   buffer so its fields may be used by the trigger. But after the
+   trigger has run, it needs to know if that event should be recorded
+   into the trace buffer or not, so the filtering is executed again (if
+   the event is to be filtered it is discarded). But this second check
+   did not take into account pid filtering, and so if an event had a
+   trigger attached to it, it did not honor the pid filters, and traced
+   for all processes.
 
-I need your urgent answer to know if you will be able to execute this
-project, and I will give you more information on how the fund will be
-transferred to your bank account or online banking.
+Better?
 
-Thanks
-Mrs. Peninnah Ariel Benaiah
+> 
+> Please make those explanations more clear in the future, ok?
+
+This was a unique situation. I hope to be better next time.
+
+-- Steve
