@@ -2,224 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 234F745FC72
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 04:45:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0907245FC7F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 04:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352409AbhK0DtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 22:49:03 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:5930 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236666AbhK0DrC (ORCPT
+        id S237225AbhK0D5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 22:57:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42720 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240305AbhK0Dzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 22:47:02 -0500
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AR3MVKe023858;
-        Sat, 27 Nov 2021 03:43:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=4eB56somxyCGqXyzYvzkcEQfJwq4cs00pYLIPKTRSd0=;
- b=BXz4p1Xj33GTpa4ZS2qpnj3JYTWNT/cd1qHmkE5TfflDN2aIbjjXKTQg9Is4MEUfoBPH
- LUz58cWxIw7bHstALm7r3epXf30chBc+i3Dy7U3Orzq0Xd+D/kxjMKh32CyvaadNvJcP
- Lf6IDV1yZWI78q5zlHb+tdFTVaz9f42ORL/koD/vfF15vTqO9zcXlSz/jxySRL689/fJ
- CLuT0SWryUSyaxsPJq9rTJdz8xAs4eB2v/2k1g2CNoFTlbZCQJty+XbKwXz2IbZQ1rFQ
- FwGqpi1JUqxw4LTGWZONIntRIYWOVDtesJgJa1UdZHwDxIU3hqfRPVPbsGtO1uLAnSnd VA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ckcq386yf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 27 Nov 2021 03:43:45 +0000
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AR3YKDW020454;
-        Sat, 27 Nov 2021 03:43:45 GMT
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ckcq386ya-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 27 Nov 2021 03:43:45 +0000
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AR3h0Xo025865;
-        Sat, 27 Nov 2021 03:43:44 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma02dal.us.ibm.com with ESMTP id 3ckca98f7v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 27 Nov 2021 03:43:44 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AR3hhVI21627784
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 27 Nov 2021 03:43:43 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5AE6AAC05F;
-        Sat, 27 Nov 2021 03:43:43 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 30072AC05E;
-        Sat, 27 Nov 2021 03:43:43 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
-        Sat, 27 Nov 2021 03:43:43 +0000 (GMT)
-Message-ID: <2557c1e2-b0fa-8729-0eb0-6ae68ee6f653@linux.ibm.com>
-Date:   Fri, 26 Nov 2021 22:43:42 -0500
+        Fri, 26 Nov 2021 22:55:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637985150;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YBu0TKYMlDzNfaw4nFRDjKWkibjxrtPGawGYuWjQVLU=;
+        b=ZUhsFK98+PqNMn8QhcDP3VtVTd5tBpMTE1OzedYmnM0W59VdeRq0bkZxXf5sQViNlgaPXZ
+        OFZGWkSUhA33n4I8dLFgmDhmURozi0JiwOM8E0zPDU9aHC5pzERUlZwdyo2ziMjn6gkv9K
+        bvLi/+Vz8FxUxwu2p3SG0tDpdHeyRh4=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-550-cWly7lsMMAyKChBr1OgCmA-1; Fri, 26 Nov 2021 22:52:29 -0500
+X-MC-Unique: cWly7lsMMAyKChBr1OgCmA-1
+Received: by mail-wm1-f70.google.com with SMTP id a64-20020a1c7f43000000b003335e5dc26bso6067491wmd.8
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 19:52:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YBu0TKYMlDzNfaw4nFRDjKWkibjxrtPGawGYuWjQVLU=;
+        b=cUYtQwtSYxiq7vrDI90rq+FQFiJaeaslEcbA1ApJ0RrH+Qlvvl0189byOWSPgRlnj5
+         9G5nrIU/RWn/JtFrzOMDuq70g0YRfJHlk6PR+WqZiqOlGGPy2BSq7ahmQ9HunG5olFf/
+         Z27rfuhdMXpQtFYUEfDMOEb+HEPMJ69aqi9PQTm/Y5f6/2/HF7oxhwLwa5RRTE4uwfmT
+         oTOtwu5zm93pG225HfOJuAOSQUFxATrdPWVjbkdR1Nd1yEt8fL/LJP+icTbwwNsyXSLT
+         B+INvSKPUeLgVYdo8c36FNezW6Od4E/jHiPVl4Wejx8G2/kViqOAiDi5sB/dASSbYNyG
+         BzgA==
+X-Gm-Message-State: AOAM531vVfp1370AyDBmiZ17mzQCzHXPp/+CbjXD8dDugEIYVhkhcjD9
+        AIdbmNI5Nza350h7ofMg+A74sWiykMsOIG0Jod4l+uNKGnKwq6X8vVxLGRppNmWYEZ7crW9vwFQ
+        5K+IXEZUUKnB0kkalYYsPDjQJLNRo1z6dxgEuQrJK
+X-Received: by 2002:adf:e984:: with SMTP id h4mr18926639wrm.149.1637985147898;
+        Fri, 26 Nov 2021 19:52:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyj5ejF2MTJuOBwknZH7cs+IbWSpXM0GIc+4jvarthQmIS7p0k4t7IBSL1W9v++oZhg83W8N2CiFY3kykhMSD4=
+X-Received: by 2002:adf:e984:: with SMTP id h4mr18926613wrm.149.1637985147635;
+ Fri, 26 Nov 2021 19:52:27 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v3 1/3] selftests: tpm2: Probe for available PCR bank
-Content-Language: en-US
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Stefan Berger <stefanb@linux.vnet.ibm.com>,
-        linux-integrity@vger.kernel.org
-Cc:     peterhuewe@gmx.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org
-References: <20211125003827.1360432-1-stefanb@linux.vnet.ibm.com>
- <20211125003827.1360432-2-stefanb@linux.vnet.ibm.com>
- <97ddf0f23592b74e7647e3c9b36b37553c594c82.camel@kernel.org>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <97ddf0f23592b74e7647e3c9b36b37553c594c82.camel@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: aUbulO1Y26RYD-7d-PQyEFe0TZSG6FjT
-X-Proofpoint-ORIG-GUID: WXDukT7EUqffygXAbUtycn2irpRL29Gx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-27_01,2021-11-25_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 adultscore=0 spamscore=0 malwarescore=0 mlxlogscore=999
- mlxscore=0 clxscore=1015 suspectscore=0 lowpriorityscore=0 impostorscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111270017
+References: <YaAROdPCqNzSKCjh@arm.com> <20211124192024.2408218-1-catalin.marinas@arm.com>
+ <20211124192024.2408218-4-catalin.marinas@arm.com> <YZ6arlsi2L3LVbFO@casper.infradead.org>
+ <YZ6idVy3zqQC4atv@arm.com> <CAHc6FU4-P9sVexcNt5CDQxROtMAo=kH8hEu==AAhZ_+Zv53=Ag@mail.gmail.com>
+ <20211126222945.549971-1-agruenba@redhat.com> <YaFmaJqyie6KZ2bY@arm.com>
+In-Reply-To: <YaFmaJqyie6KZ2bY@arm.com>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Sat, 27 Nov 2021 04:52:16 +0100
+Message-ID: <CAHc6FU53gdXR4VjSQJUtUigVkgDY6yfRkNBYuBj4sv3eT=MBSQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
+ with sub-page faults
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 11/26/21 19:29, Jarkko Sakkinen wrote:
-> On Wed, 2021-11-24 at 19:38 -0500, Stefan Berger wrote:
->> From: Stefan Berger <stefanb@linux.ibm.com>
->>
->> Probe for an available PCR bank to accommodate devices that do not have a
-> What does "probing for an vailable PCR bank" even mean?
-
-Checking ? Testing ? What's the difference to those words?
-
-
+On Sat, Nov 27, 2021 at 12:06 AM Catalin Marinas
+<catalin.marinas@arm.com> wrote:
+> On Fri, Nov 26, 2021 at 11:29:45PM +0100, Andreas Gruenbacher wrote:
+> > On Thu, Nov 25, 2021 at 11:42 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > > As per Linus' reply, we can work around this by doing
+> > > a sub-page fault_in_writable(point_of_failure, align) where 'align'
+> > > should cover the copy_to_user() impreciseness.
+> > >
+> > > (of course, fault_in_writable() takes the full size argument but behind
+> > > the scene it probes the 'align' prefix at sub-page fault granularity)
+> >
+> > That doesn't make sense; we don't want fault_in_writable() to fail or
+> > succeed depending on the alignment of the address range passed to it.
 >
->> SHA-1 PCR bank or whose SHA-1 bank is deactivated. Use the bank that can
->> be used for the TPM2 commands, such as the SHA-256 bank.
-> This is incorrect, as the patch does not have code to query
-> available hash algorithms.
+> If we know that the arch copy_to_user() has an error of say maximum 16
+> bytes (or 15 rather on arm64), we can instead get fault_in_writeable()
+> to probe the first 16 bytes rather than 1.
 
-I am not sure I understand. The new function determines which PCR banks 
-(SHA-1 or SHA-256) the subsequent tests can use. It tries to execute the 
-policy_pcr command with the given hash bank algorithm (SHA-256 or SHA-1) 
-and if it returns an UnknowPcrBankError it tries the next one in the 
-list. It doesn't need to query available hash algorithms. A TPM 2 may 
-support SHA 256 and yet its SHA 256 bank may be deactivate.
+That isn't going to help one bit: [raw_]copy_to_user() is allowed to
+copy as little or as much as it wants as long as it follows the rules
+documented in include/linux/uaccess.h:
 
-> What the code does, and only does that, is to use SHA-256 as
-> a fallback when SHA-1 is not enabled.
+[] If copying succeeds, the return value must be 0.  If some data cannot be
+[] fetched, it is permitted to copy less than had been fetched; the only
+[] hard requirement is that not storing anything at all (i.e. returning size)
+[] should happen only when nothing could be copied.  In other words, you don't
+[] have to squeeze as much as possible - it is allowed, but not necessary.
+
+When fault_in_writeable() tells us that an address range is accessible
+in principle, that doesn't mean that copy_to_user() will allow us to
+access it in arbitrary chunks. It's also not the case that
+fault_in_writeable(addr, size) is always followed by
+copy_to_user(addr, ..., size) for the exact same address range, not
+even in this case.
+
+These alignment restrictions have nothing to do with page or sub-page faults.
+
+I'm also fairly sure that passing in an unaligned buffer will send
+search_ioctl into an endless loop on architectures with copy_to_user()
+alignment restrictions; there don't seem to be any buffer alignment
+checks.
+
+> > Have a look at the below code to see what I mean.  Function
+> > copy_to_user_nofault_unaligned() should be further optimized, maybe as
+> > mm/maccess.c:copy_from_kernel_nofault() and/or per architecture
+> > depending on the actual alignment rules; I'm not sure.
+> [...]
+> > --- a/fs/btrfs/ioctl.c
+> > +++ b/fs/btrfs/ioctl.c
+> > @@ -2051,13 +2051,30 @@ static noinline int key_in_sk(struct btrfs_key *key,
+> >       return 1;
+> >  }
+> >
+> > +size_t copy_to_user_nofault_unaligned(void __user *to, void *from, size_t size)
+> > +{
+> > +     size_t rest = copy_to_user_nofault(to, from, size);
+> > +
+> > +     if (rest) {
+> > +             size_t n;
+> > +
+> > +             for (n = size - rest; n < size; n++) {
+> > +                     if (copy_to_user_nofault(to + n, from + n, 1))
+> > +                             break;
+> > +             }
+> > +             rest = size - n;
+> > +     }
+> > +     return rest;
 >
-> /Jarkko
+> That's what I was trying to avoid. That's basically a fall-back to byte
+> at a time copy (we do this in copy_mount_options(); at some point we
+> even had a copy_from_user_exact() IIRC).
+
+We could try 8/4/2 byte chunks if both buffers are 8/4/2-byte aligned.
+It's just not clear that it's worth it.
+
+> Linus' idea (if I got it correctly) was instead to slightly extend the
+> probing in fault_in_writeable() for the beginning of the buffer from 1
+> byte to some per-arch range.
 >
+> I attempted the above here and works ok:
 >
->> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
->> ---
->>   tools/testing/selftests/tpm2/tpm2_tests.py | 35 +++++++++++++++++-----
->>   1 file changed, 27 insertions(+), 8 deletions(-)
->>
->> diff --git a/tools/testing/selftests/tpm2/tpm2_tests.py b/tools/testing/selftests/tpm2/tpm2_tests.py
->> index 9d764306887b..6b88ff0e47b9 100644
->> --- a/tools/testing/selftests/tpm2/tpm2_tests.py
->> +++ b/tools/testing/selftests/tpm2/tpm2_tests.py
->> @@ -27,7 +27,23 @@ class SmokeTest(unittest.TestCase):
->>           result = self.client.unseal(self.root_key, blob, auth, None)
->>           self.assertEqual(data, result)
->>   
->> +    def determine_bank_alg(self):
->> +        # Probe for available PCR bank
->> +        for bank_alg in [tpm2.TPM2_ALG_SHA1, tpm2.TPM2_ALG_SHA256]:
->> +            try:
->> +                handle = self.client.start_auth_session(tpm2.TPM2_SE_TRIAL)
->> +                self.client.policy_pcr(handle, [17], bank_alg=bank_alg)
->> +                return bank_alg
->> +            except tpm2.UnknownPCRBankError:
->> +                pass
->> +            finally:
->> +                self.client.flush_context(handle)
->> +        return None
->> +
->>       def test_seal_with_policy(self):
->> +        bank_alg = self.determine_bank_alg()
->> +        self.assertIsNotNone(bank_alg)
->> +
->>           handle = self.client.start_auth_session(tpm2.TPM2_SE_TRIAL)
->>   
->>           data = ('X' * 64).encode()
->> @@ -35,7 +51,7 @@ class SmokeTest(unittest.TestCase):
->>           pcrs = [16]
->>   
->>           try:
->> -            self.client.policy_pcr(handle, pcrs)
->> +            self.client.policy_pcr(handle, pcrs, bank_alg=bank_alg)
->>               self.client.policy_password(handle)
->>   
->>               policy_dig = self.client.get_policy_digest(handle)
->> @@ -47,7 +63,7 @@ class SmokeTest(unittest.TestCase):
->>           handle = self.client.start_auth_session(tpm2.TPM2_SE_POLICY)
->>   
->>           try:
->> -            self.client.policy_pcr(handle, p"Use SHA-256 as a fallback crs)
->> +            self.client.policy_pcr(handle, pcrs, bank_alg=bank_alg)
->>               self.client.policy_password(handle)
->>   
->>               result = self.client.unseal(self.root_key, blob, auth, handle)
->> @@ -72,6 +88,9 @@ class SmokeTest(unittest.TestCase):
->>           self.assertEqual(rc, tpm2.TPM2_RC_AUTH_FAIL)
->>   
->>       def test_unseal_with_wrong_policy(self):
->> +        bank_alg = self.determine_bank_alg()
->> +        self.assertIsNotNone(bank_alg)
->> +
->>           handle = self.client.start_auth_session(tpm2.TPM2_SE_TRIAL)
->>   
->>           data = ('X' * 64).encode()
->> @@ -79,7 +98,7 @@ class SmokeTest(unittest.TestCase):
->>           pcrs = [16]
->>   
->>           try:
->> -            self.client.policy_pcr(handle, pcrs)
->> +            self.client.policy_pcr(handle, pcrs, bank_alg=bank_alg)
->>               self.client.policy_password(handle)
->>   
->>               policy_dig = self.client.get_policy_digest(handle)
->> @@ -91,13 +110,13 @@ class SmokeTest(unittest.TestCase):
->>           # Extend first a PCR that is not part of the policy and try to unseal.
->>           # This should succeed.
->>   
->> -        ds = tpm2.get_digest_size(tpm2.TPM2_ALG_SHA1)
->> -        self.client.extend_pcr(1, ('X' * ds).encode())
->> +        ds = tpm2.get_digest_size(bank_alg)
->> +        self.client.extend_pcr(1, ('X' * ds).encode(), bank_alg=bank_alg)
->>   
->>           handle = self.client.start_auth_session(tpm2.TPM2_SE_POLICY)
->>   
->>           try:
->> -            self.client.policy_pcr(handle, pcrs)
->> +            self.client.policy_pcr(handle, pcrs, bank_alg=bank_alg)
->>               self.client.policy_password(handle)
->>   
->>               result = self.client.unseal(self.root_key, blob, auth, handle)
->> @@ -109,14 +128,14 @@ class SmokeTest(unittest.TestCase):
->>   
->>           # Then, extend a PCR that is part of the policy and try to unseal.
->>           # This should fail.
->> -        self.client.extend_pcr(16, ('X' * ds).encode())
->> +        self.client.extend_pcr(16, ('X' * ds).encode(), bank_alg=bank_alg)
->>   
->>           handle = self.client.start_auth_session(tpm2.TPM2_SE_POLICY)
->>   
->>           rc = 0
->>   
->>           try:
->> -            self.client.policy_pcr(handle, pcrs)
->> +            self.client.policy_pcr(handle, pcrs, bank_alg=bank_alg)
->>               self.client.policy_password(handle)
->>   
->>               result = self.client.unseal(self.root_key, blob, auth, handle)
+> https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/log/?h=devel/btrfs-live-lock-fix
+>
+> but too late to post it this evening, I'll do it in the next day or so
+> as an alternative to this series.
+>
+> --
+> Catalin
+>
+
+Thanks,
+Andreas
+
