@@ -2,100 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF7246022A
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 23:41:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF98846022C
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 23:50:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356675AbhK0WoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 17:44:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356571AbhK0WmM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 17:42:12 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98915C061399
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 14:33:09 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id j140-20020a1c2392000000b003399ae48f58so13530711wmj.5
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 14:33:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LJ8LcarI7xqEtvO5iVdRS56QktsqqAOlLhc5CcWcfZQ=;
-        b=r/qaO9nQajEHTbRAiXJq5PBzELxh5SYcoGDHjkN5FwgvsS/VnF/bAOJx+7tp53JVEF
-         i/t/XIzQCEyV+pEoUklfZrciszvg94BS/pQNz2A3MeVo01sPBNRVRbaCye70p75cV+t9
-         2oGmdCE46DQUSKfznDj4vh4OXQcT07HJryqQcYO4iYmdkQ/1tVg3+0Bz7ZKCVenrVQZg
-         vIfZzm/thV8mBebncIzTNzu9qDfvmdD2lo9EjUEneA0fuKw8zj2ExbnSqJ6jRQaStZoS
-         yKcNUcq0cYJ4y0FKW61tt2FFcZ/imS6ZDC8X4XwoOYa1SAb+cLLcZsFVTzXL0GcdSW3g
-         Y7JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LJ8LcarI7xqEtvO5iVdRS56QktsqqAOlLhc5CcWcfZQ=;
-        b=2EDPilR8no4nyuKNkLVuo8l9irkkMvf7169uT75RFlWLl8ug6uFzHRezdX3eyR3Twk
-         RA6ydV0ZYwkF/brjFu7ho+qqttJEbmOY9pmODnQdJcEHT0DIZqXiLL0VGBuu1lKkn+dI
-         XsA/REQk/cAtf3ADxN75RqM86bqhjU0Weh0ifC3EBQvQXZXXUzn5OrxbW4YtyqQFvxed
-         Su8YfWtXAdxAdmjolocSP/Xn2tg5H7I7mu9+LoAx/BWiEeaHH4dGR8NvJTuN0myREIBQ
-         tlfe3QVwzg5R4XnVHZJgxsyic3DLtCMLj7Rzz1kWDe0ylxKrg2GHnzbzB2YmTzZ99HRr
-         Oc6A==
-X-Gm-Message-State: AOAM531VD6uylY2C6kEXlaFgzsXxjOCnxk9qYpnpI9yXSI/hMsOjcBY7
-        R+9U77ZWT4n6XFhiEfDbAnNByQ==
-X-Google-Smtp-Source: ABdhPJybLPuiYuY26o40e1ovZYC7Flhu8vSAfHRGwdZ9hn+tl2NYlm7OSVmgTPh6Mb5T6RqHSb/bIA==
-X-Received: by 2002:a1c:770e:: with SMTP id t14mr24560888wmi.173.1638052388201;
-        Sat, 27 Nov 2021 14:33:08 -0800 (PST)
-Received: from localhost ([31.134.121.151])
-        by smtp.gmail.com with ESMTPSA id g13sm13152129wrd.57.2021.11.27.14.33.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Nov 2021 14:33:07 -0800 (PST)
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jaewon Kim <jaewon02.kim@samsung.com>,
-        Chanho Park <chanho61.park@samsung.com>,
-        David Virag <virag.david003@gmail.com>,
-        Youngmin Nam <youngmin.nam@samsung.com>,
-        devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-Subject: [PATCH 8/8] spi: Make SPI_S3C64XX=y impossible when EXYNOS_USI_V2=m
-Date:   Sun, 28 Nov 2021 00:32:53 +0200
-Message-Id: <20211127223253.19098-9-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211127223253.19098-1-semen.protsenko@linaro.org>
-References: <20211127223253.19098-1-semen.protsenko@linaro.org>
+        id S1356437AbhK0WvT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 27 Nov 2021 17:51:19 -0500
+Received: from mgw-02.mpynet.fi ([82.197.21.91]:59572 "EHLO mgw-02.mpynet.fi"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235777AbhK0WtS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 17:49:18 -0500
+Received: from pps.filterd (mgw-02.mpynet.fi [127.0.0.1])
+        by mgw-02.mpynet.fi (8.16.0.43/8.16.0.43) with SMTP id 1ARMiqPM035292;
+        Sun, 28 Nov 2021 00:44:52 +0200
+Received: from ex13.tuxera.com (ex13.tuxera.com [178.16.184.72])
+        by mgw-02.mpynet.fi with ESMTP id 3ck98j8gh0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 28 Nov 2021 00:44:52 +0200
+Received: from tuxera-exch.ad.tuxera.com (10.20.48.11) by
+ tuxera-exch.ad.tuxera.com (10.20.48.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.26; Sun, 28 Nov 2021 00:44:52 +0200
+Received: from tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789]) by
+ tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789%12]) with mapi id
+ 15.00.1497.026; Sun, 28 Nov 2021 00:44:52 +0200
+From:   Anton Altaparmakov <anton@tuxera.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+CC:     Guenter Roeck <linux@roeck-us.net>,
+        "linux-ntfs-dev@lists.sourceforge.net" 
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Netdev <netdev@vger.kernel.org>, Joel Stanley <joel@jms.id.au>,
+        "Michael Ellerman" <mpe@ellerman.id.au>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Arnd Bergmann" <arnd@arndb.de>
+Subject: Re: [PATCH v3 0/3] Limit NTFS_RW to page sizes smaller than 64k
+Thread-Topic: [PATCH v3 0/3] Limit NTFS_RW to page sizes smaller than 64k
+Thread-Index: AQHX46W2dvlin3Ey2EOJlJkpsU4ChqwXhYiAgABNKgCAAAGjAIAAA5+A
+Date:   Sat, 27 Nov 2021 22:44:51 +0000
+Message-ID: <6175371C-AA85-470A-B7E6-5BE8F2D471E6@tuxera.com>
+References: <20211127154442.3676290-1-linux@roeck-us.net>
+ <CAHk-=wh9g5Mu9V=dsQLkfmCZ-O7zjvhE6F=-42BbQuis2qWEpg@mail.gmail.com>
+ <228a72fd-82db-6bfe-0df6-37f57cecb31a@roeck-us.net>
+ <CAHk-=wjaVwrf1OQbDSbk1FxqzbtAYQLx16D74TeagXQyb5oEEA@mail.gmail.com>
+In-Reply-To: <CAHk-=wjaVwrf1OQbDSbk1FxqzbtAYQLx16D74TeagXQyb5oEEA@mail.gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [81.154.174.177]
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <D2931A9066944C4BB32AAE9301A50167@ex13.tuxera.com>
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: TFeZmLzu2G1b3r3x_II5jkZNKw0heigq
+X-Proofpoint-ORIG-GUID: TFeZmLzu2G1b3r3x_II5jkZNKw0heigq
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.425,18.0.790
+ definitions=2021-11-27_06:2021-11-25,2021-11-27 signatures=0
+X-Proofpoint-Spam-Details: rule=mpy_notspam policy=mpy score=0 spamscore=0 malwarescore=0
+ mlxlogscore=640 bulkscore=0 adultscore=0 suspectscore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111270133
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When S3C64XX SPI is encapsulated in USIv2 block (e.g. in Exynos850),
-USIv2 driver must be loaded first, as it's preparing USI hardware for
-particular protocol use. Make it impossible for spi-s3c64xx driver to be
-built-in when USIv2 driver is built as a module, to prevent incorrect
-booting order for those drivers.
+Hi Linus, Guenter,
 
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
----
- drivers/spi/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+> On 27 Nov 2021, at 22:31, Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> On Sat, Nov 27, 2021 at 2:26 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>> 
+>> Either way is fine with me. Either apply it now and have it fixed in -rc3,
+>> or we can wait for a few days and I'll send you a pull request if there
+>> are no objections by, say, Wednesday.
+> 
+> I'll just take the patches as-is and we can leave this issue behind us
+> (knock wood).
 
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index b2a8821971e1..fbdf901248be 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -761,6 +761,7 @@ config SPI_S3C24XX_FIQ
- config SPI_S3C64XX
- 	tristate "Samsung S3C64XX/Exynos SoC series type SPI"
- 	depends on (PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST)
-+	depends on EXYNOS_USI_V2 || !EXYNOS_USI_V2
- 	help
- 	  SPI driver for Samsung S3C64XX, S5Pv210 and Exynos SoCs.
- 	  Choose Y/M here only if you build for such Samsung SoC.
+That sounds good, thank you!
+
+Best regards,
+
+	Anton
+
+> Thanks,
+> 
+>           Linus
+
 -- 
-2.30.2
+Anton Altaparmakov <anton at tuxera.com> (replace at with @)
+Lead in File System Development, Tuxera Inc., http://www.tuxera.com/
+Linux NTFS maintainer
 
