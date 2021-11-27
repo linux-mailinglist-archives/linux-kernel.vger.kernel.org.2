@@ -2,184 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E512B45FFD6
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 16:23:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D5BF45FFDE
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 16:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355369AbhK0P02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 10:26:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
+        id S1346741AbhK0Pev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 10:34:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229735AbhK0PY1 (ORCPT
+        with ESMTP id S233902AbhK0Pcu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 10:24:27 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E06BEC06173E;
-        Sat, 27 Nov 2021 07:21:12 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7E0E660AD8;
-        Sat, 27 Nov 2021 15:21:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6D1AC53FBF;
-        Sat, 27 Nov 2021 15:21:09 +0000 (UTC)
-Date:   Sat, 27 Nov 2021 15:21:06 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
- with sub-page faults
-Message-ID: <YaJM4n31gDeVzUGA@arm.com>
-References: <CAHc6FU53gdXR4VjSQJUtUigVkgDY6yfRkNBYuBj4sv3eT=MBSQ@mail.gmail.com>
- <YaAROdPCqNzSKCjh@arm.com>
- <20211124192024.2408218-1-catalin.marinas@arm.com>
- <20211124192024.2408218-4-catalin.marinas@arm.com>
- <YZ6arlsi2L3LVbFO@casper.infradead.org>
- <YZ6idVy3zqQC4atv@arm.com>
- <CAHc6FU4-P9sVexcNt5CDQxROtMAo=kH8hEu==AAhZ_+Zv53=Ag@mail.gmail.com>
- <20211127123958.588350-1-agruenba@redhat.com>
+        Sat, 27 Nov 2021 10:32:50 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDB2FC061574;
+        Sat, 27 Nov 2021 07:29:35 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id w1so51655416edc.6;
+        Sat, 27 Nov 2021 07:29:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uZa3lGg5TVVsYTVzd3SjTqIXOm+Tj/rVIJizF1jMhDo=;
+        b=Gfb1s3RJtTBdXYydL0Bj53WQBhKrUqbf+DTcezy4bxbvNBf5o0gytuMO7gefd6w8Wy
+         B8H/cQ3hsXH7XFzj1HU4QD5cn2xJP4fAW7DI2J+yTCRdh6q1d0AkT8XnFI5H8uKvDlya
+         jgNuWOyX9yU47p4snDazNbcOVHa4tYwTEEe+nBN3navZwwKLGkS17E8pIGqKBAN8qwwm
+         v385C7AHMe7RA1kt7ibJ1yaFFXRsycmO7rkKSQdBIoe6Wo5wACTdODJlMPXF+clfW2mh
+         zjiw5+J2JNVUFXqWOkm0yHQZzHlNudZejbY8f5eKXvARObtmSyJSIw1peMHCWsBYABtL
+         Vxig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uZa3lGg5TVVsYTVzd3SjTqIXOm+Tj/rVIJizF1jMhDo=;
+        b=ZXMSQZ0Ss93QQwDQkGE2N70E3xhWHOVH6rYqEcvb3RzVLwknuUW+ivfGb2CsUDHNdx
+         sHLPF+FTlov3nZfebQvO0G6sZGtviiRPQ3cDIEmtDXAMj8nZNAWP2AE1lbCBJRnDEdyh
+         ZaoVJLVpWCoPRnZct9r9foxoVkSCodKutB0kIB0ZsXCG9NN4yard5hWOZonDvt1LKEeE
+         Fd4fafueC1yDS2vOloP7yrr+J6tPLXTAUKkXvcQ9wuqhfbVVvaj2SkvkA2qWwqdjoq9P
+         lg/DCQv8B4LuYt0Q90agbEzPYQigRYcxgMBX082Swv7X/ZdhG9dZaoV0s6+2ZAZhNhW0
+         dt8Q==
+X-Gm-Message-State: AOAM531S6SwTdCtRHRrBAwHBpt3NAWngtr1vzYuNG3ct1mmTUj7Ap2kj
+        1ps38R3jY4dYhQgksvKbzWkEr/3X3j0=
+X-Google-Smtp-Source: ABdhPJy21OW5YxatYCV4Gr34x0UNkM8gcFS2g3sPwsA5IPwmtOmFhwH92iC6nVLR2mpGPjuB2MKtJg==
+X-Received: by 2002:a17:907:868f:: with SMTP id qa15mr47300758ejc.187.1638026974377;
+        Sat, 27 Nov 2021 07:29:34 -0800 (PST)
+Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id h10sm5826804edj.1.2021.11.27.07.29.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 27 Nov 2021 07:29:34 -0800 (PST)
+Subject: Re: [PATCH v2 3/3] arm64: dts: rockchip: Add spi1 pins on Quartz64 A
+To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211127141910.12649-1-frattaroli.nicolas@gmail.com>
+ <20211127141910.12649-4-frattaroli.nicolas@gmail.com>
+From:   Johan Jonker <jbx6244@gmail.com>
+Message-ID: <acbd0e0a-b194-7b17-148d-49fdd348077e@gmail.com>
+Date:   Sat, 27 Nov 2021 16:29:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211127123958.588350-1-agruenba@redhat.com>
+In-Reply-To: <20211127141910.12649-4-frattaroli.nicolas@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 27, 2021 at 01:39:58PM +0100, Andreas Gruenbacher wrote:
-> On Sat, Nov 27, 2021 at 4:52 AM Andreas Gruenbacher <agruenba@redhat.com> wrote:
-> > On Sat, Nov 27, 2021 at 12:06 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > > If we know that the arch copy_to_user() has an error of say maximum 16
-> > > bytes (or 15 rather on arm64), we can instead get fault_in_writeable()
-> > > to probe the first 16 bytes rather than 1.
-> >
-> > That isn't going to help one bit: [raw_]copy_to_user() is allowed to
-> > copy as little or as much as it wants as long as it follows the rules
-> > documented in include/linux/uaccess.h:
-> >
-> > [] If copying succeeds, the return value must be 0.  If some data cannot be
-> > [] fetched, it is permitted to copy less than had been fetched; the only
-> > [] hard requirement is that not storing anything at all (i.e. returning size)
-> > [] should happen only when nothing could be copied.  In other words, you don't
-> > [] have to squeeze as much as possible - it is allowed, but not necessary.
-> >
-> > When fault_in_writeable() tells us that an address range is accessible
-> > in principle, that doesn't mean that copy_to_user() will allow us to
-> > access it in arbitrary chunks. It's also not the case that
-> > fault_in_writeable(addr, size) is always followed by
-> > copy_to_user(addr, ..., size) for the exact same address range, not
-> > even in this case.
-> >
-> > These alignment restrictions have nothing to do with page or sub-page faults.
-> >
-> > I'm also fairly sure that passing in an unaligned buffer will send
-> > search_ioctl into an endless loop on architectures with copy_to_user()
-> > alignment restrictions; there don't seem to be any buffer alignment
-> > checks.
-> 
-> Let me retract that ...
-> 
-> The description in include/linux/uaccess.h leaves out permissible
-> reasons for fetching/storing less than requested. Thinking about it, if
-> the address range passed to one of the copy functions includes an
-> address that faults, it kind of makes sense to allow the copy function
-> to stop short instead of copying every last byte right up to the address
-> that fails.
-> 
-> If that's the only reason, then it would be great to have that included
-> in the description.  And then we can indeed deal with the alignment
-> effects in fault_in_writeable().
 
-Ah, I started replying last night, sent it today without seeing your
-follow-up.
 
-> > > I attempted the above here and works ok:
-> > >
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/log/?h=devel/btrfs-live-lock-fix
-> > >
-> > > but too late to post it this evening, I'll do it in the next day or so
-> > > as an alternative to this series.
+On 11/27/21 3:19 PM, Nicolas Frattaroli wrote:
+> The Quartz64 Model A has the SPI pins broken out on its pin
+> header. The actual pins being used though are not the m0
+> variant, but the m1 variant, which also lacks the cs1 pin.
 > 
-> I've taken a quick look.  Under the assumption that alignment effects
-> are tied to page / sub-page faults, I think we can really solve this
-> generically as Willy has proposed.
-
-I think Willy's proposal stopped at the page boundary, it should go
-beyond.
-
-> Maybe as shown below; no need for arch-specific code.
+> This commit overrides pinctrl-0 accordingly for this board.
 > 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 2c51e9748a6a..a9b3d916b625 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -1658,6 +1658,8 @@ static long __get_user_pages_locked(struct mm_struct *mm, unsigned long start,
->  }
->  #endif /* !CONFIG_MMU */
+> spi1 is intentionally left disabled, as anyone wishing to add
+> SPI devices needs to edit the dts anyway, and the pins are more
+> useful as GPIOs for the rest of the users.
+> 
+> Signed-off-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+> ---
+>  arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
+> index 4d4b2a301b1a..166399b7f13f 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
+> +++ b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
+> @@ -509,6 +509,11 @@ &spdif {
+>  	status = "okay";
+>  };
 >  
-> +#define SUBPAGE_FAULT_SIZE 16
+> +&spi1 {
+
+> +	pinctrl-names = "default";
+
+With the removal off pinctrl-1 the pinctrl-names property is already
+correctly defined.
+
++	spi1: spi@fe620000 {
++		compatible = "rockchip,rk3568-spi", "rockchip,rk3066-spi";
++		reg = <0x0 0xfe620000 0x0 0x1000>;
++		interrupts = <GIC_SPI 104 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru CLK_SPI1>, <&cru PCLK_SPI1>;
++		clock-names = "spiclk", "apb_pclk";
++		dmas = <&dmac0 22>, <&dmac0 23>;
++		dma-names = "tx", "rx";
++		pinctrl-names = "default";
++		pinctrl-0 = <&spi1m0_cs0 &spi1m0_cs1 &spi1m0_pins>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++		status = "disabled";
++	};
+
+> +	pinctrl-0 = <&spi1m1_cs0 &spi1m1_pins>;
+> +};
 > +
->  /**
->   * fault_in_writeable - fault in userspace address range for writing
->   * @uaddr: start of address range
-> @@ -1673,8 +1675,19 @@ size_t fault_in_writeable(char __user *uaddr, size_t size)
->  	if (unlikely(size == 0))
->  		return 0;
->  	if (!PAGE_ALIGNED(uaddr)) {
-> +		if (SUBPAGE_FAULT_SIZE &&
-> +		    !IS_ALIGNED((unsigned long)uaddr, SUBPAGE_FAULT_SIZE)) {
-> +			end = PTR_ALIGN(uaddr, SUBPAGE_FAULT_SIZE);
-> +			if (end - uaddr < size) {
-> +				if (unlikely(__put_user(0, uaddr) != 0))
-> +					return size;
-> +				uaddr = end;
-> +				if (unlikely(!end))
-> +					goto out;
-> +			}
-> +		}
->  		if (unlikely(__put_user(0, uaddr) != 0))
-> -			return size;
-> +			goto out;
->  		uaddr = (char __user *)PAGE_ALIGN((unsigned long)uaddr);
->  	}
->  	end = (char __user *)PAGE_ALIGN((unsigned long)start + size);
-
-That's similar, somehow, to the arch-specific probing in one of my
-patches: [1]. We could do the above if we can guarantee that the maximum
-error margin in copy_to_user() is smaller than SUBPAGE_FAULT_SIZE. For
-arm64 copy_to_user(), it is fine, but for copy_from_user(), if we ever
-need to handle fault_in_readable(), it isn't (on arm64 up to 64 bytes
-even if aligned: reads of large blocks are done in 4 * 16 loads, and if
-one of them fails e.g. because of the 16-byte sub-page fault, no write
-is done, hence such larger than 16 delta).
-
-If you want something in the generic fault_in_writeable(), we probably
-need a loop over UACCESS_MAX_WRITE_ERROR in SUBPAGE_FAULT_SIZE
-increments. But I thought I'd rather keep this in the arch-specific
-code.
-
-Of course, the above fault_in_writeable() still needs the btrfs
-search_ioctl() counterpart to change the probing on the actual fault
-address or offset.
-
-In the general case (uaccess error margin larger), I'm not entirely
-convinced we can skip the check if PAGE_ALIGNED(uaddr). I should
-probably get this logic through CBMC (or TLA+), I can't think it
-through.
-
-Thanks.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/commit/?h=devel/btrfs-live-lock-fix&id=af7e96d9e9537d9f9cc014f388b7b2bb4a5bc343
-
--- 
-Catalin
+>  &tsadc {
+>  	/* tshut mode 0:CRU 1:GPIO */
+>  	rockchip,hw-tshut-mode = <1>;
+> 
