@@ -2,264 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB0C460007
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 17:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44179460017
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 17:10:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355473AbhK0QFx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 27 Nov 2021 11:05:53 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:34680 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239805AbhK0QDw (ORCPT
+        id S1355692AbhK0QN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 11:13:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355578AbhK0QLY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 11:03:52 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5BD9B60B49;
-        Sat, 27 Nov 2021 16:00:37 +0000 (UTC)
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp.kernel.org (Postfix) with ESMTPSA id 83A96C53FAD;
-        Sat, 27 Nov 2021 16:00:32 +0000 (UTC)
-Date:   Sat, 27 Nov 2021 16:05:33 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH 11/15] iio: buffer-dma: Boost performance using
- write-combine cache setting
-Message-ID: <20211127160533.5259f486@jic23-huawei>
-In-Reply-To: <YX153R.0PENWW3ING7F1@crapouillou.net>
-References: <20211115141925.60164-1-paul@crapouillou.net>
-        <20211115141925.60164-12-paul@crapouillou.net>
-        <20211121150037.2a606be0@jic23-huawei>
-        <8WNX2R.M4XE9MQC24W22@crapouillou.net>
-        <YX153R.0PENWW3ING7F1@crapouillou.net>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        Sat, 27 Nov 2021 11:11:24 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE8A4C06175A
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 08:08:09 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id i6so12282938ila.0
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 08:08:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:in-reply-to:references:subject:message-id:date
+         :mime-version:content-transfer-encoding;
+        bh=TFDhWEFT78dShTBpt1jDJLJmhPVNkWFwTNPna2oPguo=;
+        b=GK/pZ5QTqcJI2AxmD/RUUIKx9wmTTFRfN/aYljxGFwdgArDuR553KbgYli8X/J7s5i
+         +wNOvaftc/CrRwLhCAUj4ubCTN2BBVKoObvsSij2ix+N0SrJfumV9hhmjbTPYigXsSAr
+         VU4iEukug05xaVGCa8Ze+hOPy6on7KEGPqHJHenr0c9qSQ5PFMu7DHkQGAMHa4VrQiTd
+         p3NgWEBDtq19h3cZKry0rBlxkn5vZxlS1svJ2fnAOj+GHnFSslOSw7kZwX909VmX3Z6l
+         0gS+z8r+vdlNJ5D6IpW/qQSIlk8jz1WlSFhK1WTCA2ARxO1dY27C1Bfj13A0HgxwfWcq
+         px3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
+         :message-id:date:mime-version:content-transfer-encoding;
+        bh=TFDhWEFT78dShTBpt1jDJLJmhPVNkWFwTNPna2oPguo=;
+        b=oDWKkzHJ6USfopGRb0HTE8uUNIghkZhOJmTNjq7RI/1bBUZjg+G8Y9+K3rNkNL5rwQ
+         sendqGN6C88uWZd8ZeyUt4TAysTO9gO/36y8EouOKnSO/X5tTYqTmdv/I6aSpsZhrFhO
+         bPsaWi1xckM/qaV0FO/N7Rn2NsRky2GKkuADBYjSpHh2Q7QZW4Xe8BgfoHLXYsR+G1y5
+         /umdoVMf75CVvV2LCSGzLO5DjYa4beqIte+Ecpn9OOjcFif/dynUvhJtGTPjsmOQVrG7
+         DjcEbWh22r2uSb0jRm62ppbQEzU83faX/oYQuFymKeFO75zuqF0yNdUv/fY4RZpjEVsO
+         ADYg==
+X-Gm-Message-State: AOAM533zlkj4N/UbE/3X2jhSH5ujY9w358fCrcsrxsfH2rUm4qvWHmtL
+        NHxvpYjqyZ752rZTSNyd31huyEDpiQP2ih1e
+X-Google-Smtp-Source: ABdhPJxTUvu/yog86X7sXAzysQZ0PRii7gNhy4t3Bzsc/U+kNjfBWOSEtkiCPuZjmyw37LRUBi6MEg==
+X-Received: by 2002:a05:6e02:1a8b:: with SMTP id k11mr28610456ilv.52.1638029289097;
+        Sat, 27 Nov 2021 08:08:09 -0800 (PST)
+Received: from [127.0.1.1] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id d12sm5749981ilg.85.2021.11.27.08.08.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Nov 2021 08:08:08 -0800 (PST)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     linux-block@vger.kernel.org,
+        Colin Ian King <colin.i.king@googlemail.com>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20211126230652.1175636-1-colin.i.king@gmail.com>
+References: <20211126230652.1175636-1-colin.i.king@gmail.com>
+Subject: Re: [PATCH] block: Remove redundant initialization of variable ret
+Message-Id: <163802928837.10246.12448995088826384297.b4-ty@kernel.dk>
+Date:   Sat, 27 Nov 2021 09:08:08 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Nov 2021 17:29:58 +0000
-Paul Cercueil <paul@crapouillou.net> wrote:
-
-> Hi Jonathan,
-> 
-> Le dim., nov. 21 2021 at 17:43:20 +0000, Paul Cercueil 
-> <paul@crapouillou.net> a écrit :
-> > Hi Jonathan,
-> > 
-> > Le dim., nov. 21 2021 at 15:00:37 +0000, Jonathan Cameron 
-> > <jic23@kernel.org> a écrit :  
-> >> On Mon, 15 Nov 2021 14:19:21 +0000
-> >> Paul Cercueil <paul@crapouillou.net> wrote:
-> >>   
-> >>>  We can be certain that the input buffers will only be accessed by
-> >>>  userspace for reading, and output buffers will mostly be accessed 
-> >>> by
-> >>>  userspace for writing.  
-> >> 
-> >> Mostly?  Perhaps a little more info on why that's not 'only'.  
-> > 
-> > Just like with a framebuffer, it really depends on what the 
-> > application does. Most of the cases it will just read sequentially an 
-> > input buffer, or write sequentially an output buffer. But then you 
-> > get the exotic application that will try to do something like alpha 
-> > blending, which means read+write. Hence "mostly".
-> >   
-> >>> 
-> >>>  Therefore, it makes more sense to use only fully cached input 
-> >>> buffers,
-> >>>  and to use the write-combine cache coherency setting for output 
-> >>> buffers.
-> >>> 
-> >>>  This boosts performance, as the data written to the output buffers 
-> >>> does
-> >>>  not have to be sync'd for coherency. It will halve performance if 
-> >>> the
-> >>>  userspace application tries to read from the output buffer, but 
-> >>> this
-> >>>  should never happen.
-> >>> 
-> >>>  Since we don't need to sync the cache when disabling CPU access 
-> >>> either
-> >>>  for input buffers or output buffers, the .end_cpu_access() 
-> >>> callback can
-> >>>  be dropped completely.  
-> >> 
-> >> We have an odd mix of coherent and non coherent DMA in here as you 
-> >> noted,
-> >> but are you sure this is safe on all platforms?  
-> > 
-> > The mix isn't safe, but using only coherent or only non-coherent 
-> > should be safe, yes.
-> >   
-> >>   
-> >>> 
-> >>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>  
-> >> 
-> >> Any numbers to support this patch?  The mapping types are performance
-> >> optimisations so nice to know how much of a difference they make.  
-> > 
-> > Output buffers are definitely faster in write-combine mode. On a 
-> > ZedBoard with a AD9361 transceiver set to 66 MSPS, and buffer/size 
-> > set to 8192, I would get about 185 MiB/s before, 197 MiB/s after.
-> > 
-> > Input buffers... early results are mixed. On ARM32 it does look like 
-> > it is slightly faster to read from *uncached* memory than reading 
-> > from cached memory. The cache sync does take a long time.
-> > 
-> > Other architectures might have a different result, for instance on 
-> > MIPS invalidating the cache is a very fast operation, so using cached 
-> > buffers would be a huge win in performance.
-> > 
-> > Setups where the DMA operations are coherent also wouldn't require 
-> > any cache sync and this patch would give a huge win in performance.
-> > 
-> > I'll run some more tests next week to have some fresh numbers.  
-> 
-> I think I mixed things up before, because I get different results now.
-> 
-> Here are some fresh benchmarks, triple-checked, using libiio's 
-> iio_readdev and iio_writedev tools, with 64K samples buffers at 61.44 
-> MSPS (max. theorical throughput: 234 MiB/s):
->   iio_readdev -b 65536 cf-ad9361-lpc voltage0 voltage1 | pv > /dev/null
->   pv /dev/zero | iio_writedev -b 65536 cf-ad9361-dds-core-lpc voltage0 
-> voltage1
-
-There is a bit of a terminology confusion going on here.  I think
-for the mappings you mean cacheable vs non-cacheable but maybe
-I'm misunderstanding.  That doesn't necessarily correspond to
-coherency.  Non cached memory is always coherent because all caches
-miss.
-
-Non-cacheable can be related to coherency of course. Also beware that given
-hardware might not implement non-cacheable if it knows all possible
-accesses are IO-coherent.  Affect is the same and if implemented
-correctly it will not hurt performance significantly.
-
-firmware should be letting the OS know if the device does coherent
-DMA or not... dma-coherent in dt.  It might be optional for a given
-piece of DMA engine but I've not seen that..
-
-I'm not sure I see how you can do a mixture of cacheable for reads
-and write combine (which means uncacheable) for writes...
-
-> 
-> Coherent mapping:
-> - fileio:
->     read:	125 MiB/s
->     write:	141 MiB/s
-> - dmabuf:
->     read:	171 MiB/s
->     write:	210 MiB/s
-> 
-> Coherent reads + Write-combine writes:
-> - fileio:
->     read:	125 MiB/s
->     write:	141 MiB/s
-> - dmabuf:
->     read:	171 MiB/s
->     write:	210 MiB/s
-> 
-> Non-coherent mapping:
-> - fileio:
->     read:	119 MiB/s
->     write:	124 MiB/s
-> - dmabuf:
->     read:	159 MiB/s
->     write:	124 MiB/s
-> 
-> Non-coherent reads + write-combine writes:
-> - fileio:
->     read:	119 MiB/s
->     write:	140 MiB/s
-> - dmabuf:
->     read:	159 MiB/s
->     write:	210 MiB/s
-> 
-
-
-> Non-coherent mapping with no cache sync:
-> - fileio:
->     read:	156 MiB/s
->     write:	123 MiB/s
-> - dmabuf:
->     read:	234 MiB/s (capped by sample rate)
->     write:	182 MiB/s
-> 
-> Non-coherent reads with no cache sync + write-combine writes:
-> - fileio:
->     read:	156 MiB/s
->     write:	140 MiB/s
-> - dmabuf:
->     read:	234 MiB/s (capped by sample rate)
->     write:	210 MiB/s
+On Fri, 26 Nov 2021 23:06:52 +0000, Colin Ian King wrote:
+> The variable ret is being initialized with a value that is never
+> read, it is being updated later on. The assignment is redundant and
+> can be removed.
 > 
 > 
-> A few things we can deduce from this:
-> 
-> * Write-combine is not available on Zynq/ARM? If it was working, it 
-> should give a better performance than the coherent mapping, but it 
-> doesn't seem to do anything at all. At least it doesn't harm 
-> performance.
 
-I'm not sure it's very relevant to this sort of streaming write.
-If you write a sequence of addresses then nothing stops them getting combined
-into a single write whether or not it is write-combining.
+Applied, thanks!
 
-You may be right that the particular path to memory doesn't support it anyway.
-Also some cache architectures will rapidly detect streaming writes and
-elect not to cache them whether coherent or not.
+[1/1] block: Remove redundant initialization of variable ret
+      commit: a77f46727daa3febf99663ab1a43c86cf3c2b957
 
+Best regards,
+-- 
+Jens Axboe
 
-
-
-> 
-> * Non-coherent + cache invalidation is definitely a good deal slower 
-> than using coherent mapping, at least on ARM32. However, when the cache 
-> sync is disabled (e.g. if the DMA operations are coherent) the reads 
-> are much faster.
-
-If you are running with cache sync then it better not be cached
-as such it's coherent in the sense of there being no entries in the cache
-in either direction.
-
-> 
-> * The new dma-buf based API is a great deal faster than the fileio API.
-
-:)
-
-> 
-> So in the future we could use coherent reads + write-combine writes, 
-> unless we know the DMA operations are coherent, and in this case use 
-> non-coherent reads + write-combine writes.
-
-Not following this argument at all, but anyway we can revisit when it mattrs.  
-
-> 
-> Regarding this patch, unfortunately I cannot prove that write-combine 
-> is faster, so I'll just drop this patch for now.
-
-Sure, thanks for checking.  It's worth noting that WC usage in kernel
-is vanishingly rare and I suspect that's mostly because it doesn't
-do anything on many implementations.
-
-Jonathan
-
-> 
-> Cheers,
-> -Paul
-> 
-> 
 
