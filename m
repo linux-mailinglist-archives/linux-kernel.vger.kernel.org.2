@@ -2,156 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8094600B5
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 18:50:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C269460060
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 18:05:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343557AbhK0Rxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 12:53:53 -0500
-Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17297 "EHLO
-        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238708AbhK0Rvx (ORCPT
+        id S1351687AbhK0RIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 12:08:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234945AbhK0RGj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 12:51:53 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1638005196; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=n3tN4S2pUQeHcaidBskaxPvMtDHKVAxGlzpV4gGhKRw0ZRPexTpe+9491ASfmg0HTmlzpcGklxp+HMRiNT0nz7WB3yRDEgMXIVlbk6nppF5tsd9+xwYvYa+sqjKuO3IG1VFKI2d/3UUUTEAStZqRuO2G7fPvidPxfb9wuISL+GM=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1638005196; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
-        bh=Gx78nwaiX6IcgNHFjD7iZoX/9w5JdvaOCjUYq7EIGF8=; 
-        b=L+x/I3014bH31MUiJjwlMUIA0OFhsckS6h6hv6axN+6zUKZ3hEWIrtJxc9FBqQ6Qibg6YP4JsjtX6NX4JOTcEAN2havNabHJChd8GNBZB0Un8LvTEUsJdciVm1vdlMiA5HCTyeHhT3WETZ5Uv7oleWAWjCIqSZgTHB0xWTty7g8=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1638005196;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=Gx78nwaiX6IcgNHFjD7iZoX/9w5JdvaOCjUYq7EIGF8=;
-        b=AOUteeEka8coVmSi4zQzORqE5JY1MaV08/LAMtbTc27DCvaprB+pMimMaBupCWxB
-        O+FA0+jbAUUvYwibbnxdThAmY5Ue8tUKtJFxMKJfWYfyRApCoywzOrqMRC2+ZkgXx95
-        aD4148NrPXGMaIDIGuyGKpO95c4vIFvh8io47D5E=
-Received: from mail.baihui.com by mx.zoho.com.cn
-        with SMTP id 1638005193699274.15327156530714; Sat, 27 Nov 2021 17:26:33 +0800 (CST)
-Date:   Sat, 27 Nov 2021 17:26:33 +0800
-From:   Chengguang Xu <cgxu519@mykernel.net>
-Reply-To: cgxu519@mykernel.net
-To:     "miklos" <miklos@szeredi.hu>
-Cc:     "linux-unionfs" <linux-unionfs@vger.kernel.org>,
-        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "Chengguang Xu" <charliecgxu@tencent.com>,
-        "ronyjin" <ronyjin@tencent.com>, "amir73il" <amir73il@gmail.com>,
-        "jack" <jack@suse.cz>
-Message-ID: <17d60b7bbc2.caee608a13298.8366222634423039066@mykernel.net>
-In-Reply-To: <20211122030038.1938875-1-cgxu519@mykernel.net>
-References: <20211122030038.1938875-1-cgxu519@mykernel.net>
-Subject: =?UTF-8?Q?=E5=9B=9E=E5=A4=8D:[RFC_PATCH_V6_0/7]_implement_c?=
- =?UTF-8?Q?ontainerized_syncfs_for_overlayfs?=
+        Sat, 27 Nov 2021 12:06:39 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F81C061574;
+        Sat, 27 Nov 2021 09:03:23 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id i5so26004703wrb.2;
+        Sat, 27 Nov 2021 09:03:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lS1zair4sK18hzWn/R6s0K/jIJB9uRS8Tf1yrPl4qUE=;
+        b=i6PYEDTEWBxh2uWbOmobmyDf4PFNUCGPjrhW4IBtFqgUj/wjnC942onOaGlorcKY3Q
+         FF2QQnidWU7dTumffSTNPt7Cu3p0SpLPkTQgCic6IKpxWCti61SG1eJ4jOUrUGrXzhmt
+         Pa424m0ujbzK7XmeCkkGp3PUoGsofw9xNatIUWVILZ/5XhlWJmNfZwaLBMgf6A6K30bo
+         c7BhLrEFZKKRvW56w9sgGpmkx3Cipa8EQ/yJaXVmX7OFOr7gSJILZb2H1DSgirxwri/P
+         fEUIGVLWQVHCuJD6lMu+Bh/IdWlifYk90Y8YFO5bHSEXpGTem0G6nGDiLNvai5ka6E6P
+         5XiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lS1zair4sK18hzWn/R6s0K/jIJB9uRS8Tf1yrPl4qUE=;
+        b=B/pGMk3YOeV5NrFP1hiv9DdbGQ15NyWsuQe4rCn+75avA/Dk/f2Lzw6BEbRbpNbIeS
+         Ihxpu5XyNmF3qjwiEp1H0yhwoYZqHgbmOxlSdfZVSBMKqzTeXMVUMznL1wsVGIX9Hl+X
+         77Atx/i9NMP29PweRY9TFeX14PlrrZM6CR27Sb+r3xSjqeWtZTh5Vx0Lr9HPR8tC9ZVF
+         bHqDShH/QFtfd+WpXOCw1spyUrPtfMm2BI1SdpPOa3Qoz2mEdwYcpJplmzaJH5pfSs89
+         +0jUPZoejpSlqIObUVSLXuJFYrjJEf0L23PJc7JCRT4Y/O4RripCkN9sF3qQjheRTXlg
+         fyiA==
+X-Gm-Message-State: AOAM532iYutm5/cU255UhwRX0R4YwkAZTAv1nSscSUOLQqBGqagZw459
+        Y7qiP6fGueXhRg==
+X-Google-Smtp-Source: ABdhPJy+pishnTF0Jp3O1BLFoly/fFQfUlwkVKDWYJt8ktJqLJeucMMflxmOFNywu5S0QOwkVJHhZA==
+X-Received: by 2002:adf:fe81:: with SMTP id l1mr22456857wrr.522.1638032602333;
+        Sat, 27 Nov 2021 09:03:22 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id k187sm15177446wme.0.2021.11.27.09.03.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Nov 2021 09:03:22 -0800 (PST)
+From:   Colin Ian King <colin.i.king@googlemail.com>
+X-Google-Original-From: Colin Ian King <colin.i.king@gmail.com>
+To:     Steve Wahl <steve.wahl@hpe.com>, Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        platform-driver-x86@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/platform/uv: make const pointer dots a static const array
+Date:   Sat, 27 Nov 2021 17:03:20 +0000
+Message-Id: <20211127170320.77963-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Importance: Medium
-User-Agent: ZohoCN Mail
-X-Mailer: ZohoCN Mail
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=80, 2021-11-22 11:00:31 Chengguang=
- Xu <cgxu519@mykernel.net> =E6=92=B0=E5=86=99 ----
- > From: Chengguang Xu <charliecgxu@tencent.com>
- >=20
- > Current syncfs(2) syscall on overlayfs just calls sync_filesystem()
- > on upper_sb to synchronize whole dirty inodes in upper filesystem
- > regardless of the overlay ownership of the inode. In the use case of
- > container, when multiple containers using the same underlying upper
- > filesystem, it has some shortcomings as below.
- >=20
- > (1) Performance
- > Synchronization is probably heavy because it actually syncs unnecessary
- > inodes for target overlayfs.
- >=20
- > (2) Interference
- > Unplanned synchronization will probably impact IO performance of
- > unrelated container processes on the other overlayfs.
- >=20
- > This series try to implement containerized syncfs for overlayfs so that
- > only sync target dirty upper inodes which are belong to specific overlay=
-fs
- > instance. By doing this, it is able to reduce cost of synchronization an=
-d=20
- > will not seriously impact IO performance of unrelated processes.
- >=20
- > v1->v2:
- > - Mark overlayfs' inode dirty itself instead of adding notification
- > mechanism to vfs inode.
- >=20
- > v2->v3:
- > - Introduce overlayfs' extra syncfs wait list to wait target upper inode=
-s
- > in ->sync_fs.
- >=20
- > v3->v4:
- > - Using wait_sb_inodes() to wait syncing upper inodes.
- > - Mark overlay inode dirty only when having upper inode and VM_SHARED
- > flag in ovl_mmap().
- > - Check upper i_state after checking upper mmap state
- > in ovl_write_inode.
- >=20
- > v4->v5:
- > - Add underlying inode dirtiness check after mnt_drop_write().
- > - Handle both wait/no-wait mode of syncfs(2) in overlayfs' ->sync_fs().
- >=20
- > v5->v6:
- > - Rebase to latest overlayfs-next tree.
- > - Mark oerlay inode dirty when it has upper instead of marking dirty on
- >   modification.
- > - Trigger dirty page writeback in overlayfs' ->write_inode().
- > - Mark overlay inode 'DONTCACHE' flag.
- > - Delete overlayfs' ->writepages() and ->evict_inode() operations.
+Don't populate the const array dots on the stack but make it static
+const and make the pointer an array to remove a dereference. Shrinks
+object code a few bytes too.
 
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ arch/x86/platform/uv/uv_nmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hi Miklos,
+diff --git a/arch/x86/platform/uv/uv_nmi.c b/arch/x86/platform/uv/uv_nmi.c
+index 1e9ff28bc2e0..2c69a0c30632 100644
+--- a/arch/x86/platform/uv/uv_nmi.c
++++ b/arch/x86/platform/uv/uv_nmi.c
+@@ -725,7 +725,7 @@ static void uv_nmi_dump_cpu_ip(int cpu, struct pt_regs *regs)
+  */
+ static void uv_nmi_dump_state_cpu(int cpu, struct pt_regs *regs)
+ {
+-	const char *dots = " ................................. ";
++	static const char dots[] = " ................................. ";
+ 
+ 	if (cpu == 0)
+ 		uv_nmi_dump_cpu_ip_hdr();
+-- 
+2.33.1
 
-Have you got time to have a look at this V6 series? I think this version ha=
-s already fixed
-the issues in previous feedbacks of you guys and passed fstests (generic/ov=
-erlay cases).
-
-I did some stress long time tests (tar & syncfs & diff on w/wo copy-up) and=
- found no obvious problem.
-For syncfs time with 1M clean upper inodes, there was extra 1.3s wasted on =
-waiting scheduling.
-I guess this 1.3s will not bring significant impact to container instance i=
-n most cases, I also
-agree with Jack that we can start with this approach and do some improvemen=
-ts afterwards if there is
-complain from any real users.
-
-
-
-Thanks,
-Chengguang
-
-
- >=20
- > Chengguang Xu (7):
- >   ovl: setup overlayfs' private bdi
- >   ovl: mark overlayfs inode dirty when it has upper
- >   ovl: implement overlayfs' own ->write_inode operation
- >   ovl: set 'DONTCACHE' flag for overlayfs inode
- >   fs: export wait_sb_inodes()
- >   ovl: introduce ovl_sync_upper_blockdev()
- >   ovl: implement containerized syncfs for overlayfs
- >=20
- >  fs/fs-writeback.c         |  3 ++-
- >  fs/overlayfs/inode.c      |  5 +++-
- >  fs/overlayfs/super.c      | 49 ++++++++++++++++++++++++++++++++-------
- >  fs/overlayfs/util.c       |  1 +
- >  include/linux/writeback.h |  1 +
- >  5 files changed, 48 insertions(+), 11 deletions(-)
- >=20
- > --=20
- > 2.27.0
- >=20
- >=20
