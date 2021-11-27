@@ -2,105 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9063045FD01
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 07:05:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2524345FD09
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 07:09:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351826AbhK0GIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 01:08:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243180AbhK0GGp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 01:06:45 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17DC0C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 22:03:32 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id v138so25642697ybb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 22:03:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=adY8mfuFzwIDbnC96OKG32RgLOCWTKObyT/Jlr8SbTk=;
-        b=CqVEMGglKcCPOL/ugP2AAvv+Sj9+in22zmiG2AR3MCI8FmsYzlnLKzQMAjha+InILW
-         gOHJ9UmMkte8xWgW4Ov7xEPOL2+U1H1QLABkKHTN3sDzKCl9qLkzzoPxvtl8KktAJqZU
-         YjFE+4XpNxiPz9uOi8r6NphSpj0L5RVII9KWOsRZ+8r070iXpkCtTXKwOzL/zhLc4Fam
-         OdvuhUvHLUMSyKypaKsGcfLM+KHw8mn04yMY2/5KKo+YkB5+iSQPFXQtMYFbpsg/jSN5
-         OrHfQL569f+QUtiLulTQkQEmNSw/aCSy5FLVHz8ZvX1BftcfIRUAAa1l3x8CUjIBH/xt
-         Ky3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=adY8mfuFzwIDbnC96OKG32RgLOCWTKObyT/Jlr8SbTk=;
-        b=OWSAEif1KOFAYkUb6QArSp6uOHrk+Pn2HU4GEIu4q/ka88GtubfaYP+mZGhH6hgai4
-         IVbLDZrrE1kzLiJb7EQ5R/9G7iGsfnhkbEmZ2NrLddQJb+km77U6yg2541LT7wnp/E5a
-         N38F7hQU9poaysscmZo1w6cX7psDKsGJL+9Zge473vtP7EOTAivGXXTQtF1Go22fuwGa
-         JHktyh5MZMx2cVoodlJ8R6PdWj5r+7J6e1mZ/o+ySpDi/26fKN09RhoCPG23r0SSU737
-         n+gi4HjUuAFdMGB2L6UERv3mX35J5lhtqnV8yInroFZEIWBbyWIt0UqolwamogU0/ukW
-         wIzQ==
-X-Gm-Message-State: AOAM531MGnwMEypNcfYHlrFwsADRKpNnbsTcVWjKVPi+HYNf7LmHnRsl
-        pKbu7sZ84BPfI0WjMUcbtE68UK9DDLPvc2lSLPjBCQ==
-X-Google-Smtp-Source: ABdhPJz4by1puZpUjUzOgbQ7Wk9Q0sOMxJXGLTE1dBUH/hW9/7Pak4HLMS2oFK1Pj6w4eg7ZS2I4SQPHTK8jd7Zj0Hg=
-X-Received: by 2002:a25:2fd1:: with SMTP id v200mr21300942ybv.78.1637993010232;
- Fri, 26 Nov 2021 22:03:30 -0800 (PST)
+        id S1344092AbhK0GM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 01:12:59 -0500
+Received: from mga07.intel.com ([134.134.136.100]:63887 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238608AbhK0GK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 01:10:57 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="299146130"
+X-IronPort-AV: E=Sophos;i="5.87,268,1631602800"; 
+   d="scan'208";a="299146130"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 22:07:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,268,1631602800"; 
+   d="scan'208";a="498661746"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 26 Nov 2021 22:07:42 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqqs9-00099N-CB; Sat, 27 Nov 2021 06:07:41 +0000
+Date:   Sat, 27 Nov 2021 14:07:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Dave Wysochanski <dwysocha@redhat.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        David Howells <dhowells@redhat.com>
+Subject: [dhowells-fs:fscache-rewrite-indexing-3 60/63]
+ fs/nfs/fscache.c:58:51: sparse: sparse: incorrect type in argument 3
+ (different base types)
+Message-ID: <202111271427.AQQrX7DH-lkp@intel.com>
 MIME-Version: 1.0
-References: <20211125193852.3617-1-goldstein.w.n@gmail.com> <20211127042540.96249-1-goldstein.w.n@gmail.com>
-In-Reply-To: <20211127042540.96249-1-goldstein.w.n@gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 26 Nov 2021 22:03:17 -0800
-Message-ID: <CANn89iKaTyrNZHCg7i46-db_zudXs0V-BvmwM-5fYLZT2yQr4Q@mail.gmail.com>
-Subject: Re: [PATCH v2] x86/lib: Optimize 8x loop and memory clobbers in csum_partial.c
-To:     Noah Goldstein <goldstein.w.n@gmail.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        peterz@infradead.org, alexanderduyck@fb.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 8:25 PM Noah Goldstein <goldstein.w.n@gmail.com> wrote:
->
-> Modify the 8x loop to that it uses two independent
-> accumulators. Despite adding more instructions the latency and
-> throughput of the loop is improved because the `adc` chains can now
-> take advantage of multiple execution units.
->
-> Make the memory clobbers more precise. 'buff' is read only and we know
-> the exact usage range. There is no reason to write-clobber all memory.
->
-> Relative performance changes on Tigerlake:
->
-> Time Unit: Ref Cycles
-> Size Unit: Bytes
->
-> size, lat old, lat new,    tput old,    tput new
->    0,   4.961,   4.901,       4.887,       4.951
->    8,   5.590,   5.620,       4.227,       4.252
->   16,   6.182,   6.202,       4.233,       4.278
->   24,   7.392,   7.380,       4.256,       4.279
->   32,   7.371,   7.390,       4.550,       4.537
->   40,   8.621,   8.601,       4.862,       4.836
->   48,   9.406,   9.374,       5.206,       5.234
->   56,  10.535,  10.522,       5.416,       5.447
->   64,  10.000,   7.590,       6.946,       6.989
->  100,  14.218,  12.476,       9.429,       9.441
->  200,  22.115,  16.937,      13.088,      12.852
->  300,  31.826,  24.640,      19.383,      18.230
->  400,  39.016,  28.133,      23.223,      21.304
->  500,  48.815,  36.186,      30.331,      27.104
->  600,  56.732,  40.120,      35.899,      30.363
->  700,  66.623,  48.178,      43.044,      36.400
->  800,  73.259,  51.171,      48.564,      39.173
->  900,  82.821,  56.635,      58.592,      45.162
-> 1000,  90.780,  63.703,      65.658,      48.718
->
-> Signed-off-by: Noah Goldstein <goldstein.w.n@gmail.com>
->
-> tmp
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git fscache-rewrite-indexing-3
+head:   7cb6fc11f97e7d40213fb323f0474fdf5ce4ff24
+commit: d3292e579b1e9fd57f6f7716e9d01a13144db386 [60/63] nfs: Convert to new fscache volume/cookie API
+config: s390-randconfig-s032-20211126 (https://download.01.org/0day-ci/archive/20211127/202111271427.AQQrX7DH-lkp@intel.com/config)
+compiler: s390-linux-gcc (GCC) 11.2.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.4-dirty
+        # https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/commit/?id=d3292e579b1e9fd57f6f7716e9d01a13144db386
+        git remote add dhowells-fs https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git
+        git fetch --no-tags dhowells-fs fscache-rewrite-indexing-3
+        git checkout d3292e579b1e9fd57f6f7716e9d01a13144db386
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=s390 SHELL=/bin/bash fs/nfs/
 
-SGTM (not sure what this 'tmp' string means here :) )
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+
+sparse warnings: (new ones prefixed by >>)
+>> fs/nfs/fscache.c:58:51: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned long long x @@     got restricted __be16 const [usertype] sin_port @@
+   fs/nfs/fscache.c:58:51: sparse:     expected unsigned long long x
+   fs/nfs/fscache.c:58:51: sparse:     got restricted __be16 const [usertype] sin_port
+>> fs/nfs/fscache.c:59:61: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned long long x @@     got restricted __be32 const [usertype] s_addr @@
+   fs/nfs/fscache.c:59:61: sparse:     expected unsigned long long x
+   fs/nfs/fscache.c:59:61: sparse:     got restricted __be32 const [usertype] s_addr
+>> fs/nfs/fscache.c:64:52: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned long long x @@     got restricted __be16 const [usertype] sin6_port @@
+   fs/nfs/fscache.c:64:52: sparse:     expected unsigned long long x
+   fs/nfs/fscache.c:64:52: sparse:     got restricted __be16 const [usertype] sin6_port
+>> fs/nfs/fscache.c:65:73: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned long long x @@     got restricted __be32 const @@
+   fs/nfs/fscache.c:65:73: sparse:     expected unsigned long long x
+   fs/nfs/fscache.c:65:73: sparse:     got restricted __be32 const
+   fs/nfs/fscache.c:66:73: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned long long x @@     got restricted __be32 const @@
+   fs/nfs/fscache.c:66:73: sparse:     expected unsigned long long x
+   fs/nfs/fscache.c:66:73: sparse:     got restricted __be32 const
+   fs/nfs/fscache.c:67:73: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned long long x @@     got restricted __be32 const @@
+   fs/nfs/fscache.c:67:73: sparse:     expected unsigned long long x
+   fs/nfs/fscache.c:67:73: sparse:     got restricted __be32 const
+   fs/nfs/fscache.c:68:73: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned long long x @@     got restricted __be32 const @@
+   fs/nfs/fscache.c:68:73: sparse:     expected unsigned long long x
+   fs/nfs/fscache.c:68:73: sparse:     got restricted __be32 const
+
+vim +58 fs/nfs/fscache.c
+
+    37	
+    38	/*
+    39	 * Get the per-client index cookie for an NFS client if the appropriate mount
+    40	 * flag was set
+    41	 * - We always try and get an index cookie for the client, but get filehandle
+    42	 *   cookies on a per-superblock basis, depending on the mount flags
+    43	 */
+    44	static bool nfs_fscache_get_client_key(struct nfs_client *clp,
+    45					       char *key, int *_len)
+    46	{
+    47		const struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *) &clp->cl_addr;
+    48		const struct sockaddr_in *sin = (struct sockaddr_in *) &clp->cl_addr;
+    49	
+    50		*_len += snprintf(key + *_len, NFS_MAX_KEY_LEN - *_len,
+    51				  ",%u.%u,%x",
+    52				  clp->rpc_ops->version,
+    53				  clp->cl_minorversion,
+    54				  clp->cl_addr.ss_family);
+    55	
+    56		switch (clp->cl_addr.ss_family) {
+    57		case AF_INET:
+  > 58			if (!nfs_append_int(key, _len, sin->sin_port) ||
+  > 59			    !nfs_append_int(key, _len, sin->sin_addr.s_addr))
+    60				return false;
+    61			return true;
+    62	
+    63		case AF_INET6:
+  > 64			if (!nfs_append_int(key, _len, sin6->sin6_port) ||
+  > 65			    !nfs_append_int(key, _len, sin6->sin6_addr.s6_addr32[0]) ||
+    66			    !nfs_append_int(key, _len, sin6->sin6_addr.s6_addr32[1]) ||
+    67			    !nfs_append_int(key, _len, sin6->sin6_addr.s6_addr32[2]) ||
+    68			    !nfs_append_int(key, _len, sin6->sin6_addr.s6_addr32[3]))
+    69				return false;
+    70			return true;
+    71	
+    72		default:
+    73			printk(KERN_WARNING "NFS: Unknown network family '%d'\n",
+    74			       clp->cl_addr.ss_family);
+    75			return false;
+    76		}
+    77	}
+    78	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
