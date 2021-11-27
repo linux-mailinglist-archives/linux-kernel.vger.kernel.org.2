@@ -2,90 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0703345FD27
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 07:51:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE2845FD2B
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 07:53:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349731AbhK0Gx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 01:53:59 -0500
-Received: from mga17.intel.com ([192.55.52.151]:15381 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243204AbhK0Gv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 01:51:58 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="216451941"
-X-IronPort-AV: E=Sophos;i="5.87,268,1631602800"; 
-   d="scan'208";a="216451941"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 22:48:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,268,1631602800"; 
-   d="scan'208";a="510916817"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 26 Nov 2021 22:48:43 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqrVq-0009Bs-Eo; Sat, 27 Nov 2021 06:48:42 +0000
-Date:   Sat, 27 Nov 2021 14:48:14 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Xiaoming Ni <nixiaoming@huawei.com>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-Subject: [mcgrof-next:20211124-sysctl-cleanups-v2 41/41]
- kernel/kprobes.c:2605:2: error: implicit declaration of function
- 'kprobe_sysctls_init'
-Message-ID: <202111271451.VDtFz59Q-lkp@intel.com>
+        id S1352162AbhK0G4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 01:56:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352564AbhK0Gyk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 01:54:40 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2ED5C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 22:51:18 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id a18so23353359wrn.6
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 22:51:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n/QmESk+rRLywivE13is/0sNcAEpfuwDTaPH34HQyPo=;
+        b=lnRy+2X/8mUbKW85ZdqVulrGv/6QaqHOBRhyu8SEeS9nqQKLfqgsjiTaONPJgVHD5O
+         mQdu1eHAy6j4pBCbYT2sIXawgLcLRq+NvIorsNUovaZw4YBPpa+yaswjvRntYr1k5Sn6
+         XOUeuzGau/YmbxXnrMRw/xNlTAPPl4A+/sHaXmDOaYlrLqUjXjnabc8vSMcM/IkcLYF9
+         9xVA/hV5x4LXhuLnuMTjDPKYO0H2GyMBkLBZrZPPmQU0gflOG78a01Kn5591rPRGRCa6
+         2MeFjTqADyRjaJLhZ1a1cttbmKyePKifzHIrPai3/7KGvq8AoWfklRYjMbWO5rmbsXT5
+         UGWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n/QmESk+rRLywivE13is/0sNcAEpfuwDTaPH34HQyPo=;
+        b=PLL/xU6SOk70McANtJI6AbHA0ACwkBBXlLbEAj4oKVpaEb+blHczJClzoETwKqlvE5
+         It/JJqDNWobcY4X3yJl7MZT/Rkr5b9992DzJZhBJtO2TTv5bCwMWRJUrZk6Iscje0DZ3
+         yOzdu52PQboT+KuFTSnfmMY+2qexgXeF7s6gr9bhkGIA/k1J3q/2BeErB8yQagxPLK3T
+         iibFxwXIDIT1fo72KWtdp1/liPw8c62p2Xqp4cg0njKBcPTj0wenweOA944Iwsu7cuUy
+         R/1F0KddLyQvC89ib6bwvS4WkdURYHRLpa21qUVN1hs31wnmCmSWRAZyC9R2eIAlMcfM
+         5fuA==
+X-Gm-Message-State: AOAM530qr6gJh0VvrmTBN3wP8RwUGQ93N/u3vspakTfbZP7B4grni/lg
+        CmVY+SCZk4HY+IYu3WNdi7AvOH9kTYywmSA8s6t1Fw==
+X-Google-Smtp-Source: ABdhPJymflNv4dkMyYsXdvUY4DwR+a5mMgidEtYfteoQMNoPxTx/9+ZbKKEmr/WePwaXUsC//VVo4hXcRmp4B9kffVA=
+X-Received: by 2002:a05:6000:1048:: with SMTP id c8mr18646422wrx.352.1637995876927;
+ Fri, 26 Nov 2021 22:51:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211125193852.3617-1-goldstein.w.n@gmail.com> <20211127063904.102017-1-goldstein.w.n@gmail.com>
+In-Reply-To: <20211127063904.102017-1-goldstein.w.n@gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 26 Nov 2021 22:51:05 -0800
+Message-ID: <CANn89i+AAx6dAFkUr9eOSxp6d47=y6oZox8DErGQdNyfjLipdg@mail.gmail.com>
+Subject: Re: [PATCH v3] x86/lib: Optimize 8x loop and memory clobbers in csum_partial.c
+To:     Noah Goldstein <goldstein.w.n@gmail.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        peterz@infradead.org, alexanderduyck@fb.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git 20211124-sysctl-cleanups-v2
-head:   c66aee3b7120f4a5f1d40cc9109dcf684643cc17
-commit: c66aee3b7120f4a5f1d40cc9109dcf684643cc17 [41/41] kprobe: move sysctl_kprobes_optimization to kprobes.c
-config: arm64-randconfig-r006-20211126 (https://download.01.org/0day-ci/archive/20211127/202111271451.VDtFz59Q-lkp@intel.com/config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 5162b558d8c0b542e752b037e72a69d5fd51eb1e)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install arm64 cross compiling tool for clang build
-        # apt-get install binutils-aarch64-linux-gnu
-        # https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/commit/?id=c66aee3b7120f4a5f1d40cc9109dcf684643cc17
-        git remote add mcgrof-next https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git
-        git fetch --no-tags mcgrof-next 20211124-sysctl-cleanups-v2
-        git checkout c66aee3b7120f4a5f1d40cc9109dcf684643cc17
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm64 SHELL=/bin/bash
+On Fri, Nov 26, 2021 at 10:39 PM Noah Goldstein <goldstein.w.n@gmail.com> wrote:
+>
+> Modify the 8x loop to that it uses two independent
+> accumulators. Despite adding more instructions the latency and
+> throughput of the loop is improved because the `adc` chains can now
+> take advantage of multiple execution units.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Oh well, there was really no need to resend this, especially if you do
+not add my ack.
 
-All errors (new ones prefixed by >>):
-
->> kernel/kprobes.c:2605:2: error: implicit declaration of function 'kprobe_sysctls_init' [-Werror,-Wimplicit-function-declaration]
-           kprobe_sysctls_init();
-           ^
-   1 error generated.
-
-
-vim +/kprobe_sysctls_init +2605 kernel/kprobes.c
-
-  2597	
-  2598		err = arch_init_kprobes();
-  2599		if (!err)
-  2600			err = register_die_notifier(&kprobe_exceptions_nb);
-  2601		if (!err)
-  2602			err = register_module_notifier(&kprobe_module_nb);
-  2603	
-  2604		kprobes_initialized = (err == 0);
-> 2605		kprobe_sysctls_init();
-  2606		return err;
-  2607	}
-  2608	early_initcall(init_kprobes);
-  2609	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Reviewed-by: Eric Dumazet <edumazet@google.com>
