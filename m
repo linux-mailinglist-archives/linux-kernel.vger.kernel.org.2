@@ -2,112 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23E8545FC77
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 04:49:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7676C45FC60
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 04:26:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352360AbhK0DwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 22:52:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235795AbhK0DuQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 22:50:16 -0500
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11AD5C0617A0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 19:04:49 -0800 (PST)
-Received: by mail-ua1-x936.google.com with SMTP id l24so22247332uak.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 19:04:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oyWJQWZmbfuER+tnH7hXXM9xMHEX76X7f2PIAw5ys7g=;
-        b=RJlpqjozN8GtRyGfwiU+98EVeqpYC7fcdGsjuVzmhC94O6cw8cHARyEO57+UW3zX/p
-         Z/PsMi4bISVP4wKJMBcGguC8zlUujFhmkLwTItkOUtvLIxUmr0cKYYo/UHPVgWFiU4hx
-         3i579kRKb0oQrg1R3Ovnix8fVMIrKzpNNYBgY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oyWJQWZmbfuER+tnH7hXXM9xMHEX76X7f2PIAw5ys7g=;
-        b=er6MB0j4fM0yhFrDCQFGt78bKUASxPRkUXQsjU4wosGp8vQkCbouyBAhxZz4rgOG9/
-         C8O554zvvvYfNrCiBL9aRgfSVREcvzsEdVOkAcNs9vHprmfRG3DQnIXgcHpq/onul/5z
-         12y2Y+4NBYNUbe3Z5e8ltECrreXPBGCR1mapthcwXQNDoV0q5UCSwltIFmjjsVaq9gkO
-         rSJlSBPn9PU4qjyQ0wrnfSzLxp4mQJXed1f0RdBAIiF78hY3nkmrq6ABOKHuoUUl6HhP
-         vu7YTliEUYdVzZnw6rIrNbSEMTfWSkbGDcjHur01L01nzgGibwRKfbyCnRSc6EAlScuK
-         TNhA==
-X-Gm-Message-State: AOAM531oezS9aYHfvTAV1urCBhdvxqK7MdKE19TecYzu7MD19IslofGO
-        rS3rBAO+Ynp9tf2O4BJnf3TORZhSFxVt/fcZBQFK2Q==
-X-Google-Smtp-Source: ABdhPJz7vuAW3+erNMKOIb/TqxtVk3nKq/lN/Dx0qMFXvJkuorDmH4b541/XRA3RSYATnlUJTF4AJuFxlg3Pj7miHcU=
-X-Received: by 2002:ab0:6ecf:: with SMTP id c15mr39743087uav.113.1637982288212;
- Fri, 26 Nov 2021 19:04:48 -0800 (PST)
-MIME-Version: 1.0
-References: <20211110120910.12411-1-dafna.hirschfeld@collabora.com> <20211110120910.12411-4-dafna.hirschfeld@collabora.com>
-In-Reply-To: <20211110120910.12411-4-dafna.hirschfeld@collabora.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Sat, 27 Nov 2021 12:04:37 +0900
-Message-ID: <CAFr9PX=FKnuv_YzadHxZTbwAU4ruuwTiUsN6WbwdjD8wF+f1rw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/6] staging: media: wave5: Add the v4l2 layer
-To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Cc:     "open list:MEDIA INPUT INFRASTRUCTURE (V4L/DVB)" 
-        <linux-media@vger.kernel.org>,
-        Robert Beckett <bob.beckett@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        id S1351653AbhK0D3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 22:29:48 -0500
+Received: from mga17.intel.com ([192.55.52.151]:2514 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237225AbhK0D1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 22:27:47 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="216444885"
+X-IronPort-AV: E=Sophos;i="5.87,267,1631602800"; 
+   d="scan'208";a="216444885"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 19:24:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,267,1631602800"; 
+   d="scan'208";a="476054744"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 26 Nov 2021 19:24:32 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqoKF-0008zx-8q; Sat, 27 Nov 2021 03:24:31 +0000
+Date:   Sat, 27 Nov 2021 11:24:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     kbuild-all@lists.01.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        open list <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        hverkuil@xs4all.nl, kernel@collabora.com, dafna3@gmail.com,
-        kiril.bicevski@collabora.com,
-        Nas Chung <nas.chung@chipsnmedia.com>,
-        lafley.kim@chipsnmedia.com, scott.woo@chipsnmedia.com,
-        olivier.crete@collabora.com, dan.carpenter@oracle.com,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Borislav Petkov <bp@suse.de>
+Subject: [driver-core:driver-core-testing 5/7]
+ drivers/base/firmware_loader/test-builtin/test-builtin-firmware.bin.gen.S:5:
+ Error: file not found:
+ drivers/base/firmware_loader/test-builtin/test-builtin-firmware.bin
+Message-ID: <202111271140.XMh9IcBt-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dafna,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git driver-core-testing
+head:   7f67ea9c19735222f7999754f3fee922cd8f4781
+commit: 6a4e0b75cfa09e70c0aa39a03b478641cf2a7974 [5/7] test_firmware: add support for testing built-in firmware
+config: powerpc-allyesconfig (https://download.01.org/0day-ci/archive/20211127/202111271140.XMh9IcBt-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/commit/?id=6a4e0b75cfa09e70c0aa39a03b478641cf2a7974
+        git remote add driver-core https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git
+        git fetch --no-tags driver-core driver-core-testing
+        git checkout 6a4e0b75cfa09e70c0aa39a03b478641cf2a7974
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=powerpc SHELL=/bin/bash
 
-On Wed, 10 Nov 2021 at 21:09, Dafna Hirschfeld
-<dafna.hirschfeld@collabora.com> wrote:
-> +static int wave5_vpu_probe(struct platform_device *pdev)
-> +{
-> +       int ret = 0;
-> +       struct vpu_device *dev;
-> +       struct resource *res = NULL;
-> +       const struct wave5_match_data *match_data;
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-.. snip ...
+All errors (new ones prefixed by >>):
 
-> +       dev->dev = &pdev->dev;
-> +       dev->product_code = wave5_vdi_read_register(dev, VPU_PRODUCT_CODE_REGISTER);
+   drivers/base/firmware_loader/test-builtin/test-builtin-firmware.bin.gen.S: Assembler messages:
+>> drivers/base/firmware_loader/test-builtin/test-builtin-firmware.bin.gen.S:5: Error: file not found: drivers/base/firmware_loader/test-builtin/test-builtin-firmware.bin
 
-You access a register here..
-
-> +       ret = devm_clk_bulk_get_all(&pdev->dev, &dev->clks);
-> +
-> +       /* continue without clock, assume externally managed */
-> +       if (ret < 0) {
-> +               dev_warn(&pdev->dev, "unable to get clocks: %d\n", ret);
-> +               ret = 0;
-> +       }
-> +       dev->num_clks = ret;
-> +
-> +       ret = clk_bulk_prepare_enable(dev->num_clks, dev->clks);
-> +       if (ret) {
-> +               dev_err(&pdev->dev, "failed to enable clocks: %d\n", ret);
-> +               goto err_clk_prep_en;
-> +       }
-
-but only get and enable the clocks further down.
-
-For anything that needs a clock enabled to access the register and
-doesn't have it enabled when probe is called the CPU might lock up.
-I found this out while trying to get this code working on another chip
-that has one of these IP blocks.
-
-Cheers,
-
-Daniel
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
