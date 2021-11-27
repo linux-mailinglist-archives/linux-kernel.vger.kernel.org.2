@@ -2,149 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A8E45F779
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 01:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CCB745F77A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 01:36:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343766AbhK0AeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 19:34:21 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:59400 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343715AbhK0AcU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 19:32:20 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BE8A0B82948;
-        Sat, 27 Nov 2021 00:29:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7921C004E1;
-        Sat, 27 Nov 2021 00:29:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637972943;
-        bh=o+em8kfwsqJ2QupMLLADRCTDh/5vnvuG3Lnujj+swS4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=ChuKe1a/qvSV0k6OZM6tgpE9pKM2SQwFskak0EsRWaRtIwmjFTGmFd9E5R/mClm85
-         bsRrHknhjIGwuKOOHsWQBLhFB3b74n21Jzy5M9FwmtCpwWTgWE34lZeUWhOWYhiJ6m
-         BxkD90PQqWMhLr5YAtddIU/3+QLQ3j/WdNsivPX5pCYgo0sHSghbqtkJD38Yh/1ZNu
-         aI1VjDqP5XUUq4wIuyW14raEB58BbW9WSp/pHWFCOKggbeab+qiMWQVXu5jY0VXV7F
-         vMsoIghKFknfP3JpUOkFspI89yyrTXB0TfKg8eRUgTTHfbK7GpQKjJjC9fJV1OGjmX
-         8iP/jK8oSW9qw==
-Message-ID: <97ddf0f23592b74e7647e3c9b36b37553c594c82.camel@kernel.org>
-Subject: Re: [PATCH v3 1/3] selftests: tpm2: Probe for available PCR bank
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Stefan Berger <stefanb@linux.vnet.ibm.com>,
-        linux-integrity@vger.kernel.org
-Cc:     peterhuewe@gmx.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        Stefan Berger <stefanb@linux.ibm.com>
-Date:   Sat, 27 Nov 2021 02:29:00 +0200
-In-Reply-To: <20211125003827.1360432-2-stefanb@linux.vnet.ibm.com>
-References: <20211125003827.1360432-1-stefanb@linux.vnet.ibm.com>
-         <20211125003827.1360432-2-stefanb@linux.vnet.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.40.4-1 
+        id S1343819AbhK0Aji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 19:39:38 -0500
+Received: from mga05.intel.com ([192.55.52.43]:24536 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343788AbhK0Ahh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 19:37:37 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="321961942"
+X-IronPort-AV: E=Sophos;i="5.87,267,1631602800"; 
+   d="scan'208";a="321961942"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 16:34:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,267,1631602800"; 
+   d="scan'208";a="572454825"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 26 Nov 2021 16:34:22 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqlfZ-0008pL-Nj; Sat, 27 Nov 2021 00:34:21 +0000
+Date:   Sat, 27 Nov 2021 08:33:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: [jgunthorpe:iommufd 3/9]
+ drivers/iommu/iommufd/io_pagetable.c:1155:6: warning: comparison of distinct
+ pointer types ('typeof (npages) *' (aka 'unsigned int *') and 'typeof ((1UL
+ << 16)) *' (aka 'unsigned long *'))
+Message-ID: <202111270838.oY7LmFOc-lkp@intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTExLTI0IGF0IDE5OjM4IC0wNTAwLCBTdGVmYW4gQmVyZ2VyIHdyb3RlOgo+
-IEZyb206IFN0ZWZhbiBCZXJnZXIgPHN0ZWZhbmJAbGludXguaWJtLmNvbT4KPiAKPiBQcm9iZSBm
-b3IgYW4gYXZhaWxhYmxlIFBDUiBiYW5rIHRvIGFjY29tbW9kYXRlIGRldmljZXMgdGhhdCBkbyBu
-b3QgaGF2ZSBhCgpXaGF0IGRvZXMgInByb2JpbmcgZm9yIGFuIHZhaWxhYmxlIFBDUiBiYW5rIiBl
-dmVuIG1lYW4/Cgo+IFNIQS0xIFBDUiBiYW5rIG9yIHdob3NlIFNIQS0xIGJhbmsgaXMgZGVhY3Rp
-dmF0ZWQuIFVzZSB0aGUgYmFuayB0aGF0IGNhbgo+IGJlIHVzZWQgZm9yIHRoZSBUUE0yIGNvbW1h
-bmRzLCBzdWNoIGFzIHRoZSBTSEEtMjU2IGJhbmsuCgpUaGlzIGlzIGluY29ycmVjdCwgYXMgdGhl
-IHBhdGNoIGRvZXMgbm90IGhhdmUgY29kZSB0byBxdWVyeQphdmFpbGFibGUgaGFzaCBhbGdvcml0
-aG1zLgoKV2hhdCB0aGUgY29kZSBkb2VzLCBhbmQgb25seSBkb2VzIHRoYXQsIGlzIHRvIHVzZSBT
-SEEtMjU2IGFzwqAKYSBmYWxsYmFjayB3aGVuIFNIQS0xIGlzIG5vdCBlbmFibGVkLgoKL0phcmtr
-bwoKCj4gCj4gU2lnbmVkLW9mZi1ieTogU3RlZmFuIEJlcmdlciA8c3RlZmFuYkBsaW51eC5pYm0u
-Y29tPgo+IC0tLQo+IMKgdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvdHBtMi90cG0yX3Rlc3RzLnB5
-IHwgMzUgKysrKysrKysrKysrKysrKystLS0tLQo+IMKgMSBmaWxlIGNoYW5nZWQsIDI3IGluc2Vy
-dGlvbnMoKyksIDggZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcv
-c2VsZnRlc3RzL3RwbTIvdHBtMl90ZXN0cy5weSBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL3Rw
-bTIvdHBtMl90ZXN0cy5weQo+IGluZGV4IDlkNzY0MzA2ODg3Yi4uNmI4OGZmMGU0N2I5IDEwMDY0
-NAo+IC0tLSBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL3RwbTIvdHBtMl90ZXN0cy5weQo+ICsr
-KyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL3RwbTIvdHBtMl90ZXN0cy5weQo+IEBAIC0yNyw3
-ICsyNywyMyBAQCBjbGFzcyBTbW9rZVRlc3QodW5pdHRlc3QuVGVzdENhc2UpOgo+IMKgwqDCoMKg
-wqDCoMKgwqAgcmVzdWx0ID0gc2VsZi5jbGllbnQudW5zZWFsKHNlbGYucm9vdF9rZXksIGJsb2Is
-IGF1dGgsIE5vbmUpCj4gwqDCoMKgwqDCoMKgwqDCoCBzZWxmLmFzc2VydEVxdWFsKGRhdGEsIHJl
-c3VsdCkKPiDCoAo+ICvCoMKgwqAgZGVmIGRldGVybWluZV9iYW5rX2FsZyhzZWxmKToKPiArwqDC
-oMKgwqDCoMKgwqAgIyBQcm9iZSBmb3IgYXZhaWxhYmxlIFBDUiBiYW5rCj4gK8KgwqDCoMKgwqDC
-oMKgIGZvciBiYW5rX2FsZyBpbiBbdHBtMi5UUE0yX0FMR19TSEExLCB0cG0yLlRQTTJfQUxHX1NI
-QTI1Nl06Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdHJ5Ogo+ICvCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgaGFuZGxlID0gc2VsZi5jbGllbnQuc3RhcnRfYXV0aF9zZXNzaW9uKHRw
-bTIuVFBNMl9TRV9UUklBTCkKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHNlbGYu
-Y2xpZW50LnBvbGljeV9wY3IoaGFuZGxlLCBbMTddLCBiYW5rX2FsZz1iYW5rX2FsZykKPiArwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiBiYW5rX2FsZwo+ICvCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIGV4Y2VwdCB0cG0yLlVua25vd25QQ1JCYW5rRXJyb3I6Cj4gK8KgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBwYXNzCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZmlu
-YWxseToKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHNlbGYuY2xpZW50LmZsdXNo
-X2NvbnRleHQoaGFuZGxlKQo+ICvCoMKgwqDCoMKgwqDCoCByZXR1cm4gTm9uZQo+ICsKPiDCoMKg
-wqDCoCBkZWYgdGVzdF9zZWFsX3dpdGhfcG9saWN5KHNlbGYpOgo+ICvCoMKgwqDCoMKgwqDCoCBi
-YW5rX2FsZyA9IHNlbGYuZGV0ZXJtaW5lX2JhbmtfYWxnKCkKPiArwqDCoMKgwqDCoMKgwqAgc2Vs
-Zi5hc3NlcnRJc05vdE5vbmUoYmFua19hbGcpCj4gKwo+IMKgwqDCoMKgwqDCoMKgwqAgaGFuZGxl
-ID0gc2VsZi5jbGllbnQuc3RhcnRfYXV0aF9zZXNzaW9uKHRwbTIuVFBNMl9TRV9UUklBTCkKPiDC
-oAo+IMKgwqDCoMKgwqDCoMKgwqAgZGF0YSA9ICgnWCcgKiA2NCkuZW5jb2RlKCkKPiBAQCAtMzUs
-NyArNTEsNyBAQCBjbGFzcyBTbW9rZVRlc3QodW5pdHRlc3QuVGVzdENhc2UpOgo+IMKgwqDCoMKg
-wqDCoMKgwqAgcGNycyA9IFsxNl0KPiDCoAo+IMKgwqDCoMKgwqDCoMKgwqAgdHJ5Ogo+IC3CoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIHNlbGYuY2xpZW50LnBvbGljeV9wY3IoaGFuZGxlLCBwY3JzKQo+
-ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHNlbGYuY2xpZW50LnBvbGljeV9wY3IoaGFuZGxlLCBw
-Y3JzLCBiYW5rX2FsZz1iYW5rX2FsZykKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc2VsZi5j
-bGllbnQucG9saWN5X3Bhc3N3b3JkKGhhbmRsZSkKPiDCoAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBwb2xpY3lfZGlnID0gc2VsZi5jbGllbnQuZ2V0X3BvbGljeV9kaWdlc3QoaGFuZGxlKQo+
-IEBAIC00Nyw3ICs2Myw3IEBAIGNsYXNzIFNtb2tlVGVzdCh1bml0dGVzdC5UZXN0Q2FzZSk6Cj4g
-wqDCoMKgwqDCoMKgwqDCoCBoYW5kbGUgPSBzZWxmLmNsaWVudC5zdGFydF9hdXRoX3Nlc3Npb24o
-dHBtMi5UUE0yX1NFX1BPTElDWSkKPiDCoAo+IMKgwqDCoMKgwqDCoMKgwqAgdHJ5Ogo+IC3CoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIHNlbGYuY2xpZW50LnBvbGljeV9wY3IoaGFuZGxlLCBwIlVzZSBT
-SEEtMjU2IGFzIGEgZmFsbGJhY2sgY3JzKQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHNlbGYu
-Y2xpZW50LnBvbGljeV9wY3IoaGFuZGxlLCBwY3JzLCBiYW5rX2FsZz1iYW5rX2FsZykKPiDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgc2VsZi5jbGllbnQucG9saWN5X3Bhc3N3b3JkKGhhbmRsZSkK
-PiDCoAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXN1bHQgPSBzZWxmLmNsaWVudC51bnNl
-YWwoc2VsZi5yb290X2tleSwgYmxvYiwgYXV0aCwgaGFuZGxlKQo+IEBAIC03Miw2ICs4OCw5IEBA
-IGNsYXNzIFNtb2tlVGVzdCh1bml0dGVzdC5UZXN0Q2FzZSk6Cj4gwqDCoMKgwqDCoMKgwqDCoCBz
-ZWxmLmFzc2VydEVxdWFsKHJjLCB0cG0yLlRQTTJfUkNfQVVUSF9GQUlMKQo+IMKgCj4gwqDCoMKg
-wqAgZGVmIHRlc3RfdW5zZWFsX3dpdGhfd3JvbmdfcG9saWN5KHNlbGYpOgo+ICvCoMKgwqDCoMKg
-wqDCoCBiYW5rX2FsZyA9IHNlbGYuZGV0ZXJtaW5lX2JhbmtfYWxnKCkKPiArwqDCoMKgwqDCoMKg
-wqAgc2VsZi5hc3NlcnRJc05vdE5vbmUoYmFua19hbGcpCj4gKwo+IMKgwqDCoMKgwqDCoMKgwqAg
-aGFuZGxlID0gc2VsZi5jbGllbnQuc3RhcnRfYXV0aF9zZXNzaW9uKHRwbTIuVFBNMl9TRV9UUklB
-TCkKPiDCoAo+IMKgwqDCoMKgwqDCoMKgwqAgZGF0YSA9ICgnWCcgKiA2NCkuZW5jb2RlKCkKPiBA
-QCAtNzksNyArOTgsNyBAQCBjbGFzcyBTbW9rZVRlc3QodW5pdHRlc3QuVGVzdENhc2UpOgo+IMKg
-wqDCoMKgwqDCoMKgwqAgcGNycyA9IFsxNl0KPiDCoAo+IMKgwqDCoMKgwqDCoMKgwqAgdHJ5Ogo+
-IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHNlbGYuY2xpZW50LnBvbGljeV9wY3IoaGFuZGxlLCBw
-Y3JzKQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHNlbGYuY2xpZW50LnBvbGljeV9wY3IoaGFu
-ZGxlLCBwY3JzLCBiYW5rX2FsZz1iYW5rX2FsZykKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-c2VsZi5jbGllbnQucG9saWN5X3Bhc3N3b3JkKGhhbmRsZSkKPiDCoAo+IMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCBwb2xpY3lfZGlnID0gc2VsZi5jbGllbnQuZ2V0X3BvbGljeV9kaWdlc3QoaGFu
-ZGxlKQo+IEBAIC05MSwxMyArMTEwLDEzIEBAIGNsYXNzIFNtb2tlVGVzdCh1bml0dGVzdC5UZXN0
-Q2FzZSk6Cj4gwqDCoMKgwqDCoMKgwqDCoCAjIEV4dGVuZCBmaXJzdCBhIFBDUiB0aGF0IGlzIG5v
-dCBwYXJ0IG9mIHRoZSBwb2xpY3kgYW5kIHRyeSB0byB1bnNlYWwuCj4gwqDCoMKgwqDCoMKgwqDC
-oCAjIFRoaXMgc2hvdWxkIHN1Y2NlZWQuCj4gwqAKPiAtwqDCoMKgwqDCoMKgwqAgZHMgPSB0cG0y
-LmdldF9kaWdlc3Rfc2l6ZSh0cG0yLlRQTTJfQUxHX1NIQTEpCj4gLcKgwqDCoMKgwqDCoMKgIHNl
-bGYuY2xpZW50LmV4dGVuZF9wY3IoMSwgKCdYJyAqIGRzKS5lbmNvZGUoKSkKPiArwqDCoMKgwqDC
-oMKgwqAgZHMgPSB0cG0yLmdldF9kaWdlc3Rfc2l6ZShiYW5rX2FsZykKPiArwqDCoMKgwqDCoMKg
-wqAgc2VsZi5jbGllbnQuZXh0ZW5kX3BjcigxLCAoJ1gnICogZHMpLmVuY29kZSgpLCBiYW5rX2Fs
-Zz1iYW5rX2FsZykKPiDCoAo+IMKgwqDCoMKgwqDCoMKgwqAgaGFuZGxlID0gc2VsZi5jbGllbnQu
-c3RhcnRfYXV0aF9zZXNzaW9uKHRwbTIuVFBNMl9TRV9QT0xJQ1kpCj4gwqAKPiDCoMKgwqDCoMKg
-wqDCoMKgIHRyeToKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzZWxmLmNsaWVudC5wb2xpY3lf
-cGNyKGhhbmRsZSwgcGNycykKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzZWxmLmNsaWVudC5w
-b2xpY3lfcGNyKGhhbmRsZSwgcGNycywgYmFua19hbGc9YmFua19hbGcpCj4gwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIHNlbGYuY2xpZW50LnBvbGljeV9wYXNzd29yZChoYW5kbGUpCj4gwqAKPiDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmVzdWx0ID0gc2VsZi5jbGllbnQudW5zZWFsKHNlbGYu
-cm9vdF9rZXksIGJsb2IsIGF1dGgsIGhhbmRsZSkKPiBAQCAtMTA5LDE0ICsxMjgsMTQgQEAgY2xh
-c3MgU21va2VUZXN0KHVuaXR0ZXN0LlRlc3RDYXNlKToKPiDCoAo+IMKgwqDCoMKgwqDCoMKgwqAg
-IyBUaGVuLCBleHRlbmQgYSBQQ1IgdGhhdCBpcyBwYXJ0IG9mIHRoZSBwb2xpY3kgYW5kIHRyeSB0
-byB1bnNlYWwuCj4gwqDCoMKgwqDCoMKgwqDCoCAjIFRoaXMgc2hvdWxkIGZhaWwuCj4gLcKgwqDC
-oMKgwqDCoMKgIHNlbGYuY2xpZW50LmV4dGVuZF9wY3IoMTYsICgnWCcgKiBkcykuZW5jb2RlKCkp
-Cj4gK8KgwqDCoMKgwqDCoMKgIHNlbGYuY2xpZW50LmV4dGVuZF9wY3IoMTYsICgnWCcgKiBkcyku
-ZW5jb2RlKCksIGJhbmtfYWxnPWJhbmtfYWxnKQo+IMKgCj4gwqDCoMKgwqDCoMKgwqDCoCBoYW5k
-bGUgPSBzZWxmLmNsaWVudC5zdGFydF9hdXRoX3Nlc3Npb24odHBtMi5UUE0yX1NFX1BPTElDWSkK
-PiDCoAo+IMKgwqDCoMKgwqDCoMKgwqAgcmMgPSAwCj4gwqAKPiDCoMKgwqDCoMKgwqDCoMKgIHRy
-eToKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzZWxmLmNsaWVudC5wb2xpY3lfcGNyKGhhbmRs
-ZSwgcGNycykKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzZWxmLmNsaWVudC5wb2xpY3lfcGNy
-KGhhbmRsZSwgcGNycywgYmFua19hbGc9YmFua19hbGcpCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIHNlbGYuY2xpZW50LnBvbGljeV9wYXNzd29yZChoYW5kbGUpCj4gwqAKPiDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgcmVzdWx0ID0gc2VsZi5jbGllbnQudW5zZWFsKHNlbGYucm9vdF9rZXks
-IGJsb2IsIGF1dGgsIGhhbmRsZSkKCg==
+tree:   https://github.com/jgunthorpe/linux iommufd
+head:   20622aca716f08225b705a8c84a2beeb8c71decb
+commit: 3e99bfe1e6898207226254c9c3663804f72e4c75 [3/9] iommufd: Data structure to provide IOVA to PFN mapping
+config: hexagon-randconfig-r004-20211126 (https://download.01.org/0day-ci/archive/20211127/202111270838.oY7LmFOc-lkp@intel.com/config)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 5162b558d8c0b542e752b037e72a69d5fd51eb1e)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/jgunthorpe/linux/commit/3e99bfe1e6898207226254c9c3663804f72e4c75
+        git remote add jgunthorpe https://github.com/jgunthorpe/linux
+        git fetch --no-tags jgunthorpe iommufd
+        git checkout 3e99bfe1e6898207226254c9c3663804f72e4c75
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash drivers/iommu/iommufd/
 
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/iommu/iommufd/io_pagetable.c:1155:6: warning: comparison of distinct pointer types ('typeof (npages) *' (aka 'unsigned int *') and 'typeof ((1UL << 16)) *' (aka 'unsigned long *')) [-Wcompare-distinct-pointer-types]
+           if (check_mul_overflow(npages, PAGE_SIZE, &length) ||
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/overflow.h:84:15: note: expanded from macro 'check_mul_overflow'
+           (void) (&__a == &__b);                  \
+                   ~~~~ ^  ~~~~
+   include/linux/compiler.h:56:47: note: expanded from macro 'if'
+   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
+                                                 ^~~~
+   include/linux/compiler.h:58:52: note: expanded from macro '__trace_if_var'
+   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
+                                                      ^~~~
+>> drivers/iommu/iommufd/io_pagetable.c:1156:6: warning: comparison of distinct pointer types ('typeof (iova) *' (aka 'unsigned long *') and 'typeof (length - 1) *' (aka 'unsigned int *')) [-Wcompare-distinct-pointer-types]
+               check_add_overflow(iova, length - 1, &iova_end))
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/overflow.h:66:15: note: expanded from macro 'check_add_overflow'
+           (void) (&__a == &__b);                  \
+                   ~~~~ ^  ~~~~
+   include/linux/compiler.h:56:47: note: expanded from macro 'if'
+   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
+                                                 ^~~~
+   include/linux/compiler.h:58:52: note: expanded from macro '__trace_if_var'
+   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
+                                                      ^~~~
+>> drivers/iommu/iommufd/io_pagetable.c:1155:6: warning: comparison of distinct pointer types ('typeof (npages) *' (aka 'unsigned int *') and 'typeof ((1UL << 16)) *' (aka 'unsigned long *')) [-Wcompare-distinct-pointer-types]
+           if (check_mul_overflow(npages, PAGE_SIZE, &length) ||
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/overflow.h:84:15: note: expanded from macro 'check_mul_overflow'
+           (void) (&__a == &__b);                  \
+                   ~~~~ ^  ~~~~
+   include/linux/compiler.h:56:47: note: expanded from macro 'if'
+   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
+                                                 ^~~~
+   include/linux/compiler.h:58:61: note: expanded from macro '__trace_if_var'
+   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
+                                                               ^~~~
+>> drivers/iommu/iommufd/io_pagetable.c:1156:6: warning: comparison of distinct pointer types ('typeof (iova) *' (aka 'unsigned long *') and 'typeof (length - 1) *' (aka 'unsigned int *')) [-Wcompare-distinct-pointer-types]
+               check_add_overflow(iova, length - 1, &iova_end))
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/overflow.h:66:15: note: expanded from macro 'check_add_overflow'
+           (void) (&__a == &__b);                  \
+                   ~~~~ ^  ~~~~
+   include/linux/compiler.h:56:47: note: expanded from macro 'if'
+   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
+                                                 ^~~~
+   include/linux/compiler.h:58:61: note: expanded from macro '__trace_if_var'
+   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
+                                                               ^~~~
+>> drivers/iommu/iommufd/io_pagetable.c:1155:6: warning: comparison of distinct pointer types ('typeof (npages) *' (aka 'unsigned int *') and 'typeof ((1UL << 16)) *' (aka 'unsigned long *')) [-Wcompare-distinct-pointer-types]
+           if (check_mul_overflow(npages, PAGE_SIZE, &length) ||
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/overflow.h:84:15: note: expanded from macro 'check_mul_overflow'
+           (void) (&__a == &__b);                  \
+                   ~~~~ ^  ~~~~
+   include/linux/compiler.h:56:47: note: expanded from macro 'if'
+   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
+                                                 ^~~~
+   include/linux/compiler.h:58:86: note: expanded from macro '__trace_if_var'
+   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
+                                                                                        ^~~~
+   include/linux/compiler.h:69:3: note: expanded from macro '__trace_if_value'
+           (cond) ?                                        \
+            ^~~~
+>> drivers/iommu/iommufd/io_pagetable.c:1156:6: warning: comparison of distinct pointer types ('typeof (iova) *' (aka 'unsigned long *') and 'typeof (length - 1) *' (aka 'unsigned int *')) [-Wcompare-distinct-pointer-types]
+               check_add_overflow(iova, length - 1, &iova_end))
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/overflow.h:66:15: note: expanded from macro 'check_add_overflow'
+           (void) (&__a == &__b);                  \
+                   ~~~~ ^  ~~~~
+   include/linux/compiler.h:56:47: note: expanded from macro 'if'
+   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
+                                                 ^~~~
+   include/linux/compiler.h:58:86: note: expanded from macro '__trace_if_var'
+   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
+                                                                                        ^~~~
+   include/linux/compiler.h:69:3: note: expanded from macro '__trace_if_value'
+           (cond) ?                                        \
+            ^~~~
+   drivers/iommu/iommufd/io_pagetable.c:1211:6: warning: comparison of distinct pointer types ('typeof (npages) *' (aka 'unsigned int *') and 'typeof ((1UL << 16)) *' (aka 'unsigned long *')) [-Wcompare-distinct-pointer-types]
+           if (check_mul_overflow(npages, PAGE_SIZE, &length) ||
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/overflow.h:84:15: note: expanded from macro 'check_mul_overflow'
+           (void) (&__a == &__b);                  \
+                   ~~~~ ^  ~~~~
+   include/linux/compiler.h:56:47: note: expanded from macro 'if'
+   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
+                                                 ^~~~
+   include/linux/compiler.h:58:52: note: expanded from macro '__trace_if_var'
+   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
+                                                      ^~~~
+   drivers/iommu/iommufd/io_pagetable.c:1212:6: warning: comparison of distinct pointer types ('typeof (iova) *' (aka 'unsigned long *') and 'typeof (length - 1) *' (aka 'unsigned int *')) [-Wcompare-distinct-pointer-types]
+               check_add_overflow(iova, length - 1, &iova_end))
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/overflow.h:66:15: note: expanded from macro 'check_add_overflow'
+           (void) (&__a == &__b);                  \
+                   ~~~~ ^  ~~~~
+   include/linux/compiler.h:56:47: note: expanded from macro 'if'
+   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
+                                                 ^~~~
+   include/linux/compiler.h:58:52: note: expanded from macro '__trace_if_var'
+   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
+                                                      ^~~~
+   drivers/iommu/iommufd/io_pagetable.c:1211:6: warning: comparison of distinct pointer types ('typeof (npages) *' (aka 'unsigned int *') and 'typeof ((1UL << 16)) *' (aka 'unsigned long *')) [-Wcompare-distinct-pointer-types]
+           if (check_mul_overflow(npages, PAGE_SIZE, &length) ||
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/overflow.h:84:15: note: expanded from macro 'check_mul_overflow'
+           (void) (&__a == &__b);                  \
+                   ~~~~ ^  ~~~~
+   include/linux/compiler.h:56:47: note: expanded from macro 'if'
+   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
+                                                 ^~~~
+   include/linux/compiler.h:58:61: note: expanded from macro '__trace_if_var'
+   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
+                                                               ^~~~
+   drivers/iommu/iommufd/io_pagetable.c:1212:6: warning: comparison of distinct pointer types ('typeof (iova) *' (aka 'unsigned long *') and 'typeof (length - 1) *' (aka 'unsigned int *')) [-Wcompare-distinct-pointer-types]
+               check_add_overflow(iova, length - 1, &iova_end))
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/overflow.h:66:15: note: expanded from macro 'check_add_overflow'
+           (void) (&__a == &__b);                  \
+                   ~~~~ ^  ~~~~
+   include/linux/compiler.h:56:47: note: expanded from macro 'if'
+   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
+                                                 ^~~~
+   include/linux/compiler.h:58:61: note: expanded from macro '__trace_if_var'
+   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
+                                                               ^~~~
+   drivers/iommu/iommufd/io_pagetable.c:1211:6: warning: comparison of distinct pointer types ('typeof (npages) *' (aka 'unsigned int *') and 'typeof ((1UL << 16)) *' (aka 'unsigned long *')) [-Wcompare-distinct-pointer-types]
+           if (check_mul_overflow(npages, PAGE_SIZE, &length) ||
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/overflow.h:84:15: note: expanded from macro 'check_mul_overflow'
+           (void) (&__a == &__b);                  \
+                   ~~~~ ^  ~~~~
+   include/linux/compiler.h:56:47: note: expanded from macro 'if'
+   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
+                                                 ^~~~
+   include/linux/compiler.h:58:86: note: expanded from macro '__trace_if_var'
+   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
+                                                                                        ^~~~
+   include/linux/compiler.h:69:3: note: expanded from macro '__trace_if_value'
+           (cond) ?                                        \
+            ^~~~
+   drivers/iommu/iommufd/io_pagetable.c:1212:6: warning: comparison of distinct pointer types ('typeof (iova) *' (aka 'unsigned long *') and 'typeof (length - 1) *' (aka 'unsigned int *')) [-Wcompare-distinct-pointer-types]
+               check_add_overflow(iova, length - 1, &iova_end))
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/overflow.h:66:15: note: expanded from macro 'check_add_overflow'
+           (void) (&__a == &__b);                  \
+                   ~~~~ ^  ~~~~
+   include/linux/compiler.h:56:47: note: expanded from macro 'if'
+   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
+                                                 ^~~~
+   include/linux/compiler.h:58:86: note: expanded from macro '__trace_if_var'
+   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
+                                                                                        ^~~~
+   include/linux/compiler.h:69:3: note: expanded from macro '__trace_if_value'
+           (cond) ?                                        \
+            ^~~~
+   12 warnings generated.
+
+
+vim +1155 drivers/iommu/iommufd/io_pagetable.c
+
+  1131	
+  1132	/**
+  1133	* iopt_access_pages - Return a list of pages under the iova
+  1134	*
+  1135	* Reads @npages starting at iova and returns the struct page * pointers. These
+  1136	* can be kmap'd by the caller for CPU access.
+  1137	*
+  1138	* The caller must perform iopt_unaccess_pages() when done to balance this.
+  1139	*
+  1140	* CHECKME: callers that need a DMA mapping via a sgl should create another
+  1141	* interface to build the SGL efficiently)
+  1142	*/
+  1143	int iopt_access_pages(struct io_pagetable *iopt, unsigned long iova,
+  1144			      size_t npages, struct page **out_pages, bool write)
+  1145	{
+  1146		unsigned long cur_iova;
+  1147		unsigned long iova_end;
+  1148		struct iopt_area *area;
+  1149		size_t length;
+  1150		int rc;
+  1151	
+  1152		down_read(&iopt->rwsem);
+  1153		if (!npages || iova % PAGE_SIZE)
+  1154			return -EINVAL;
+> 1155		if (check_mul_overflow(npages, PAGE_SIZE, &length) ||
+> 1156		    check_add_overflow(iova, length - 1, &iova_end))
+  1157			return -EOVERFLOW;
+  1158	
+  1159		cur_iova = iova;
+  1160		for (area = iopt_area_iter_first(iopt, iova, iova_end); area;
+  1161		     area = iopt_area_iter_next(area, iova, iova_end)) {
+  1162			unsigned long intr_start = max(iova, iopt_area_iova(area));
+  1163			unsigned long intr_end =
+  1164				min(iova_end, iopt_area_last_iova(area));
+  1165			size_t npages = (intr_end - intr_start + 1) / PAGE_SIZE;
+  1166	
+  1167			/* Need contiguous areas un the access */
+  1168			if (cur_iova != intr_start) {
+  1169				rc = -EINVAL;
+  1170				goto out_remove;
+  1171			}
+  1172	
+  1173			npages = (intr_end - intr_start + 1) / PAGE_SIZE;
+  1174			rc = iopt_pages_add_user(
+  1175				area->pages,
+  1176				(intr_start - iopt_area_iova(area)) / PAGE_SIZE, npages,
+  1177				out_pages + (intr_end - iopt_area_iova(area) + 1) /
+  1178						    PAGE_SIZE,
+  1179				write);
+  1180			if (rc)
+  1181				goto out_remove;
+  1182			cur_iova += npages * PAGE_SIZE;
+  1183			atomic_inc(&area->num_users);
+  1184		}
+  1185	
+  1186		up_read(&iopt->rwsem);
+  1187		return 0;
+  1188	
+  1189	out_remove:
+  1190		iopt_unaccess_pages(iopt, iova, (cur_iova - iova) / PAGE_SIZE);
+  1191		return rc;
+  1192	}
+  1193	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
