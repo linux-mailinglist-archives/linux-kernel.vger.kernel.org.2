@@ -2,159 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D9145FBA4
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 03:07:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D002345FBE6
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 03:15:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238875AbhK0CK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 21:10:27 -0500
-Received: from mail-eopbgr150071.outbound.protection.outlook.com ([40.107.15.71]:26516
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236655AbhK0CIZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 21:08:25 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NJgczmkctn0K9Oz4pXrIZAq3/MhvJCZpkpJubyLtEte5QEVLvuo2DyL8mX8cZaZ2KYd4zUrpb0W+bFCBS1GZGRmix4mk/vJCpJmK1LA+D41vAnWbCqCg4Td42fnodKsvNgqjK6fFCtQuAam2Sni9aK6G8zX8dvq3XkBZalsyh6Ph4rlIKdMwbAJNGhFYHyTEUs/RWXCjMu0gEPQimnixZEtmdkLhGKzwSdRhYxD4Hcwc9whr+0rSQENq5S5/8yQGkIFdqv1X50+nmoDfOHrmRDDIqHbe15FukEqAnDmP8P7xwTqAUxXVB1yiJpJsQPdgqBEy/i/F5embNd9tvgzZaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FXqeVDCPnI81WwSNwzROAqeb5GxOFiLWrntAmK+Vi3c=;
- b=GDNHXkQtymJykf/YxJ4BRtPymNRjowVGiGI9f2qZh+RufnpN9uAyBBGUVWABV4Gkn1FzlcRytw0AEu90xBzslHqZSqJhbYAKjsfei2xdKrw94a4VZoIiZstE7jx3Ymr95R5HGCVmUB5MSDS70RLjnvbm4SbtHcDr1oJgNDV8QZESwRSzs3efp8PcIjpiej2ffsF8Ql0zROfFIYJ3Bqi/t71L+EHM5SYoEVLeT77dNDA6//VWvB0JqoGXBzAvMKGww/4/XBpCzOWsKsAueyzUkTEBIa/lnvcW6f3nvBbJOiU1xkJib6/RlM0jimYRxlPxf56EVeTEdvQisdPspo79wQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FXqeVDCPnI81WwSNwzROAqeb5GxOFiLWrntAmK+Vi3c=;
- b=Zv8sQ5VEXrgfjYk00AhwLGfh4rz88HsMTxhzqsd7XPjygDgW5Eel8eOg43oJAueWLRY6tAR+aXDYNJVBUePCmzBOT6q1+odlmpZmBvcKGkwHIxWGXzNfOLiFpwmYqiEaAahiD1ehFlRiDjqZ2YUGQFvtzFzdOJWdP9UuuxX7m5Q=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
- by VI1PR0402MB3837.eurprd04.prod.outlook.com (2603:10a6:803:25::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.23; Sat, 27 Nov
- 2021 02:05:06 +0000
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e4ed:b009:ae4:83c5]) by VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e4ed:b009:ae4:83c5%7]) with mapi id 15.20.4734.023; Sat, 27 Nov 2021
- 02:05:05 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: [PATCH] powerpc/mm: fix early initialization failure for MMUs with no hash table
-Date:   Sat, 27 Nov 2021 04:04:48 +0200
-Message-Id: <20211127020448.4008507-1-vladimir.oltean@nxp.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: AS8P189CA0024.EURP189.PROD.OUTLOOK.COM
- (2603:10a6:20b:31f::29) To VI1PR04MB5136.eurprd04.prod.outlook.com
- (2603:10a6:803:55::19)
+        id S1352098AbhK0CSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 21:18:49 -0500
+Received: from mga03.intel.com ([134.134.136.65]:16323 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236655AbhK0CQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 21:16:45 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="235672463"
+X-IronPort-AV: E=Sophos;i="5.87,267,1631602800"; 
+   d="scan'208";a="235672463"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 18:13:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,267,1631602800"; 
+   d="scan'208";a="498623509"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 26 Nov 2021 18:13:30 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqnDV-0008vc-Ht; Sat, 27 Nov 2021 02:13:29 +0000
+Date:   Sat, 27 Nov 2021 10:12:31 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: [chenxing:msc313_mainlining 68/69]
+ drivers/irqchip/irq-msc313-pm-wakeup.c:21:25: error: redefinition of
+ 'field_mask' as different kind of symbol
+Message-ID: <202111271000.4rTe0TiV-lkp@intel.com>
 MIME-Version: 1.0
-Received: from localhost.localdomain (188.25.173.50) by AS8P189CA0024.EURP189.PROD.OUTLOOK.COM (2603:10a6:20b:31f::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.20 via Frontend Transport; Sat, 27 Nov 2021 02:05:05 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9fcac5f0-ab56-47f1-2125-08d9b14a54b1
-X-MS-TrafficTypeDiagnostic: VI1PR0402MB3837:
-X-Microsoft-Antispam-PRVS: <VI1PR0402MB38373BF853444D35D71A7EAAE0649@VI1PR0402MB3837.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: J6gOQptM3hp+YmbWVDcUfguwmSYmS73pljeys2pVxqXur+KAcLaQRxHo3MzH4/nsnfcvOuuW7FmojdDOzfz8WBAEwcxjXbdt+iaLQv6Dd8wA4H/4cGNaFkwUK+3KbKxHe8I0P4ZQ9/vDg9QR+KMSR9TKwka3qYuMxrI5Co/JZ97i99K/pYScwbtOBcaWisheUDndHp1PVytsCZDvW95QXhieeNCOE/JL2jJupj3Oa/luB/cVjPgqKz+2xJhXGQaFjvwWGLvc7LmYcFo8wTpvmOQ5Lo2dTiPimDqs8HtDduQjODcSmcTbu7czlyi/OIDSzC2WGxRvJotFJITmM9STqYxc/7g8a57gfgzW93F0uMh9H4VCpMrrinIdYEZTxk+/GRzjo7q54cMKs5FCv1OxEkFZz5Tpxzf7b0smWHmLMl53vOcQwiPC8BbLQ/mVZ2obptrqBNs9GeElzNkBey4+sCMIaU4YmDahnWo+veoON/cm5Lu4X9133cSyAsB6by16HCDpoO1seRJxZkguz48Wl68oDEPuvU76uJ3V3wR2R92BHquykHDcqo5Ibk20RWcif0VGyhYr1Q0+4IcDqU87jDnILzdVFObsdmQ8WIBWV2lNNVDxAVLIvzGG29EaLizsE+haztQFSQQjcgaqm6uI7FaLUik76pvXkxbM5JQrbb5siQjRbcljDpVqn6TTHk5q6U3Rdjo08KB8ArNAUp3xDg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(36756003)(508600001)(44832011)(8936002)(86362001)(38100700002)(2906002)(6666004)(38350700002)(54906003)(26005)(8676002)(5660300002)(83380400001)(6512007)(956004)(4326008)(316002)(52116002)(186003)(2616005)(66556008)(66476007)(66946007)(6506007)(1076003)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WvwTsNWPZOcXKO3EBF5CPu3knaStr7cYJHoVYsVCS1p6hF7NjUAWASTQ8J24?=
- =?us-ascii?Q?brnH46xKwj1gVFlM2zpPzXDJZI7DyK2GFR8XKt0uQqKOjSd5TYky+Cav6J4W?=
- =?us-ascii?Q?fvlMu7eWCSsd8TbM/uIVwwlmDlf0QrKVOv9KbMe6Lhn37ot1X/9wCRVVQfMG?=
- =?us-ascii?Q?adh+djYB+7BmgwnirdfQGB/qdmLL5Bi7q4+1cYD0nNveq4w+skcoHBYWkXD7?=
- =?us-ascii?Q?GEdj5uMUA41r9YPXVAsgBdIvNsoBY8W/UtI4yPtqsoV7BhaA1wP8Qg6KQtUm?=
- =?us-ascii?Q?toytpSFI3jQY4rumjsWPjpEGcoJyzVUon0YauMSmpXjMuHuq3T1GxtYXtIJn?=
- =?us-ascii?Q?k7NcI44tRcU1BOFFdfdWPrTWmSRhnjJRyoCHeklCzAq6agb1fzCu4007bJ9C?=
- =?us-ascii?Q?deNORPgt5fsy0D7KgJuEfqh5oIT5fcAvcVtfU7bON+F8RUOCgZZopLZinP3J?=
- =?us-ascii?Q?E/rFU/VkdDtl5q8WipkkVbSpqqGJh0dkfUz5tIuOxS5PXsAOheIi9oUThBnx?=
- =?us-ascii?Q?gacA8kTpw+YNC0UZXm7JN6MtjjAUQQazzS2pCFIWtM/u5Yx0vIiaz2Q+iPxv?=
- =?us-ascii?Q?FCXssB2i/z5FkbOuPv3/krST2cyS75HwI0wkiQA6F85uLRLFUlAQSqOpRlTi?=
- =?us-ascii?Q?eTNcjj/6/kqXNV4l0MiiSWfktbG3Zm1sdRMFVlbXyquURobWf7TpOFo8Pl9I?=
- =?us-ascii?Q?EBJf2N4jqpzrM0BD/65fyHpl8EYkb1QxFuf+8HcM1gxz/GEIRJfjZbkqkcNE?=
- =?us-ascii?Q?gN2i4Jkj/tqVgXMpTCeKokFnjCCRDgwrACHOVd51p+IAGo+Gd7lsV9wr8Zc8?=
- =?us-ascii?Q?OYCjyx+mEO0vrtYfJu8d+XSU8eEk5P3B/lgrhQ7qknVAQWMIEV1d2NmE/nNw?=
- =?us-ascii?Q?05CGa/AnEtHRpF75lFWYjPkFaPU76Dymp28mfTFGwSKiskWc3aXzRIWbYvlo?=
- =?us-ascii?Q?CZ97RdWgGEGuQdFwAcLizeS60STufG+OBrFU9GYGJcpmNCsne7rWAVbstwp2?=
- =?us-ascii?Q?6sv9O6YaYdPMBQdZWI4WuWQxSYDQ5k3rUHUApdW6eBhRso0Cj4vHCvKrAE3P?=
- =?us-ascii?Q?f7pKtvb6jDqNUt1Jb2KAvtVLJyqONW2DfQDpfx2AR9LjFG3XDZ8A1JAeTf7n?=
- =?us-ascii?Q?N1eY/A32ZDHNMbV+4InuPzbAUFiTbXZo15ThDHFCsZHjq996sckiLyOGilmJ?=
- =?us-ascii?Q?9vHF61/f2QuLv3DNwnnDrfCwht722TA5TZmXiJ0q+T10ynCWmSSGr2m06Xf2?=
- =?us-ascii?Q?Xpw+7d54gracnhTw1zyW6Bu9lAZ2tXKfxTWnQrUhgz/pFM4C9kqsIFhhwYSz?=
- =?us-ascii?Q?Uhstyzv8AupqPFn8zU8TzOy39X7LfXB4UuFLq6GfvyHRNnGlgoDdVwYptT4A?=
- =?us-ascii?Q?m1gKg9RKTUoUxQqrr8pfly77XrHqkh40gNCwYmWP+2+e7hL8m7d+HJfBTREh?=
- =?us-ascii?Q?UmtTeKCCR50YcPEpZlPhdS2tCuEqjH2eW2MgnnCbAIucDlQOO6BKI8yWyRdk?=
- =?us-ascii?Q?lTlsh2PhDHvrWdSsN0Vetm2lCk66RTRozXanl5JcOy7JOFoQVeFd8zsI8kiQ?=
- =?us-ascii?Q?DvKlaRr55BwK2IXc788BcGOrsKzT1B1BAkP30NpGy/EBZ441W5RIjzos4Au3?=
- =?us-ascii?Q?mL4Tpw8QhnKPylZ6JTRQYvM=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9fcac5f0-ab56-47f1-2125-08d9b14a54b1
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2021 02:05:05.7955
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZXBnaSSwfLsvxtrDJO81avrw4tyabe77EmRVmz9HkIMOM3tcdFRBm7Ucsgr05FNt+2xVgTF5aJ8d3o9KchdF4A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3837
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The blamed patch attempted to do a trivial conversion of
-map_mem_in_cams() by adding an extra "bool init" argument, but by
-mistake, changed the way in which two call sites pass the other boolean
-argument, "bool dry_run".
+tree:   git://github.com/linux-chenxing/linux.git msc313_mainlining
+head:   df6df62e60f3a32773b02a41e0d6a4e0f2b353b5
+commit: 294ac78fcc3c89b63c48a5f85d4352de0a73b078 [68/69] irqchip: MStar wakeup intc
+config: arm64-randconfig-r035-20211126 (https://download.01.org/0day-ci/archive/20211127/202111271000.4rTe0TiV-lkp@intel.com/config)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 5162b558d8c0b542e752b037e72a69d5fd51eb1e)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install arm64 cross compiling tool for clang build
+        # apt-get install binutils-aarch64-linux-gnu
+        # https://github.com/linux-chenxing/linux/commit/294ac78fcc3c89b63c48a5f85d4352de0a73b078
+        git remote add chenxing git://github.com/linux-chenxing/linux.git
+        git fetch --no-tags chenxing msc313_mainlining
+        git checkout 294ac78fcc3c89b63c48a5f85d4352de0a73b078
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm64 SHELL=/bin/bash drivers/
 
-As a result, early_init_this_mmu() now calls map_mem_in_cams() with
-dry_run=true, and setup_initial_memory_limit() calls with dry_run=false,
-both of which are unintended changes.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-This makes the kernel boot process hang here:
+All errors (new ones prefixed by >>):
 
-[    0.045211] e500 family performance monitor hardware support registered
-[    0.051891] rcu: Hierarchical SRCU implementation.
-[    0.057791] smp: Bringing up secondary CPUs ...
+>> drivers/irqchip/irq-msc313-pm-wakeup.c:21:25: error: redefinition of 'field_mask' as different kind of symbol
+   static struct reg_field field_mask = REG_FIELD(MSTAR_PMSLEEP_WAKEUPSOURCE, 0, 7);
+                           ^
+   include/linux/bitfield.h:122:28: note: previous definition is here
+   static __always_inline u64 field_mask(u64 field)
+                              ^
+>> drivers/irqchip/irq-msc313-pm-wakeup.c:118:43: error: passing 'u64 (u64)' (aka 'unsigned long long (unsigned long long)') to parameter of incompatible type 'struct reg_field'
+           intc->mask = regmap_field_alloc(pmsleep, field_mask);
+                                                    ^~~~~~~~~~
+   include/linux/regmap.h:1265:20: note: passing argument to parameter 'reg_field' here
+                   struct reg_field reg_field);
+                                    ^
+   drivers/irqchip/irq-msc313-pm-wakeup.c:132:2: warning: ignoring return value of function declared with 'warn_unused_result' attribute [-Wunused-result]
+           request_irq(irq, msc313_pm_wakeup_intc_chainedhandler, IRQF_SHARED,
+           ^~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   1 warning and 2 errors generated.
 
-Issue noticed on a Freescale T1040.
 
-Fixes: 52bda69ae8b5 ("powerpc/fsl_booke: Tell map_mem_in_cams() if init is done")
-Cc: stable@vger.kernel.org
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+vim +/field_mask +21 drivers/irqchip/irq-msc313-pm-wakeup.c
+
+    20	
+  > 21	static struct reg_field field_mask = REG_FIELD(MSTAR_PMSLEEP_WAKEUPSOURCE, 0, 7);
+    22	static struct reg_field field_type = REG_FIELD(MSTAR_PMSLEEP_REG24, 0, 7);
+    23	static struct reg_field field_status = REG_FIELD(MSTAR_PMSLEEP_WAKEINT_STATUS, 0, 7);
+    24	
+    25	struct msc313_sleep_intc {
+    26		struct regmap_field *mask;
+    27		struct regmap_field *type;
+    28		struct regmap_field *status;
+    29	};
+    30	
+    31	static void msc313_pm_wakeup_intc_mask_irq(struct irq_data *data)
+    32	{
+    33		struct msc313_sleep_intc *intc = irq_data_get_irq_chip_data(data);
+    34	
+    35		regmap_field_update_bits(intc->mask, 1 << data->hwirq, ~0);
+    36	}
+    37	
+    38	static void msc313_pm_wakeup_intc_unmask_irq(struct irq_data *data)
+    39	{
+    40		struct msc313_sleep_intc *intc = irq_data_get_irq_chip_data(data);
+    41	
+    42		regmap_field_update_bits(intc->mask, 1 << data->hwirq, 0);
+    43	}
+    44	
+    45	static void msc313_pm_wakeup_intc_irq_eoi(struct irq_data *data)
+    46	{
+    47	}
+    48	
+    49	static int msc313_pm_wakeup_intc_set_type_irq(struct irq_data *data,
+    50			unsigned int flow_type)
+    51	{
+    52		return 0;
+    53	}
+    54	
+    55	static struct irq_chip msc313_pm_wakeup_intc_chip = {
+    56		.name		= "PM-WAKEUP",
+    57		.irq_mask	= msc313_pm_wakeup_intc_mask_irq,
+    58		.irq_unmask	= msc313_pm_wakeup_intc_unmask_irq,
+    59		.irq_eoi	= msc313_pm_wakeup_intc_irq_eoi,
+    60		.irq_set_type	= msc313_pm_wakeup_intc_set_type_irq,
+    61	};
+    62	
+    63	static irqreturn_t msc313_pm_wakeup_intc_chainedhandler(int irq, void *data)
+    64	{
+    65		struct irq_domain *domain = data;
+    66		struct msc313_sleep_intc *intc = domain->host_data;
+    67		unsigned int hwirq, status;
+    68	
+    69		regmap_field_read(intc->status, &status);
+    70		printk("wakeupint %x\n", status);
+    71	
+    72		while (status) {
+    73			hwirq = __ffs(status);
+    74			generic_handle_domain_irq(domain, hwirq);
+    75			status &= ~BIT(hwirq);
+    76		}
+    77	
+    78		return IRQ_HANDLED;
+    79	}
+    80	
+    81	static int msc313_pm_wakeup_intc_domain_map(struct irq_domain *domain,
+    82			unsigned int irq, irq_hw_number_t hw)
+    83	{
+    84		struct msc313_sleep_intc *intc = domain->host_data;
+    85	
+    86		irq_set_chip_and_handler(irq, &msc313_pm_wakeup_intc_chip, handle_level_irq);
+    87		irq_set_chip_data(irq, intc);
+    88		irq_set_probe(irq);
+    89	
+    90		return 0;
+    91	}
+    92	
+    93	static const struct irq_domain_ops msc313_pm_wakeup_intc_domain_ops = {
+    94		.xlate = irq_domain_xlate_twocell,
+    95		.map = msc313_pm_wakeup_intc_domain_map,
+    96	};
+    97	
+    98	static int __init msc313_pm_wakeup_intc_of_init(struct device_node *node,
+    99					   struct device_node *parent)
+   100	{
+   101		int ret = 0, irq;
+   102		struct regmap *pmsleep;
+   103		struct msc313_sleep_intc *intc;
+   104		struct irq_domain *domain;
+   105	
+   106		irq = of_irq_get(node, 0);
+   107		if (irq <= 0)
+   108			return irq;
+   109	
+   110		pmsleep = syscon_regmap_lookup_by_phandle(node, "mstar,pmsleep");
+   111		if (IS_ERR(pmsleep))
+   112			return PTR_ERR(pmsleep);
+   113	
+   114		intc = kzalloc(sizeof(*intc), GFP_KERNEL);
+   115		if (!intc)
+   116			return -ENOMEM;
+   117	
+ > 118		intc->mask = regmap_field_alloc(pmsleep, field_mask);
+   119		intc->type = regmap_field_alloc(pmsleep, field_type);
+   120		intc->status = regmap_field_alloc(pmsleep, field_status);
+   121	
+   122		/* The masks survive deep sleep so clear them. */
+   123		regmap_field_write(intc->mask, ~0);
+   124	
+   125		domain = irq_domain_add_linear(node, NUM_IRQ,
+   126				&msc313_pm_wakeup_intc_domain_ops, intc);
+   127		if (!domain) {
+   128			ret = -ENOMEM;
+   129			goto out_free;
+   130		}
+   131	
+   132		request_irq(irq, msc313_pm_wakeup_intc_chainedhandler, IRQF_SHARED,
+   133					"pmsleep", domain);
+   134	
+   135		return 0;
+   136	
+   137	out_free:
+   138		kfree(intc);
+   139		return ret;
+   140	}
+   141	
+
 ---
- arch/powerpc/mm/nohash/tlb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/powerpc/mm/nohash/tlb.c b/arch/powerpc/mm/nohash/tlb.c
-index 89353d4f5604..647bf454a0fa 100644
---- a/arch/powerpc/mm/nohash/tlb.c
-+++ b/arch/powerpc/mm/nohash/tlb.c
-@@ -645,7 +645,7 @@ static void early_init_this_mmu(void)
- 
- 		if (map)
- 			linear_map_top = map_mem_in_cams(linear_map_top,
--							 num_cams, true, true);
-+							 num_cams, false, true);
- 	}
- #endif
- 
-@@ -766,7 +766,7 @@ void setup_initial_memory_limit(phys_addr_t first_memblock_base,
- 		num_cams = (mfspr(SPRN_TLB1CFG) & TLBnCFG_N_ENTRY) / 4;
- 
- 		linear_sz = map_mem_in_cams(first_memblock_size, num_cams,
--					    false, true);
-+					    true, true);
- 
- 		ppc64_rma_size = min_t(u64, linear_sz, 0x40000000);
- 	} else
--- 
-2.25.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
