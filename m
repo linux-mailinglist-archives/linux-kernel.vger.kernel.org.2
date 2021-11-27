@@ -2,130 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E162045FEEB
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 14:47:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4B545FEF8
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 14:53:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354879AbhK0Nud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 08:50:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55648 "EHLO
+        id S1355139AbhK0N4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 08:56:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237102AbhK0Nsc (ORCPT
+        with ESMTP id S231760AbhK0NyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 08:48:32 -0500
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056D1C06175A
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 05:45:18 -0800 (PST)
-Received: by mail-il1-x12c.google.com with SMTP id t8so11967041ilu.8
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 05:45:18 -0800 (PST)
+        Sat, 27 Nov 2021 08:54:16 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C060FC061748;
+        Sat, 27 Nov 2021 05:51:01 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id y13so50566351edd.13;
+        Sat, 27 Nov 2021 05:51:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=rKneMjBOvS+P00oj3sggoRg13Lqf4qE6aDU5pd1JxPk=;
-        b=0VPEn08TiGj43BmTMmfvPnDDbf6VNHidyhvKexhWE6VLHcZILjAsZgUoeIQO5ScA0e
-         fpA2j8zlyZrNKbKtLZ1dMutIVroByZEfQiAN/78PlyscCknaoAuIFtCmrTpI9CrBJxyE
-         eZ2O5rIYlSQvPFZI6bcQCFNTJbrtTG/mc9VjDj7GJ8C4O/+hneeDZ0k5cRz0r8x1odcW
-         xpbf7mEZNeq+50zsC07P6Nf98WJgjqWhFN0LcZCBF5w1sDxQykl9LyB3oShSltV5JTW0
-         Z/YXJZJiDxKL9gUtC0UAlv3TkKNq/rtqNAaslfr7MzjHNMW02UPSJ9Pq1ATY56vfftXs
-         EWUw==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DD4N1cD5bILJxzk1YIYFZZqmcn1tSIYeclnZHWTaomI=;
+        b=qbs8Gq3nqRL4YkYXXkrZa38SuXApzQALAeWz1nECuOXoGOgKWejpobt5QBYLMR4nwC
+         Eiz6SEK6d4ODgEIyv0H4Me7HRT/7jzqKB+rSmLI7COilr2M85PajS8FAvLlL+Wpj4mrJ
+         TQ8iCxHSeKyeqrCqJzduB8AzQFTYwhk5k2a/NMhESzUwMY8Vm6YlMOw8F2JUU2Ep5kPf
+         BCpaiqftAOOCwYIEWRYTx99AtQmDAYGUhykLVX8osqHKEvUex/BsaUuAYdsgv8W1LJ56
+         zXyE5dTD0smUA8sKKHqTVStnrv/bsOkgW8WSzeFJBJT7N0E2p9qONbUOuwGw88CPxeqY
+         1lVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rKneMjBOvS+P00oj3sggoRg13Lqf4qE6aDU5pd1JxPk=;
-        b=bShWPbzeBdQnFu9TH8Cassp+pkksphhx97Eyuy02hvOemDIOrdB7jWnFP44J8WNAUy
-         z6Cg5fEH8MUTAx9gfvG+BY1VHu1/jvoO4Gj5IRCLOPol8OViD1Q4uZ/ThjraxqAD/Wkb
-         iX3kE3WBSMrs390rc7sJIr3j+YdCrodVt+3JIUP3Wd7FIRhGPcN62I9pkmdvviZTWi4M
-         HMrxU3PJ3f8cLamd07a1hWCzMq5ZZlymd6fw+M0wYLCnuGXUBpk5WuQbVwt0mxFjKsMp
-         IpFkKdccGQVm7b9l+iIjJa8C6b4u552NBP7Jb+gZloNmEvpltqXc3ENcJkoIiKEcvjTP
-         ny0Q==
-X-Gm-Message-State: AOAM5333cS9lzrXFrb0ViWSGOLn7Fv+HOIUs4CnW12sk3qNJp42DKCYr
-        zI6tCt35M3sQJbXz+tXGs7ABtNqB1icCdOa6
-X-Google-Smtp-Source: ABdhPJy/91OEeAjvicfPuz9n4GTU3cpoj0Yi18cWWFstgFlwtwHuxwikK7seT1unVDLk08sNIjGYkw==
-X-Received: by 2002:a92:cda6:: with SMTP id g6mr20071115ild.83.1638020717105;
-        Sat, 27 Nov 2021 05:45:17 -0800 (PST)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id z6sm6319253ioq.35.2021.11.27.05.45.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 27 Nov 2021 05:45:16 -0800 (PST)
-Subject: Re: [PATCH -next] io_uring: Fix undefined-behaviour in io_issue_sqe
-To:     Ye Bin <yebin10@huawei.com>, asml.silence@gmail.com,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211118015907.844807-1-yebin10@huawei.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <d264f41a-2940-f1f8-1371-a24be6f2ad13@kernel.dk>
-Date:   Sat, 27 Nov 2021 06:45:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DD4N1cD5bILJxzk1YIYFZZqmcn1tSIYeclnZHWTaomI=;
+        b=qbUNg709cuUGh2WlyyWJYGYHUip4K6n42qrXR3Qq11NLpruWkM7pKH30e8RPZegSpH
+         sgJ8RjlAOnB4Lk9D7vYYKwyM2yLdgdbfLyvU3MYMaoAxX/SKoEINU2ywSSUXQ5luxot5
+         1w9DqGygU6ZlEOjeFqK0u66RpkR4+FZjYt4qtxZBxPrT+56KvofrVsMi1pMWxrKYulaR
+         m7RlT1YR2g+Qs7HjxPnkhQhjpFzH+5eBU3LkxEESfouVnH/baJB2jq3Q1su5u+G9t1WX
+         7gIdcgcRmhf7ddKBZlCWUh/cjRoCcVxelJPfze0OrYHgGZPWKy3U9b39/KAzny6ffVK1
+         f4yw==
+X-Gm-Message-State: AOAM531Kdt0q9XhKa11pm6uiyn9kB7ibzIzvChVWKUxPlSqxWFB+MBu4
+        nvtmXkrE7yIMweGRQFP88cbOLb5k/dvJ9uPqs95+QQYj6yg=
+X-Google-Smtp-Source: ABdhPJxKzC8Y06kzai6zEswi7ipAU16T+dlbOetKW864WdeLNFke4IpSVzxTuxUoDNGd3SrmEpebpKi5fB8VuKWw8cQ=
+X-Received: by 2002:aa7:d288:: with SMTP id w8mr16443473edq.404.1638021060072;
+ Sat, 27 Nov 2021 05:51:00 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211118015907.844807-1-yebin10@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211106155427.753197-1-aford173@gmail.com> <YZrHWkbYkrILP9oo@pendragon.ideasonboard.com>
+ <CAHCN7xLwYcS55N7SNT4k3NqF=Lgdjfe92nJHSVMKkhCuSAPaYw@mail.gmail.com>
+ <CAMty3ZDCCRXLvHaoW=8gqq+3B0j4uQvAk72YjXKr=cxuf7GAkg@mail.gmail.com>
+ <CAHCN7xLrg-7CALY9Gre3OLfwAUed3veF1oZpvLvyE+aw7is_TQ@mail.gmail.com> <YaArb/4QH3IyPFYe@pendragon.ideasonboard.com>
+In-Reply-To: <YaArb/4QH3IyPFYe@pendragon.ideasonboard.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Sat, 27 Nov 2021 07:50:48 -0600
+Message-ID: <CAHCN7xLFYykeSzF_1Lrcx=fG2T3Ac2b6kTf6yi8jYYSukk9NjQ@mail.gmail.com>
+Subject: Re: [PATCH V2 1/5] soc: imx: imx8m-blk-ctrl: Fix imx8mm mipi reset
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Jagan Teki <jagan@amarulasolutions.com>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Schrempf Frieder <frieder.schrempf@kontron.de>,
+        linux-media <linux-media@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        cstevens@beaconembedded.com, Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peng Fan <peng.fan@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/21 6:59 PM, Ye Bin wrote:
-> We got issue as follows:
-> ================================================================================
-> UBSAN: Undefined behaviour in ./include/linux/ktime.h:42:14
-> signed integer overflow:
-> -4966321760114568020 * 1000000000 cannot be represented in type 'long long int'
-> CPU: 1 PID: 2186 Comm: syz-executor.2 Not tainted 4.19.90+ #12
-> Hardware name: linux,dummy-virt (DT)
-> Call trace:
->  dump_backtrace+0x0/0x3f0 arch/arm64/kernel/time.c:78
->  show_stack+0x28/0x38 arch/arm64/kernel/traps.c:158
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x170/0x1dc lib/dump_stack.c:118
->  ubsan_epilogue+0x18/0xb4 lib/ubsan.c:161
->  handle_overflow+0x188/0x1dc lib/ubsan.c:192
->  __ubsan_handle_mul_overflow+0x34/0x44 lib/ubsan.c:213
->  ktime_set include/linux/ktime.h:42 [inline]
->  timespec64_to_ktime include/linux/ktime.h:78 [inline]
->  io_timeout fs/io_uring.c:5153 [inline]
->  io_issue_sqe+0x42c8/0x4550 fs/io_uring.c:5599
->  __io_queue_sqe+0x1b0/0xbc0 fs/io_uring.c:5988
->  io_queue_sqe+0x1ac/0x248 fs/io_uring.c:6067
->  io_submit_sqe fs/io_uring.c:6137 [inline]
->  io_submit_sqes+0xed8/0x1c88 fs/io_uring.c:6331
->  __do_sys_io_uring_enter fs/io_uring.c:8170 [inline]
->  __se_sys_io_uring_enter fs/io_uring.c:8129 [inline]
->  __arm64_sys_io_uring_enter+0x490/0x980 fs/io_uring.c:8129
->  invoke_syscall arch/arm64/kernel/syscall.c:53 [inline]
->  el0_svc_common+0x374/0x570 arch/arm64/kernel/syscall.c:121
->  el0_svc_handler+0x190/0x260 arch/arm64/kernel/syscall.c:190
->  el0_svc+0x10/0x218 arch/arm64/kernel/entry.S:1017
-> ================================================================================
-> 
-> As ktime_set only judge 'secs' if big than KTIME_SEC_MAX, but if we pass
-> negative value maybe lead to overflow.
-> To address this issue, we must check if 'sec' is negative.
-> 
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
-> ---
->  fs/io_uring.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/fs/io_uring.c b/fs/io_uring.c
-> index f9e720595860..d8a6446a7921 100644
-> --- a/fs/io_uring.c
-> +++ b/fs/io_uring.c
-> @@ -6157,6 +6157,9 @@ static int io_timeout_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe,
->  	if (get_timespec64(&data->ts, u64_to_user_ptr(sqe->addr)))
->  		return -EFAULT;
->  
-> +	if (data->ts.tv_sec < 0 || data->ts.tv_nsec < 0)
-> +		return -EINVAL;
-> +
->  	data->mode = io_translate_timeout_mode(flags);
->  	hrtimer_init(&data->timer, io_timeout_get_clock(data), data->mode);
+On Thu, Nov 25, 2021 at 6:34 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Adam,
+>
+> On Thu, Nov 25, 2021 at 09:18:24AM -0600, Adam Ford wrote:
+> > On Wed, Nov 24, 2021 at 11:42 PM Jagan Teki wrote:
+> > > On Tue, Nov 23, 2021 at 7:29 PM Adam Ford wrote:
+> > > > On Sun, Nov 21, 2021 at 4:25 PM Laurent Pinchart wrote:
+> > > > > On Sat, Nov 06, 2021 at 10:54:23AM -0500, Adam Ford wrote:
+> > > > > > Most of the blk-ctrl reset bits are found in one register, however
+> > > > > > there are two bits in offset 8 for pulling the MIPI DPHY out of reset
+> > > > > > and these need to be set when IMX8MM_DISPBLK_PD_MIPI_CSI is brought
+> > > > > > out of reset or the MIPI_CSI hangs.
+> > > > > >
+> > > > > > Fixes: 926e57c065df ("soc: imx: imx8m-blk-ctrl: add DISP blk-ctrl")
+> > > > > > Signed-off-by: Adam Ford <aford173@gmail.com>
+> > > > > > ---
+> > > > > >
+> > > > > > V2:  Make a note that the extra register is only for Mini/Nano DISPLAY_BLK_CTRL
+> > > > > >      Rename the new register to mipi_phy_rst_mask
+> > > > > >      Encapsulate the edits to this register with an if-statement
+> > > > > >
+> > > > > >  drivers/soc/imx/imx8m-blk-ctrl.c | 18 ++++++++++++++++++
+> > > > > >  1 file changed, 18 insertions(+)
+> > > > > >
+> > > > > > diff --git a/drivers/soc/imx/imx8m-blk-ctrl.c b/drivers/soc/imx/imx8m-blk-ctrl.c
+> > > > > > index 519b3651d1d9..581eb4bc7f7d 100644
+> > > > > > --- a/drivers/soc/imx/imx8m-blk-ctrl.c
+> > > > > > +++ b/drivers/soc/imx/imx8m-blk-ctrl.c
+> > > > > > @@ -17,6 +17,7 @@
+> > > > > >
+> > > > > >  #define BLK_SFT_RSTN 0x0
+> > > > > >  #define BLK_CLK_EN   0x4
+> > > > > > +#define BLK_MIPI_RESET_DIV   0x8 /* Mini/Nano DISPLAY_BLK_CTRL only */
+> > > > > >
+> > > > > >  struct imx8m_blk_ctrl_domain;
+> > > > > >
+> > > > > > @@ -36,6 +37,15 @@ struct imx8m_blk_ctrl_domain_data {
+> > > > > >       const char *gpc_name;
+> > > > > >       u32 rst_mask;
+> > > > > >       u32 clk_mask;
+> > > > > > +
+> > > > > > +     /*
+> > > > > > +      * i.MX8M Mini and Nano have a third DISPLAY_BLK_CTRL register
+> > > > > > +      * which is used to control the reset for the MIPI Phy.
+> > > > > > +      * Since it's only present in certain circumstances,
+> > > > > > +      * an if-statement should be used before setting and clearing this
+> > > > > > +      * register.
+> > > > > > +      */
+> > > > > > +     u32 mipi_phy_rst_mask;
+> > > > > >  };
+> > > > > >
+> > > > > >  #define DOMAIN_MAX_CLKS 3
+> > > > > > @@ -78,6 +88,8 @@ static int imx8m_blk_ctrl_power_on(struct generic_pm_domain *genpd)
+> > > > > >
+> > > > > >       /* put devices into reset */
+> > > > > >       regmap_clear_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
+> > > > > > +     if (data->mipi_phy_rst_mask)
+> > > > > > +             regmap_clear_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
+> > > > > >
+> > > > > >       /* enable upstream and blk-ctrl clocks to allow reset to propagate */
+> > > > > >       ret = clk_bulk_prepare_enable(data->num_clks, domain->clks);
+> > > > > > @@ -99,6 +111,8 @@ static int imx8m_blk_ctrl_power_on(struct generic_pm_domain *genpd)
+> > > > > >
+> > > > > >       /* release reset */
+> > > > > >       regmap_set_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
+> > > > > > +     if (data->mipi_phy_rst_mask)
+> > > > > > +             regmap_set_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
+> > > > > >
+> > > > > >       /* disable upstream clocks */
+> > > > > >       clk_bulk_disable_unprepare(data->num_clks, domain->clks);
+> > > > > > @@ -120,6 +134,9 @@ static int imx8m_blk_ctrl_power_off(struct generic_pm_domain *genpd)
+> > > > > >       struct imx8m_blk_ctrl *bc = domain->bc;
+> > > > > >
+> > > > > >       /* put devices into reset and disable clocks */
+> > > > > > +     if (data->mipi_phy_rst_mask)
+> > > > > > +             regmap_clear_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
+> > > > > > +
+> > > > >
+> > > > > Is it the best option to enable/disable both the master and slave MIPI
+> > > > > DPHY, regardless of whether they're used or not ? Or would it be better
+> > > > > to implement a reset controller to expose the two resets independently,
+> > > > > and acquire them from the corresponding display and camera drivers ?
+> > > >
+> > > > In some early attempts to implement the blk-ctrl driver, there was an
+> > > > attempt to enable a reset controller, but it caused some hanging and
+> > > > issues with suspend-resume due to chicken-egg issues where some items
+> > > > were coming up in the wrong order.  I think the decision was made to
+> > > > make the resets part of the power domain so it's very clear that the
+> > > > order of operations.  Lucas might be able to elaborate more on this.
+> > >
+> > > I think supporting via phy driver make sense to me since this resent
+> > > is DPHY specific and nothing related to blk-ctrl.
+> >
+> > I would disagree that isn't not blk-ctrl.  The blk-ctrl controls the
+> > reset lines for the CSI and enables clocks.  The additional register
+> > does the same thing to the MIPI CSI and DSI.  The imx7-mipi-csis
+> > driver configures the dphy already, but this reset bit is not part of
+> > its IP block.  It seems weird to me that a phy driver would reference
+> > a phy driver.
+> >
+> > > > If bits 16 and 17 can act independently and bit 16 only impacts the
+> > > > CSI  and doesn't require bit 17, it seems reasonable to me to have the
+> > > > power-domain part of  the CSI, since this would only be enabled when
+> > > > the CSI is active.  The power domain is idled when the CSI is idled
+> > > > which would effectively place the phy in and out of reset only
+> > > > depending on the state of the CSI.  I am guessing this reset bit
+> > > > should be assigned to DISPBLK_PD_MIPI_CSI and not
+> > > > DISPBLK_PD_CSI_BRIDGE, but I can run some more tests.
+> > > >
+> > > > AFAIK, there is no phy driver for the CSI like there is the DSI, so
+> > > > adding that would require additional work to the CSI driver to work
+> > > > around this quirk.  We don't have an acceptable DSI driver yet, so I'd
+> > > > like to push a V3 with just the corresponding bit enabled for MIPI_CSI
+> > > > after some testing.  FWICT, NXP set both bits 16 and 17 in their ATF
+> > > > gpc code, and it never gets cleared, so I think having the bit set and
+> > > > cleared on demand is an improvement.
+> > >
+> > > How about using the previous one that Marek sent. Add it via CSI
+> > > pipeline and i think it would directly.
+> >
+> > That driver specifically addresses the DSI phy and bringing it out of
+> > reset is just one small part of what that driver does.  I don't think
+> > adding CSI functionality to it would be appropriate for that driver as
+> > they are separate IP blocks.
+> >
+> > If people don't want the blk-ctl to control this bit, I would advocate
+> > we should do a separate reset controller to be referenced byt the
+> > mipi-csis driver, but that was proposed before and declined.  Since
+> > blt-ctrl already is pulling seemingly unrelated IP blocks by
+> > controlling their clocks and resets.  The fact that NXP included it in
+> > their ATF power-domain controller tells me they considered it related
+> > to power domains and/or resets and not an explicit phy driver.
+>
+> I think it's a bit more complicated than that, unfortunately. The
+> BLK_CTRL is a mix of miscellaneous configuration bits thrown together.
+> It contains enable/disable bits for clocks and resets, but also D-PHY
+> configuration parameters (GPR_MIPI_[MS]_DPDN_SWAP_{CLK,DAT} in
+> GPR_MIPI_RESET_DIV, and all the fields of the GPR_MIPI_M_PLL* and
+> GPR_MIPI_[BMS]_DPHYCTL* registers). The latter should be controlled by
+> PHY drivers, but we may be able to control get away with hardcoded
+> values (possibly even hardware reset default values).
 
-This seems to only fix one instance of when a timespec is copied in, what
-about the ones in io_timeout_remove_prep()?
+From my testing, the default values  in this register block appeared
+sufficient to run
+the OV5640 camera I have.
+>
+> For the resets and clocks, reset and clock controllers could have been
+> nice. I'm not sure if controlling them through a power domain could
 
--- 
-Jens Axboe
+That was attempted by Lucas and others, but there were a bunch of
+issues with hanging due to order of operations and the interactions
+between the bus clock from the blk-ctrl and the GPC power domains.
 
+> count as a bit of an abuse, as the power domain doesn't control power
+> rails, but looking at the imx8m-blk-ctrl driver the on/off sequences
+> required by the clocks and resets would be difficult to handle if clocks
+> and resets were exposed separately. I'd say that in the worst case it's
+> probably an acceptable hack.
+
+So if I post a revision with only bit-16 and leaving bit 17 for the
+DSI Phy driver, do you have any objections? (see my comment below)
+>
+> For the D-PHY resets, exposing them through a reset controller would
+> also be (in my opinion) the most pedantic approach, bus as we have power
+> domains for the CSI and DSI controllers, controlling the corresponding
+> D-PHY resets from there is in no case worse that what we have already.
+>
+> The only part that bothers me is the control of the master D-PHY, used
+> for MIPI DSI, from the MIPI CSI power domain. I've received feedback
+> from NXP today that those two GPR reset signals are connected directly
+> to the corresponding D-PHY, without any special combinatorial logic
+> in-between. I think it would be worth a try to control bit 16 from the
+> MIPI CSI power domain and bit 17 from the MIPI DSI power domain,
+> especially given that bit 17 didn't make any difference in my camera
+> tests on the i.MX8MM (I couldn't test display as my board doesn't use
+> the DSI output). If we then run into any issue, we can try to figure it
+> out.
+
+I went back to test this as well.  With only bit 16 being used, it
+appeared to work too, so it seems like it's likely safe to leave bit
+17 alone for this.
+
+adam
+
+>
+> > > https://www.spinics.net/lists/devicetree/msg381691.html
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
