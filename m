@@ -2,66 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25375460108
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 20:00:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B463746010B
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 20:00:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356106AbhK0TDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 14:03:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355982AbhK0TBc (ORCPT
+        id S1356166AbhK0TDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 14:03:40 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:35816 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351614AbhK0TBe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 14:01:32 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C042FC06173E
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 10:58:17 -0800 (PST)
+        Sat, 27 Nov 2021 14:01:34 -0500
 Received: from mail.kernel.org (unknown [198.145.29.99])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5A75060F0D
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 18:58:17 +0000 (UTC)
-Received: by mail.kernel.org (Postfix) with ESMTPS id B32D160174;
-        Sat, 27 Nov 2021 18:58:16 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 539AD60F0D;
+        Sat, 27 Nov 2021 18:58:19 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id CEE4260041;
+        Sat, 27 Nov 2021 18:58:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638039496;
-        bh=8nQ53Up+ro1K0NzJ9qoy6TvyU4mDwcYEHjLnlaxulNo=;
+        s=k20201202; t=1638039498;
+        bh=L83gqZQZFYTR1oXyDsn+vA4NX49tplA0Uv8/YfSJCXU=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=mmZTvR2SBtukDiPVwOMMh/uvzFFRzXORAhRm2tlL+U6xglULRdWQi8th+RMaKin7P
-         EX9A6utcWA1dmMlXwndVZrdKGDSl5tR8Q5lS21XjM60F4NgwXbrfbDCTVbf14wXJ+4
-         HRjCcqrqrSJgOElrsRoQW4uC90htb8B73U8YYQviw35fsUe6f2H8fo2Qz4BaQGND/3
-         be+mEw7IXfhPjzZXL6C2A0Bm5UrArp0YNUHQLY8Jqj+9D89SscNUQojpDRDqTjv/EF
-         6LNLHkX811fh2zRRuh67L0h4bO+oH4+mbPM+6d9mks2tiRDFsw83bXynCaOG7NXnxQ
-         Rkn16I9+wehhw==
+        b=EsST3EJFWW3HupPZWoeKj3xMBITciDb0EM8D7isvEJw7fgYN0v5+6zIWaPSqcOCIW
+         hqrSUlSfe3EvHwK4Z8Q3W8YFpJ9kWTaFVG7oq5zuHxEDZvLQXfynUXGN9lM/PDo4MX
+         sesAOgqphOEMQ9EJL5pJLeILvluCY7949DFLPDJ3YC8DAAVUx5L9Sbx+vu97MAiZVb
+         m0Voe9CkI+kKJ2OguLDmgjrQLsPEdFZTbQPiUVysmDPg9bsrGj3iY1ZjhQcDnqup0/
+         FEhx3qcVygtQUZ7wD5vnWRiNHmvWa0AbtPgVJ2V1UBlwso0HdvatWEqzC81oz00Cr9
+         wrFL0cPW2D+/w==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AD91C60074;
-        Sat, 27 Nov 2021 18:58:16 +0000 (UTC)
-Subject: Re: [GIT PULL] erofs fixes for 5.16-rc3
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C8DB360074;
+        Sat, 27 Nov 2021 18:58:18 +0000 (UTC)
+Subject: Re: [GIT PULL] MIPS fixes for v5.16
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211127045306.GA17766@hsiangkao-HP-ZHAN-66-Pro-G1>
-References: <20211127045306.GA17766@hsiangkao-HP-ZHAN-66-Pro-G1>
-X-PR-Tracked-List-Id: Development of Linux EROFS file system <linux-erofs.lists.ozlabs.org>
-X-PR-Tracked-Message-Id: <20211127045306.GA17766@hsiangkao-HP-ZHAN-66-Pro-G1>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-5.16-rc3-fixes
-X-PR-Tracked-Commit-Id: 57bbeacdbee72a54eb97d56b876cf9c94059fc34
+In-Reply-To: <20211127094317.GA6302@alpha.franken.de>
+References: <20211127094317.GA6302@alpha.franken.de>
+X-PR-Tracked-List-Id: <linux-mips.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211127094317.GA6302@alpha.franken.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips-fixes_5.16_2
+X-PR-Tracked-Commit-Id: 41ce097f714401e6ad8f3f5eb30d7f91b0b5e495
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 52dc4c640ac5521cc95b3b87f9d2d276c12c07bb
-Message-Id: <163803949670.17852.12698146502651849127.pr-tracker-bot@kernel.org>
-Date:   Sat, 27 Nov 2021 18:58:16 +0000
-To:     Gao Xiang <xiang@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Miao Xie <miaoxie@huawei.com>, linux-erofs@lists.ozlabs.org,
-        LKML <linux-kernel@vger.kernel.org>
+X-PR-Merge-Commit-Id: 6be088036c0b95044e42a8cef977b90824732eb7
+Message-Id: <163803949881.17852.7067581330993729228.pr-tracker-bot@kernel.org>
+Date:   Sat, 27 Nov 2021 18:58:18 +0000
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     torvalds@linux-foundation.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 27 Nov 2021 12:53:09 +0800:
+The pull request you sent on Sat, 27 Nov 2021 10:43:17 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-5.16-rc3-fixes
+> git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips-fixes_5.16_2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/52dc4c640ac5521cc95b3b87f9d2d276c12c07bb
+https://git.kernel.org/torvalds/c/6be088036c0b95044e42a8cef977b90824732eb7
 
 Thank you!
 
