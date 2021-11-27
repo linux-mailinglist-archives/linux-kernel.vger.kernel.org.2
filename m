@@ -2,106 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A40B45FEFD
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 15:01:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2395E45FF00
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 15:04:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351430AbhK0OFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 09:05:10 -0500
-Received: from mga04.intel.com ([192.55.52.120]:17069 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231760AbhK0ODJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 09:03:09 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="234492803"
-X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
-   d="scan'208";a="234492803"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 05:57:55 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
-   d="scan'208";a="476149456"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 27 Nov 2021 05:57:53 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqyDA-0009bV-Ik; Sat, 27 Nov 2021 13:57:52 +0000
-Date:   Sat, 27 Nov 2021 21:57:48 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: drivers/net/ethernet/chelsio/cxgb4/sge.c:814:28: warning: unused
- function 'calc_tx_descs'
-Message-ID: <202111272116.77QvtsrM-lkp@intel.com>
+        id S1355075AbhK0OHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 09:07:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355196AbhK0OFo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 09:05:44 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2210FC06175C
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 06:02:30 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id 207so24414226ljf.10
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 06:02:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ragnatech-se.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=6Jp+Jmv9nQ4RwfE9Lv1G0z4T1+sN4K5Hm7FU2O6G3Po=;
+        b=xLQAvi6VXf7U8l/yJVeP9gcvtkRIkIrjt64YcaNqsZaWkPQJhDq5Tqs7qufpRGEXwT
+         UeYhciNhFatnRhRVAsGgtSCCR/zwi9OQkRqaytIqViWhcaPCZZIsx3JdJf1p14HhRGmI
+         sINB1KdVGY1YSYStn5yRvJlEA9Tr33TU3K3/vHdsljmbu4ALNxeKRJ770XcPuOonS+2O
+         bXyFj51bwXK8i4iOojBQutk8mG1TQUrKNPMFQEE5jbqVOTD0H2FYX0hJWMvEStV47a/M
+         2n5pjMbkvpBrd1uoNrrN5dFe+servml7aDZvDxoPT6C1EBPaPncchphhYs1BgIZyF1mP
+         vTAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=6Jp+Jmv9nQ4RwfE9Lv1G0z4T1+sN4K5Hm7FU2O6G3Po=;
+        b=5sdlQjfBdgnprDIET1seSf+IcsfgneNzG7tMGHZBCxefCKCuid5N0F7V96RjJrkLYS
+         XpDQ6dzRLxFcSSfKm7A2DF6oEHzxXh7bASQZWQMI3FzcObIx+DDAly9IJOwJ0qqxTvkF
+         kKl0Q5v93PloDJCKLycsB00Ja6OX8ig4EKvJ9Ep41nmoCm4Ad7aMqmwOTLogpTPy2qks
+         H0aLJAYoDd+c7krx3eoewZ9GJbaOEvAVRtRc3z+y3wszS8fKTJpG6GAuj5twU5Bo8HDV
+         Cw820g88m398zdybJOiJHhQPuF79FrDXTGdXjy5t9WBtDpafggNPsK14fN6mxN8bD0AG
+         tWsA==
+X-Gm-Message-State: AOAM530/aiWmYxJ24iMYblJo02kP9vdi5XZLS5MZXS7oxjb5DpO89/cK
+        4Pa3LdjyVqBUACkd2nGx6PLksA==
+X-Google-Smtp-Source: ABdhPJyz24J5I1/otOJx9sQYPb9FUXaXuNX7Nh3JjWdXmTizPpwpJ5pmEAEZW14aF8rvZNyADHq7hg==
+X-Received: by 2002:a2e:8e8f:: with SMTP id z15mr36136932ljk.508.1638021747974;
+        Sat, 27 Nov 2021 06:02:27 -0800 (PST)
+Received: from localhost (h-46-59-88-219.A463.priv.bahnhof.se. [46.59.88.219])
+        by smtp.gmail.com with ESMTPSA id t4sm849568lfe.220.2021.11.27.06.02.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Nov 2021 06:02:27 -0800 (PST)
+Date:   Sat, 27 Nov 2021 15:02:26 +0100
+From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund@ragnatech.se>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: staging: max96712: Constify static v4l2_subdev_ops
+Message-ID: <YaI6csuWQFTU7moc@oden.dyn.berto.se>
+References: <20211127094945.27985-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211127094945.27985-1-rikard.falkeborn@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   c5c17547b778975b3d83a73c8d84e8fb5ecf3ba5
-commit: 198688edbf77c6fc0e65f5d062f810d83d090166 MIPS: Fix inline asm input/output type mismatch in checksum.h used with Clang
-date:   10 months ago
-config: mips-buildonly-randconfig-r003-20211127 (https://download.01.org/0day-ci/archive/20211127/202111272116.77QvtsrM-lkp@intel.com/config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 5162b558d8c0b542e752b037e72a69d5fd51eb1e)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install mips cross compiling tool for clang build
-        # apt-get install binutils-mips-linux-gnu
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=198688edbf77c6fc0e65f5d062f810d83d090166
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout 198688edbf77c6fc0e65f5d062f810d83d090166
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=mips SHELL=/bin/bash drivers/net/ethernet/chelsio/cxgb4/
+Hej Rikard,
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Tack för din patch, ser bra ut.
 
-All warnings (new ones prefixed by >>):
+On 2021-11-27 10:49:44 +0100, Rikard Falkeborn wrote:
+> The only usage of max96712_subdev_ops is to pass its address to
+> v4l2_i2c_subdev_init() which takes a pointer to const struct
+> v4l2_subdev_ops as argument. Make it const to allow the compiler to put
+> it in read-only memory.
+> 
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 
->> drivers/net/ethernet/chelsio/cxgb4/sge.c:814:28: warning: unused function 'calc_tx_descs'
-   static inline unsigned int calc_tx_descs(const struct sk_buff
-   ^
-   fatal error: error in backend: Nested variants found in inline asm string: '.if ( 0x04 ) != -1)) 0x04 ) != -1)) : ($( static struct ftrace_branch_data __attribute__((__aligned__(4))) __attribute__((__section__("_ftrace_branch"))) __if_trace = $( .func = __func__, .file = "arch/mips/include/asm/barrier.h", .line = 27, $); 0x04 ) != -1)) : $))) ) && ( (1 << 0) ); .set push; .set mips64r2; .rept (1 - (0x04 == 0x04)); sync 0x04; .endr; .set pop; .else; ; .endif'
-   clang-14: error: clang frontend command failed with exit code 70 (use -v to see invocation)
-   clang version 14.0.0 (git://gitmirror/llvm_project 5162b558d8c0b542e752b037e72a69d5fd51eb1e)
-   Target: mips64-unknown-linux
-   Thread model: posix
-   InstalledDir: /opt/cross/clang-5162b558d8/bin
-   clang-14: note: diagnostic msg:
-   Makefile arch drivers include kernel nr_bisected scripts source usr
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
 
+> ---
+>  drivers/staging/media/max96712/max96712.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/media/max96712/max96712.c b/drivers/staging/media/max96712/max96712.c
+> index 847e2ffd4f53..9bc72d9a858b 100644
+> --- a/drivers/staging/media/max96712/max96712.c
+> +++ b/drivers/staging/media/max96712/max96712.c
+> @@ -250,7 +250,7 @@ static const struct v4l2_subdev_pad_ops max96712_pad_ops = {
+>  	.set_fmt = max96712_get_pad_format,
+>  };
+>  
+> -static struct v4l2_subdev_ops max96712_subdev_ops = {
+> +static const struct v4l2_subdev_ops max96712_subdev_ops = {
+>  	.video = &max96712_video_ops,
+>  	.pad = &max96712_pad_ops,
+>  };
+> -- 
+> 2.34.1
+> 
 
-vim +/calc_tx_descs +814 drivers/net/ethernet/chelsio/cxgb4/sge.c
-
-fd3a47900b6f9fa drivers/net/cxgb4/sge.c                  Dimitris Michailidis 2010-04-01  805  
-fd3a47900b6f9fa drivers/net/cxgb4/sge.c                  Dimitris Michailidis 2010-04-01  806  /**
-fd3a47900b6f9fa drivers/net/cxgb4/sge.c                  Dimitris Michailidis 2010-04-01  807   *	calc_tx_descs - calculate the number of Tx descriptors for a packet
-fd3a47900b6f9fa drivers/net/cxgb4/sge.c                  Dimitris Michailidis 2010-04-01  808   *	@skb: the packet
-29bbf5d7f5efe84 drivers/net/ethernet/chelsio/cxgb4/sge.c Rahul Lakkireddy     2020-06-24  809   *	@chip_ver: chip version
-fd3a47900b6f9fa drivers/net/cxgb4/sge.c                  Dimitris Michailidis 2010-04-01  810   *
-fd3a47900b6f9fa drivers/net/cxgb4/sge.c                  Dimitris Michailidis 2010-04-01  811   *	Returns the number of Tx descriptors needed for the given Ethernet
-fd3a47900b6f9fa drivers/net/cxgb4/sge.c                  Dimitris Michailidis 2010-04-01  812   *	packet, including the needed WR and CPL headers.
-fd3a47900b6f9fa drivers/net/cxgb4/sge.c                  Dimitris Michailidis 2010-04-01  813   */
-d0a1299c6bf7d80 drivers/net/ethernet/chelsio/cxgb4/sge.c Ganesh Goudar        2018-01-10 @814  static inline unsigned int calc_tx_descs(const struct sk_buff *skb,
-d0a1299c6bf7d80 drivers/net/ethernet/chelsio/cxgb4/sge.c Ganesh Goudar        2018-01-10  815  					 unsigned int chip_ver)
-fd3a47900b6f9fa drivers/net/cxgb4/sge.c                  Dimitris Michailidis 2010-04-01  816  {
-d0a1299c6bf7d80 drivers/net/ethernet/chelsio/cxgb4/sge.c Ganesh Goudar        2018-01-10  817  	return flits_to_desc(calc_tx_flits(skb, chip_ver));
-fd3a47900b6f9fa drivers/net/cxgb4/sge.c                  Dimitris Michailidis 2010-04-01  818  }
-fd3a47900b6f9fa drivers/net/cxgb4/sge.c                  Dimitris Michailidis 2010-04-01  819  
-
-:::::: The code at line 814 was first introduced by commit
-:::::: d0a1299c6bf7d80c8bb8e181f36a7c407a4cabca cxgb4: add support for vxlan segmentation offload
-
-:::::: TO: Ganesh Goudar <ganeshgr@chelsio.com>
-:::::: CC: David S. Miller <davem@davemloft.net>
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+Kind Regards,
+Niklas Söderlund
