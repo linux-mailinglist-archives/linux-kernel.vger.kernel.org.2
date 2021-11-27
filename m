@@ -2,194 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A19645FEC0
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 14:11:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6C745FECC
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 14:18:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354848AbhK0NPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 08:15:05 -0500
-Received: from ixit.cz ([94.230.151.217]:58576 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239495AbhK0NM7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 08:12:59 -0500
-Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 7473C20064;
-        Sat, 27 Nov 2021 14:09:43 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1638018583;
+        id S1354889AbhK0NVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 08:21:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:52305 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1354763AbhK0NTt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 08:19:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1638018994;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=US+PlJt5YuBn+f6zl65VjL2KEdtWIGuDQwqGvr+BSqk=;
-        b=C03XU15udkdTbf1mtk64f8XDQ9LsyfeKw1plCkHHQ3csM0DfNyI4tBXpzGdkh1xA5A4Joo
-        vhr5p8mNhn6aEahgsS+D3vRRomijXRFjCeDT+ii9JOHexTWbpTZyvzymx/jTVTk1IH2y2R
-        lnqVmCsshHXfKUlcpY/9iVKpGJYSzd4=
-From:   David Heidelberg <david@ixit.cz>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>
-Cc:     ~okias/devicetree@lists.sr.ht, David Heidelberg <david@ixit.cz>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: input: pwm-vibrator: Convert txt bindings to yaml
-Date:   Sat, 27 Nov 2021 14:09:40 +0100
-Message-Id: <20211127130941.38684-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=v0plHLVJ7YGhDTdr46oZg0IbiyPN69in2dl5FlOrseU=;
+        b=BbQqYOnjuVyYoU0OZJz0S8HyetePrh1X0uqvdvRJFPlB0EiMhv3OCDzDV9SW3usi702D43
+        OdCWUNJHo+64vpqnYp3DBKEH54wNtP9aNQoU/iing01MaQh605llXkkQAayMlT17VqKPNp
+        lM9dvBdYJvvRQXel8U40WXGJAMdtCJQ=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-303-f7e7JunvMVGzHaxJNwLyvw-1; Sat, 27 Nov 2021 08:16:33 -0500
+X-MC-Unique: f7e7JunvMVGzHaxJNwLyvw-1
+Received: by mail-ed1-f71.google.com with SMTP id v22-20020a50a456000000b003e7cbfe3dfeso9974883edb.11
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 05:16:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=v0plHLVJ7YGhDTdr46oZg0IbiyPN69in2dl5FlOrseU=;
+        b=daCutSvLuv8bHyoK+DrM6meVSUwNLOMXvfvX01cioG8M6BdXjBXfkT3QM2libQUuFr
+         B6XyalNTk+1qj0jgatxk+83muFhPU7D99HeF2SkODUiq+Vsxy/4vmp5wnPLaPIZqiBK/
+         u2PAW8DPDneBiz822Ljfe8wJr/3Bv0kq+TJnQD4TfJUehT7w1O5TBB82P2b3KjfK09ug
+         qW92b/+R4GagbSML7fQ0TBCm2Ghv93of/Cs5lmrUiOaRmSmMOzmiudvRKgxbZjQEaNtB
+         PoZFkrdB4qI+nLOoMz9toxFmGLt/SVbpZvoaTSAryE+oo6alPRB6N+8D1O+de6s5heF/
+         Ny5A==
+X-Gm-Message-State: AOAM532s7fBzcpDQIPxaFe+5EF6dr/qb3N6gnq+NKaA2yCvSrMomJQkN
+        3HBUrbm4lV2tAcjHkp1Zi4SuUE5bgI+0N8YjN19KJSCUtKn86eQeoDxQ9WkFym82/2+9Co4kH2a
+        z75w0CGY0t1pUNG0XlpmRl99K
+X-Received: by 2002:a05:6402:7d8:: with SMTP id u24mr56590379edy.215.1638018991836;
+        Sat, 27 Nov 2021 05:16:31 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw6vEbb+Kp1fF0UmX5GI6yeuYFqQIsquieDGtN50C1q4QYp2pxFO361DnTZ1l1WoWXZzKUvSg==
+X-Received: by 2002:a05:6402:7d8:: with SMTP id u24mr56590351edy.215.1638018991687;
+        Sat, 27 Nov 2021 05:16:31 -0800 (PST)
+Received: from gator.home (cst2-173-70.cust.vodafone.cz. [31.30.173.70])
+        by smtp.gmail.com with ESMTPSA id qa7sm4536940ejc.64.2021.11.27.05.16.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Nov 2021 05:16:31 -0800 (PST)
+Date:   Sat, 27 Nov 2021 14:16:28 +0100
+From:   Andrew Jones <drjones@redhat.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [RFC PATCH v2 01/11] KVM: arm64: Factor out firmware register
+ handling from psci.c
+Message-ID: <20211127131628.iihianybqbeyjdbg@gator.home>
+References: <20211113012234.1443009-1-rananta@google.com>
+ <20211113012234.1443009-2-rananta@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211113012234.1443009-2-rananta@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Converts txt binding to new YAML format and simplify example.
+On Sat, Nov 13, 2021 at 01:22:24AM +0000, Raghavendra Rao Ananta wrote:
+> Common hypercall firmware register handing is currently employed
+> by psci.c. Since the upcoming patches add more of these registers,
+> it's better to move the generic handling to hypercall.c for a
+> cleaner presentation.
+> 
+> While we are at it, collect all the firmware registers under
+> fw_reg_ids[] to help implement kvm_arm_get_fw_num_regs() and
+> kvm_arm_copy_fw_reg_indices() in a generic way.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> ---
+>  arch/arm64/kvm/guest.c       |   2 +-
+>  arch/arm64/kvm/hypercalls.c  | 170 +++++++++++++++++++++++++++++++++++
+>  arch/arm64/kvm/psci.c        | 166 ----------------------------------
+>  include/kvm/arm_hypercalls.h |   7 ++
+>  include/kvm/arm_psci.h       |   7 --
+>  5 files changed, 178 insertions(+), 174 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
+> index 5ce26bedf23c..625f97f7b304 100644
+> --- a/arch/arm64/kvm/guest.c
+> +++ b/arch/arm64/kvm/guest.c
+> @@ -18,7 +18,7 @@
+>  #include <linux/string.h>
+>  #include <linux/vmalloc.h>
+>  #include <linux/fs.h>
+> -#include <kvm/arm_psci.h>
+> +#include <kvm/arm_hypercalls.h>
+>  #include <asm/cputype.h>
+>  #include <linux/uaccess.h>
+>  #include <asm/fpsimd.h>
+> diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
+> index 30da78f72b3b..9e136d91b470 100644
+> --- a/arch/arm64/kvm/hypercalls.c
+> +++ b/arch/arm64/kvm/hypercalls.c
+> @@ -146,3 +146,173 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
+>  	smccc_set_retval(vcpu, val[0], val[1], val[2], val[3]);
+>  	return 1;
+>  }
+> +
+> +static const u64 fw_reg_ids[] = {
+> +	KVM_REG_ARM_PSCI_VERSION,
+> +	KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1,
+> +	KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2,
+> +};
+> +
+> +int kvm_arm_get_fw_num_regs(struct kvm_vcpu *vcpu)
+> +{
+> +	return ARRAY_SIZE(fw_reg_ids);
+> +}
+> +
+> +int kvm_arm_copy_fw_reg_indices(struct kvm_vcpu *vcpu, u64 __user *uindices)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(fw_reg_ids); i++) {
+> +		if (put_user(fw_reg_ids[i], uindices))
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
- .../bindings/input/pwm-vibrator.txt           | 66 -------------------
- .../bindings/input/pwm-vibrator.yaml          | 59 +++++++++++++++++
- 2 files changed, 59 insertions(+), 66 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/input/pwm-vibrator.txt
- create mode 100644 Documentation/devicetree/bindings/input/pwm-vibrator.yaml
+This is missing the ++ on uindices, so it just writes the same offset
+three times.
 
-diff --git a/Documentation/devicetree/bindings/input/pwm-vibrator.txt b/Documentation/devicetree/bindings/input/pwm-vibrator.txt
-deleted file mode 100644
-index 88c775a3fe21..000000000000
---- a/Documentation/devicetree/bindings/input/pwm-vibrator.txt
-+++ /dev/null
-@@ -1,66 +0,0 @@
--* PWM vibrator device tree bindings
--
--Registers a PWM device as vibrator. It is expected, that the vibrator's
--strength increases based on the duty cycle of the enable PWM channel
--(100% duty cycle meaning strongest vibration, 0% meaning no vibration).
--
--The binding supports an optional direction PWM channel, that can be
--driven at fixed duty cycle. If available this is can be used to increase
--the vibration effect of some devices.
--
--Required properties:
--- compatible: should contain "pwm-vibrator"
--- pwm-names: Should contain "enable" and optionally "direction"
--- pwms: Should contain a PWM handle for each entry in pwm-names
--
--Optional properties:
--- vcc-supply: Phandle for the regulator supplying power
--- direction-duty-cycle-ns: Duty cycle of the direction PWM channel in
--                           nanoseconds, defaults to 50% of the channel's
--			   period.
--
--Example from Motorola Droid 4:
--
--&omap4_pmx_core {
--	vibrator_direction_pin: pinmux_vibrator_direction_pin {
--		pinctrl-single,pins = <
--		OMAP4_IOPAD(0x1ce, PIN_OUTPUT | MUX_MODE1) /* dmtimer8_pwm_evt (gpio_27) */
--		>;
--	};
--
--	vibrator_enable_pin: pinmux_vibrator_enable_pin {
--		pinctrl-single,pins = <
--		OMAP4_IOPAD(0X1d0, PIN_OUTPUT | MUX_MODE1) /* dmtimer9_pwm_evt (gpio_28) */
--		>;
--	};
--};
--
--/ {
--	pwm8: dmtimer-pwm {
--		pinctrl-names = "default";
--		pinctrl-0 = <&vibrator_direction_pin>;
--
--		compatible = "ti,omap-dmtimer-pwm";
--		#pwm-cells = <3>;
--		ti,timers = <&timer8>;
--		ti,clock-source = <0x01>;
--	};
--
--	pwm9: dmtimer-pwm {
--		pinctrl-names = "default";
--		pinctrl-0 = <&vibrator_enable_pin>;
--
--		compatible = "ti,omap-dmtimer-pwm";
--		#pwm-cells = <3>;
--		ti,timers = <&timer9>;
--		ti,clock-source = <0x01>;
--	};
--
--	vibrator {
--		compatible = "pwm-vibrator";
--		pwms = <&pwm9 0 1000000000 0>,
--                       <&pwm8 0 1000000000 0>;
--		pwm-names = "enable", "direction";
--		direction-duty-cycle-ns = <1000000000>;
--	};
--};
-diff --git a/Documentation/devicetree/bindings/input/pwm-vibrator.yaml b/Documentation/devicetree/bindings/input/pwm-vibrator.yaml
-new file mode 100644
-index 000000000000..ec2466c63fe6
---- /dev/null
-+++ b/Documentation/devicetree/bindings/input/pwm-vibrator.yaml
-@@ -0,0 +1,59 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/input/pwm-vibrator.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: PWM vibrator
-+
-+maintainers:
-+  - Sebastian Reichel <sre@kernel.org>
-+
-+description: >
-+  Registers a PWM device as vibrator. It is expected, that the vibrator's
-+  strength increases based on the duty cycle of the enable PWM channel
-+  (100% duty cycle meaning strongest vibration, 0% meaning no vibration).
-+
-+  The binding supports an optional direction PWM channel, that can be
-+  driven at fixed duty cycle. If available this is can be used to increase
-+  the vibration effect of some devices.
-+
-+properties:
-+  compatible:
-+    const: pwm-vibrator
-+
-+  pwm-names:
-+    anyOf:
-+      - items:
-+          - const: enable
-+      - items:
-+          - const: enable
-+          - const: direction
-+
-+  pwms:
-+    minItems: 1
-+    maxItems: 2
-+
-+  vcc-supply: true
-+
-+  direction-duty-cycle-ns:
-+    description: >
-+      Duty cycle of the direction PWM channel in nanoseconds,
-+      defaults to 50% of the channel's period.
-+
-+required:
-+  - compatible
-+  - pwm-names
-+  - pwms
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    vibrator {
-+        compatible = "pwm-vibrator";
-+        pwms = <&pwm9 0 1000000000 0>,
-+               <&pwm8 0 1000000000 0>;
-+        pwm-names = "enable", "direction";
-+        direction-duty-cycle-ns = <1000000000>;
-+    };
--- 
-2.33.0
+> +			return -EFAULT;
+> +	}
+> +
+> +	return 0;
+> +}
+
+I assume the rest of the patch is just a cut+paste move of code.
+
+Thanks,
+drew
 
