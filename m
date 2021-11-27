@@ -2,112 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 057A5460157
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 21:00:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9679746015D
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 21:06:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344053AbhK0UD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 15:03:27 -0500
-Received: from mga02.intel.com ([134.134.136.20]:51480 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233783AbhK0UBV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 15:01:21 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10181"; a="223011278"
-X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
-   d="scan'208";a="223011278"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 11:58:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
-   d="scan'208";a="458583075"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 27 Nov 2021 11:58:05 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mr3pk-0009w1-LW; Sat, 27 Nov 2021 19:58:04 +0000
-Date:   Sun, 28 Nov 2021 03:57:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: arch/arm/mach-ixp4xx/common-pci.c:143:5: warning: no previous
- prototype for 'ixp4xx_pci_write'
-Message-ID: <202111280310.yf3ykspL-lkp@intel.com>
+        id S243280AbhK0UJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 15:09:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240308AbhK0UHp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 15:07:45 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C72C061574;
+        Sat, 27 Nov 2021 12:04:30 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9F1EAB80936;
+        Sat, 27 Nov 2021 20:04:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19505C53FBF;
+        Sat, 27 Nov 2021 20:04:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638043467;
+        bh=N9RYJ/wwzRw1gzQcyVy5cJKJbj9O4itGR0DWGBQCXKA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=HV8m2tSEHnvsP6Krp+IXT7oIqUCUXe5/oR6NZwFrYwWD9AX1A6SDxCXe9+y7lqUN4
+         +DxIwd+dhbJSiUoz2A3j9BEZpK/q6c4oDw4n2JFev/8EQ08oEFpdqCKVVmAsXmcQbh
+         eAcWXxXKULZZJbWEEpqA+H+VeUEWDcsLz16b+fEIbJTEST7RJjdX++jZg8ALEVeWLY
+         tbqpG1sYnQ3BVt+3GSsgwRArICqnMbPFLkffoAm4iULS/FNI0kuXaHZ70OEHpVz6VU
+         CfjJAqP9q9ByQHfCISeu2/oZ8k4W8cry+3C1RlVFDjp+K+I3LmIxQvhNjw1AjFz51o
+         thIk7xgPOfLaA==
+Date:   Sat, 27 Nov 2021 12:04:26 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        david@fromorbit.com, linux-kernel@vger.kernel.org,
+        sandeen@sandeen.net, hch@lst.de, agruenba@redhat.com
+Subject: [GIT PULL] iomap: bug fixes and doc improvements for 5.16-rc2
+Message-ID: <20211127200426.GA8467@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Linus,
 
-FYI, the error/warning still remains.
+Please pull this branch containing a single iomap bug fix and a cleanup
+for 5.16-rc2.  The bug fix changes how iomap deals with reading from an
+inline data region -- whereas the current code (incorrectly) lets the
+iomap read iter try for more bytes after reading the inline region
+(which zeroes the rest of the page!) and hopes the next iteration
+terminates, we surveyed the inlinedata implementations and realized that
+all inlinedata implementations also require that the inlinedata region
+end at EOF, so we can simply terminate the read.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   c5c17547b778975b3d83a73c8d84e8fb5ecf3ba5
-commit: d5d9f7ac58ea1041375a028f143ca5784693ea86 ARM/ixp4xx: Make NEED_MACH_IO_H optional
-date:   5 months ago
-config: arm-ixp4xx_defconfig (https://download.01.org/0day-ci/archive/20211128/202111280310.yf3ykspL-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d5d9f7ac58ea1041375a028f143ca5784693ea86
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout d5d9f7ac58ea1041375a028f143ca5784693ea86
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=arm SHELL=/bin/bash
+The second patch documents these assumptions in the code so that they're
+not subtle implications anymore, and cleans up some of the grosser parts
+of that function.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+The branch merges cleanly against upstream as of a few minutes ago.
+Please let me know if anything else strange happens during the merge
+process.
 
-All warnings (new ones prefixed by >>):
+--D
 
-   arch/arm/mach-ixp4xx/common-pci.c:94:5: warning: no previous prototype for 'ixp4xx_pci_read_errata' [-Wmissing-prototypes]
-      94 | int ixp4xx_pci_read_errata(u32 addr, u32 cmd, u32* data)
-         |     ^~~~~~~~~~~~~~~~~~~~~~
-   arch/arm/mach-ixp4xx/common-pci.c:121:5: warning: no previous prototype for 'ixp4xx_pci_read_no_errata' [-Wmissing-prototypes]
-     121 | int ixp4xx_pci_read_no_errata(u32 addr, u32 cmd, u32* data)
-         |     ^~~~~~~~~~~~~~~~~~~~~~~~~
->> arch/arm/mach-ixp4xx/common-pci.c:143:5: warning: no previous prototype for 'ixp4xx_pci_write' [-Wmissing-prototypes]
-     143 | int ixp4xx_pci_write(u32 addr, u32 cmd, u32 data)
-         |     ^~~~~~~~~~~~~~~~
+The following changes since commit 136057256686de39cc3a07c2e39ef6bc43003ff6:
 
+  Linux 5.16-rc2 (2021-11-21 13:47:39 -0800)
 
-vim +/ixp4xx_pci_write +143 arch/arm/mach-ixp4xx/common-pci.c
+are available in the Git repository at:
 
-^1da177e4c3f41 Linus Torvalds  2005-04-16  142  
-^1da177e4c3f41 Linus Torvalds  2005-04-16 @143  int ixp4xx_pci_write(u32 addr, u32 cmd, u32 data)
-^1da177e4c3f41 Linus Torvalds  2005-04-16  144  {    
-^1da177e4c3f41 Linus Torvalds  2005-04-16  145  	unsigned long flags;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  146  	int retval = 0;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  147  
-bd31b85960a7fc Thomas Gleixner 2009-07-03  148  	raw_spin_lock_irqsave(&ixp4xx_pci_lock, flags);
-^1da177e4c3f41 Linus Torvalds  2005-04-16  149  
-^1da177e4c3f41 Linus Torvalds  2005-04-16  150  	*PCI_NP_AD = addr;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  151  
-^1da177e4c3f41 Linus Torvalds  2005-04-16  152  	/* set up the write */
-^1da177e4c3f41 Linus Torvalds  2005-04-16  153  	*PCI_NP_CBE = cmd;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  154  
-^1da177e4c3f41 Linus Torvalds  2005-04-16  155  	/* execute the write by writing to NP_WDATA */
-^1da177e4c3f41 Linus Torvalds  2005-04-16  156  	*PCI_NP_WDATA = data;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  157  
-^1da177e4c3f41 Linus Torvalds  2005-04-16  158  	if(check_master_abort())
-^1da177e4c3f41 Linus Torvalds  2005-04-16  159  		retval = 1;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  160  
-bd31b85960a7fc Thomas Gleixner 2009-07-03  161  	raw_spin_unlock_irqrestore(&ixp4xx_pci_lock, flags);
-^1da177e4c3f41 Linus Torvalds  2005-04-16  162  	return retval;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  163  }
-^1da177e4c3f41 Linus Torvalds  2005-04-16  164  
+  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.16-fixes-1
 
-:::::: The code at line 143 was first introduced by commit
-:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
+for you to fetch changes up to 5ad448ce2976f829d95dcae5e6e91f6686b0e4de:
 
-:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
-:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
+  iomap: iomap_read_inline_data cleanup (2021-11-24 10:15:47 -0800)
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+----------------------------------------------------------------
+Fixes for 5.16-rc2:
+ - Fix an accounting problem where unaligned inline data reads can run
+   off the end of the read iomap iterator.  iomap has historically
+   required that inline data mappings only exist at the end of a file,
+   though this wasn't documented anywhere.
+ - Document iomap_read_inline_data and change its return type to be
+   appropriate for the information that it's actually returning.
+
+----------------------------------------------------------------
+Andreas Gruenbacher (2):
+      iomap: Fix inline extent handling in iomap_readpage
+      iomap: iomap_read_inline_data cleanup
+
+ fs/iomap/buffered-io.c | 26 ++++++++++++++++----------
+ 1 file changed, 16 insertions(+), 10 deletions(-)
