@@ -2,127 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2021045F7D4
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 02:15:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B08FA45F7DB
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 02:18:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344648AbhK0BSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 20:18:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34888 "EHLO
+        id S1344675AbhK0BWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 20:22:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344446AbhK0BQd (ORCPT
+        with ESMTP id S1344485AbhK0BUA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 20:16:33 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB75C061748
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 17:13:20 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id t11so21874097ljh.6
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 17:13:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=AO9HLiYoJwB3QlxrZnbBFb6xGzf6WT/h97sqqvL5fWE=;
-        b=UhHGX1z7l13n04osAUXesCcrOyPPObEmUe8O7MsAPfed2Udi9QDQ9OPG+Rhy/zLYZl
-         vQizmqPvsYUo9lSLjOd3fNa0q4fVH6Mi/atFWPbRCCFaAGYWlFTskAqcWeGpVZryrP7b
-         A7E13zPDF85SyKHyKB/HalBT39RfZtWXuJbA1zKC98J+OaqXlr7NrNbjbWNbbyGOOwUU
-         ecrxwaQxeCbeRO6UulE9JSqCKCZOTHzfpIWmerK5Fma5FakFKV1oH0Z7qDB2GxNKo6jr
-         zrfuUD49GVWtSKtVDC+AgYFOVLZh7kXyPHu4tWh6V80xh89vEAW22qIVT4vNH2JHmJYJ
-         ZgXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AO9HLiYoJwB3QlxrZnbBFb6xGzf6WT/h97sqqvL5fWE=;
-        b=7YoKVHO3XjuX/j1EM6uDbk41csM2GIPPd1KKCRCPjSlyS1qWmZpHaNV8eoHI8WuXiV
-         v7FvwfSUQreRzR3bRS46z4OLWTyUjnb0kce8krodlG9clHgr9uCxjZn84ltzLQRdqtXu
-         LFeme7rnV38Jpg/uTDwIPVtIhZboQGY2C/QsxQI97CiHO5GRH1Jgq5w1ocO0Uu95kf89
-         hfjn7+ZLrmmoMZF+cFbQNU+Ob0aTLh87kegnbZSfCGp/pnKMFV2DAKdqRhRYRTHUah7C
-         i6T0jQVV9XYvU5E2ONHU9PeEFcdqanSmPcgHmzL9VSuBu2OSiVE0O2r9y0aRc4G877T6
-         CpEQ==
-X-Gm-Message-State: AOAM530QbyNmpZohYWQ/T2OtRrakOfsb1MgXgp67i0+J+ZmvvZoOCoYy
-        XxH7TXwADS2tixinyxgHlUAR4WrVzpgFG98WvzU87w==
-X-Google-Smtp-Source: ABdhPJxYNZmdCUliZJOvsz8fSpPToRFs44lg7xD62YV+YO3tLMrzxkG7LHTBVF7STBGKgQ6+cZvCcomXYTY6W2QvmKE=
-X-Received: by 2002:a2e:a78c:: with SMTP id c12mr33608112ljf.418.1637975598254;
- Fri, 26 Nov 2021 17:13:18 -0800 (PST)
-MIME-Version: 1.0
-References: <9821f60a-c562-12e8-bdd4-45dbfe88a117@linaro.org>
- <20211126230820.3441863-1-daniel.lezcano@linaro.org> <9e81f795-6d3a-2078-5ef1-13b965e89a2a@linaro.org>
-In-Reply-To: <9e81f795-6d3a-2078-5ef1-13b965e89a2a@linaro.org>
-From:   Doug Smythies <dsmythies@telus.net>
-Date:   Fri, 26 Nov 2021 17:13:09 -0800
-Message-ID: <CAAYoRsWEXoe_LjuHuQUL3Tdov0JVW887T4ciUTVOC410mZjgvA@mail.gmail.com>
-Subject: Re: [PATCH] powercap/drivers/dtpm: Disable dtpm at boot time
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
+        Fri, 26 Nov 2021 20:20:00 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B54EC06174A;
+        Fri, 26 Nov 2021 17:16:47 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637975804;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DT9TnAjJN6p5cb67DY6dvVqAC4VHB/JbDn7hMhDJt80=;
+        b=Q+8iBjG3F/zb99AbBGK+dFF02kU49RvpUvrTC9euWPcfCWynjkaNUWN0xY4JEuZJz62cCu
+        VHHWgHLrGcDEkOZL3cypR9N+qqnO6H8ND9+VCgQ58PWX/tR10V4aqUHNQRdpEvfmdS/3aS
+        8ys2Aj+5ZJokVLrq4apn7E3sZNuZS76ca+YB0u58jzc/uiKSmMWEhPh6e//e7qQrK0KMr6
+        cQ+9MUNYvP6POJFTNWyeZFgtU/CHDF/u9qJtzE/8T8Vafgfu1e2PGez+ceUlQ8/EB91Rzf
+        eqxt3+lJmVOz+A6FJmcvbYxYZfJ6axE3hphjk8tfcOit70bfYzqdAIXOfdOlGw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637975804;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DT9TnAjJN6p5cb67DY6dvVqAC4VHB/JbDn7hMhDJt80=;
+        b=IZNHyB3f6u118NoaaChJJEbVl5AN4UTNZOgNIG1dYm6Tql1zO+WAlih9sJIUvZ4T8A53mc
+        Dxlq5DTeyq5MNqBw==
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Peter Oskolkov <posk@posk.io>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@kernel.org>,
-        dsmythies <dsmythies@telus.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        linux-api@vger.kernel.org, Paul Turner <pjt@google.com>,
+        Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>
+Subject: Re: [PATCH v0.9.1 3/6] sched/umcg: implement UMCG syscalls
+In-Reply-To: <YaFcyzq0WpnXu+2R@hirez.programming.kicks-ass.net>
+References: <20211122211327.5931-1-posk@google.com>
+ <20211122211327.5931-4-posk@google.com>
+ <20211124200822.GF721624@worktop.programming.kicks-ass.net>
+ <CAFTs51Uka8VRCHuGidw7mRwATufp87U6S8SWUVod_kU-h6T3ew@mail.gmail.com>
+ <YaEUts3RbOLyvAjl@hirez.programming.kicks-ass.net>
+ <YaFcyzq0WpnXu+2R@hirez.programming.kicks-ass.net>
+Date:   Sat, 27 Nov 2021 02:16:43 +0100
+Message-ID: <87r1b2fldw.ffs@tglx>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 3:10 PM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
+On Fri, Nov 26 2021 at 23:16, Peter Zijlstra wrote:
+> On Fri, Nov 26, 2021 at 06:09:10PM +0100, Peter Zijlstra wrote:
+>>  
+>> -	if (unlikely(ti_work & EXIT_TO_USER_MODE_WORK))
+>> +	if (unlikely(ti_work & (EXIT_TO_USER_MODE_WORK | _TIF_UMCG)))
+>>  		ti_work = exit_to_user_mode_loop(regs, ti_work);
+>>  
+>>  	arch_exit_to_user_mode_prepare(regs, ti_work);
 >
->
-> Hi Doug,
->
-> I was unable to reproduce the issue because I don't have an x86 platform.
->
-> Is it possible to check if this fix is ok?
+> Thomas, since you're looking at this. I'm not quite sure I got this
+> right. The intent is that when _TIF_UMCG is set (and it is never cleared
+> until the task unregisters) it is called at least once.
 
-Hi Daniel,
+Right.
 
-Yes, confirmed.
+> The thinking is that if umcg_wait() gets interrupted, we'll drop out,
+> handle the signal and then resume the wait, which can obviously happen
+> any number of times.
 
-Tested-By: Doug Smythies <dsmythies@telus.net>
+Right.
 
->
->   -- Daniel
->
-> On 27/11/2021 00:08, Daniel Lezcano wrote:
-> > The DTPM framework misses a mechanism to set it up. That is currently
-> > under review but will come after the next cycle.
-> >
-> > As the distro are enabling all the kernel options, the DTPM framework
-> > is enabled on platforms where the energy model is not implemented,
-> > thus making the framework inconsistent and disrupting the CPU
-> > frequency scaling service.
-> >
-> > Remove the initialization at boot time as a hot fix.
-> >
-> > Fixes: 7a89d7eacf8e ("powercap/drivers/dtpm: Simplify the dtpm table")
-> > Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> > ---
-> >  drivers/powercap/dtpm.c | 3 ---
-> >  1 file changed, 3 deletions(-)
-> >
-> > diff --git a/drivers/powercap/dtpm.c b/drivers/powercap/dtpm.c
-> > index b9fac786246a..fb35c5828bfb 100644
-> > --- a/drivers/powercap/dtpm.c
-> > +++ b/drivers/powercap/dtpm.c
-> > @@ -471,9 +471,6 @@ static int __init init_dtpm(void)
-> >               return PTR_ERR(pct);
-> >       }
-> >
-> > -     for_each_dtpm_table(dtpm_descr)
-> > -             dtpm_descr->init();
-> > -
-> >       return 0;
-> >  }
-> >  late_initcall(init_dtpm);
-> >
->
->
-> --
-> <http://www.linaro.org/> Linaro.org =E2=94=82 Open source software for AR=
-M SoCs
->
-> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-> <http://twitter.com/#!/linaroorg> Twitter |
-> <http://www.linaro.org/linaro-blog/> Blog
+> It's just that I'm never quite sure where signal crud happens; I'm
+> assuming handle_signal_work() simply mucks about with regs (sets sp and
+> ip etc.. to the signal stack) and drops out of kernel mode, and on
+> re-entry we do this whole merry cycle once again. But I never actually
+> dug that deep.
+
+Yes. It sets up the signal frame and once the loop is left because there
+are no more TIF flags to handle it drops back to user space into the
+signal handler. That returns to the kernel via sys_[rt_]sigreturn()
+which undoes the regs damage either by restoring the previous state or
+fiddling it to restart the syscall instead of dropping back to user
+space.
+
+So yes, this should work, but I hate the sticky nature of TIF_UMCG. I
+have no real good idea how to avoid that yet, but let me think about it
+some more.
+
+Thanks,
+
+        tglx
