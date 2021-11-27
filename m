@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9EF645FF65
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 15:31:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4362B45FF66
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 15:31:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355647AbhK0OeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 09:34:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36918 "EHLO
+        id S1355669AbhK0OeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 09:34:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355058AbhK0Obv (ORCPT
+        with ESMTP id S1355176AbhK0Obv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 27 Nov 2021 09:31:51 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75EA0C06175E;
-        Sat, 27 Nov 2021 06:26:46 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id u22so24595137lju.7;
-        Sat, 27 Nov 2021 06:26:46 -0800 (PST)
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8C3C06175F;
+        Sat, 27 Nov 2021 06:26:47 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id 207so24517752ljf.10;
+        Sat, 27 Nov 2021 06:26:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=MVMeO5TsjpG7X103IJ0vtCcKisfNOPmQ/M/aYmMnN4k=;
-        b=pPhpTSNLK1J4Kqw9WoHHLWWJ50NlLUtfzYhEK38Rj4jCoi1vvASrL0VVW/ZPKv0tBO
-         CnpG88BupjH05BbX2Ms5t2cir9A5uH/TXYrtwprGrVXB+vZkPKM1x84qtumttgGQURgE
-         sqfs8P6FiTYmyrGHzG1AzS44xyDJX6faCBydWcWFfhxVDtT0MKPZ5FRc2NoQiwy8qSQB
-         ++7EF1+3gshiYsoX44/c795qe1cXYZJWS0ZofEAfB5Ukahlb+5uB0cayKbzoHJh0Riw1
-         WP1jbbk7kJqgT2HlJ7Lsq//cOSEAIIhzR7/RQ01XNbiM1GTARY6OJK0Fzw49IHm4NZT5
-         P3MQ==
+        bh=z+2i2S1W26dZ7VgKg6S5rlGKr4ZHMsx/PFUfrnnRofM=;
+        b=NmMJqWJl9bwY5Uyyfgo+ejh2/NlusYLl9+b2fUhl4NHG2+cXlb8Rm/mo1TYwTDCRC2
+         W7lreQJMlM8f3IeUCld2yG7r6kubzcMoktJQWst0zn8GoOUypM6fR1ymzhe7n1dENuEs
+         Hsic0eju4TjrI/63wdz/TwgRm5oThbV8R1LAsNBm2/rlPP4K6mhJ1dI7drCgLvELXsBt
+         JpIZmdYS4584gAR/heCq4zdzKnPLxmx/8hK9jq4FF/soRTueyJon3Vlo7R/wKAWlQxAA
+         HdVhHLqcN0HshQLfpoYp1kuApwfDf/Yem7J3q+wwSWdbLaZeTIORbOjekMoVCs4mbgcB
+         HcSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MVMeO5TsjpG7X103IJ0vtCcKisfNOPmQ/M/aYmMnN4k=;
-        b=EuffCjrsn0ORZJSlfivCZ+79nuoWpRR2ISTWhOQnciwuzj99elXXSt45mt/FLuoho0
-         nW11m2v9o6AcVVMDbLI5l4TThF7MRuHmb7vnfYzzdggONsyQhNhS5xg6+Jy625KY0Wub
-         uPelaYK3iV9AQUnPCrUVnBREfyzjTrhnK7g22iaAHbj8c+/SWZpdH+HgQeCeRqxApYV9
-         o9qpQpO6013n5kbBXcCPGP095CmWbpx9YSWuX6cUXEffJ3GxPG8T/RtCSLgWfy4YIYTx
-         sn4WdWNrZh40NU/YIZH6MqTKkyxLDmiC8gxeuVYQDl2n1tjZP0Qqn70AaxRoh9aRgorb
-         ZYqw==
-X-Gm-Message-State: AOAM531sTBg2w7Tq3T3h0aAdTXRZX+6Y2DDXZtbwiL8iy6yGAYyy67Tu
-        7dHrUdZJuA6+v6lkUdoPssU=
-X-Google-Smtp-Source: ABdhPJyvdMzCuUTbkmi/liPKZZXlKJP0I+2pXAuIwXf7cUcJDOQrU+0daPcxHuLQlVSQan8pHNOdOA==
-X-Received: by 2002:a2e:815a:: with SMTP id t26mr37372758ljg.79.1638023204837;
-        Sat, 27 Nov 2021 06:26:44 -0800 (PST)
+        bh=z+2i2S1W26dZ7VgKg6S5rlGKr4ZHMsx/PFUfrnnRofM=;
+        b=0t0lDDoGzNlQ3jbk7WN5sArrzQKVftGCS9ozTZCmVmcy0XZ0bVrRZTI98o6pgbo1RS
+         QAlWMhYxra+pYYU03lPufIddLYpiGBjUQHhGpRTmbiWrS8+G6gMTgPN2k+EHdtxg7J6O
+         IFjQK/JCofkrKDXqvOfgXr1iOnYXVicXYv5r1QtMf80x8JMenod72pb11nirZj2/IRoZ
+         G4EcNFHwgJ278YTibjM7sXbcVvuru97SpJRjwhDSD602raSYCGS+XU2Nmm9mia7W6Cw2
+         58KuKCpb78JoB+Vu95gBqZ2pLDC/TQ9dtzXcX0UG/87kZDAybU6fx1y2+I1hR3P/NvGw
+         FKhA==
+X-Gm-Message-State: AOAM530iYizWq46hanyjH+UoCBF7NUsb4T6NLiDGOgaeVx/c+fXuc5ih
+        nivG3MRUDllUQj1OWA3nTT8=
+X-Google-Smtp-Source: ABdhPJwqoe++O3FZ5gQFaxAbTrVgl7TLL2h7J7hbPL4/IryyVW9GrOYV9zDaAC0aRFhynCQuorO5wg==
+X-Received: by 2002:a2e:b8cf:: with SMTP id s15mr38166627ljp.364.1638023205884;
+        Sat, 27 Nov 2021 06:26:45 -0800 (PST)
 Received: from localhost.localdomain (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
-        by smtp.gmail.com with ESMTPSA id t22sm812382ljg.83.2021.11.27.06.26.43
+        by smtp.gmail.com with ESMTPSA id t22sm812382ljg.83.2021.11.27.06.26.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Nov 2021 06:26:44 -0800 (PST)
+        Sat, 27 Nov 2021 06:26:45 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -67,9 +67,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Thomas Graichen <thomas.graichen@gmail.com>
 Cc:     devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 13/14] ARM: tegra: nexus7: Drop clock-frequency from NFC node
-Date:   Sat, 27 Nov 2021 17:23:26 +0300
-Message-Id: <20211127142327.17692-14-digetx@gmail.com>
+Subject: [PATCH v3 14/14] ARM: tegra: Enable video decoder on Tegra114
+Date:   Sat, 27 Nov 2021 17:23:27 +0300
+Message-Id: <20211127142327.17692-15-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211127142327.17692-1-digetx@gmail.com>
 References: <20211127142327.17692-1-digetx@gmail.com>
@@ -79,42 +79,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Heidelberg <david@ixit.cz>
+From: Anton Bambura <jenneron@protonmail.com>
 
-The clock-frequency property was never used and is deprecated now.
-Remove it from Nexus 7 device-tree.
+Add Video Decoder Engine node to Tegra114 device-tree.
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
+Signed-off-by: Anton Bambura <jenneron@protonmail.com>
 ---
- arch/arm/boot/dts/tegra30-asus-nexus7-grouper.dtsi | 1 -
- arch/arm/boot/dts/tegra30-asus-nexus7-tilapia.dtsi | 2 --
- 2 files changed, 3 deletions(-)
+ arch/arm/boot/dts/tegra114.dtsi | 38 +++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
-diff --git a/arch/arm/boot/dts/tegra30-asus-nexus7-grouper.dtsi b/arch/arm/boot/dts/tegra30-asus-nexus7-grouper.dtsi
-index a044dbd200a9..564cfcde21a9 100644
---- a/arch/arm/boot/dts/tegra30-asus-nexus7-grouper.dtsi
-+++ b/arch/arm/boot/dts/tegra30-asus-nexus7-grouper.dtsi
-@@ -137,7 +137,6 @@ i2c@7000c500 {
- 		nfc@28 {
- 			compatible = "nxp,pn544-i2c";
- 			reg = <0x28>;
--			clock-frequency = <100000>;
+diff --git a/arch/arm/boot/dts/tegra114.dtsi b/arch/arm/boot/dts/tegra114.dtsi
+index 563ee262f41d..3d08764401ce 100644
+--- a/arch/arm/boot/dts/tegra114.dtsi
++++ b/arch/arm/boot/dts/tegra114.dtsi
+@@ -17,6 +17,19 @@ memory@80000000 {
+ 		reg = <0x80000000 0x0>;
+ 	};
  
- 			interrupt-parent = <&gpio>;
- 			interrupts = <TEGRA_GPIO(X, 0) IRQ_TYPE_EDGE_RISING>;
-diff --git a/arch/arm/boot/dts/tegra30-asus-nexus7-tilapia.dtsi b/arch/arm/boot/dts/tegra30-asus-nexus7-tilapia.dtsi
-index a681ad51fddd..cd63e0ef7445 100644
---- a/arch/arm/boot/dts/tegra30-asus-nexus7-tilapia.dtsi
-+++ b/arch/arm/boot/dts/tegra30-asus-nexus7-tilapia.dtsi
-@@ -223,8 +223,6 @@ nfc@2a {
- 			compatible = "nxp,pn544-i2c";
- 			reg = <0x2a>;
++	sram@40000000 {
++		compatible = "mmio-sram";
++		reg = <0x40000000 0x40000>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges = <0 0x40000000 0x40000>;
++
++		vde_pool: sram@400 {
++			reg = <0x400 0x3fc00>;
++			pool;
++		};
++	};
++
+ 	host1x@50000000 {
+ 		compatible = "nvidia,tegra114-host1x";
+ 		reg = <0x50000000 0x00028000>;
+@@ -253,6 +266,30 @@ gpio: gpio@6000d000 {
+ 		*/
+ 	};
  
--			clock-frequency = <100000>;
--
- 			interrupt-parent = <&gpio>;
- 			interrupts = <TEGRA_GPIO(S, 7) IRQ_TYPE_EDGE_RISING>;
++	vde@6001a000 {
++		compatible = "nvidia,tegra114-vde";
++		reg = <0x6001a000 0x1000>, /* Syntax Engine */
++		      <0x6001b000 0x1000>, /* Video Bitstream Engine */
++		      <0x6001c000  0x100>, /* Macroblock Engine */
++		      <0x6001c200  0x100>, /* Post-processing Engine */
++		      <0x6001c400  0x100>, /* Motion Compensation Engine */
++		      <0x6001c600  0x100>, /* Transform Engine */
++		      <0x6001c800  0x100>, /* Pixel prediction block */
++		      <0x6001ca00  0x100>, /* Video DMA */
++		      <0x6001d800  0x400>; /* Video frame controls */
++		reg-names = "sxe", "bsev", "mbe", "ppe", "mce",
++			    "tfe", "ppb", "vdma", "frameid";
++		iram = <&vde_pool>; /* IRAM region */
++		interrupts = <GIC_SPI  9 IRQ_TYPE_LEVEL_HIGH>, /* Sync token interrupt */
++			     <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>, /* BSE-V interrupt */
++			     <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>; /* SXE interrupt */
++		interrupt-names = "sync-token", "bsev", "sxe";
++		clocks = <&tegra_car TEGRA114_CLK_VDE>;
++		reset-names = "vde", "mc";
++		resets = <&tegra_car 61>, <&mc TEGRA114_MC_RESET_VDE>;
++		iommus = <&mc TEGRA_SWGROUP_VDE>;
++	};
++
+ 	apbmisc@70000800 {
+ 		compatible = "nvidia,tegra114-apbmisc", "nvidia,tegra20-apbmisc";
+ 		reg = <0x70000800 0x64>, /* Chip revision */
+@@ -543,6 +580,7 @@ mc: memory-controller@70019000 {
+ 		interrupts = <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>;
  
+ 		#iommu-cells = <1>;
++		#reset-cells = <1>;
+ 	};
+ 
+ 	ahub@70080000 {
 -- 
 2.33.1
 
