@@ -2,156 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9AB845FEE8
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 14:44:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E98445FEB8
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 14:03:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355151AbhK0Nrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 08:47:49 -0500
-Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17286 "EHLO
-        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231760AbhK0Nps (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 08:45:48 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1638005196; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=n3tN4S2pUQeHcaidBskaxPvMtDHKVAxGlzpV4gGhKRw0ZRPexTpe+9491ASfmg0HTmlzpcGklxp+HMRiNT0nz7WB3yRDEgMXIVlbk6nppF5tsd9+xwYvYa+sqjKuO3IG1VFKI2d/3UUUTEAStZqRuO2G7fPvidPxfb9wuISL+GM=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1638005196; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
-        bh=Gx78nwaiX6IcgNHFjD7iZoX/9w5JdvaOCjUYq7EIGF8=; 
-        b=L+x/I3014bH31MUiJjwlMUIA0OFhsckS6h6hv6axN+6zUKZ3hEWIrtJxc9FBqQ6Qibg6YP4JsjtX6NX4JOTcEAN2havNabHJChd8GNBZB0Un8LvTEUsJdciVm1vdlMiA5HCTyeHhT3WETZ5Uv7oleWAWjCIqSZgTHB0xWTty7g8=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1638005196;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=Gx78nwaiX6IcgNHFjD7iZoX/9w5JdvaOCjUYq7EIGF8=;
-        b=AOUteeEka8coVmSi4zQzORqE5JY1MaV08/LAMtbTc27DCvaprB+pMimMaBupCWxB
-        O+FA0+jbAUUvYwibbnxdThAmY5Ue8tUKtJFxMKJfWYfyRApCoywzOrqMRC2+ZkgXx95
-        aD4148NrPXGMaIDIGuyGKpO95c4vIFvh8io47D5E=
-Received: from mail.baihui.com by mx.zoho.com.cn
-        with SMTP id 1638005193699274.15327156530714; Sat, 27 Nov 2021 17:26:33 +0800 (CST)
-Date:   Sat, 27 Nov 2021 17:26:33 +0800
-From:   Chengguang Xu <cgxu519@mykernel.net>
-Reply-To: cgxu519@mykernel.net
-To:     "miklos" <miklos@szeredi.hu>
-Cc:     "linux-unionfs" <linux-unionfs@vger.kernel.org>,
-        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "Chengguang Xu" <charliecgxu@tencent.com>,
-        "ronyjin" <ronyjin@tencent.com>, "amir73il" <amir73il@gmail.com>,
-        "jack" <jack@suse.cz>
-Message-ID: <17d60b7bbc2.caee608a13298.8366222634423039066@mykernel.net>
-In-Reply-To: <20211122030038.1938875-1-cgxu519@mykernel.net>
-References: <20211122030038.1938875-1-cgxu519@mykernel.net>
-Subject: =?UTF-8?Q?=E5=9B=9E=E5=A4=8D:[RFC_PATCH_V6_0/7]_implement_c?=
- =?UTF-8?Q?ontainerized_syncfs_for_overlayfs?=
+        id S244599AbhK0NGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 08:06:40 -0500
+Received: from ixit.cz ([94.230.151.217]:58522 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234018AbhK0NEj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 08:04:39 -0500
+Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id 1D0EB20064;
+        Sat, 27 Nov 2021 14:01:22 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1638018082;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=TL5Z0v3ROjL1VN0kk5T9RzyinmEmWC4BFheAFJjFzNM=;
+        b=PVuxMRDBWOG6/Pyw8AxqLdlVD6yNjLKsnza21sk3xFphm0ZWND+BJGuWPN8bcYGlTf7hT3
+        eXif+8lNXdD0H102lV4eVwYsVpLTH9ORrIM1q3u6e6KSD/ftZeeVxg7eLaAdBnt4oc8Tb4
+        SVHGHXNnL/O6Hi4+pmwPDJG5tNO+7UE=
+From:   David Heidelberg <david@ixit.cz>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Cc:     ~okias/devicetree@lists.sr.ht, David Heidelberg <david@ixit.cz>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] arm64: dts: imx8mq: fix the schema check errors for fsl,tmu-calibration
+Date:   Sat, 27 Nov 2021 14:01:18 +0100
+Message-Id: <20211127130118.37525-1-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Importance: Medium
-User-Agent: ZohoCN Mail
-X-Mailer: ZohoCN Mail
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=80, 2021-11-22 11:00:31 Chengguang=
- Xu <cgxu519@mykernel.net> =E6=92=B0=E5=86=99 ----
- > From: Chengguang Xu <charliecgxu@tencent.com>
- >=20
- > Current syncfs(2) syscall on overlayfs just calls sync_filesystem()
- > on upper_sb to synchronize whole dirty inodes in upper filesystem
- > regardless of the overlay ownership of the inode. In the use case of
- > container, when multiple containers using the same underlying upper
- > filesystem, it has some shortcomings as below.
- >=20
- > (1) Performance
- > Synchronization is probably heavy because it actually syncs unnecessary
- > inodes for target overlayfs.
- >=20
- > (2) Interference
- > Unplanned synchronization will probably impact IO performance of
- > unrelated container processes on the other overlayfs.
- >=20
- > This series try to implement containerized syncfs for overlayfs so that
- > only sync target dirty upper inodes which are belong to specific overlay=
-fs
- > instance. By doing this, it is able to reduce cost of synchronization an=
-d=20
- > will not seriously impact IO performance of unrelated processes.
- >=20
- > v1->v2:
- > - Mark overlayfs' inode dirty itself instead of adding notification
- > mechanism to vfs inode.
- >=20
- > v2->v3:
- > - Introduce overlayfs' extra syncfs wait list to wait target upper inode=
-s
- > in ->sync_fs.
- >=20
- > v3->v4:
- > - Using wait_sb_inodes() to wait syncing upper inodes.
- > - Mark overlay inode dirty only when having upper inode and VM_SHARED
- > flag in ovl_mmap().
- > - Check upper i_state after checking upper mmap state
- > in ovl_write_inode.
- >=20
- > v4->v5:
- > - Add underlying inode dirtiness check after mnt_drop_write().
- > - Handle both wait/no-wait mode of syncfs(2) in overlayfs' ->sync_fs().
- >=20
- > v5->v6:
- > - Rebase to latest overlayfs-next tree.
- > - Mark oerlay inode dirty when it has upper instead of marking dirty on
- >   modification.
- > - Trigger dirty page writeback in overlayfs' ->write_inode().
- > - Mark overlay inode 'DONTCACHE' flag.
- > - Delete overlayfs' ->writepages() and ->evict_inode() operations.
+fsl,tmu-calibration is in u32-matrix. Use matching property syntax.
+No functional changes. Fixes warnings as:
+$ make dtbs_check
+...
+arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dt.yaml: tmu@30260000: fsl,tmu-calibration:0: Additional items are not allowed (1, 41, 2, 47, 3, 53, 4, 61, 5, 67, 6, 75, 7, 81, 8, 87, 9, 95, 10, 103, 11, 111, 65536, 27, 65537, 35, 65538, 43, 65539, 51, 65540, 59, 65541, 67, 65542, 75, 65543, 85, 65544, 93, 65545, 103, 65546, 112, 131072, 23, 131073, 35, 131074, 45, 131075, 55, 131076, 65, 131077, 75, 131078, 87, 131079, 99, 131080, 111, 196608, 21, 196609, 33, 196610, 45, 196611, 57, 196612, 69, 196613, 83, 196614, 95, 196615, 113 were unexpected)
+        From schema: /home/ubuntu/projects_remote/linux/Documentation/devicetree/bindings/thermal/qoriq-thermal.yaml
+...
 
+Signed-off-by: David Heidelberg <david@ixit.cz>
+---
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi | 86 +++++++++++------------
+ 1 file changed, 43 insertions(+), 43 deletions(-)
 
-Hi Miklos,
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+index 95d8b95d6120..c90a8befdd95 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+@@ -457,49 +457,49 @@ tmu: tmu@30260000 {
+ 				clocks = <&clk IMX8MQ_CLK_TMU_ROOT>;
+ 				little-endian;
+ 				fsl,tmu-range = <0xb0000 0xa0026 0x80048 0x70061>;
+-				fsl,tmu-calibration = <0x00000000 0x00000023
+-						       0x00000001 0x00000029
+-						       0x00000002 0x0000002f
+-						       0x00000003 0x00000035
+-						       0x00000004 0x0000003d
+-						       0x00000005 0x00000043
+-						       0x00000006 0x0000004b
+-						       0x00000007 0x00000051
+-						       0x00000008 0x00000057
+-						       0x00000009 0x0000005f
+-						       0x0000000a 0x00000067
+-						       0x0000000b 0x0000006f
+-
+-						       0x00010000 0x0000001b
+-						       0x00010001 0x00000023
+-						       0x00010002 0x0000002b
+-						       0x00010003 0x00000033
+-						       0x00010004 0x0000003b
+-						       0x00010005 0x00000043
+-						       0x00010006 0x0000004b
+-						       0x00010007 0x00000055
+-						       0x00010008 0x0000005d
+-						       0x00010009 0x00000067
+-						       0x0001000a 0x00000070
+-
+-						       0x00020000 0x00000017
+-						       0x00020001 0x00000023
+-						       0x00020002 0x0000002d
+-						       0x00020003 0x00000037
+-						       0x00020004 0x00000041
+-						       0x00020005 0x0000004b
+-						       0x00020006 0x00000057
+-						       0x00020007 0x00000063
+-						       0x00020008 0x0000006f
+-
+-						       0x00030000 0x00000015
+-						       0x00030001 0x00000021
+-						       0x00030002 0x0000002d
+-						       0x00030003 0x00000039
+-						       0x00030004 0x00000045
+-						       0x00030005 0x00000053
+-						       0x00030006 0x0000005f
+-						       0x00030007 0x00000071>;
++				fsl,tmu-calibration = <0x00000000 0x00000023>,
++						<0x00000001 0x00000029>,
++						<0x00000002 0x0000002f>,
++						<0x00000003 0x00000035>,
++						<0x00000004 0x0000003d>,
++						<0x00000005 0x00000043>,
++						<0x00000006 0x0000004b>,
++						<0x00000007 0x00000051>,
++						<0x00000008 0x00000057>,
++						<0x00000009 0x0000005f>,
++						<0x0000000a 0x00000067>,
++						<0x0000000b 0x0000006f>,
++
++						<0x00010000 0x0000001b>,
++						<0x00010001 0x00000023>,
++						<0x00010002 0x0000002b>,
++						<0x00010003 0x00000033>,
++						<0x00010004 0x0000003b>,
++						<0x00010005 0x00000043>,
++						<0x00010006 0x0000004b>,
++						<0x00010007 0x00000055>,
++						<0x00010008 0x0000005d>,
++						<0x00010009 0x00000067>,
++						<0x0001000a 0x00000070>,
++
++						<0x00020000 0x00000017>,
++						<0x00020001 0x00000023>,
++						<0x00020002 0x0000002d>,
++						<0x00020003 0x00000037>,
++						<0x00020004 0x00000041>,
++						<0x00020005 0x0000004b>,
++						<0x00020006 0x00000057>,
++						<0x00020007 0x00000063>,
++						<0x00020008 0x0000006f>,
++
++						<0x00030000 0x00000015>,
++						<0x00030001 0x00000021>,
++						<0x00030002 0x0000002d>,
++						<0x00030003 0x00000039>,
++						<0x00030004 0x00000045>,
++						<0x00030005 0x00000053>,
++						<0x00030006 0x0000005f>,
++						<0x00030007 0x00000071>;
+ 				#thermal-sensor-cells =  <1>;
+ 			};
+ 
+-- 
+2.33.0
 
-Have you got time to have a look at this V6 series? I think this version ha=
-s already fixed
-the issues in previous feedbacks of you guys and passed fstests (generic/ov=
-erlay cases).
-
-I did some stress long time tests (tar & syncfs & diff on w/wo copy-up) and=
- found no obvious problem.
-For syncfs time with 1M clean upper inodes, there was extra 1.3s wasted on =
-waiting scheduling.
-I guess this 1.3s will not bring significant impact to container instance i=
-n most cases, I also
-agree with Jack that we can start with this approach and do some improvemen=
-ts afterwards if there is
-complain from any real users.
-
-
-
-Thanks,
-Chengguang
-
-
- >=20
- > Chengguang Xu (7):
- >   ovl: setup overlayfs' private bdi
- >   ovl: mark overlayfs inode dirty when it has upper
- >   ovl: implement overlayfs' own ->write_inode operation
- >   ovl: set 'DONTCACHE' flag for overlayfs inode
- >   fs: export wait_sb_inodes()
- >   ovl: introduce ovl_sync_upper_blockdev()
- >   ovl: implement containerized syncfs for overlayfs
- >=20
- >  fs/fs-writeback.c         |  3 ++-
- >  fs/overlayfs/inode.c      |  5 +++-
- >  fs/overlayfs/super.c      | 49 ++++++++++++++++++++++++++++++++-------
- >  fs/overlayfs/util.c       |  1 +
- >  include/linux/writeback.h |  1 +
- >  5 files changed, 48 insertions(+), 11 deletions(-)
- >=20
- > --=20
- > 2.27.0
- >=20
- >=20
