@@ -2,124 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A33C460137
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 20:33:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A8E460138
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 20:34:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232471AbhK0Tg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 14:36:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46114 "EHLO
+        id S236721AbhK0Th5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 14:37:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231426AbhK0Tey (ORCPT
+        with ESMTP id S234158AbhK0Tf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 14:34:54 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103A9C06173E;
-        Sat, 27 Nov 2021 11:31:39 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1638041497;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dBon8SfZp1CEsl8BVx51RpGEII8dcWVBs/L2NZ3qLTE=;
-        b=12PZFwTo7dzQMjfEIObW/kTHWjbjA52CzuNfBOGK2uRNbJnVye3Dkjthb5DBQpAbPv7TIC
-        TsqmXC/RKQHhFH0JoAJSD/jtQ2oejhyxTYvz0qqHdVGIr1KZVfNESIfcaSejeaTNiTor4r
-        W9Y2iyfT6OYXEM8U9FgPnx3RHC8aCxTytiP5bDoYcv6afKfuKbi5UnpFvDIWIlhmL4+t3u
-        Xq6qEMUKoTtCgTIRJa8JPhxoqGWKYTp2XzfU1jQwu2xSEbgcbbxwA+/k4wnLBtEzx8V++W
-        F+hPOYnOETgCXAUIjN7tQ/1H4iL0wcicT8Zz0vfIwfMcYvTZwglzsfLoi8WH1w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1638041497;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dBon8SfZp1CEsl8BVx51RpGEII8dcWVBs/L2NZ3qLTE=;
-        b=JdAw3GTJGlue61YNMCREzj0zPv+Nw+GkUxnJdMLcseVulh7WwPNi/XNiSzdLuLfkV0fjnG
-        Y2wbE7D4FTsLxlDw==
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Marc Zygnier <maz@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Megha Dey <megha.dey@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>, linux-pci@vger.kernel.org,
-        linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com
-Subject: Re: [patch 31/32] genirq/msi: Simplify sysfs handling
-In-Reply-To: <YaIlX8bef2jPLkUE@kroah.com>
-References: <20211126230957.239391799@linutronix.de>
- <20211126232736.135247787@linutronix.de> <YaIlX8bef2jPLkUE@kroah.com>
-Date:   Sat, 27 Nov 2021 20:31:37 +0100
-Message-ID: <87lf19fl9i.ffs@tglx>
+        Sat, 27 Nov 2021 14:35:56 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E16B1C061746;
+        Sat, 27 Nov 2021 11:32:41 -0800 (PST)
+Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1mr3R8-0002C8-Je; Sat, 27 Nov 2021 20:32:38 +0100
+Message-ID: <42ff6b8d-0b7c-12e0-4648-a9232b0f577c@leemhuis.info>
+Date:   Sat, 27 Nov 2021 20:32:37 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Content-Language: en-BS
+To:     Eric Wong <e@80x24.org>
+Cc:     workflows@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>, git@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Kees Cook <keescook@chromium.org>
+References: <cover.1637566224.git.linux@leemhuis.info>
+ <6b760115ecdd3687d4b82680b284f55a04f3ad90.1637566224.git.linux@leemhuis.info>
+ <20211123185237.M476855@dcvr>
+ <12cefa81-495b-3083-5f19-b319c704ebf7@leemhuis.info>
+ <20211126171141.GA21826@dcvr>
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Subject: Re: [RFC PATCH v1 1/1] docs: add the new commit-msg tags 'Reported:'
+ and 'Reviewed:'
+In-Reply-To: <20211126171141.GA21826@dcvr>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1638041562;6ca12670;
+X-HE-SMSGID: 1mr3R8-0002C8-Je
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 27 2021 at 13:32, Greg Kroah-Hartman wrote:
-> On Sat, Nov 27, 2021 at 02:23:15AM +0100, Thomas Gleixner wrote:
->> The sysfs handling for MSI is a convoluted maze and it is in the way of
->> supporting dynamic expansion of the MSI-X vectors because it only supports
->> a one off bulk population/free of the sysfs entries.
->> 
->> Change it to do:
->> 
->>    1) Creating an empty sysfs attribute group when msi_device_data is
->>       allocated
->> 
->>    2) Populate the entries when the MSI descriptor is initialized
->
-> How much later does this happen?  Can it happen while the device has a
-> driver bound to it?
+On 26.11.21 18:11, Eric Wong wrote:
+> Thorsten Leemhuis <linux@leemhuis.info> wrote:
+>> Ccing Linus Walleij, who added this, and Kees, who apparently came up
+>> with this originally.
+>>
+>> On 23.11.21 19:52, Eric Wong wrote:
+>>> Thorsten Leemhuis <linux@leemhuis.info> wrote:
+>>>> diff --git a/Documentation/maintainer/configure-git.rst b/Documentation/maintainer/configure-git.rst
+>>>> index 80ae5030a590..8429d45d661c 100644
+>>>> --- a/Documentation/maintainer/configure-git.rst
+>>>> +++ b/Documentation/maintainer/configure-git.rst
+>>>
+>>> <snip>, +cc git@vger
+>>>
+>>>> @@ -56,7 +56,7 @@ by adding the following hook into your git:
+>>>>  	$ cat >.git/hooks/applypatch-msg <<'EOF'
+>>>>  	#!/bin/sh
+>>>>  	. git-sh-setup
+>>>> -	perl -pi -e 's|^Message-Id:\s*<?([^>]+)>?$|Link: https://lore.kernel.org/r/$1|g;' "$1"
+>>>> +	perl -pi -e 's|^Message-Id:\s*<?([^>]+)>?$|Reviewed: https://lore.kernel.org/r/$1|g;' "$1"
+>>>
+>>> Side note: that regexp should match "Message-ID" case-insensitively.
+>>> git send-email is an outlier in its capitalization of "Message-Id",
+>>> most RFCs capitalize it "Message-ID", as do common MUAs.
+>>
+>> Argh :-/
+>>
+>> It's still totally unclear if that or a similar patch will be accepted.
+>> And even if it is: the "don't do two different things in one commit"
+>> rule might not be that strict enforced when it comes to the Linux
+>> kernel's docs, but changing this regexp as part of another patch crosses
+>> the line.
+>>
+>> IOW: we afaics need a separate patch to make the regexp
+>> case-insensitively. Eric, do you want to submit one, as you brought it
+>> up? Or are there any other volunteers?
+> 
+> I suggest you turn this into a 2 patch series to avoid conflicts
+> for a trivial change.  I don't even have a kernel worktree handy
+> at the moment (ENOSPC :x)
 
-That's not later than before. It's when the driver initializes the
-MSI[X] interrupts, which usually happens in the probe() function.
+:-D
 
-The difference is that the group, (i.e.) directory is created slightly
-earlier.
+Will do this in a couple of days, unless Linus or Kees speak up.
 
->> +
->> +static inline int msi_sysfs_create_group(struct device *dev)
->> +{
->> +	return devm_device_add_group(dev, &msi_irqs_group);
->
-> Much nicer, but you changed the lifetime rules of when these attributes
-> will be removed, is that ok?
+Just to be sure I'll do what you expect to be done: I assume you want to see
+it changed like this?
 
-The msi entries are removed at the same place as they are removed in the
-current mainline code, i.e. when the device driver shuts the device
-down and disables MSI[X], which happens usually during remove()
+-	perl -pi -e 's|^Message-Id:\s*<?([^>]+)>?$|Link: https://lore.kernel.org/r/$1|g;' "$1"
++	perl -pi -e 's|^Message-I[dD]:\s*<?([^>]+)>?$|Link: https://lore.kernel.org/r/$1|g;' "$1"
 
-What's different now is that the empty group stays around a bit
-longer. I don't see how that matters.
+Or are there even more variants of Message-ID out there known that
+need to be taken into account?
 
-> I still worry that these attributes show up "after" the device is
-> registered with the driver core, but hey, it's no worse than it
-> currently is, so that's not caused by this patch series...
-
-Happens that register before or after driver->probe()?
-
->> -		}
->> +	desc->sysfs_attrs = NULL;
->> +	for (i = 0; i < desc->nvec_used; i++) {
->> +		if (attrs[i].show)
->> +			sysfs_remove_file_from_group(&dev->kobj, &attrs[i].attr, msi_irqs_group.name);
->> +		kfree(attrs[i].attr.name);
->
-> That's a cute hack, but should be documented somewhere in the code (that
-> if there is no show function, that means no attribute was registered
-> here).
->
-> If you add a comment for this (either here or when you register the
-> attribute), feel free to add:
-
-Will do.
-
-Thanks,
-
-        tglx
+Ciao, Thorsten
