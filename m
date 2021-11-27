@@ -2,98 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC25345FDCE
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 10:53:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66CF445FDD5
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 10:59:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350225AbhK0J5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 04:57:09 -0500
-Received: from gandalf.ozlabs.org ([150.107.74.76]:48857 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354042AbhK0JzI (ORCPT
+        id S1353817AbhK0KCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 05:02:34 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:45080 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354114AbhK0KAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 04:55:08 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Sat, 27 Nov 2021 05:00:33 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4J1Rj41VHzz4xbs;
-        Sat, 27 Nov 2021 20:51:51 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1638006712;
-        bh=usCd2qjYIP35CO8b4FUrLCXJOfoAeeoBkB1oYS68sdY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=A378zKGNW5e5ewj9iteoAUSZ+/xoQ6CzSJUr9kgzrv+UdtDAV6DOWHxC/ZZ9MFDKt
-         fr18FkooKVegF+QO8FNtn0f34h5CCZNdtXhL2gr1zqjNk2CDCDv4i08DKmzHbUKRB0
-         8DgqeJ/vttBSwFKverR7Bd9RLuzL9Zdft6Wbe9KpMs/Uv/FMNqgue4mba6Mtygn6YT
-         PEWzAaphJRymr0eLaTL4XI6rihI5FwsLEiCF+BeibCl0qeIjBUVfbqC5YwHXiK2qVX
-         RouDsDL+A/BC5QGFPmbhjGPth57ViVtYFXFaBz5LS4jEd43/q6kn3NehmUsmiSBy8N
-         0oLeDpluDzc2Q==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     christophe.leroy@csgroup.eu, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, npiggin@gmail.com
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.16-3 tag
-Date:   Sat, 27 Nov 2021 20:51:41 +1100
-Message-ID: <87ilweoriq.fsf@mpe.ellerman.id.au>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 8463BB82152
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 09:57:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF375C53FAD;
+        Sat, 27 Nov 2021 09:57:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1638007037;
+        bh=fXIHGIHbGVu2TI0KZU4n6tJN+PwY480NO3XJeRE+Z3k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r94sJfKfdZLIKIStJ3QykcaijAC3ZYMQ/ISHvRIMxSjpSZDH0OXxr531hkshUm9a0
+         n475OAS4Ve12mdR9KXlq/6f3NoCAyLiMXnrpe8F7zbUTOYCmM6PMV83Kfflg6Z1QPa
+         6TGt89MYdhDBsGV2GZT7R8mWC7FaLbYBes3Rbb5g=
+Date:   Sat, 27 Nov 2021 10:57:14 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>, devel@driverdev.osuosl.org,
+        Borislav Petkov <bp@suse.de>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [driver-core:driver-core-testing 5/7]
+ drivers/base/firmware_loader/test-builtin/test-builtin-firmware.bin.gen.S:5:
+ Error: file not found:
+ drivers/base/firmware_loader/test-builtin/test-builtin-firmware.bin
+Message-ID: <YaIA+uipONE4Ep5D@kroah.com>
+References: <202111271140.XMh9IcBt-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202111271140.XMh9IcBt-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+On Sat, Nov 27, 2021 at 11:24:12AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git driver-core-testing
+> head:   7f67ea9c19735222f7999754f3fee922cd8f4781
+> commit: 6a4e0b75cfa09e70c0aa39a03b478641cf2a7974 [5/7] test_firmware: add support for testing built-in firmware
+> config: powerpc-allyesconfig (https://download.01.org/0day-ci/archive/20211127/202111271140.XMh9IcBt-lkp@intel.com/config)
+> compiler: powerpc-linux-gcc (GCC) 11.2.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/commit/?id=6a4e0b75cfa09e70c0aa39a03b478641cf2a7974
+>         git remote add driver-core https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git
+>         git fetch --no-tags driver-core driver-core-testing
+>         git checkout 6a4e0b75cfa09e70c0aa39a03b478641cf2a7974
+>         # save the config file to linux build tree
+>         mkdir build_dir
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=powerpc SHELL=/bin/bash
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    drivers/base/firmware_loader/test-builtin/test-builtin-firmware.bin.gen.S: Assembler messages:
+> >> drivers/base/firmware_loader/test-builtin/test-builtin-firmware.bin.gen.S:5: Error: file not found: drivers/base/firmware_loader/test-builtin/test-builtin-firmware.bin
 
-Hi Linus,
+Thanks for the report.  Luis, I'm dropping this series from my tree.
 
-Please pull some more powerpc fixes for 5.16:
-
-The following changes since commit 136057256686de39cc3a07c2e39ef6bc43003ff6:
-
-  Linux 5.16-rc2 (2021-11-21 13:47:39 -0800)
-
-are available in the git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.16-3
-
-for you to fetch changes up to 5bb60ea611db1e04814426ed4bd1c95d1487678e:
-
-  powerpc/32: Fix hardlockup on vmap stack overflow (2021-11-24 21:00:51 +1100)
-
-- ------------------------------------------------------------------
-powerpc fixes for 5.16 #3
-
-Fix KVM using a Power9 instruction on earlier CPUs, which could lead to the host SLB being
-incorrectly invalidated and a subsequent host crash.
-
-Fix kernel hardlockup on vmap stack overflow on 32-bit.
-
-Thanks to: Christophe Leroy, Nicholas Piggin, Fabiano Rosas.
-
-- ------------------------------------------------------------------
-Christophe Leroy (1):
-      powerpc/32: Fix hardlockup on vmap stack overflow
-
-Nicholas Piggin (1):
-      KVM: PPC: Book3S HV: Prevent POWER7/8 TLB flush flushing SLB
-
-
- arch/powerpc/kernel/head_32.h        | 6 +++---
- arch/powerpc/kvm/book3s_hv_builtin.c | 5 ++++-
- 2 files changed, 7 insertions(+), 4 deletions(-)
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmGh/0IACgkQUevqPMjh
-pYC11A//aE4RsEdrvL3TY3oEWmDoDC3xtrKub5TCopudvWubpSHEvsUzCjyLPmeO
-s/5pllifG8s9LKFHqwCTTLWnfqaZkTcQMF2THLM7gGT4BjYRS0snjcXbVNaaCeNr
-ByvZduLjfoGsUkWeKojQ3Kc+xAOU1oQPJfiAofyRQtUYfirYMSA89I0wXImzhEad
-/vy6galPLtFXjEJiBVzLjqVFnmTMML4pHHQMF7F0pposxQNvWA73VYeov14kz98G
-sOElGv3U168gd4sNsVbN3imUo5dmoOSriH+MtZEKRYMznbvb/Lq8/RvF7MXhJdlw
-iTpMAuCNiCDJzn9yUJ4nRu3CEimaznN04sP107D4YEHDERDvVQoyFE6kGaT1NUsF
-bIhWRU7gLURJrVNAZeabtTYa90pHdFdHIs3eNUTHW8Fyowf6Gr4CD8MZ1kb+A/wB
-1MNLaOjfkOltbar/KtWz+sNpvnu8GeSUrK4bSBWyJAhDLHds250XQ6ZJcjRCtFKT
-sk7sefle5nV8o2MStYQQ0i88n0ZKm3wdpAFoHgWry713p2ECZ1sWopiVDZZwxK/2
-Pt94JncFV+RNG5uIf9RmXauU+R+zWIHVstiiwz5ZIOFKE6dtSwaD6BdoMuh4zNP5
-fXL86D3cnhwk2F0r1kPjznjZzDFERsNMOHYkI8C8twvE/NklN1Y=
-=5saw
------END PGP SIGNATURE-----
+greg k-h
