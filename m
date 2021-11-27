@@ -2,144 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728CE45FF8D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 16:12:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7344D45FF91
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 16:13:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239793AbhK0PPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 10:15:18 -0500
-Received: from mga04.intel.com ([192.55.52.120]:48831 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237441AbhK0PNM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 10:13:12 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="234496785"
-X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
-   d="scan'208";a="234496785"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 07:09:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
-   d="scan'208";a="457956801"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 27 Nov 2021 07:09:55 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqzKs-0009fo-0D; Sat, 27 Nov 2021 15:09:54 +0000
-Date:   Sat, 27 Nov 2021 23:09:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Beau Belgrave <beaub@linux.microsoft.com>, rostedt@goodmis.org,
-        mhiramat@kernel.org
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        beaub@linux.microsoft.com
-Subject: Re: [PATCH v5 09/12] user_events: Optimize writing events by only
- copying data once
-Message-ID: <202111272346.r2ZhQ5KM-lkp@intel.com>
-References: <20211116005047.1808-10-beaub@linux.microsoft.com>
+        id S1348676AbhK0PQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 10:16:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237264AbhK0POY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 10:14:24 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE50C06174A
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 07:11:09 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id t5so51633351edd.0
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 07:11:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bjlmdsLgAtz4NzqXsAhkQsWkfptqwKSqRwT8CWQ7q5c=;
+        b=VQWjzhfFwOp09sOHPQJRn0BZZUCfS7xRXwOQrH2VhaKgpiCv92pkjrMRf/H1sHMTv9
+         zhBZIKKxVNWjPdZMxXQkqtp0sJrHgwxkXFEhqYdzTwmCEAJVHhkNWmEZAjQN73HMhJWt
+         8igMvfdyH4lT7VM/9KrbW1/EIT38C7N3U84dB4A10gNpYCQ+nT8vzjtdKB1f+9t1FEmv
+         R32u/HC/T8cIlG9c3V1h01mQeffmj5H7RN5Og7CuNVF0hviFTnqQi3rMA0R5YL7T4/1f
+         MhVc4kcO+zwG2bvElwph8sK+avefucx3bXyiiJVmufElIS7LEdgCJiA7GfK/8AWTdrez
+         XASg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bjlmdsLgAtz4NzqXsAhkQsWkfptqwKSqRwT8CWQ7q5c=;
+        b=vMI70EhbtuKADn0Xf2Sb53aS9vQCiBx7+kScdPQ3zbM6SvNIDoGljbFyz4r6AZoRbu
+         BuASbwVHSSxCXj/nKyJvF/WT4zZ2+lRMZ0R9fV1G+lR8BCxlMtahojcVyo+sDck/Xs7C
+         j0dcaEXgJ1cnGVoJABdpPHAVTxhqa+eZzIUX4JzxUKot5PYKKFuNwlyX21kv7hpd3NbT
+         nXU4+cTW8KAMTRMVsIqVWH6t1iTrqGIIqHz1sbmNKsy7iK9OE6KXx8AJUqE/yYhNk8xE
+         pgs1DIQ5Uz9eRyMafAtie2Xybd68Ub/v8pZIzgmVCkkzL/8RfahUJjpdfL4GjdkPTajh
+         mNZQ==
+X-Gm-Message-State: AOAM531DSLONdWWAN4q5pNX5LkdSNditXLqknvzGDrW8rsaReOhkV55o
+        lsqr616OHTBMWbpJn1wqsI77aUg9YfUY2Onfkbw=
+X-Google-Smtp-Source: ABdhPJy17y4eqnPYwTitRBGt3bjzpNuWpKQATXYoz5BKcTMokwHoWIM+LEdhq5aX6Easx6rY53+3zIwDkfaVtx2f/A0=
+X-Received: by 2002:a17:907:6ea1:: with SMTP id sh33mr46809783ejc.150.1638025868309;
+ Sat, 27 Nov 2021 07:11:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211116005047.1808-10-beaub@linux.microsoft.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <202111271017.dLo8jJ8p-lkp@intel.com>
+In-Reply-To: <202111271017.dLo8jJ8p-lkp@intel.com>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Sat, 27 Nov 2021 07:10:56 -0800
+Message-ID: <CAMo8BfL88Qc6o=WheT6+n4pOpXQbnw220UQa_GCQb98F=S9ffA@mail.gmail.com>
+Subject: Re: [linux-stable-rc:linux-4.19.y 565/981] arch/xtensa/platforms/xtfpga/include/platform/hardware.h:50:33:
+ error: initializer element is not constant
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Beau,
+On Fri, Nov 26, 2021 at 6:33 PM kernel test robot <lkp@intel.com> wrote:
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> head:   1f244a54b39dd02c69f79001b38e2650e96f1ea8
+> commit: 1c21a8df144f1edb3b6f5f24559825780c227a7d [565/981] xtensa: xtfpga: use CONFIG_USE_OF instead of CONFIG_OF
+> config: xtensa-randconfig-r001-20211126 (https://download.01.org/0day-ci/archive/20211127/202111271017.dLo8jJ8p-lkp@intel.com/config)
+> compiler: xtensa-linux-gcc (GCC) 11.2.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=1c21a8df144f1edb3b6f5f24559825780c227a7d
+>         git remote add linux-stable-rc https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+>         git fetch --no-tags linux-stable-rc linux-4.19.y
+>         git checkout 1c21a8df144f1edb3b6f5f24559825780c227a7d
+>         # save the config file to linux build tree
+>         mkdir build_dir
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=xtensa SHELL=/bin/bash
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>    In file included from include/linux/kernel.h:10,
+>                     from arch/xtensa/platforms/xtfpga/setup.c:19:
+>    include/linux/dma-mapping.h: In function 'dma_map_resource':
+>    arch/xtensa/include/asm/page.h:182:16: warning: comparison of unsigned expression in '>= 0' is always true [-Wtype-limits]
+>      182 |         ((pfn) >= ARCH_PFN_OFFSET && ((pfn) - ARCH_PFN_OFFSET) < max_mapnr)
+>          |                ^~
+>    include/linux/compiler.h:77:45: note: in definition of macro 'unlikely'
+>       77 | # define unlikely(x)    __builtin_expect(!!(x), 0)
+>          |                                             ^
+>    include/linux/dma-mapping.h:329:9: note: in expansion of macro 'BUG_ON'
+>      329 |         BUG_ON(pfn_valid(PHYS_PFN(phys_addr)));
+>          |         ^~~~~~
+>    include/linux/dma-mapping.h:329:16: note: in expansion of macro 'pfn_valid'
+>      329 |         BUG_ON(pfn_valid(PHYS_PFN(phys_addr)));
+>          |                ^~~~~~~~~
+>    In file included from arch/xtensa/platforms/xtfpga/setup.c:37:
+>    arch/xtensa/platforms/xtfpga/setup.c: At top level:
+> >> arch/xtensa/platforms/xtfpga/include/platform/hardware.h:50:33: error: initializer element is not constant
+>       50 | #define OETH_REGS_PADDR         (XCHAL_KIO_PADDR + 0x0D030000)
+>          |                                 ^
 
-Thank you for the patch! Perhaps something to improve:
+This happens because the backported change
+1c21a8df144f1edb3b6f5f24559825780c227a7d depends on the change
+d67ed2510d28 ("xtensa: use CONFIG_USE_OF instead of CONFIG_OF")
+which is not in that stable tree.
 
-[auto build test WARNING on 67d4f6e3bf5dddced226fbf19704cdbbb0c98847]
-
-url:    https://github.com/0day-ci/linux/commits/Beau-Belgrave/user_events-Enable-user-processes-to-create-and-write-to-trace-events/20211116-090533
-base:   67d4f6e3bf5dddced226fbf19704cdbbb0c98847
-config: hexagon-randconfig-r031-20211116 (https://download.01.org/0day-ci/archive/20211127/202111272346.r2ZhQ5KM-lkp@intel.com/config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project fbe72e41b99dc7994daac300d208a955be3e4a0a)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/5d08d02e133130c59d164c17756a0aa0abb5418c
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Beau-Belgrave/user_events-Enable-user-processes-to-create-and-write-to-trace-events/20211116-090533
-        git checkout 5d08d02e133130c59d164c17756a0aa0abb5418c
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash drivers/gpio/ kernel/trace/
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
->> kernel/trace/trace_events_user.c:563:22: warning: comparison of distinct pointer types ('typeof (i->count) *' (aka 'unsigned int *') and 'typeof ((1UL << 16)) *' (aka 'unsigned long *')) [-Wcompare-distinct-pointer-types]
-                   size_t copy_size = min(i->count, MAX_BPF_COPY_SIZE);
-                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/minmax.h:45:19: note: expanded from macro 'min'
-   #define min(x, y)       __careful_cmp(x, y, <)
-                           ^~~~~~~~~~~~~~~~~~~~~~
-   include/linux/minmax.h:36:24: note: expanded from macro '__careful_cmp'
-           __builtin_choose_expr(__safe_cmp(x, y), \
-                                 ^~~~~~~~~~~~~~~~
-   include/linux/minmax.h:26:4: note: expanded from macro '__safe_cmp'
-                   (__typecheck(x, y) && __no_side_effects(x, y))
-                    ^~~~~~~~~~~~~~~~~
-   include/linux/minmax.h:20:28: note: expanded from macro '__typecheck'
-           (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
-                      ~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~
-   1 warning generated.
-
-
-vim +563 kernel/trace/trace_events_user.c
-
-   537	
-   538	#ifdef CONFIG_PERF_EVENTS
-   539	static void user_event_bpf(struct user_event *user, struct iov_iter *i)
-   540	{
-   541		struct user_bpf_context context;
-   542		struct user_bpf_iter bpf_i;
-   543		char fast_data[MAX_STACK_BPF_DATA];
-   544		void *temp = NULL;
-   545	
-   546		if ((user->flags & FLAG_BPF_ITER) && iter_is_iovec(i)) {
-   547			/* Raw iterator */
-   548			context.data_type = USER_BPF_DATA_ITER;
-   549			context.data_len = i->count;
-   550			context.iter = &bpf_i;
-   551	
-   552			bpf_i.iov_offset = i->iov_offset;
-   553			bpf_i.iov = i->iov;
-   554			bpf_i.nr_segs = i->nr_segs;
-   555		} else if (i->nr_segs == 1 && iter_is_iovec(i)) {
-   556			/* Single buffer from user */
-   557			context.data_type = USER_BPF_DATA_USER;
-   558			context.data_len = i->count;
-   559			context.udata = i->iov->iov_base + i->iov_offset;
-   560		} else {
-   561			/* Multi buffer from user */
-   562			struct iov_iter copy = *i;
- > 563			size_t copy_size = min(i->count, MAX_BPF_COPY_SIZE);
-   564	
-   565			context.data_type = USER_BPF_DATA_KERNEL;
-   566			context.kdata = fast_data;
-   567	
-   568			if (unlikely(copy_size > sizeof(fast_data))) {
-   569				temp = kmalloc(copy_size, GFP_NOWAIT);
-   570	
-   571				if (temp)
-   572					context.kdata = temp;
-   573				else
-   574					copy_size = sizeof(fast_data);
-   575			}
-   576	
-   577			context.data_len = copy_nofault(context.kdata,
-   578							copy_size, &copy);
-   579		}
-   580	
-   581		trace_call_bpf(&user->call, &context);
-   582	
-   583		kfree(temp);
-   584	}
-   585	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Should I send the backported version of the d67ed2510d28 or should
+the change 1c21a8df144f1edb3b6f5f24559825780c227a7d be reverted
+from the stable? (IMO they are not the stable material).
+-- 
+Thanks.
+-- Max
