@@ -2,107 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CFE845FBEB
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 03:16:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C48D45FC19
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 03:37:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352206AbhK0CT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 21:19:26 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:56574 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhK0CRX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 21:17:23 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1536660C03;
-        Sat, 27 Nov 2021 02:14:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77123C53FCA;
-        Sat, 27 Nov 2021 02:14:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637979249;
-        bh=7pjtayI21JZZUNaRaXhr1b9xe4JsEM8VVt0hkGACp08=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jubweFa9Y8gIX83+JquozziDV/3xfxFkyzbeFCFGH8y8SRVz4vUbqeE4vLvNoqdW1
-         KCUDhih7yUQlJtx3gz8HdGU2aOzqKoMsqytGgteILh8QHDtJuEQjLvbCjuSVmPdm0W
-         l4mZca98KfcFUsZZnaSnY/FLM9zAlMKatF2W388JPuUqOkwucUJETBA9di3kMo05Je
-         WMJ02oOBXHnpIga8/bTnbUCB8Jpki+8FrodqjcBAL38QBnK9s6eVMD7g69PoIxVzqY
-         /XUdaaZE6u2sHvvOHnt6TavRxsARQvindxeqOpZw0MUklg2A83XOljOadZHQ+k+7yE
-         nN+e191stXHxw==
-Received: by mail-yb1-f180.google.com with SMTP id x32so24545837ybi.12;
-        Fri, 26 Nov 2021 18:14:09 -0800 (PST)
-X-Gm-Message-State: AOAM5302h3i7QrR7ZRbVzEu66ffOujcY3uyvhbRbhFrn9uuodn3QlJuk
-        E8WZnkAzh2gizgf82WYra1rFnTRKpCcgVMLQj5M=
-X-Google-Smtp-Source: ABdhPJxqDkMGG8d1vVnG9HdX8nQGKnQ6qjyLcbvPEUHVpA4AF+sMzOmWF1dBAyV75w65nr3VgsVZRntwN4joLNAmb2U=
-X-Received: by 2002:a25:660d:: with SMTP id a13mr19871414ybc.460.1637979248636;
- Fri, 26 Nov 2021 18:14:08 -0800 (PST)
+        id S237265AbhK0Ciu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 21:38:50 -0500
+Received: from mga17.intel.com ([192.55.52.151]:16524 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347625AbhK0Cgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 21:36:47 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="216442884"
+X-IronPort-AV: E=Sophos;i="5.87,267,1631602800"; 
+   d="scan'208";a="216442884"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 18:33:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,267,1631602800"; 
+   d="scan'208";a="457856623"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 26 Nov 2021 18:33:30 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqnWr-0008wd-Vb; Sat, 27 Nov 2021 02:33:29 +0000
+Date:   Sat, 27 Nov 2021 10:32:52 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Max Filippov <jcmvbkbc@gmail.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [linux-stable-rc:linux-4.19.y 565/981]
+ arch/xtensa/platforms/xtfpga/include/platform/hardware.h:50:33: error:
+ initializer element is not constant
+Message-ID: <202111271017.dLo8jJ8p-lkp@intel.com>
 MIME-Version: 1.0
-References: <20211123205607.452497-1-zenczykowski@gmail.com> <CANP3RGdZq6x0NB2wKn5YG2Va=j0YHKd5DcM7_dyaKWhdyUrzOw@mail.gmail.com>
-In-Reply-To: <CANP3RGdZq6x0NB2wKn5YG2Va=j0YHKd5DcM7_dyaKWhdyUrzOw@mail.gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 26 Nov 2021 18:13:57 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW6h4cvFiRwT9h-0z1xTr_HeWcXMTgnd0FERSmTTjbZOUA@mail.gmail.com>
-Message-ID: <CAPhsuW6h4cvFiRwT9h-0z1xTr_HeWcXMTgnd0FERSmTTjbZOUA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: allow readonly direct path access for skfilter
-To:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Linux Network Development Mailing List 
-        <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 3:02 PM Maciej =C5=BBenczykowski <maze@google.com> =
-wrote:
->
-> Note: this is more of an RFC... question in patch format... is this
-> even a good idea?
->
-> On Tue, Nov 23, 2021 at 12:56 PM Maciej =C5=BBenczykowski
-> <zenczykowski@gmail.com> wrote:
-> >
-> > From: Maciej =C5=BBenczykowski <maze@google.com>
-> >
-> > skfilter bpf programs can read the packet directly via llvm.bpf.load.by=
-te/
-> > /half/word which are 8/16/32-bit primitive bpf instructions and thus
-> > behave basically as well as DPA reads.  But there is no 64-bit equivale=
-nt,
-> > due to the support for the equivalent 64-bit bpf opcode never having be=
-en
-> > added (unclear why, there was a patch posted).
-> > DPA uses a slightly different mechanism, so doesn't suffer this limitat=
-ion.
-> >
-> > Using 64-bit reads, 128-bit ipv6 address comparisons can be done in jus=
-t
-> > 2 steps, instead of the 4 steps needed with llvm.bpf.word.
-> >
-> > This should hopefully allow simpler (less instructions, and possibly le=
-ss
-> > logic and maybe even less jumps) programs.  Less jumps may also mean va=
-stly
-> > faster bpf verifier times (it can be exponential in the number of jumps=
-...).
-> >
-> > This can be particularly important when trying to do something like sca=
-n
-> > a netlink message for a pattern (2000 iteration loop) to decide whether
-> > a message should be dropped, or delivered to userspace (thus waking it =
-up).
-> >
-> > I'm requiring CAP_NET_ADMIN because I'm not sure of the security
-> > implications...
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+head:   1f244a54b39dd02c69f79001b38e2650e96f1ea8
+commit: 1c21a8df144f1edb3b6f5f24559825780c227a7d [565/981] xtensa: xtfpga: use CONFIG_USE_OF instead of CONFIG_OF
+config: xtensa-randconfig-r001-20211126 (https://download.01.org/0day-ci/archive/20211127/202111271017.dLo8jJ8p-lkp@intel.com/config)
+compiler: xtensa-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=1c21a8df144f1edb3b6f5f24559825780c227a7d
+        git remote add linux-stable-rc https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+        git fetch --no-tags linux-stable-rc linux-4.19.y
+        git checkout 1c21a8df144f1edb3b6f5f24559825780c227a7d
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=xtensa SHELL=/bin/bash
 
-I don't know BPF_PROG_TYPE_SOCKET_FILTER very well, but the patch
-seems reasonable to me. It will be great if we can show the performance
-impact with a benchmark or a selftests.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Thanks,
-Song
+All errors (new ones prefixed by >>):
+
+   In file included from include/linux/kernel.h:10,
+                    from arch/xtensa/platforms/xtfpga/setup.c:19:
+   include/linux/dma-mapping.h: In function 'dma_map_resource':
+   arch/xtensa/include/asm/page.h:182:16: warning: comparison of unsigned expression in '>= 0' is always true [-Wtype-limits]
+     182 |         ((pfn) >= ARCH_PFN_OFFSET && ((pfn) - ARCH_PFN_OFFSET) < max_mapnr)
+         |                ^~
+   include/linux/compiler.h:77:45: note: in definition of macro 'unlikely'
+      77 | # define unlikely(x)    __builtin_expect(!!(x), 0)
+         |                                             ^
+   include/linux/dma-mapping.h:329:9: note: in expansion of macro 'BUG_ON'
+     329 |         BUG_ON(pfn_valid(PHYS_PFN(phys_addr)));
+         |         ^~~~~~
+   include/linux/dma-mapping.h:329:16: note: in expansion of macro 'pfn_valid'
+     329 |         BUG_ON(pfn_valid(PHYS_PFN(phys_addr)));
+         |                ^~~~~~~~~
+   In file included from arch/xtensa/platforms/xtfpga/setup.c:37:
+   arch/xtensa/platforms/xtfpga/setup.c: At top level:
+>> arch/xtensa/platforms/xtfpga/include/platform/hardware.h:50:33: error: initializer element is not constant
+      50 | #define OETH_REGS_PADDR         (XCHAL_KIO_PADDR + 0x0D030000)
+         |                                 ^
+   arch/xtensa/platforms/xtfpga/setup.c:168:26: note: in expansion of macro 'OETH_REGS_PADDR'
+     168 |                 .start = OETH_REGS_PADDR,
+         |                          ^~~~~~~~~~~~~~~
+   arch/xtensa/platforms/xtfpga/include/platform/hardware.h:50:33: note: (near initialization for 'ethoc_res[0].start')
+      50 | #define OETH_REGS_PADDR         (XCHAL_KIO_PADDR + 0x0D030000)
+         |                                 ^
+   arch/xtensa/platforms/xtfpga/setup.c:168:26: note: in expansion of macro 'OETH_REGS_PADDR'
+     168 |                 .start = OETH_REGS_PADDR,
+         |                          ^~~~~~~~~~~~~~~
+>> arch/xtensa/platforms/xtfpga/include/platform/hardware.h:50:33: error: initializer element is not constant
+      50 | #define OETH_REGS_PADDR         (XCHAL_KIO_PADDR + 0x0D030000)
+         |                                 ^
+   arch/xtensa/platforms/xtfpga/setup.c:169:26: note: in expansion of macro 'OETH_REGS_PADDR'
+     169 |                 .end   = OETH_REGS_PADDR + OETH_REGS_SIZE - 1,
+         |                          ^~~~~~~~~~~~~~~
+   arch/xtensa/platforms/xtfpga/include/platform/hardware.h:50:33: note: (near initialization for 'ethoc_res[0].end')
+      50 | #define OETH_REGS_PADDR         (XCHAL_KIO_PADDR + 0x0D030000)
+         |                                 ^
+   arch/xtensa/platforms/xtfpga/setup.c:169:26: note: in expansion of macro 'OETH_REGS_PADDR'
+     169 |                 .end   = OETH_REGS_PADDR + OETH_REGS_SIZE - 1,
+         |                          ^~~~~~~~~~~~~~~
+   arch/xtensa/platforms/xtfpga/include/platform/hardware.h:52:33: error: initializer element is not constant
+      52 | #define OETH_SRAMBUFF_PADDR     (XCHAL_KIO_PADDR + 0x0D800000)
+         |                                 ^
+   arch/xtensa/platforms/xtfpga/setup.c:173:26: note: in expansion of macro 'OETH_SRAMBUFF_PADDR'
+     173 |                 .start = OETH_SRAMBUFF_PADDR,
+         |                          ^~~~~~~~~~~~~~~~~~~
+   arch/xtensa/platforms/xtfpga/include/platform/hardware.h:52:33: note: (near initialization for 'ethoc_res[1].start')
+      52 | #define OETH_SRAMBUFF_PADDR     (XCHAL_KIO_PADDR + 0x0D800000)
+         |                                 ^
+   arch/xtensa/platforms/xtfpga/setup.c:173:26: note: in expansion of macro 'OETH_SRAMBUFF_PADDR'
+     173 |                 .start = OETH_SRAMBUFF_PADDR,
+         |                          ^~~~~~~~~~~~~~~~~~~
+   arch/xtensa/platforms/xtfpga/include/platform/hardware.h:52:33: error: initializer element is not constant
+      52 | #define OETH_SRAMBUFF_PADDR     (XCHAL_KIO_PADDR + 0x0D800000)
+         |                                 ^
+   arch/xtensa/platforms/xtfpga/setup.c:174:26: note: in expansion of macro 'OETH_SRAMBUFF_PADDR'
+     174 |                 .end   = OETH_SRAMBUFF_PADDR + OETH_SRAMBUFF_SIZE - 1,
+         |                          ^~~~~~~~~~~~~~~~~~~
+   arch/xtensa/platforms/xtfpga/include/platform/hardware.h:52:33: note: (near initialization for 'ethoc_res[1].end')
+      52 | #define OETH_SRAMBUFF_PADDR     (XCHAL_KIO_PADDR + 0x0D800000)
+         |                                 ^
+   arch/xtensa/platforms/xtfpga/setup.c:174:26: note: in expansion of macro 'OETH_SRAMBUFF_PADDR'
+     174 |                 .end   = OETH_SRAMBUFF_PADDR + OETH_SRAMBUFF_SIZE - 1,
+         |                          ^~~~~~~~~~~~~~~~~~~
+   arch/xtensa/platforms/xtfpga/include/platform/hardware.h:57:33: error: initializer element is not constant
+      57 | #define C67X00_PADDR            (XCHAL_KIO_PADDR + 0x0D0D0000)
+         |                                 ^
+   arch/xtensa/platforms/xtfpga/setup.c:211:26: note: in expansion of macro 'C67X00_PADDR'
+     211 |                 .start = C67X00_PADDR,
+         |                          ^~~~~~~~~~~~
+   arch/xtensa/platforms/xtfpga/include/platform/hardware.h:57:33: note: (near initialization for 'c67x00_res[0].start')
+      57 | #define C67X00_PADDR            (XCHAL_KIO_PADDR + 0x0D0D0000)
+         |                                 ^
+   arch/xtensa/platforms/xtfpga/setup.c:211:26: note: in expansion of macro 'C67X00_PADDR'
+     211 |                 .start = C67X00_PADDR,
+         |                          ^~~~~~~~~~~~
+   arch/xtensa/platforms/xtfpga/include/platform/hardware.h:57:33: error: initializer element is not constant
+      57 | #define C67X00_PADDR            (XCHAL_KIO_PADDR + 0x0D0D0000)
+         |                                 ^
+   arch/xtensa/platforms/xtfpga/setup.c:212:26: note: in expansion of macro 'C67X00_PADDR'
+     212 |                 .end   = C67X00_PADDR + C67X00_SIZE - 1,
+         |                          ^~~~~~~~~~~~
+   arch/xtensa/platforms/xtfpga/include/platform/hardware.h:57:33: note: (near initialization for 'c67x00_res[0].end')
+      57 | #define C67X00_PADDR            (XCHAL_KIO_PADDR + 0x0D0D0000)
+         |                                 ^
+   arch/xtensa/platforms/xtfpga/setup.c:212:26: note: in expansion of macro 'C67X00_PADDR'
+     212 |                 .end   = C67X00_PADDR + C67X00_SIZE - 1,
+         |                          ^~~~~~~~~~~~
+   arch/xtensa/platforms/xtfpga/include/platform/hardware.h:37:33: error: initializer element is not constant
+      37 | #define DUART16552_PADDR        (XCHAL_KIO_PADDR + 0x0D050020)
+         |                                 ^
+   arch/xtensa/platforms/xtfpga/setup.c:242:19: note: in expansion of macro 'DUART16552_PADDR'
+     242 |         .start  = DUART16552_PADDR,
+         |                   ^~~~~~~~~~~~~~~~
+   arch/xtensa/platforms/xtfpga/include/platform/hardware.h:37:33: note: (near initialization for 'serial_resource.start')
+      37 | #define DUART16552_PADDR        (XCHAL_KIO_PADDR + 0x0D050020)
+         |                                 ^
+   arch/xtensa/platforms/xtfpga/setup.c:242:19: note: in expansion of macro 'DUART16552_PADDR'
+     242 |         .start  = DUART16552_PADDR,
+         |                   ^~~~~~~~~~~~~~~~
+   arch/xtensa/platforms/xtfpga/include/platform/hardware.h:37:33: error: initializer element is not constant
+      37 | #define DUART16552_PADDR        (XCHAL_KIO_PADDR + 0x0D050020)
+         |                                 ^
+   arch/xtensa/platforms/xtfpga/setup.c:243:19: note: in expansion of macro 'DUART16552_PADDR'
+     243 |         .end    = DUART16552_PADDR + 0x1f,
+         |                   ^~~~~~~~~~~~~~~~
+   arch/xtensa/platforms/xtfpga/include/platform/hardware.h:37:33: note: (near initialization for 'serial_resource.end')
+      37 | #define DUART16552_PADDR        (XCHAL_KIO_PADDR + 0x0D050020)
+         |                                 ^
+   arch/xtensa/platforms/xtfpga/setup.c:243:19: note: in expansion of macro 'DUART16552_PADDR'
+     243 |         .end    = DUART16552_PADDR + 0x1f,
+         |                   ^~~~~~~~~~~~~~~~
+   arch/xtensa/platforms/xtfpga/include/platform/hardware.h:37:33: error: initializer element is not constant
+      37 | #define DUART16552_PADDR        (XCHAL_KIO_PADDR + 0x0D050020)
+         |                                 ^
+   arch/xtensa/platforms/xtfpga/setup.c:249:35: note: in expansion of macro 'DUART16552_PADDR'
+     249 |                 .mapbase        = DUART16552_PADDR,
+         |                                   ^~~~~~~~~~~~~~~~
+   arch/xtensa/platforms/xtfpga/include/platform/hardware.h:37:33: note: (near initialization for 'serial_platform_data[0].mapbase')
+      37 | #define DUART16552_PADDR        (XCHAL_KIO_PADDR + 0x0D050020)
+         |                                 ^
+   arch/xtensa/platforms/xtfpga/setup.c:249:35: note: in expansion of macro 'DUART16552_PADDR'
+     249 |                 .mapbase        = DUART16552_PADDR,
+         |                                   ^~~~~~~~~~~~~~~~
+
+
+vim +50 arch/xtensa/platforms/xtfpga/include/platform/hardware.h
+
+0d456bad36d42d1 Max Filippov 2012-11-05  47  
+0d456bad36d42d1 Max Filippov 2012-11-05  48  /*  OpenCores Ethernet controller:  */
+0d456bad36d42d1 Max Filippov 2012-11-05  49  				/* regs + RX/TX descriptors */
+0d456bad36d42d1 Max Filippov 2012-11-05 @50  #define OETH_REGS_PADDR		(XCHAL_KIO_PADDR + 0x0D030000)
+0d456bad36d42d1 Max Filippov 2012-11-05  51  #define OETH_REGS_SIZE		0x1000
+0d456bad36d42d1 Max Filippov 2012-11-05  52  #define OETH_SRAMBUFF_PADDR	(XCHAL_KIO_PADDR + 0x0D800000)
+0d456bad36d42d1 Max Filippov 2012-11-05  53  
+0d456bad36d42d1 Max Filippov 2012-11-05  54  				/* 5*rx buffs + 5*tx buffs */
+0d456bad36d42d1 Max Filippov 2012-11-05  55  #define OETH_SRAMBUFF_SIZE	(5 * 0x600 + 5 * 0x600)
+0d456bad36d42d1 Max Filippov 2012-11-05  56  
+
+:::::: The code at line 50 was first introduced by commit
+:::::: 0d456bad36d42d16022be045c8a53ddbb59ee478 xtensa: add support for the XTFPGA boards
+
+:::::: TO: Max Filippov <jcmvbkbc@gmail.com>
+:::::: CC: Chris Zankel <chris@zankel.net>
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
