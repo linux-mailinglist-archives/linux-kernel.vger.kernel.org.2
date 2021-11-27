@@ -2,80 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1D34601B9
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 22:45:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B3F4601BB
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 22:45:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356272AbhK0Vqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 16:46:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46114 "EHLO
+        id S1356364AbhK0Vsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 16:48:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356268AbhK0Vol (ORCPT
+        with ESMTP id S236029AbhK0Vql (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 16:44:41 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C057C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 13:41:26 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9F20A60EC8
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 21:41:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31144C53FBF;
-        Sat, 27 Nov 2021 21:41:24 +0000 (UTC)
-Date:   Sat, 27 Nov 2021 16:41:20 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
+        Sat, 27 Nov 2021 16:46:41 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F218CC06173E;
+        Sat, 27 Nov 2021 13:43:25 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id z8so26217158ljz.9;
+        Sat, 27 Nov 2021 13:43:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=bml/NFEGd+kn2xT1YP9f+ZlUupFkhTxDiEEx32jkgxE=;
+        b=JOqkRW43e6TcCGAPFLnBkSQdIfssD9Azf6og3dR9yvmXAI3gVxvJEepM0UnPcx119s
+         riYuSjToPNg7lD+NTORkQvucIx3Mpnlky/1tOq19Dso2IHIIiWZkx3I/1liUE/XRuccm
+         JtyCvC1z7J78qLsgcDqiIXpTOTlDHU94Pf3EtmjN1suTMUeq+ovf1gAcsKqLbZ1wBKsQ
+         1Rpiqt4uOseKaWhdVRdkwoRHu8CXIvQk59W+w1w24S8lKUSytzgDGkQa3B4jvPh+FqNj
+         2NKcto9+cj1sQrmhSR+FfUxQusI+rs+HNyuh6qrN7YC2OBkiToOO3apWsvygNxXYRV0Z
+         6PVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=bml/NFEGd+kn2xT1YP9f+ZlUupFkhTxDiEEx32jkgxE=;
+        b=EiXjcq6hnfOS7922mRGC6H5GCa8OQPxRGi2pRq+XrFXsGu7m8EDtq+57HpRT2u2XPa
+         BdFuU/UwXy8xBon2SUvme8Sm95qhEriYpFfx25yxB9TFrFWErWEssKujZp6g8pBbsmtH
+         t5EO8FuMjJ/v5SUXRAxVPfDUMkhrEIQHqbHuLO7SIvvlYIAHYUTYTUbsiPsQNIiJvbET
+         48K+D9DR8weN51j9x7yAZWwIre/jbQhmtt6VAe+qNWBkHAgGMiFLheVVN09gPfYaRFxi
+         cMqE5L80oRozlEHS+K8Jvt24UDRuk1mG9hb3VPzsyjtyAamcG6Cag63Z7N28ftESKenM
+         5pBg==
+X-Gm-Message-State: AOAM533PxTw0PekzVmtj4rfv8NI5OwbAKeQaNt8G6kqQB4LlHJviZTje
+        haHxclqdT+J7Bn/JWGLVTrm59COp/0in3gV6oMmYsQVdSAI=
+X-Google-Smtp-Source: ABdhPJysnOc964BpO4TupD4dIS0Ool7Gb54XEmp+KMn4jhq00tT7dD+BK4WxxdgF1RtX0iVIVeV4tCSZyBSPMreER1I=
+X-Received: by 2002:a2e:7c16:: with SMTP id x22mr40218388ljc.460.1638049403985;
+ Sat, 27 Nov 2021 13:43:23 -0800 (PST)
+MIME-Version: 1.0
+From:   Steve French <smfrench@gmail.com>
+Date:   Sat, 27 Nov 2021 15:43:13 -0600
+Message-ID: <CAH2r5muqy=YYFYkgZFenPSx0WexNmnp6GYL0qHP2hbyHA--Ckw@mail.gmail.com>
+Subject: [GIT PULL] ksmbd server fixes
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Subject: Re: [GIT PULL] tracing: Two event pid filtering bug fixes
-Message-ID: <20211127164120.1eb79c1a@oasis.local.home>
-In-Reply-To: <20211127132822.5d4d2a8b@gandalf.local.home>
-References: <20211127132822.5d4d2a8b@gandalf.local.home>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        CIFS <linux-cifs@vger.kernel.org>,
+        Namjae Jeon <linkinjeon@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 27 Nov 2021 13:28:22 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Please pull the following changes since commit
+136057256686de39cc3a07c2e39ef6bc43003ff6:
 
-> +	struct trace_pid_list *no_pid_list;
-> +	struct trace_pid_list *pid_list;
->  	struct trace_event_file *file;
-> +	unsigned int first;
->  
->  	file = kmem_cache_alloc(file_cachep, GFP_TRACE);
->  	if (!file)
->  		return NULL;
->  
-> +	pid_list = rcu_dereference_protected(tr->filtered_pids,
-> +					     lockdep_is_held(&event_mutex));
-> +	no_pid_list = rcu_dereference_protected(tr->filtered_no_pids,
-> +					     lockdep_is_held(&event_mutex));
-> +
-> +	if (!trace_pid_list_first(pid_list, &first) ||
-> +	    !trace_pid_list_first(pid_list, &first))
-> +		file->flags |= EVENT_FILE_FL_PID_FILTER;
+  Linux 5.16-rc2 (2021-11-21 13:47:39 -0800)
 
-And of course since I only tested "trace only this pid" case, and not
-the "trace everything but this pid" case, the above has a bug (which
-the ktest bot just told me about), and my tests missed it.
+are available in the Git repository at:
 
-That should have been:
+  git://git.samba.org/ksmbd.git tags/5.16-rc2-ksmbd-fixes
 
-	if (!trace_pid_list_first(pid_list, &first) ||
-	    !trace_pid_list_first(no_pid_list, &first))
+for you to fetch changes up to 178ca6f85aa3231094467691f5ea1ff2f398aa8d:
 
-I'll fix it, run it through my tests, and post another pull request :-/.
+  ksmbd: fix memleak in get_file_stream_info() (2021-11-25 00:09:26 -0600)
 
-/me needs to add that case to his tests, even though it's extremely
-rare (I never use it). Which is exactly why I should have a test for it!
+----------------------------------------------------------------
+5 ksmbd server fixes, 4 for stable
+- memleak fix
+- fix for default data stream on fs that don't support xattr
+- error logging fix
+- session setup fix
+- minor doc cleanup
 
--- Steve
+Regression test results:
+http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/8/builds/96
+----------------------------------------------------------------
+Christophe JAILLET (1):
+      ksmbd: Fix an error handling path in 'smb2_sess_setup()'
+
+Namjae Jeon (3):
+      ksmbd: downgrade addition info error msg to debug in smb2_get_info_sec()
+      ksmbd: contain default data stream even if xattr is empty
+      ksmbd: fix memleak in get_file_stream_info()
+
+Salvatore Bonaccorso (1):
+      docs: filesystem: cifs: ksmbd: Fix small layout issues
+
+ Documentation/filesystems/cifs/ksmbd.rst | 10 +++++-----
+ fs/ksmbd/smb2pdu.c                       | 30 +++++++++++++++++-------------
+
+-- 
+Thanks,
+
+Steve
