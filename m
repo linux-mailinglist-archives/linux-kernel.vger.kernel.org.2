@@ -2,109 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4838B460010
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 17:07:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0AF646001A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 17:14:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355399AbhK0QKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 11:10:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346831AbhK0QIr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 11:08:47 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A85C061574;
-        Sat, 27 Nov 2021 08:05:32 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1309BB82A02;
-        Sat, 27 Nov 2021 16:05:31 +0000 (UTC)
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp.kernel.org (Postfix) with ESMTPSA id 61591C53FBF;
-        Sat, 27 Nov 2021 16:05:25 +0000 (UTC)
-Date:   Sat, 27 Nov 2021 16:10:26 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Olivier Moysan <olivier.moysan@foss.st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Wan Jiabing <wanjiabing@vivo.com>, Xu Wang <vulab@iscas.ac.cn>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-Subject: Re: [PATCH v2] iio: adc: stm32: fix null pointer on defer_probe
- error
-Message-ID: <20211127161026.2e725d5a@jic23-huawei>
-In-Reply-To: <20211122144501.000014a3@Huawei.com>
-References: <20211122143809.2332-1-olivier.moysan@foss.st.com>
-        <2ca4ad17-d7e5-f4be-1596-7c7de0fa5661@pengutronix.de>
-        <20211122144501.000014a3@Huawei.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S1355629AbhK0QRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 11:17:16 -0500
+Received: from mga05.intel.com ([192.55.52.43]:2158 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1351049AbhK0QPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 11:15:15 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10181"; a="322000673"
+X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
+   d="scan'208";a="322000673"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 08:12:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
+   d="scan'208";a="539534695"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 27 Nov 2021 08:11:59 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mr0Ix-0009jf-8V; Sat, 27 Nov 2021 16:11:59 +0000
+Date:   Sun, 28 Nov 2021 00:11:20 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Nick Terrell <terrelln@fb.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: ERROR: modpost: "__ld_r13_to_r25_ret" [lib/zstd/zstd_decompress.ko]
+ undefined!
+Message-ID: <202111280005.fBajKq69-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Nov 2021 14:45:01 +0000
-Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   c5c17547b778975b3d83a73c8d84e8fb5ecf3ba5
+commit: 7416cdc9b9c10968c57b1f73be5d48b3ecdaf3c8 lib: zstd: Don't add -O3 to cflags
+date:   9 days ago
+config: arc-randconfig-c004-20211122 (https://download.01.org/0day-ci/archive/20211128/202111280005.fBajKq69-lkp@intel.com/config)
+compiler: arceb-elf-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7416cdc9b9c10968c57b1f73be5d48b3ecdaf3c8
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout 7416cdc9b9c10968c57b1f73be5d48b3ecdaf3c8
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=arc SHELL=/bin/bash
 
-> On Mon, 22 Nov 2021 15:41:10 +0100
-> Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
-> 
-> > On 22.11.21 15:38, Olivier Moysan wrote:  
-> > > dev_err_probe() calls __device_set_deferred_probe_reason()
-> > > on -EPROBE_DEFER error. If device pointer to driver core
-> > > private structure is not initialized, an null pointer error occurs.
-> > > This pointer is set on iio_device_register() call for iio device.
-> > > 
-> > > dev_err_probe() must be called with the device which is probing.
-> > > Replace iio device by its parent device.
-> > > 
-> > > Fixes: 0e346b2cfa85 ("iio: adc: stm32-adc: add vrefint calibration support")
-> > >   
-> 
-> I'll fix it when applying, but no blank line between Fixes tag and the others.
-Applied to the fixes-togreg branch of iio.git.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-I'll probably do a pull request later this week,
+All errors (new ones prefixed by >>, old ones prefixed by <<):
 
-Jonathan
+>> ERROR: modpost: "__ld_r13_to_r25_ret" [lib/zstd/zstd_decompress.ko] undefined!
+>> ERROR: modpost: "__st_r13_to_r25" [lib/zstd/zstd_decompress.ko] undefined!
 
-> 
-> > > Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>    
-> > 
-> > Reviewed-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> >   
-> > > ---
-> > > Changes in v2:
-> > > - Use parent device from indio_dev instead of private structure
-> > > ---
-> > >  drivers/iio/adc/stm32-adc.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-> > > index 7f1fb36c747c..341afdd342cc 100644
-> > > --- a/drivers/iio/adc/stm32-adc.c
-> > > +++ b/drivers/iio/adc/stm32-adc.c
-> > > @@ -1986,7 +1986,7 @@ static int stm32_adc_populate_int_ch(struct iio_dev *indio_dev, const char *ch_n
-> > >  			/* Get calibration data for vrefint channel */
-> > >  			ret = nvmem_cell_read_u16(&indio_dev->dev, "vrefint", &vrefint);
-> > >  			if (ret && ret != -ENOENT) {
-> > > -				return dev_err_probe(&indio_dev->dev, ret,
-> > > +				return dev_err_probe(indio_dev->dev.parent, ret,
-> > >  						     "nvmem access error\n");
-> > >  			}
-> > >  			if (ret == -ENOENT)
-> > >     
-> > 
-> >   
-> 
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
