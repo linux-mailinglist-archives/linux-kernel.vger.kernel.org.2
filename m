@@ -2,113 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E728645FE32
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 11:55:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C8F45FE52
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 12:38:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238439AbhK0K7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 05:59:03 -0500
-Received: from mga03.intel.com ([134.134.136.65]:55937 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233165AbhK0K5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 05:57:03 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="235690871"
-X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
-   d="scan'208";a="235690871"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 02:53:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
-   d="scan'208";a="675769121"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 27 Nov 2021 02:53:47 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqvL0-0009OG-PL; Sat, 27 Nov 2021 10:53:46 +0000
-Date:   Sat, 27 Nov 2021 18:53:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: [tglx-devel:msi 93/101] drivers/soc/ti/ti_sci_inta_msi.c:116:60:
- warning: incompatible integer to pointer conversion passing 'int' to
- parameter of type 'struct msi_range *'
-Message-ID: <202111271856.wXc90TMb-lkp@intel.com>
+        id S240355AbhK0Llm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 06:41:42 -0500
+Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17273 "EHLO
+        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233200AbhK0Ljm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 06:39:42 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1638005196; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=n3tN4S2pUQeHcaidBskaxPvMtDHKVAxGlzpV4gGhKRw0ZRPexTpe+9491ASfmg0HTmlzpcGklxp+HMRiNT0nz7WB3yRDEgMXIVlbk6nppF5tsd9+xwYvYa+sqjKuO3IG1VFKI2d/3UUUTEAStZqRuO2G7fPvidPxfb9wuISL+GM=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1638005196; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
+        bh=Gx78nwaiX6IcgNHFjD7iZoX/9w5JdvaOCjUYq7EIGF8=; 
+        b=L+x/I3014bH31MUiJjwlMUIA0OFhsckS6h6hv6axN+6zUKZ3hEWIrtJxc9FBqQ6Qibg6YP4JsjtX6NX4JOTcEAN2havNabHJChd8GNBZB0Un8LvTEUsJdciVm1vdlMiA5HCTyeHhT3WETZ5Uv7oleWAWjCIqSZgTHB0xWTty7g8=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1638005196;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=Gx78nwaiX6IcgNHFjD7iZoX/9w5JdvaOCjUYq7EIGF8=;
+        b=AOUteeEka8coVmSi4zQzORqE5JY1MaV08/LAMtbTc27DCvaprB+pMimMaBupCWxB
+        O+FA0+jbAUUvYwibbnxdThAmY5Ue8tUKtJFxMKJfWYfyRApCoywzOrqMRC2+ZkgXx95
+        aD4148NrPXGMaIDIGuyGKpO95c4vIFvh8io47D5E=
+Received: from mail.baihui.com by mx.zoho.com.cn
+        with SMTP id 1638005193699274.15327156530714; Sat, 27 Nov 2021 17:26:33 +0800 (CST)
+Date:   Sat, 27 Nov 2021 17:26:33 +0800
+From:   Chengguang Xu <cgxu519@mykernel.net>
+Reply-To: cgxu519@mykernel.net
+To:     "miklos" <miklos@szeredi.hu>
+Cc:     "linux-unionfs" <linux-unionfs@vger.kernel.org>,
+        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>,
+        "Chengguang Xu" <charliecgxu@tencent.com>,
+        "ronyjin" <ronyjin@tencent.com>, "amir73il" <amir73il@gmail.com>,
+        "jack" <jack@suse.cz>
+Message-ID: <17d60b7bbc2.caee608a13298.8366222634423039066@mykernel.net>
+In-Reply-To: <20211122030038.1938875-1-cgxu519@mykernel.net>
+References: <20211122030038.1938875-1-cgxu519@mykernel.net>
+Subject: =?UTF-8?Q?=E5=9B=9E=E5=A4=8D:[RFC_PATCH_V6_0/7]_implement_c?=
+ =?UTF-8?Q?ontainerized_syncfs_for_overlayfs?=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Importance: Medium
+User-Agent: ZohoCN Mail
+X-Mailer: ZohoCN Mail
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git msi
-head:   900894c6ddc1b5b5a8f0c99ca573619d996468b8
-commit: 46c1ea0c989ee963922a41cb88027994da48786c [93/101] genirq/msi: Add range argument to msi_domain_alloc/free_descs_locked()
-config: arm64-randconfig-r006-20211126 (https://download.01.org/0day-ci/archive/20211127/202111271856.wXc90TMb-lkp@intel.com/config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 5162b558d8c0b542e752b037e72a69d5fd51eb1e)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install arm64 cross compiling tool for clang build
-        # apt-get install binutils-aarch64-linux-gnu
-        # https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git/commit/?id=46c1ea0c989ee963922a41cb88027994da48786c
-        git remote add tglx-devel https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git
-        git fetch --no-tags tglx-devel msi
-        git checkout 46c1ea0c989ee963922a41cb88027994da48786c
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm64 SHELL=/bin/bash drivers/soc/ti/
+ ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=80, 2021-11-22 11:00:31 Chengguang=
+ Xu <cgxu519@mykernel.net> =E6=92=B0=E5=86=99 ----
+ > From: Chengguang Xu <charliecgxu@tencent.com>
+ >=20
+ > Current syncfs(2) syscall on overlayfs just calls sync_filesystem()
+ > on upper_sb to synchronize whole dirty inodes in upper filesystem
+ > regardless of the overlay ownership of the inode. In the use case of
+ > container, when multiple containers using the same underlying upper
+ > filesystem, it has some shortcomings as below.
+ >=20
+ > (1) Performance
+ > Synchronization is probably heavy because it actually syncs unnecessary
+ > inodes for target overlayfs.
+ >=20
+ > (2) Interference
+ > Unplanned synchronization will probably impact IO performance of
+ > unrelated container processes on the other overlayfs.
+ >=20
+ > This series try to implement containerized syncfs for overlayfs so that
+ > only sync target dirty upper inodes which are belong to specific overlay=
+fs
+ > instance. By doing this, it is able to reduce cost of synchronization an=
+d=20
+ > will not seriously impact IO performance of unrelated processes.
+ >=20
+ > v1->v2:
+ > - Mark overlayfs' inode dirty itself instead of adding notification
+ > mechanism to vfs inode.
+ >=20
+ > v2->v3:
+ > - Introduce overlayfs' extra syncfs wait list to wait target upper inode=
+s
+ > in ->sync_fs.
+ >=20
+ > v3->v4:
+ > - Using wait_sb_inodes() to wait syncing upper inodes.
+ > - Mark overlay inode dirty only when having upper inode and VM_SHARED
+ > flag in ovl_mmap().
+ > - Check upper i_state after checking upper mmap state
+ > in ovl_write_inode.
+ >=20
+ > v4->v5:
+ > - Add underlying inode dirtiness check after mnt_drop_write().
+ > - Handle both wait/no-wait mode of syncfs(2) in overlayfs' ->sync_fs().
+ >=20
+ > v5->v6:
+ > - Rebase to latest overlayfs-next tree.
+ > - Mark oerlay inode dirty when it has upper instead of marking dirty on
+ >   modification.
+ > - Trigger dirty page writeback in overlayfs' ->write_inode().
+ > - Mark overlay inode 'DONTCACHE' flag.
+ > - Delete overlayfs' ->writepages() and ->evict_inode() operations.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
 
-All warnings (new ones prefixed by >>):
+Hi Miklos,
 
->> drivers/soc/ti/ti_sci_inta_msi.c:116:60: warning: incompatible integer to pointer conversion passing 'int' to parameter of type 'struct msi_range *' [-Wint-conversion]
-           ret = msi_domain_alloc_irqs_descs_locked(msi_domain, dev, nvec);
-                                                                     ^~~~
-   include/linux/msi.h:506:106: note: passing argument to parameter 'range' here
-   int msi_domain_alloc_irqs_descs_locked(struct irq_domain *domain, struct device *dev,  struct msi_range *range);
-                                                                                                            ^
-   1 warning generated.
+Have you got time to have a look at this V6 series? I think this version ha=
+s already fixed
+the issues in previous feedbacks of you guys and passed fstests (generic/ov=
+erlay cases).
+
+I did some stress long time tests (tar & syncfs & diff on w/wo copy-up) and=
+ found no obvious problem.
+For syncfs time with 1M clean upper inodes, there was extra 1.3s wasted on =
+waiting scheduling.
+I guess this 1.3s will not bring significant impact to container instance i=
+n most cases, I also
+agree with Jack that we can start with this approach and do some improvemen=
+ts afterwards if there is
+complain from any real users.
 
 
-vim +116 drivers/soc/ti/ti_sci_inta_msi.c
 
-49b323157bf1e7 Lokesh Vutla    2019-04-30   90  
-49b323157bf1e7 Lokesh Vutla    2019-04-30   91  int ti_sci_inta_msi_domain_alloc_irqs(struct device *dev,
-49b323157bf1e7 Lokesh Vutla    2019-04-30   92  				      struct ti_sci_resource *res)
-49b323157bf1e7 Lokesh Vutla    2019-04-30   93  {
-49b323157bf1e7 Lokesh Vutla    2019-04-30   94  	struct platform_device *pdev = to_platform_device(dev);
-49b323157bf1e7 Lokesh Vutla    2019-04-30   95  	struct irq_domain *msi_domain;
-49b323157bf1e7 Lokesh Vutla    2019-04-30   96  	int ret, nvec;
-49b323157bf1e7 Lokesh Vutla    2019-04-30   97  
-49b323157bf1e7 Lokesh Vutla    2019-04-30   98  	msi_domain = dev_get_msi_domain(dev);
-49b323157bf1e7 Lokesh Vutla    2019-04-30   99  	if (!msi_domain)
-49b323157bf1e7 Lokesh Vutla    2019-04-30  100  		return -EINVAL;
-49b323157bf1e7 Lokesh Vutla    2019-04-30  101  
-49b323157bf1e7 Lokesh Vutla    2019-04-30  102  	if (pdev->id < 0)
-49b323157bf1e7 Lokesh Vutla    2019-04-30  103  		return -ENODEV;
-49b323157bf1e7 Lokesh Vutla    2019-04-30  104  
-43736dc111781c Thomas Gleixner 2021-11-10  105  	ret = msi_setup_device_data(dev);
-43736dc111781c Thomas Gleixner 2021-11-10  106  	if (ret)
-43736dc111781c Thomas Gleixner 2021-11-10  107  		return ret;
-43736dc111781c Thomas Gleixner 2021-11-10  108  
-32e74ad753f574 Thomas Gleixner 2021-11-10  109  	msi_lock_descs(dev);
-49b323157bf1e7 Lokesh Vutla    2019-04-30  110  	nvec = ti_sci_inta_msi_alloc_descs(dev, res);
-32e74ad753f574 Thomas Gleixner 2021-11-10  111  	if (nvec <= 0) {
-32e74ad753f574 Thomas Gleixner 2021-11-10  112  		ret = nvec;
-32e74ad753f574 Thomas Gleixner 2021-11-10  113  		goto unlock;
-49b323157bf1e7 Lokesh Vutla    2019-04-30  114  	}
-49b323157bf1e7 Lokesh Vutla    2019-04-30  115  
-32e74ad753f574 Thomas Gleixner 2021-11-10 @116  	ret = msi_domain_alloc_irqs_descs_locked(msi_domain, dev, nvec);
+Thanks,
+Chengguang
 
-:::::: The code at line 116 was first introduced by commit
-:::::: 32e74ad753f5747e1f201dc462a05ad80e9389ce soc: ti: ti_sci_inta_msi: Rework MSI descriptor allocation
 
-:::::: TO: Thomas Gleixner <tglx@linutronix.de>
-:::::: CC: Thomas Gleixner <tglx@linutronix.de>
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ >=20
+ > Chengguang Xu (7):
+ >   ovl: setup overlayfs' private bdi
+ >   ovl: mark overlayfs inode dirty when it has upper
+ >   ovl: implement overlayfs' own ->write_inode operation
+ >   ovl: set 'DONTCACHE' flag for overlayfs inode
+ >   fs: export wait_sb_inodes()
+ >   ovl: introduce ovl_sync_upper_blockdev()
+ >   ovl: implement containerized syncfs for overlayfs
+ >=20
+ >  fs/fs-writeback.c         |  3 ++-
+ >  fs/overlayfs/inode.c      |  5 +++-
+ >  fs/overlayfs/super.c      | 49 ++++++++++++++++++++++++++++++++-------
+ >  fs/overlayfs/util.c       |  1 +
+ >  include/linux/writeback.h |  1 +
+ >  5 files changed, 48 insertions(+), 11 deletions(-)
+ >=20
+ > --=20
+ > 2.27.0
+ >=20
+ >=20
