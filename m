@@ -2,204 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 927CB45FE03
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 11:01:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93FA445FE0C
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 11:13:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354956AbhK0KFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 05:05:07 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:14989 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354086AbhK0KCn (ORCPT
+        id S1350029AbhK0KQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 05:16:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232726AbhK0KOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 05:02:43 -0500
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4J1Rpq5n5VzZd5M;
-        Sat, 27 Nov 2021 17:56:51 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Sat, 27 Nov 2021 17:59:28 +0800
-Received: from huawei.com (10.175.127.227) by kwepemm600009.china.huawei.com
- (7.193.23.164) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Sat, 27 Nov
- 2021 17:59:27 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <tj@kernel.org>, <axboe@kernel.dk>, <paolo.valente@linaro.org>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH RFC 9/9] block, bfq: decrease 'num_groups_with_pending_reqs' earlier
-Date:   Sat, 27 Nov 2021 18:11:32 +0800
-Message-ID: <20211127101132.486806-10-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211127101132.486806-1-yukuai3@huawei.com>
-References: <20211127101132.486806-1-yukuai3@huawei.com>
+        Sat, 27 Nov 2021 05:14:55 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9643C06174A
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 02:11:40 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id u22so23657439lju.7
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 02:11:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jZy0QgWyWJd+Rli7BtfMIcm+ydCOROO/RTbEeioRQrA=;
+        b=QMgSIWp8m9RVSPcE/vlS1gubdjALvyjqOdX/OG1cyd11F/5KoPzL8lpHTMsG0G3WWc
+         vjwjeD6QZ5GS40f25eGIxHFZiKINGADnvpLtzCT2WV1SSZzImIZMdul/0GA6eT0rGn4Z
+         OvVvrOR9eCNH1s2zqfKOi/9JLc1b1gqZX55IpulpGbEuYb8XL8o5Cax7Ye7xophiSJen
+         MA/NpfrPm8cyeSUw5MUrzxiPax0yk6r3WBqA1f0Ly3eVqKSGEuOVP1HZB0acTT+eBDKz
+         bfeQDVADrxYAsP8l4QrImD+Wrc4rgVG3FaMgZ/DGmueR5AQnszkfpuI7MGRpxtpL9S34
+         p8Qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jZy0QgWyWJd+Rli7BtfMIcm+ydCOROO/RTbEeioRQrA=;
+        b=BMJ8Ykmqps5+OmYJ2SgLoyr1uoRbUyQW+m/ljq4JZkC511NUiL+BgpXJ9jhGdghZM2
+         m8ga/UTt1BE+GiqRMMGAR7a0yw0bxbcoUfQX9Bd/uTkMyQBduDMs3YdW8l4gl6bo64vL
+         FnEVX11dWrU+FIIYR1Tj6j4CjhFoqokwxocGiBLJBPWShNpL1/v+z9khh5mNreVG67FN
+         ePBuEgT9c8LJWMYIvnRguGtuE2d/P+t+HW10RIMRzHLJuD3ohIDlHfRXQnbd255hW+gO
+         zcCQoYT4HsstTURbqEitp2sbvxDBkKleR56b3edhVbWShU7hT+mOAmsHKhex/g8wabr+
+         YLSw==
+X-Gm-Message-State: AOAM531eRnChSXsOi+ZexrG3zNc6siosFUA0CUGcvzwlLZbzmb+a6lDk
+        2EHGQGpEqFBuu4dH8fhRqDtPeNJGB0Q=
+X-Google-Smtp-Source: ABdhPJz2mEb9mar3wnhRqf786gyLMdgX59sA7PUmhEzZiIr8BaeYjFSxDnq3BEsosIkY7zStZe8gZg==
+X-Received: by 2002:a2e:a688:: with SMTP id q8mr37081219lje.349.1638007899028;
+        Sat, 27 Nov 2021 02:11:39 -0800 (PST)
+Received: from localhost.localdomain (h-155-4-221-129.NA.cust.bahnhof.se. [155.4.221.129])
+        by smtp.gmail.com with ESMTPSA id a29sm701767lfi.302.2021.11.27.02.11.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Nov 2021 02:11:38 -0800 (PST)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] const_structs.checkpatch: add frequently used ops structs
+Date:   Sat, 27 Nov 2021 11:11:34 +0100
+Message-Id: <20211127101134.33101-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently 'num_groups_with_pending_reqs' won't be decreased when
-the group doesn't have any pending requests, while any child group
-have any pending requests. The decrement is delayed to when all the
-child groups doesn't have any pending requests.
+Add commonly used structs (>50 instances) which are always or almost
+always const.
 
-For example:
-1) t1 issue sync io on root group, t2 and t3 issue sync io on the same
-child group. num_groups_with_pending_reqs is 2 now.
-2) t1 stopped, num_groups_with_pending_reqs is still 2. io from t2 and
-t3 still can't be handled concurrently.
-
-Fix the problem by decreasing 'num_groups_with_pending_reqs'
-immediately upon the deactivation of last entity of the group.
-
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 ---
- block/bfq-iosched.c | 58 ++++++++++++++++-----------------------------
- block/bfq-iosched.h | 16 ++++++-------
- 2 files changed, 29 insertions(+), 45 deletions(-)
+ scripts/const_structs.checkpatch | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 4239b3996e23..55925e1ee85d 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -873,6 +873,26 @@ void __bfq_weights_tree_remove(struct bfq_data *bfqd,
- 	bfq_put_queue(bfqq);
- }
- 
-+static void decrease_groups_with_pending_reqs(struct bfq_data *bfqd,
-+					      struct bfq_queue *bfqq)
-+{
-+#ifdef CONFIG_BFQ_GROUP_IOSCHED
-+	struct bfq_entity *entity = bfqq->entity.parent;
-+	struct bfq_group *bfqg = container_of(entity, struct bfq_group, entity);
-+
-+	/*
-+	 * The decrement of num_groups_with_pending_reqs is performed
-+	 * immediately upon the deactivation of last entity that have pending
-+	 * requests
-+	 */
-+	if (!bfqg->num_entities_with_pending_reqs &&
-+	    entity->in_groups_with_pending_reqs) {
-+		entity->in_groups_with_pending_reqs = false;
-+		bfqd->num_groups_with_pending_reqs--;
-+	}
-+#endif
-+}
-+
- /*
-  * Invoke __bfq_weights_tree_remove on bfqq and decrement the number
-  * of active groups for each queue's inactive parent entity.
-@@ -880,46 +900,10 @@ void __bfq_weights_tree_remove(struct bfq_data *bfqd,
- void bfq_weights_tree_remove(struct bfq_data *bfqd,
- 			     struct bfq_queue *bfqq)
- {
--	struct bfq_entity *entity = bfqq->entity.parent;
--
- 	bfqq->ref++;
- 	__bfq_weights_tree_remove(bfqd, bfqq,
- 				  &bfqd->queue_weights_tree);
--
--	for_each_entity(entity) {
--		struct bfq_sched_data *sd = entity->my_sched_data;
--
--		if (sd && (sd->next_in_service || sd->in_service_entity)) {
--			/*
--			 * entity is still active, because either
--			 * next_in_service or in_service_entity is not
--			 * NULL (see the comments on the definition of
--			 * next_in_service for details on why
--			 * in_service_entity must be checked too).
--			 *
--			 * As a consequence, its parent entities are
--			 * active as well, and thus this loop must
--			 * stop here.
--			 */
--			break;
--		}
--
--		/*
--		 * The decrement of num_groups_with_pending_reqs is
--		 * not performed immediately upon the deactivation of
--		 * entity, but it is delayed to when it also happens
--		 * that the first leaf descendant bfqq of entity gets
--		 * all its pending requests completed. The following
--		 * instructions perform this delayed decrement, if
--		 * needed. See the comments on
--		 * num_groups_with_pending_reqs for details.
--		 */
--		if (entity->in_groups_with_pending_reqs) {
--			entity->in_groups_with_pending_reqs = false;
--			bfqd->num_groups_with_pending_reqs--;
--		}
--	}
--
-+	decrease_groups_with_pending_reqs(bfqd, bfqq);
- 	bfq_put_queue(bfqq);
- }
- 
-diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
-index df08bff89a70..7ae11f62900b 100644
---- a/block/bfq-iosched.h
-+++ b/block/bfq-iosched.h
-@@ -493,7 +493,7 @@ struct bfq_data {
- 	struct rb_root_cached queue_weights_tree;
- 
- 	/*
--	 * Number of groups with at least one descendant process that
-+	 * Number of groups with at least one process that
- 	 * has at least one request waiting for completion. Note that
- 	 * this accounts for also requests already dispatched, but not
- 	 * yet completed. Therefore this number of groups may differ
-@@ -506,14 +506,14 @@ struct bfq_data {
- 	 * bfq_better_to_idle().
- 	 *
- 	 * However, it is hard to compute this number exactly, for
--	 * groups with multiple descendant processes. Consider a group
--	 * that is inactive, i.e., that has no descendant process with
-+	 * groups with multiple processes. Consider a group
-+	 * that is inactive, i.e., that has no process with
- 	 * pending I/O inside BFQ queues. Then suppose that
- 	 * num_groups_with_pending_reqs is still accounting for this
--	 * group, because the group has descendant processes with some
-+	 * group, because the group has processes with some
- 	 * I/O request still in flight. num_groups_with_pending_reqs
- 	 * should be decremented when the in-flight request of the
--	 * last descendant process is finally completed (assuming that
-+	 * last process is finally completed (assuming that
- 	 * nothing else has changed for the group in the meantime, in
- 	 * terms of composition of the group and active/inactive state of child
- 	 * groups and processes). To accomplish this, an additional
-@@ -522,7 +522,7 @@ struct bfq_data {
- 	 * we resort to the following tradeoff between simplicity and
- 	 * accuracy: for an inactive group that is still counted in
- 	 * num_groups_with_pending_reqs, we decrement
--	 * num_groups_with_pending_reqs when the first descendant
-+	 * num_groups_with_pending_reqs when the last
- 	 * process of the group remains with no request waiting for
- 	 * completion.
- 	 *
-@@ -530,12 +530,12 @@ struct bfq_data {
- 	 * carefulness: to avoid multiple decrements, we flag a group,
- 	 * more precisely an entity representing a group, as still
- 	 * counted in num_groups_with_pending_reqs when it becomes
--	 * inactive. Then, when the first descendant queue of the
-+	 * inactive. Then, when the last queue of the
- 	 * entity remains with no request waiting for completion,
- 	 * num_groups_with_pending_reqs is decremented, and this flag
- 	 * is reset. After this flag is reset for the entity,
- 	 * num_groups_with_pending_reqs won't be decremented any
--	 * longer in case a new descendant queue of the entity remains
-+	 * longer in case a new queue of the entity remains
- 	 * with no request waiting for completion.
- 	 */
- 	unsigned int num_groups_with_pending_reqs;
+diff --git a/scripts/const_structs.checkpatch b/scripts/const_structs.checkpatch
+index 3980985205a0..1eeb7b42c5b9 100644
+--- a/scripts/const_structs.checkpatch
++++ b/scripts/const_structs.checkpatch
+@@ -12,19 +12,27 @@ driver_info
+ drm_connector_funcs
+ drm_encoder_funcs
+ drm_encoder_helper_funcs
++dvb_frontend_ops
++dvb_tuner_ops
+ ethtool_ops
+ extent_io_ops
++fb_ops
+ file_lock_operations
+ file_operations
+ hv_ops
++hwmon_ops
++ib_device_ops
+ ide_dma_ops
+ ide_port_ops
++ieee80211_ops
++iio_buffer_setup_ops
+ inode_operations
+ intel_dvo_dev_ops
+ irq_domain_ops
+ item_operations
+ iwl_cfg
+ iwl_ops
++kernel_param_ops
+ kgdb_arch
+ kgdb_io
+ kset_uevent_ops
+@@ -32,25 +40,33 @@ lock_manager_operations
+ machine_desc
+ microcode_ops
+ mlxsw_reg_info
++mtd_ooblayout_ops
+ mtrr_ops
++nand_controller_ops
+ neigh_ops
+ net_device_ops
++nft_expr_ops
+ nlmsvc_binding
+ nvkm_device_chip
+ of_device_id
+ pci_raw_ops
+ phy_ops
++pinconf_ops
+ pinctrl_ops
+ pinmux_ops
+ pipe_buf_operations
+ platform_hibernation_ops
+ platform_suspend_ops
++proc_ops
+ proto_ops
++pwm_ops
+ regmap_access_table
+ regulator_ops
++reset_control_ops
+ rpc_pipe_ops
+ rtc_class_ops
+ sd_desc
++sdhci_ops
+ seq_operations
+ sirfsoc_padmux
+ snd_ac97_build_ops
+@@ -67,6 +83,13 @@ uart_ops
+ usb_mon_operations
+ v4l2_ctrl_ops
+ v4l2_ioctl_ops
++v4l2_subdev_core_ops
++v4l2_subdev_internal_ops
++v4l2_subdev_ops
++v4l2_subdev_pad_ops
++v4l2_subdev_video_ops
++vb2_ops
+ vm_operations_struct
+ wacom_features
++watchdog_ops
+ wd_ops
 -- 
-2.31.1
+2.34.1
 
