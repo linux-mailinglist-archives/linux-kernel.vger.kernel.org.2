@@ -2,84 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7E34601C2
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 22:49:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1D34601B9
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 22:45:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356347AbhK0VwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 16:52:10 -0500
-Received: from mail.ispras.ru ([83.149.199.84]:33634 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356437AbhK0VuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 16:50:10 -0500
-X-Greylist: delayed 363 seconds by postgrey-1.27 at vger.kernel.org; Sat, 27 Nov 2021 16:50:09 EST
-Received: from [10.10.3.121] (unknown [10.10.3.121])
-        by mail.ispras.ru (Postfix) with ESMTPS id B5CAE40755CF;
-        Sat, 27 Nov 2021 21:40:48 +0000 (UTC)
-Date:   Sun, 28 Nov 2021 00:40:48 +0300 (MSK)
-From:   Alexander Monakov <amonakov@ispras.ru>
-To:     linux-edac@vger.kernel.org
-cc:     Yazen Ghannam <yazen.ghannam@amd.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Excessive delays from GHES polling on dual-socket AMD EPYC
-Message-ID: <878e4019-3a88-798e-4427-7efb5289a4e1@ispras.ru>
+        id S1356272AbhK0Vqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 16:46:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1356268AbhK0Vol (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 16:44:41 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C057C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 13:41:26 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9F20A60EC8
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 21:41:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31144C53FBF;
+        Sat, 27 Nov 2021 21:41:24 +0000 (UTC)
+Date:   Sat, 27 Nov 2021 16:41:20 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Subject: Re: [GIT PULL] tracing: Two event pid filtering bug fixes
+Message-ID: <20211127164120.1eb79c1a@oasis.local.home>
+In-Reply-To: <20211127132822.5d4d2a8b@gandalf.local.home>
+References: <20211127132822.5d4d2a8b@gandalf.local.home>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello world,
+On Sat, 27 Nov 2021 13:28:22 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-when lightly testing a dual-socket server with 64-core AMD processors I
-noticed that workloads running on cpu #0 can exhibit significantly worse
-latencies compared to cpu #1 ... cpu #255. Checking SSD response time,
-on cpu #0 I got:
+> +	struct trace_pid_list *no_pid_list;
+> +	struct trace_pid_list *pid_list;
+>  	struct trace_event_file *file;
+> +	unsigned int first;
+>  
+>  	file = kmem_cache_alloc(file_cachep, GFP_TRACE);
+>  	if (!file)
+>  		return NULL;
+>  
+> +	pid_list = rcu_dereference_protected(tr->filtered_pids,
+> +					     lockdep_is_held(&event_mutex));
+> +	no_pid_list = rcu_dereference_protected(tr->filtered_no_pids,
+> +					     lockdep_is_held(&event_mutex));
+> +
+> +	if (!trace_pid_list_first(pid_list, &first) ||
+> +	    !trace_pid_list_first(pid_list, &first))
+> +		file->flags |= EVENT_FILE_FL_PID_FILTER;
 
-taskset -c 0 ioping -R /dev/sdf
+And of course since I only tested "trace only this pid" case, and not
+the "trace everything but this pid" case, the above has a bug (which
+the ktest bot just told me about), and my tests missed it.
 
---- /dev/sdf (block device 1.75 TiB) ioping statistics ---
-70.7 k requests completed in 2.97 s, 276.3 MiB read, 23.8 k iops, 93.1 MiB/s
-generated 70.7 k requests in 3.00 s, 276.4 MiB, 23.6 k iops, 92.1 MiB/s
-min/avg/max/mdev = 33.1 us / 41.9 us / 87.9 ms / 452.6 us
+That should have been:
 
-Notice 87.9 millisecond maximum response time, and compare with its
-hyperthread sibing:
+	if (!trace_pid_list_first(pid_list, &first) ||
+	    !trace_pid_list_first(no_pid_list, &first))
 
-taskset -c 128 ioping -R /dev/sdf
+I'll fix it, run it through my tests, and post another pull request :-/.
 
---- /dev/sdf (block device 1.75 TiB) ioping statistics ---
-80.5 k requests completed in 2.96 s, 314.5 MiB read, 27.2 k iops, 106.2 MiB/s
-generated 80.5 k requests in 3.00 s, 314.5 MiB, 26.8 k iops, 104.8 MiB/s
-min/avg/max/mdev = 33.2 us / 36.8 us / 89.2 us / 2.00 us
+/me needs to add that case to his tests, even though it's extremely
+rare (I never use it). Which is exactly why I should have a test for it!
 
-Of course maximum times themselves vary from run to run, but the general
-picture stays: on cpu #0 I get about three orders of magnitude
-longer latencies. I think this is outside of "latency-sensitive
-workloads might care" territory and closer to "hurts everyone" kind of
-issue, hence I'm reporting it.
-
-
-On this machine there's AMD HEST ACPI table that registers 14342 polled
-"generic hardware error sources" (GHES) with poll interval 5 seconds.
-(this seems misdesigned: it will cause cross-socket polling unless the
-OS takes special care to divine which GHES to poll from where)
-
-Linux setups a timer for each of those individually, so when the machine
-is idle there's approximately 2800 timers per second invoked on cpu #0.
-Plus, there's a secondary issue with timer migration:
-get_nohz_timer_target will attempt to select a non-idle CPU out of 256
-(visiting some CPUs repeatedly if they appear in nested domains), and
-fail. If I help it along by running 'taskset -c 1 yes > /dev/null' or
-disable kernel.timer_migration entirely, it drops maximum latency in the
-above ioping test to 1..10ms range (down to two orders of magnitude from
-three).
-
-I guess the short answer is that if I don't like it I can boot that
-server with 'ghes_disable=1', but is a proper solution possible? Like
-requiring explicit opt-in to honor polled GHES entries?
-
-Thank you.
-Alexander
+-- Steve
