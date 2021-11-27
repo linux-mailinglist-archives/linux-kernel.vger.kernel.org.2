@@ -2,102 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D57446024B
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 00:15:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBA6446025F
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 00:21:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237316AbhK0XSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 18:18:42 -0500
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:37473 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbhK0XQl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 18:16:41 -0500
-Received: by mail-oi1-f182.google.com with SMTP id bj13so26457861oib.4;
-        Sat, 27 Nov 2021 15:13:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=F1dfF+UJik1r5mhkv4NnnGU7zXHuMkitsnrdy1AJCzk=;
-        b=4qEeKDsOPm2C5GQG8DvvFKMNWi8wtaCPTJoc/RI8V7mzG1NYbLFUmIQ+zM/9EddpEw
-         4TYiykekcfmb5NEyXBJgnOgtQPeBXDALTpWzM4UhgsarX/e5rf/WOGKHgPZCWYEAqWBk
-         Xxc5fzywWREGAz2aTozgzyIHgnmRRP2S2Ow8eP8NLYRQ7s3ZFlmUxB42pMgmJrQx6GpC
-         7ppXFoKUgAzyK7jYeVItOExfhUX22EEfARA8+Zv6AyR71S9UW2gvHIUW/an8zwncIKdu
-         D9FByyNwOt+qtXIR1awSmGYhJcZZCWrI4ApTXFh4+KZWBcM56ytXq3/kfOdHmV6oBO+l
-         iaiQ==
-X-Gm-Message-State: AOAM532fu1jvNNKfn5VqX6TovJDEfWGfgrnrGev58rxppdIJgpnBCq/3
-        YAlae2ki+WRTc9Z+JcitsQ==
-X-Google-Smtp-Source: ABdhPJzSuBiE1CXj2mVuQFmgrkkEOv1pSaWpzMY01SDv891PvCWQIDXhfY9y6KbhhAbeIgqglSZc1g==
-X-Received: by 2002:a05:6808:dc5:: with SMTP id g5mr31799706oic.58.1638054805572;
-        Sat, 27 Nov 2021 15:13:25 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id i29sm1854687ots.49.2021.11.27.15.13.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Nov 2021 15:13:24 -0800 (PST)
-Received: (nullmailer pid 1973540 invoked by uid 1000);
-        Sat, 27 Nov 2021 23:13:22 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, judyhsiao@chromium.org,
-        agross@kernel.org, plai@codeaurora.org, bjorn.andersson@linaro.org,
-        robh+dt@kernel.org, tiwai@suse.com, rohitkr@codeaurora.org,
-        devicetree@vger.kernel.org,
-        Venkata Prasad Potturu <potturu@codeaurora.org>,
-        linux-kernel@vger.kernel.org, bgoswami@codeaurora.org,
-        alsa-devel@alsa-project.org, broonie@kernel.org,
-        srinivas.kandagatla@linaro.org, perex@perex.cz,
-        swboyd@chromium.org, lgirdwood@gmail.com
-In-Reply-To: <1637928282-2819-9-git-send-email-srivasam@codeaurora.org>
-References: <1637928282-2819-1-git-send-email-srivasam@codeaurora.org> <1637928282-2819-9-git-send-email-srivasam@codeaurora.org>
-Subject: Re: [PATCH v6 08/10] ASoC: dt-bindings: Add SC7280 lpass cpu bindings
-Date:   Sat, 27 Nov 2021 16:13:22 -0700
-Message-Id: <1638054802.081809.1973539.nullmailer@robh.at.kernel.org>
+        id S1356594AbhK0XZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 18:25:04 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:36626 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1356509AbhK0XXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 18:23:03 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4J1ndG31SVz9Y;
+        Sun, 28 Nov 2021 00:19:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1638055187; bh=3IuV4KHyseUP25B0hUamJUw90nzzT3r2kSgbvRYgE4s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JK3pRYOLYNeG1VcAGugry8zKUgI8IWUX2uFGnlwLGpXc8D3CmoN3u8y9Tr0anjhA5
+         0A8Qy/LOhaD8VxlEdNWsqrCEdfoL4kLYajCPHahkwjsSyh1fyNTpAP7OaIv8Cd41Fp
+         bC/yFHHpqOVfJETijNRp4vh1CboVefrHEBTckwxDI2L7pXNeWUcUoW/R8bYvSvqtcd
+         qLfLXpsIzFQ+14JZRfK6vjf3MeRyOWzB//m+Uj9hi+ZCRg9j8osGTQF3afK6drcmvx
+         vuBpRT8IcEeEOSwUYU3B9S385dK47IOQYa8zaMoD9LKBYMCCBgQnmNvnJAHjHmkz26
+         Mypbfh7tLnFGg==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.3 at mail
+Date:   Sun, 28 Nov 2021 00:19:43 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Patrik John <patrik.john@u-blox.com>
+Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        ldewangan@nvidia.com, thierry.reding@gmail.com,
+        jonathan@nvidia.com, linux-serial@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH] serial: tegra: Fixes lower tolerance baud rate limit for
+ older tegra chips introduced by d781ec21bae6
+Message-ID: <YaK9DwsgGr8eaMuX@qmqm.qmqm.pl>
+References: <sig.096060f39c.20211122124425.74031-1-patrik.john@u-blox.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <sig.096060f39c.20211122124425.74031-1-patrik.john@u-blox.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Nov 2021 17:34:40 +0530, Srinivasa Rao Mandadapu wrote:
-> Add bindings for sc7280 lpass cpu driver which supports
-> audio over i2s based speaker, soundwire based headset, msm dmics
-> and HDMI Port.
+On Mon, Nov 22, 2021 at 01:44:26PM +0100, Patrik John wrote:
+> The current implementation uses 0 as lower limit for the baud rate tolerance which contradicts the initial commit description (https://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git/commit/drivers/tty/serial/serial-tegra.c?h=for-next&id=d781ec21bae6ff8f9e07682e8947a654484611f5) of +4/-4% tolerance for older tegra chips other than Tegra186 and Tegra194.
+> This causes issues on UART initilization as soon as the actual baud rate clock is slightly lower than required which we have seen on the Tegra124-based Toradex Apalis TK1 which also uses tegra30-hsuart as compatible in the DT serial node (for reference line 1540ff https://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git/tree/arch/arm/boot/dts/tegra124-apalis-v1.2.dtsi?h=for-next)
 > 
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-> ---
->  .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 69 +++++++++++++++++++---
->  1 file changed, 61 insertions(+), 8 deletions(-)
+> The standard baud rate tolerance limits are also stated in the tegra20-hsuart driver description (https://www.kernel.org/doc/Documentation/devicetree/bindings/serial/nvidia%2Ctegra20-hsuart.txt).
 > 
+> The previously introduced check_rate_in_range() always fails due to the lower limit set to 0 even if the actual baud rate is within the required -4% tolerance.
+> 
+[...]
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+I have a same patch waiting in my tree [1]. Feel free to use the commit
+message and to add:
 
-yamllint warnings/errors:
+Reviewed-and-tested-by: Micha³ Miros³aw <mirq-linux@rere.qmqm.pl>
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: reg: [[0, 1658351616, 0, 425984], [0, 1659895808, 0, 167936]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: reg-names: ['lpass-hdmiif', 'lpass-lpaif'] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: interrupts: [[0, 160, 1], [0, 268, 1]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: interrupt-names: ['lpass-irq-lpaif', 'lpass-irq-hdmi'] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: iommus: [[4294967295, 4128, 0], [4294967295, 4146, 0]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+[1] https://rere.qmqm.pl/git/?p=linux;a=commitdiff;h=b658dcd83d0db777410fe960721193d35a38115a
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1560102
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+Best Regards
+Micha³ Miros³aw
