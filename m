@@ -2,162 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3AB4600AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 18:47:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C114600CD
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 18:57:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355412AbhK0Ruw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 12:50:52 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:40452 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240704AbhK0Rsw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 12:48:52 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 462E460EFC;
-        Sat, 27 Nov 2021 17:45:37 +0000 (UTC)
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp.kernel.org (Postfix) with ESMTPSA id A8EB0C53FAD;
-        Sat, 27 Nov 2021 17:45:31 +0000 (UTC)
-Date:   Sat, 27 Nov 2021 17:50:31 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>,
-        linux-kernel@vger.kernel.org, lars@metafoo.de,
-        linux-iio@vger.kernel.org, git@xilinx.com, michal.simek@xilinx.com,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        linux-acpi@vger.kernel.org, andriy.shevchenko@linux.intel.com,
-        kbuild-all@lists.01.org
-Subject: Re: [PATCH v11 3/5] iio: adc: Add Xilinx AMS driver
-Message-ID: <20211127175031.6471b43b@jic23-huawei>
-In-Reply-To: <202111271041.Cdu0In2E-lkp@intel.com>
-References: <20211124225407.17793-4-anand.ashok.dumbre@xilinx.com>
-        <202111271041.Cdu0In2E-lkp@intel.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S1355925AbhK0SAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 13:00:20 -0500
+Received: from mga02.intel.com ([134.134.136.20]:6527 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233245AbhK0R6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 12:58:19 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10181"; a="223003070"
+X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
+   d="scan'208";a="223003070"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 09:55:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
+   d="scan'208";a="457980073"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 27 Nov 2021 09:55:03 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mr1ug-0009pp-JU; Sat, 27 Nov 2021 17:55:02 +0000
+Date:   Sun, 28 Nov 2021 01:54:33 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: drivers/net/mdio/mdio-xgene.c:337:13: warning: cast to smaller
+ integer type 'enum xgene_mdio_id' from 'const void *'
+Message-ID: <202111280114.D7JHY3PG-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 27 Nov 2021 10:43:11 +0800
-kernel test robot <lkp@intel.com> wrote:
+Hi Andrew,
 
-> Hi Anand,
-> 
-> Thank you for the patch! Perhaps something to improve:
-> 
-> [auto build test WARNING on jic23-iio/togreg]
-> [also build test WARNING on linux/master linus/master v5.16-rc2 next-20211126]
-> [cannot apply to xilinx-xlnx/master]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Anand-Ashok-Dumbre/Add-Xilinx-AMS-Driver/20211125-065614
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
-> config: powerpc64-randconfig-s032-20211126 (https://download.01.org/0day-ci/archive/20211127/202111271041.Cdu0In2E-lkp@intel.com/config)
-> compiler: powerpc64-linux-gcc (GCC) 11.2.0
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # apt-get install sparse
->         # sparse version: v0.6.4-dirty
->         # https://github.com/0day-ci/linux/commit/9b07fe52c07c2e9f6eccd2f2050f69558904ed64
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Anand-Ashok-Dumbre/Add-Xilinx-AMS-Driver/20211125-065614
->         git checkout 9b07fe52c07c2e9f6eccd2f2050f69558904ed64
->         # save the config file to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=powerpc SHELL=/bin/bash drivers/clk/ drivers/iio/adc/ drivers/pci/controller/
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> 
-> sparse warnings: (new ones prefixed by >>)
-> >> drivers/iio/adc/xilinx-ams.c:1175:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *data @@  
->    drivers/iio/adc/xilinx-ams.c:1175:17: sparse:     expected void volatile [noderef] __iomem *addr
->    drivers/iio/adc/xilinx-ams.c:1175:17: sparse:     got void *data
-> >> drivers/iio/adc/xilinx-ams.c:1192:69: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected void *data @@     got void [noderef] __iomem *ps_base @@  
->    drivers/iio/adc/xilinx-ams.c:1192:69: sparse:     expected void *data
->    drivers/iio/adc/xilinx-ams.c:1192:69: sparse:     got void [noderef] __iomem *ps_base
-> >> drivers/iio/adc/xilinx-ams.c:1206:69: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected void *data @@     got void [noderef] __iomem *pl_base @@  
->    drivers/iio/adc/xilinx-ams.c:1206:69: sparse:     expected void *data
->    drivers/iio/adc/xilinx-ams.c:1206:69: sparse:     got void [noderef] __iomem *pl_base
-> 
-> vim +1175 drivers/iio/adc/xilinx-ams.c
-> 
->   1172	
->   1173	static void ams_iounmap(void *data)
->   1174	{
-> > 1175		iounmap(data);  
-I guess you probably already fixed this, but I'd do it by passing the
-containing structure in as the *data and then use
-ams->pl_base to access it here.
+First bad commit (maybe != root cause):
 
-It's a bit more code than we'd normally need but cleaner than force
-changes to and from iomem via forcing the pointer conversions.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   c5c17547b778975b3d83a73c8d84e8fb5ecf3ba5
+commit: a9770eac511ad82390b9f4a3c1728e078c387ac7 net: mdio: Move MDIO drivers into a new subdirectory
+date:   1 year, 3 months ago
+config: arm64-randconfig-r032-20211118 (https://download.01.org/0day-ci/archive/20211128/202111280114.D7JHY3PG-lkp@intel.com/config)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project c46becf500df2a7fb4b4fce16178a036c344315a)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install arm64 cross compiling tool for clang build
+        # apt-get install binutils-aarch64-linux-gnu
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a9770eac511ad82390b9f4a3c1728e078c387ac7
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout a9770eac511ad82390b9f4a3c1728e078c387ac7
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm64 SHELL=/bin/bash drivers/clk/zynqmp/ drivers/gpio/ drivers/gpu/drm/ drivers/net/mdio/ drivers/net/wireless/intel/ipw2x00/ drivers/net/wireless/intel/iwlwifi/mvm/ drivers/staging/rtl8188eu/ drivers/usb/gadget/
 
->   1176	}
->   1177	
->   1178	static int ams_init_module(struct iio_dev *indio_dev,
->   1179				   struct fwnode_handle *fwnode,
->   1180				   struct iio_chan_spec *channels)
->   1181	{
->   1182		struct device *dev = indio_dev->dev.parent;
->   1183		struct ams *ams = iio_priv(indio_dev);
->   1184		int num_channels = 0;
->   1185		int ret;
->   1186	
->   1187		if (fwnode_property_match_string(fwnode, "compatible",
->   1188						 "xlnx,zynqmp-ams-ps") == 0) {
->   1189			ams->ps_base = fwnode_iomap(fwnode, 0);
->   1190			if (!ams->ps_base)
->   1191				return -ENXIO;
-> > 1192			ret = devm_add_action_or_reset(dev, ams_iounmap, ams->ps_base);  
->   1193			if (ret < 0)
->   1194				return ret;
->   1195	
->   1196			/* add PS channels to iio device channels */
->   1197			memcpy(channels, ams_ps_channels,
->   1198			       sizeof(ams_ps_channels));
->   1199			num_channels += ARRAY_SIZE(ams_ps_channels);
->   1200		} else if (fwnode_property_match_string(fwnode, "compatible",
->   1201							"xlnx,zynqmp-ams-pl") == 0) {
->   1202			ams->pl_base = fwnode_iomap(fwnode, 0);
->   1203			if (!ams->pl_base)
->   1204				return -ENXIO;
->   1205	
-> > 1206			ret = devm_add_action_or_reset(dev, ams_iounmap, ams->pl_base);  
->   1207			if (ret < 0)
->   1208				return ret;
->   1209	
->   1210			/* Copy only first 10 fix channels */
->   1211			memcpy(channels, ams_pl_channels,
->   1212			       AMS_PL_MAX_FIXED_CHANNEL * sizeof(*channels));
->   1213			num_channels += AMS_PL_MAX_FIXED_CHANNEL;
->   1214	
->   1215			num_channels = ams_get_ext_chan(fwnode, channels,
->   1216							num_channels);
->   1217		} else if (fwnode_property_match_string(fwnode, "compatible",
->   1218							"xlnx,zynqmp-ams") == 0) {
->   1219			/* add AMS channels to iio device channels */
->   1220			memcpy(channels, ams_ctrl_channels,
->   1221			       sizeof(ams_ctrl_channels));
->   1222			num_channels += ARRAY_SIZE(ams_ctrl_channels);
->   1223		} else {
->   1224			return -EINVAL;
->   1225		}
->   1226	
->   1227		return num_channels;
->   1228	}
->   1229	
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
+All warnings (new ones prefixed by >>):
+
+>> drivers/net/mdio/mdio-xgene.c:337:13: warning: cast to smaller integer type 'enum xgene_mdio_id' from 'const void *' [-Wvoid-pointer-to-enum-cast]
+                   mdio_id = (enum xgene_mdio_id)of_id->data;
+                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   1 warning generated.
+
+
+vim +337 drivers/net/mdio/mdio-xgene.c
+
+1f3d62090d3ba4 drivers/net/phy/mdio-xgene.c Arnd Bergmann       2017-02-01  324  
+1f3d62090d3ba4 drivers/net/phy/mdio-xgene.c Arnd Bergmann       2017-02-01  325  
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  326  static int xgene_mdio_probe(struct platform_device *pdev)
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  327  {
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  328  	struct device *dev = &pdev->dev;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  329  	struct mii_bus *mdio_bus;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  330  	const struct of_device_id *of_id;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  331  	struct xgene_mdio_pdata *pdata;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  332  	void __iomem *csr_base;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  333  	int mdio_id = 0, ret = 0;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  334  
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  335  	of_id = of_match_device(xgene_mdio_of_match, &pdev->dev);
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  336  	if (of_id) {
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25 @337  		mdio_id = (enum xgene_mdio_id)of_id->data;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  338  	} else {
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  339  #ifdef CONFIG_ACPI
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  340  		const struct acpi_device_id *acpi_id;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  341  
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  342  		acpi_id = acpi_match_device(xgene_mdio_acpi_match, &pdev->dev);
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  343  		if (acpi_id)
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  344  			mdio_id = (enum xgene_mdio_id)acpi_id->driver_data;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  345  #endif
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  346  	}
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  347  
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  348  	if (!mdio_id)
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  349  		return -ENODEV;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  350  
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  351  	pdata = devm_kzalloc(dev, sizeof(struct xgene_mdio_pdata), GFP_KERNEL);
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  352  	if (!pdata)
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  353  		return -ENOMEM;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  354  	pdata->mdio_id = mdio_id;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  355  	pdata->dev = dev;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  356  
+0ae9fce32c5e5d drivers/net/phy/mdio-xgene.c YueHaibing          2019-08-01  357  	csr_base = devm_platform_ioremap_resource(pdev, 0);
+b2df430b52cf9e drivers/net/phy/mdio-xgene.c Wei Yongjun         2016-07-28  358  	if (IS_ERR(csr_base))
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  359  		return PTR_ERR(csr_base);
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  360  	pdata->mac_csr_addr = csr_base;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  361  	pdata->mdio_csr_addr = csr_base + BLOCK_XG_MDIO_CSR_OFFSET;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  362  	pdata->diag_csr_addr = csr_base + BLOCK_DIAG_CSR_OFFSET;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  363  
+8ec7074a6bf74e drivers/net/phy/mdio-xgene.c Quan Nguyen         2017-05-10  364  	if (mdio_id == XGENE_MDIO_RGMII)
+8ec7074a6bf74e drivers/net/phy/mdio-xgene.c Quan Nguyen         2017-05-10  365  		spin_lock_init(&pdata->mac_lock);
+8ec7074a6bf74e drivers/net/phy/mdio-xgene.c Quan Nguyen         2017-05-10  366  
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  367  	if (dev->of_node) {
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  368  		pdata->clk = devm_clk_get(dev, NULL);
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  369  		if (IS_ERR(pdata->clk)) {
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  370  			dev_err(dev, "Unable to retrieve clk\n");
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  371  			return PTR_ERR(pdata->clk);
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  372  		}
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  373  	}
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  374  
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  375  	ret = xgene_mdio_reset(pdata);
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  376  	if (ret)
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  377  		return ret;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  378  
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  379  	mdio_bus = mdiobus_alloc();
+ab14436065c806 drivers/net/phy/mdio-xgene.c Alexey Khoroshilov  2017-12-16  380  	if (!mdio_bus) {
+ab14436065c806 drivers/net/phy/mdio-xgene.c Alexey Khoroshilov  2017-12-16  381  		ret = -ENOMEM;
+ab14436065c806 drivers/net/phy/mdio-xgene.c Alexey Khoroshilov  2017-12-16  382  		goto out_clk;
+ab14436065c806 drivers/net/phy/mdio-xgene.c Alexey Khoroshilov  2017-12-16  383  	}
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  384  
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  385  	mdio_bus->name = "APM X-Gene MDIO bus";
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  386  
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  387  	if (mdio_id == XGENE_MDIO_RGMII) {
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  388  		mdio_bus->read = xgene_mdio_rgmii_read;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  389  		mdio_bus->write = xgene_mdio_rgmii_write;
+8ec7074a6bf74e drivers/net/phy/mdio-xgene.c Quan Nguyen         2017-05-10  390  		mdio_bus->priv = (void __force *)pdata;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  391  		snprintf(mdio_bus->id, MII_BUS_ID_SIZE, "%s",
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  392  			 "xgene-mii-rgmii");
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  393  	} else {
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  394  		mdio_bus->read = xgene_xfi_mdio_read;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  395  		mdio_bus->write = xgene_xfi_mdio_write;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  396  		mdio_bus->priv = (void __force *)pdata->mdio_csr_addr;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  397  		snprintf(mdio_bus->id, MII_BUS_ID_SIZE, "%s",
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  398  			 "xgene-mii-xfi");
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  399  	}
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  400  
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  401  	mdio_bus->parent = dev;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  402  	platform_set_drvdata(pdev, pdata);
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  403  
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  404  	if (dev->of_node) {
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  405  		ret = of_mdiobus_register(mdio_bus, dev->of_node);
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  406  	} else {
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  407  #ifdef CONFIG_ACPI
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  408  		/* Mask out all PHYs from auto probing. */
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  409  		mdio_bus->phy_mask = ~0;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  410  		ret = mdiobus_register(mdio_bus);
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  411  		if (ret)
+ab14436065c806 drivers/net/phy/mdio-xgene.c Alexey Khoroshilov  2017-12-16  412  			goto out_mdiobus;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  413  
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  414  		acpi_walk_namespace(ACPI_TYPE_DEVICE, ACPI_HANDLE(dev), 1,
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  415  				    acpi_register_phy, NULL, mdio_bus, NULL);
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  416  #endif
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  417  	}
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  418  
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  419  	if (ret)
+ab14436065c806 drivers/net/phy/mdio-xgene.c Alexey Khoroshilov  2017-12-16  420  		goto out_mdiobus;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  421  
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  422  	pdata->mdio_bus = mdio_bus;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  423  	xgene_mdio_status = true;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  424  
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  425  	return 0;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  426  
+ab14436065c806 drivers/net/phy/mdio-xgene.c Alexey Khoroshilov  2017-12-16  427  out_mdiobus:
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  428  	mdiobus_free(mdio_bus);
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  429  
+ab14436065c806 drivers/net/phy/mdio-xgene.c Alexey Khoroshilov  2017-12-16  430  out_clk:
+ab14436065c806 drivers/net/phy/mdio-xgene.c Alexey Khoroshilov  2017-12-16  431  	if (dev->of_node)
+ab14436065c806 drivers/net/phy/mdio-xgene.c Alexey Khoroshilov  2017-12-16  432  		clk_disable_unprepare(pdata->clk);
+ab14436065c806 drivers/net/phy/mdio-xgene.c Alexey Khoroshilov  2017-12-16  433  
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  434  	return ret;
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  435  }
+43b3cf6634a4ae drivers/net/phy/mdio-xgene.c Iyappan Subramanian 2016-07-25  436  
+
+:::::: The code at line 337 was first introduced by commit
+:::::: 43b3cf6634a4ae2eac3b6f08019db8f19a114811 drivers: net: phy: xgene: Add MDIO driver
+
+:::::: TO: Iyappan Subramanian <isubramanian@apm.com>
+:::::: CC: David S. Miller <davem@davemloft.net>
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
