@@ -2,178 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFDEC4605D2
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 12:11:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 384DF4605D5
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 12:14:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357297AbhK1LOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 06:14:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344301AbhK1LME (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 06:12:04 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4CC9C061746;
-        Sun, 28 Nov 2021 03:08:48 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id nh10-20020a17090b364a00b001a69adad5ebso11464943pjb.2;
-        Sun, 28 Nov 2021 03:08:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:subject:to:references:in-reply-to:mime-version:message-id
-         :content-transfer-encoding;
-        bh=RLGVormZNrRFWCDJ7jdRt19siDEPnOtSgoMRMWSMPpw=;
-        b=JS75cm1kNmau6QTu2rqjTEH1lacCTylUddbQig/MfaOv87fU1R4ixeZwUTvWkojCLe
-         FVsH5wJQluo9fnDCJtLxlNsFRugI2zkbabpCQ9VhDSP+vCMkQ9XcDyPUZsKoAN0XUVPp
-         aHUTDQx+GNGjfhDN5ufjzO429xe7p71bZ6QrT/eU2apwdj3VV4bcd4Oz9OEiXGFLWmkO
-         KTg66HtHflRGYT80QQO1K0h4MxrasFS2dEY2Sip94P5OybBl2LvseRqW7ZJqQswnXYN6
-         Cntrs/UrWT/QrCgRauE5NdDXQthF0aHKCC9fzaz2Cb2jdPmYhTY0PX3z2F7VkaSzQTfW
-         T9/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:subject:to:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=RLGVormZNrRFWCDJ7jdRt19siDEPnOtSgoMRMWSMPpw=;
-        b=XvQmWbOnY1KJ8efcHdlz8dJ4QUKM6HPeB8t3/uHg8nlPFXkdA40On4Qi1JqcnvSVHb
-         te/xmBG/YXk9WzJYfwuSugZqAOjbO6bN61i5qLDpgjc3HSrHIevaXWaVDwNPcaiK43sS
-         2ofrv7fH65flVKdAfpi1a186ohuNpGI2SahFcJV0WYYtxqjBgKfrHiAqAcq11njF895q
-         yTli+iONG94MAl7QLZXG6Wupa29+RPpNSdJp4i3TCMtQQ+gT2Rq3nP0gATda5NzFn6Bv
-         cNxg/lH35P65Ms/vGfHTPVMGffQavin8QvBg8gNHFMIDre1eYQcpaBaaO4pFdHSfIbFA
-         b1Pw==
-X-Gm-Message-State: AOAM531w1Tg5lfqOzfF/tURJNbNdPfCs2yOh4+DPRWrOp+0cFIsY3qyt
-        p+o/H+vzwzcxJCuwEW2bj1k=
-X-Google-Smtp-Source: ABdhPJwy0Op9mcVC2NuBsFMopKknqC2dkNsLfr7KDw0piI/fX2AvzDRr44yqwWjkuQxAQyAX4DCrnA==
-X-Received: by 2002:a17:902:7fc3:b0:144:e29c:228d with SMTP id t3-20020a1709027fc300b00144e29c228dmr51588052plb.4.1638097728470;
-        Sun, 28 Nov 2021 03:08:48 -0800 (PST)
-Received: from localhost (115-64-213-93.static.tpgi.com.au. [115.64.213.93])
-        by smtp.gmail.com with ESMTPSA id 9sm9412647pgq.57.2021.11.28.03.08.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 03:08:48 -0800 (PST)
-Date:   Sun, 28 Nov 2021 21:08:41 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH 0/9] lib/bitmap: optimize bitmap_weight() usage
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy@infradead.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Jens Axboe <axboe@fb.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Dennis Zhou <dennis@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guo Ren <guoren@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>, kvm@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Russell King <linux@armlinux.org.uk>,
-        linux-crypto@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        linux-perf-users@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Mark Gross <markgross@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Solomon Peachy <pizza@shaftnet.org>,
-        Petr Mladek <pmladek@suse.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Roy Pledge <Roy.Pledge@nxp.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tejun Heo <tj@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>
-References: <20211128035704.270739-1-yury.norov@gmail.com>
-In-Reply-To: <20211128035704.270739-1-yury.norov@gmail.com>
+        id S1357172AbhK1LRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 06:17:53 -0500
+Received: from mga17.intel.com ([192.55.52.151]:6299 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235611AbhK1LPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Nov 2021 06:15:52 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10181"; a="216528351"
+X-IronPort-AV: E=Sophos;i="5.87,271,1631602800"; 
+   d="scan'208";a="216528351"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2021 03:12:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,271,1631602800"; 
+   d="scan'208";a="676009152"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by orsmga005.jf.intel.com with ESMTP; 28 Nov 2021 03:12:36 -0800
+Received: from lcsmsx603.ger.corp.intel.com (10.109.210.12) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Sun, 28 Nov 2021 03:12:35 -0800
+Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
+ LCSMSX603.ger.corp.intel.com (10.109.210.12) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Sun, 28 Nov 2021 13:12:33 +0200
+Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
+ HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.2308.020;
+ Sun, 28 Nov 2021 13:12:33 +0200
+From:   "Winkler, Tomas" <tomas.winkler@intel.com>
+To:     Haakon Bugge <haakon.bugge@oracle.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+CC:     "arnd@arndb.de" <arnd@arndb.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: RE: [PATCH] mei: Remove some dead code
+Thread-Topic: [PATCH] mei: Remove some dead code
+Thread-Index: AQHX16z+MGID8V6pdUm1z2bNCeUOWqv/oKGAgBlBgNA=
+Date:   Sun, 28 Nov 2021 11:12:33 +0000
+Message-ID: <17d6896a6abf49138556e34cb426d575@intel.com>
+References: <3f904c291f3eed06223dd8d494028e0d49df6f10.1636711522.git.christophe.jaillet@wanadoo.fr>
+ <80B25490-FE92-420E-A506-C92A996EF174@oracle.com>
+In-Reply-To: <80B25490-FE92-420E-A506-C92A996EF174@oracle.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.6.200.16
+x-originating-ip: [10.184.70.1]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Message-Id: <1638096766.3elxdzb8ly.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Yury Norov's message of November 28, 2021 1:56 pm:
-> In many cases people use bitmap_weight()-based functions like this:
->=20
-> 	if (num_present_cpus() > 1)
-> 		do_something();
->=20
-> This may take considerable amount of time on many-cpus machines because
-> num_present_cpus() will traverse every word of underlying cpumask
-> unconditionally.
->=20
-> We can significantly improve on it for many real cases if stop traversing
-> the mask as soon as we count present cpus to any number greater than 1:
->=20
-> 	if (num_present_cpus_gt(1))
-> 		do_something();
->=20
-> To implement this idea, the series adds bitmap_weight_{eq,gt,le}
-> functions together with corresponding wrappers in cpumask and nodemask.
-
-There would be no change to callers if you maintain counters like what
-is done for num_online_cpus() today. Maybe some fixes to arch code that
-does not use set_cpu_possible() etc APIs required, but AFAIKS it would
-be better to fix such cases anyway.
-
-Thanks,
-Nick
+DQo+IA0KPiANCj4gPiBPbiAxMiBOb3YgMjAyMSwgYXQgMTE6MDYsIENocmlzdG9waGUgSkFJTExF
+VA0KPiA8Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI+IHdyb3RlOg0KPiA+DQo+ID4gJ2dl
+bmVyYXRlZCcgaXMga25vd24gdG8gYmUgdHJ1ZSBoZXJlLCBzbyAidHJ1ZSB8fCB3aGF0ZXZlciIg
+d2lsbCBzdGlsbA0KPiA+IGJlIHRydWUuDQo+ID4NCj4gPiBTbywgcmVtb3ZlIHNvbWUgZGVhZCBj
+b2RlLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogQ2hyaXN0b3BoZSBKQUlMTEVUIDxjaHJpc3Rv
+cGhlLmphaWxsZXRAd2FuYWRvby5mcj4NCj4gPiAtLS0NCj4gPiBUaGlzIGlzIGFsc28gbGlrZWx5
+IHRoYXQgYSBidWcgaXMgbHVya2luZyBoZXJlLg0KPiA+DQo+ID4gTWF5YmUsIHRoZSBmb2xsb3dp
+bmcgd2FzIGV4cGVjdGVkOg0KPiA+IC0JZ2VuZXJhdGVkID0gZ2VuZXJhdGVkIHx8DQo+ID4gKwln
+ZW5lcmF0ZWQgPQ0KPiA+IAkJKGhpc3IgJiBISVNSX0lOVF9TVFNfTVNLKSB8fA0KPiA+IAkJKGlw
+Y19pc3IgJiBTRUNfSVBDX0hPU1RfSU5UX1NUQVRVU19QRU5ESU5HKTsNCj4gPg0KPiA+ID8NCj4g
+DQo+IEkgY29uY3VyIGFib3V0IHlvdXIgYW5hbHlzaXMsIGJ1dCBJIGRvIG5vdCBrbm93IHRoZSBp
+bnRlbnQgaGVyZS4NCllvdXIgZml4ICBpcyBva2F5LCBJIGNhbiBhY2sgdGhhdCBwYXRjaC4gDQpU
+aGFua3MNClRvbWFzDQoNCj4gDQo+IA0KPiBIw6Vrb24NCj4gDQo+ID4gLS0tDQo+ID4gZHJpdmVy
+cy9taXNjL21laS9ody10eGUuYyB8IDYgKy0tLS0tDQo+ID4gMSBmaWxlIGNoYW5nZWQsIDEgaW5z
+ZXJ0aW9uKCspLCA1IGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+bWlzYy9tZWkvaHctdHhlLmMgYi9kcml2ZXJzL21pc2MvbWVpL2h3LXR4ZS5jDQo+ID4gaW5kZXgg
+YTRlODU0YjliOWU2Li4wMDY1MmMxMzdjYzcgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9taXNj
+L21laS9ody10eGUuYw0KPiA+ICsrKyBiL2RyaXZlcnMvbWlzYy9tZWkvaHctdHhlLmMNCj4gPiBA
+QCAtOTk0LDExICs5OTQsNyBAQCBzdGF0aWMgYm9vbCBtZWlfdHhlX2NoZWNrX2FuZF9hY2tfaW50
+cnMoc3RydWN0DQo+IG1laV9kZXZpY2UgKmRldiwgYm9vbCBkb19hY2spDQo+ID4gCQloaGlzciAm
+PSB+SVBDX0hISUVSX1NFQzsNCj4gPiAJfQ0KPiA+DQo+ID4gLQlnZW5lcmF0ZWQgPSBnZW5lcmF0
+ZWQgfHwNCj4gPiAtCQkoaGlzciAmIEhJU1JfSU5UX1NUU19NU0spIHx8DQo+ID4gLQkJKGlwY19p
+c3IgJiBTRUNfSVBDX0hPU1RfSU5UX1NUQVRVU19QRU5ESU5HKTsNCj4gPiAtDQo+ID4gLQlpZiAo
+Z2VuZXJhdGVkICYmIGRvX2Fjaykgew0KPiA+ICsJaWYgKGRvX2Fjaykgew0KPiA+IAkJLyogU2F2
+ZSB0aGUgaW50ZXJydXB0IGNhdXNlcyAqLw0KPiA+IAkJaHctPmludHJfY2F1c2UgfD0gaGlzciAm
+IEhJU1JfSU5UX1NUU19NU0s7DQo+ID4gCQlpZiAoaXBjX2lzciAmIFNFQ19JUENfSE9TVF9JTlRf
+U1RBVFVTX0lOX1JEWSkNCj4gPiAtLQ0KPiA+IDIuMzAuMg0KPiA+DQoNCg==
