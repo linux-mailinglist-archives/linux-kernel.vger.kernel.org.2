@@ -2,135 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF8846075B
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 17:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DDFE46075C
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 17:05:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353562AbhK1QH5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 28 Nov 2021 11:07:57 -0500
-Received: from mailgw01.mediatek.com ([60.244.123.138]:35056 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S245397AbhK1QFz (ORCPT
+        id S1358242AbhK1QIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 11:08:38 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:54240 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353606AbhK1QGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 11:05:55 -0500
-X-UUID: 81bda1ccb0b4480cb9210040dba67a6d-20211129
-X-UUID: 81bda1ccb0b4480cb9210040dba67a6d-20211129
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <jason-jh.lin@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1868573853; Mon, 29 Nov 2021 00:02:34 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 29 Nov 2021 00:02:33 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 29 Nov 2021 00:02:33 +0800
-Message-ID: <ae29424d8121f8951cfb5fece114b6fcba90d351.camel@mediatek.com>
-From:   Jason-JH Lin <jason-jh.lin@mediatek.com>
-To:     Tzung-Bi Shih <tzungbi@google.com>
-CC:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        "; Philipp Zabel" <p.zabel@pengutronix.de>,
-        "; Matthias Brugger" <matthias.bgg@gmail.com>,
-        "; Jassi Brar" <jassisinghbrar@gmail.com>,
-        "; David Airlie" <airlied@linux.ie>,
-        "; Daniel Vetter" <daniel@ffwll.ch>,
-        "; dri-devel@lists.freedesktop.org; linux-mediatek@lists.infradead.org; 
-        linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org; 
-        hsinyi@chromium.org; fshao@chromium.org; Nancy Lin
-        =?UTF-8?Q?=28=E6=9E=97=E6=AC=A3=E8=9E=A2=29?=" 
-        <Nancy.Lin@mediatek.com>,
-        "; Singo Chang =?UTF-8?Q?=28=E5=BC=B5=E8=88=88=E5=9C=8B=29?=" 
-        <Singo.Chang@mediatek.com>
-In-Reply-To: <PU1PR03MB306252A252139515F7EA9ABCB8659@PU1PR03MB3062.apcprd03.prod.outlook.com>
-References: <20211117064158.27451-1-jason-jh.lin@mediatek.com>
-         <20211117064158.27451-4-jason-jh.lin@mediatek.com>
-         <YZXqz6XDChwscDC0@google.com>
-         <PU1PR03MB306252A252139515F7EA9ABCB8659@PU1PR03MB3062.apcprd03.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
+        Sun, 28 Nov 2021 11:06:37 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EFDA86101E
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 16:03:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 815E1C53FC7;
+        Sun, 28 Nov 2021 16:03:19 +0000 (UTC)
+Date:   Sun, 28 Nov 2021 11:03:17 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Subject: [GIT PULL] tracing: Test the 'Do not trace this pid' case in create
+ event
+Message-ID: <20211128110317.225b19f6@oasis.local.home>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Subject: Re: FW: [PATCH 3/3] drm/mediatek: add devlink to cmdq dev
-Date:   Mon, 29 Nov 2021 00:02:33 +0800
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Content-Transfer-Encoding: 8BIT
-X-MTK:  N
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tzung-Bi,
 
-Thanks for the reviews.
 
-> From: Linux-mediatek <linux-mediatek-bounces@lists.infradead.org> On
-> Behalf Of Tzung-Bi Shih
-> Sent: Thursday, November 18, 2021 1:55 PM
-> To: Jason-JH Lin (林睿祥) <Jason-JH.Lin@mediatek.com>
-> Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>; Philipp Zabel <
-> p.zabel@pengutronix.de>; Matthias Brugger <matthias.bgg@gmail.com>;
-> Jassi Brar <jassisinghbrar@gmail.com>; David Airlie <airlied@linux.ie
-> >; Daniel Vetter <daniel@ffwll.ch>; dri-devel@lists.freedesktop.org; 
-> linux-mediatek@lists.infradead.org; 
-> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org; 
-> hsinyi@chromium.org; fshao@chromium.org; Nancy Lin (林欣螢) <
-> Nancy.Lin@mediatek.com>; Singo Chang (張興國) <Singo.Chang@mediatek.com>
-> Subject: Re: [PATCH 3/3] drm/mediatek: add devlink to cmdq dev
-> 
-> On Wed, Nov 17, 2021 at 02:41:58PM +0800, jason-jh.lin wrote:
-> > @@ -158,6 +159,7 @@ static void mtk_drm_crtc_destroy(struct
-> > drm_crtc *crtc)
-> >  	mtk_drm_cmdq_pkt_destroy(&mtk_crtc->cmdq_handle);
-> >  
-> >  	if (mtk_crtc->cmdq_client.chan) {
-> > +		device_link_remove(mtk_crtc->drm_dev, mtk_crtc-
-> > >cmdq_client.chan->mbox->dev);
-> >  		mbox_free_channel(mtk_crtc->cmdq_client.chan);
-> >  		mtk_crtc->cmdq_client.chan = NULL;
-> >  	}
-> 
-> [...]
-> > @@ -956,6 +959,16 @@ int mtk_drm_crtc_create(struct drm_device
-> > *drm_dev,
-> >  	}
-> >  
-> >  	if (mtk_crtc->cmdq_client.chan) {
-> > +		struct device_link *link;
-> > +
-> > +		/* add devlink to cmdq dev to make sure suspend/resume
-> > order is correct */
-> > +		link = device_link_add(dev, mtk_crtc->cmdq_client.chan-
-> > >mbox->dev,
-> > +				       DL_FLAG_PM_RUNTIME |
-> > DL_FLAG_STATELESS);
-> > +		if (!link) {
-> > +			dev_err(dev, "Unable to link dev=%s\n",
-> > +				dev_name(mtk_crtc->cmdq_client.chan-
-> > >mbox->dev));
-> > +		}
-> > +
-> 
-> If device_link_add() failed, doesn't mtk_drm_crtc_create() need to
-> return an error and exit?
+Linus,
 
-OK, I'll add the return error at the next verion.
-> 
-> OTOH, if device_link_add() failed, won't it bring any side effects to
-> call device_link_remove()?
-> 
+tracing: Fix the fix of pid filtering
 
-Because device_link_remove() will find the device_link of supplier and
-consumer, then delete the device_link between them.
-If device_link_add() failed, supplier and consumer won't create the
-device_link.
-So calling device_link_remove() won't do anything without deive_link
-and won't bring any side effects.
+- The setting of the pid filtering flag tested the "trace only this
+  pid" case twice, and ignored the "trace everything but this pid" case.
 
-Regards,
-Jason-JH.Lin
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> 
-https://urldefense.com/v3/__http://lists.infradead.org/mailman/listinfo/linux-mediatek__;!!CTRNKA9wMg0ARbw!125dmOZ7xCLkwbIrzZf1VqVLQBbdT4RFHoMjR38U1GeCxaTM6xvvB-mSr7sTc6BuY5IH$
->  
--- 
-Jason-JH Lin <jason-jh.lin@mediatek.com>
+  Note, the 5.15 kernel does things a little differently due to the new
+  sparse pid mask introduced in 5.16, and as the bug was discovered
+  running the 5.15 kernel, and the first fix was initially done for
+  that kernel, that fix handled both cases (only pid and all but pid),
+  but the forward port to 5.16 created this bug.
 
+  This is because my presentation I'm writing is using the 5.15 kernel.
+
+
+Please pull the latest trace-v5.16-rc2-3 tree, which can be found at:
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+trace-v5.16-rc2-3
+
+Tag SHA1: 587a9f8832c97f3b0f94c2f85a3954204b560e23
+Head SHA1: 27ff768fa21ca3286fcc87c3f38ac67d1a2cbe2d
+
+
+Steven Rostedt (VMware) (1):
+      tracing: Test the 'Do not trace this pid' case in create event
+
+----
+ kernel/trace/trace_events.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+---------------------------
+commit 27ff768fa21ca3286fcc87c3f38ac67d1a2cbe2d
+Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Date:   Sat Nov 27 16:45:26 2021 -0500
+
+    tracing: Test the 'Do not trace this pid' case in create event
+    
+    When creating a new event (via a module, kprobe, eprobe, etc), the
+    descriptors that are created must add flags for pid filtering if an
+    instance has pid filtering enabled, as the flags are used at the time the
+    event is executed to know if pid filtering should be done or not.
+    
+    The "Only trace this pid" case was added, but a cut and paste error made
+    that case checked twice, instead of checking the "Trace all but this pid"
+    case.
+    
+    Link: https://lore.kernel.org/all/202111280401.qC0z99JB-lkp@intel.com/
+    
+    Fixes: 6cb206508b62 ("tracing: Check pid filtering when creating events")
+    Reported-by: kernel test robot <lkp@intel.com>
+    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index f8965fd50d3b..92be9cb1d7d4 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -2693,7 +2693,7 @@ trace_create_new_event(struct trace_event_call *call,
+ 					     lockdep_is_held(&event_mutex));
+ 
+ 	if (!trace_pid_list_first(pid_list, &first) ||
+-	    !trace_pid_list_first(pid_list, &first))
++	    !trace_pid_list_first(no_pid_list, &first))
+ 		file->flags |= EVENT_FILE_FL_PID_FILTER;
+ 
+ 	file->event_call = call;
