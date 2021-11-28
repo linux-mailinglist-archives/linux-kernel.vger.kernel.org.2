@@ -2,128 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A9C4604DB
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 07:03:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56ADB4604F1
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 07:29:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233269AbhK1GG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 01:06:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231408AbhK1GEY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 01:04:24 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D8C1C061756;
-        Sat, 27 Nov 2021 22:01:09 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so11102404pjb.4;
-        Sat, 27 Nov 2021 22:01:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aLJ/lxXELr8am2FtU26Nt2UvXeJI3sLnmcAPGHnyFqo=;
-        b=V1/h7Kiu6O8Ho1jMG6tmVjWFZE6ZBZg+1mXeP/HPfqT8R/OsOfskzAkOieZgM4rKQg
-         BPhvK9bb49LlM6Y4/UJHSdXf8Arz8Qf4c0zAK3bf4WQFxw3h+PdN2qus6qoNRhubLZVQ
-         KFB0tQkBMSJm2uwEGNrxZJKvq04dDdYaBGtQZ0sX1yLuxWWpLedxcSxb72AyOq3btO6D
-         v3djU5dk+mzMPTwkWBXDTr/AsbGKgNM72T0phC4kHd6mYCxtp0lowp3qGhr+Nh1+Tdf2
-         HhTAPjPmFfpDlZ8uyhjAzxEADZNpIAXGLSv3wMYvCypm+QVYXL9yaqecnJ2KBtWZRUYV
-         oTXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aLJ/lxXELr8am2FtU26Nt2UvXeJI3sLnmcAPGHnyFqo=;
-        b=C93Patv0u9WurjOSXfojfHO+fSqytJ1UQc1F2Q1zRj7FDc2AZGuFjAp+p70jzbIUlH
-         q9QocgUGQ7n1M0MuebakdO/lNMxvGgu8pmi6kP9FMM6FC62wqH8ZyFxHVnSUlIs7htgP
-         gzj20RGwsjHGzjuOqA53YZMJc0dChqM+4Np1dEdKh7v84KWhgMMRyGZESe+awekQYTjl
-         PokxO/j+NJRtNi1nBjs6xRIVErUEpPbyvmvZGQKgdxMaa2GfaMYlC3CbDxsbRtzSPRCO
-         b9/tzf55K2xwj1S8bVaU1G3kQqcb8aCrYHDF2skjMrvBnk3pSr1vstuWwDHA9UCqsvQY
-         XsQA==
-X-Gm-Message-State: AOAM530prlvniXAgfDbvR27BJBuEHugN9nErKmp9Oe8con+ZLIFiTwck
-        ScAeMQH1XXVSvN8XwaPh/84=
-X-Google-Smtp-Source: ABdhPJyn1r3AZo5z2nmDFExlnhZOMgIFEVUmn+Qi7LZzk6UFgM5Kw6+Nn881Yk8GJm4hN/I0LW541g==
-X-Received: by 2002:a17:902:ab14:b0:143:77d8:2558 with SMTP id ik20-20020a170902ab1400b0014377d82558mr50491570plb.54.1638079268890;
-        Sat, 27 Nov 2021 22:01:08 -0800 (PST)
-Received: from localhost.localdomain ([43.132.141.9])
-        by smtp.gmail.com with ESMTPSA id t4sm12989664pfq.163.2021.11.27.22.01.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Nov 2021 22:01:08 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: imagedong@tencent.com
-To:     kuba@kernel.org
-Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        edumazet@google.com, imagedong@tencent.com, ycheng@google.com,
-        kuniyu@amazon.co.jp, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH v2 net-next] net: snmp: add statistics for tcp small queue check
-Date:   Sun, 28 Nov 2021 14:01:02 +0800
-Message-Id: <20211128060102.6504-1-imagedong@tencent.com>
-X-Mailer: git-send-email 2.30.2
+        id S233979AbhK1GZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 01:25:33 -0500
+Received: from mga06.intel.com ([134.134.136.31]:7016 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232356AbhK1GXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Nov 2021 01:23:33 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10181"; a="296608733"
+X-IronPort-AV: E=Sophos;i="5.87,270,1631602800"; 
+   d="scan'208";a="296608733"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 22:20:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,270,1631602800"; 
+   d="scan'208";a="675966555"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 27 Nov 2021 22:20:16 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mrDXr-000APc-KK; Sun, 28 Nov 2021 06:20:15 +0000
+Date:   Sun, 28 Nov 2021 14:19:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: [norov:bitmap-fast7 3/9] drivers/iio/adc/mxs-lradc-adc.c:834:40:
+ error: unterminated argument list invoking macro "if"
+Message-ID: <202111281416.oSk25KrN-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <imagedong@tencent.com>
+tree:   https://github.com/norov/linux bitmap-fast7
+head:   21de62a46d4806527ba13c148c7d96a26f1a69e7
+commit: 7a4a8dc6adcf9ce8680e675df2cccb20f964d4e3 [3/9] all: replace bitmap_weigth() with bitmap_{empty,full,eq,gt,le}
+config: xtensa-randconfig-r004-20211128 (https://download.01.org/0day-ci/archive/20211128/202111281416.oSk25KrN-lkp@intel.com/config)
+compiler: xtensa-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/norov/linux/commit/7a4a8dc6adcf9ce8680e675df2cccb20f964d4e3
+        git remote add norov https://github.com/norov/linux
+        git fetch --no-tags norov bitmap-fast7
+        git checkout 7a4a8dc6adcf9ce8680e675df2cccb20f964d4e3
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=xtensa SHELL=/bin/bash drivers/iio/adc/
 
-Once tcp small queue check failed in tcp_small_queue_check(), the
-throughput of tcp will be limited, and it's hard to distinguish
-whether it is out of tcp congestion control.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Add statistics of LINUX_MIB_TCPSMALLQUEUEFAILURE for this scene.
+All errors (new ones prefixed by >>):
 
-Signed-off-by: Menglong Dong <imagedong@tencent.com>
+   drivers/iio/adc/mxs-lradc-adc.c: In function 'mxs_lradc_adc_validate_scan_mask':
+>> drivers/iio/adc/mxs-lradc-adc.c:834:40: error: unterminated argument list invoking macro "if"
+     834 | MODULE_ALIAS("platform:mxs-lradc-adc");
+         |                                        ^
+>> drivers/iio/adc/mxs-lradc-adc.c:835: error: expected '(' at end of input
+   drivers/iio/adc/mxs-lradc-adc.c:563:9: note: '-Wmisleading-indentation' is disabled from this point onwards, since column-tracking was disabled due to the size of the code/headers
+     563 |         if (bitmap_weight_gt(mask, LRADC_MAX_TOTAL_CHANS, LRADC_MAX_MAPPED_CHAN - rsvd_chans)
+         |         ^~
+   drivers/iio/adc/mxs-lradc-adc.c:563:9: note: adding '-flarge-source-files' will allow for more column-tracking support, at the expense of compilation time and memory
+>> drivers/iio/adc/mxs-lradc-adc.c:563:9: error: expected declaration or statement at end of input
+   At top level:
+   drivers/iio/adc/mxs-lradc-adc.c:538:13: warning: 'mxs_lradc_adc_validate_scan_mask' defined but not used [-Wunused-function]
+     538 | static bool mxs_lradc_adc_validate_scan_mask(struct iio_dev *iio,
+         |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/iio/adc/mxs-lradc-adc.c:521:12: warning: 'mxs_lradc_adc_buffer_postdisable' defined but not used [-Wunused-function]
+     521 | static int mxs_lradc_adc_buffer_postdisable(struct iio_dev *iio)
+         |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/iio/adc/mxs-lradc-adc.c:483:12: warning: 'mxs_lradc_adc_buffer_preenable' defined but not used [-Wunused-function]
+     483 | static int mxs_lradc_adc_buffer_preenable(struct iio_dev *iio)
+         |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/iio/adc/mxs-lradc-adc.c:476:13: warning: 'mxs_lradc_adc_trigger_remove' defined but not used [-Wunused-function]
+     476 | static void mxs_lradc_adc_trigger_remove(struct iio_dev *iio)
+         |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/iio/adc/mxs-lradc-adc.c:452:12: warning: 'mxs_lradc_adc_trigger_init' defined but not used [-Wunused-function]
+     452 | static int mxs_lradc_adc_trigger_init(struct iio_dev *iio)
+         |            ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/iio/adc/mxs-lradc-adc.c:413:20: warning: 'mxs_lradc_adc_trigger_handler' defined but not used [-Wunused-function]
+     413 | static irqreturn_t mxs_lradc_adc_trigger_handler(int irq, void *p)
+         |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/iio/adc/mxs-lradc-adc.c:384:20: warning: 'mxs_lradc_adc_handle_irq' defined but not used [-Wunused-function]
+     384 | static irqreturn_t mxs_lradc_adc_handle_irq(int irq, void *data)
+         |                    ^~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/iio/adc/mxs-lradc-adc.c:376:30: warning: 'mxs_lradc_adc_iio_info' defined but not used [-Wunused-const-variable=]
+     376 | static const struct iio_info mxs_lradc_adc_iio_info = {
+         |                              ^~~~~~~~~~~~~~~~~~~~~~
+   drivers/iio/adc/mxs-lradc-adc.c:64:18: warning: 'mxs_lradc_adc_vref_mv' defined but not used [-Wunused-const-variable=]
+      64 | static const u32 mxs_lradc_adc_vref_mv[][LRADC_MAX_TOTAL_CHANS] = {
+         |                  ^~~~~~~~~~~~~~~~~~~~~
+   drivers/iio/adc/mxs-lradc-adc.c:51:20: warning: 'mx28_lradc_adc_irq_names' defined but not used [-Wunused-variable]
+      51 | static const char *mx28_lradc_adc_irq_names[] = {
+         |                    ^~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/iio/adc/mxs-lradc-adc.c:42:20: warning: 'mx23_lradc_adc_irq_names' defined but not used [-Wunused-variable]
+      42 | static const char *mx23_lradc_adc_irq_names[] = {
+         |                    ^~~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/if +834 drivers/iio/adc/mxs-lradc-adc.c
+
+6dd112b9f85e5f Ksenija Stanojevic 2017-03-16  830  
+6dd112b9f85e5f Ksenija Stanojevic 2017-03-16  831  MODULE_AUTHOR("Marek Vasut <marex@denx.de>");
+6dd112b9f85e5f Ksenija Stanojevic 2017-03-16  832  MODULE_DESCRIPTION("Freescale MXS LRADC driver general purpose ADC driver");
+6dd112b9f85e5f Ksenija Stanojevic 2017-03-16  833  MODULE_LICENSE("GPL");
+6dd112b9f85e5f Ksenija Stanojevic 2017-03-16 @834  MODULE_ALIAS("platform:mxs-lradc-adc");
+
+:::::: The code at line 834 was first introduced by commit
+:::::: 6dd112b9f85e5f24ac8c15d892690cb44a4b7936 iio: adc: mxs-lradc: Add support for ADC driver
+
+:::::: TO: Ksenija Stanojevic <ksenija.stanojevic@gmail.com>
+:::::: CC: Lee Jones <lee.jones@linaro.org>
+
 ---
-v2:
-- use NET_INC_STATS() instead of __NET_INC_STATS()
----
- include/uapi/linux/snmp.h | 1 +
- net/ipv4/proc.c           | 1 +
- net/ipv4/tcp_output.c     | 5 ++++-
- 3 files changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/include/uapi/linux/snmp.h b/include/uapi/linux/snmp.h
-index 904909d020e2..e32ec6932e82 100644
---- a/include/uapi/linux/snmp.h
-+++ b/include/uapi/linux/snmp.h
-@@ -292,6 +292,7 @@ enum
- 	LINUX_MIB_TCPDSACKIGNOREDDUBIOUS,	/* TCPDSACKIgnoredDubious */
- 	LINUX_MIB_TCPMIGRATEREQSUCCESS,		/* TCPMigrateReqSuccess */
- 	LINUX_MIB_TCPMIGRATEREQFAILURE,		/* TCPMigrateReqFailure */
-+	LINUX_MIB_TCPSMALLQUEUEFAILURE,		/* TCPSmallQueueFailure */
- 	__LINUX_MIB_MAX
- };
- 
-diff --git a/net/ipv4/proc.c b/net/ipv4/proc.c
-index f30273afb539..43b7a77cd6b4 100644
---- a/net/ipv4/proc.c
-+++ b/net/ipv4/proc.c
-@@ -297,6 +297,7 @@ static const struct snmp_mib snmp4_net_list[] = {
- 	SNMP_MIB_ITEM("TCPDSACKIgnoredDubious", LINUX_MIB_TCPDSACKIGNOREDDUBIOUS),
- 	SNMP_MIB_ITEM("TCPMigrateReqSuccess", LINUX_MIB_TCPMIGRATEREQSUCCESS),
- 	SNMP_MIB_ITEM("TCPMigrateReqFailure", LINUX_MIB_TCPMIGRATEREQFAILURE),
-+	SNMP_MIB_ITEM("TCPSmallQueueFailure", LINUX_MIB_TCPSMALLQUEUEFAILURE),
- 	SNMP_MIB_SENTINEL
- };
- 
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index 2e6e5a70168e..835a556a597a 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -2524,8 +2524,11 @@ static bool tcp_small_queue_check(struct sock *sk, const struct sk_buff *skb,
- 		 * test again the condition.
- 		 */
- 		smp_mb__after_atomic();
--		if (refcount_read(&sk->sk_wmem_alloc) > limit)
-+		if (refcount_read(&sk->sk_wmem_alloc) > limit) {
-+			NET_INC_STATS(sock_net(sk),
-+				      LINUX_MIB_TCPSMALLQUEUEFAILURE);
- 			return true;
-+		}
- 	}
- 	return false;
- }
--- 
-2.30.2
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
