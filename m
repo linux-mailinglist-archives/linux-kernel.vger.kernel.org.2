@@ -2,152 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79696460A59
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 22:33:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D35A460A66
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 22:49:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236073AbhK1VhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 16:37:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
+        id S238917AbhK1VwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 16:52:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236262AbhK1VfC (ORCPT
+        with ESMTP id S238346AbhK1VuP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 16:35:02 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70623C061574;
-        Sun, 28 Nov 2021 13:31:45 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id u3so39362680lfl.2;
-        Sun, 28 Nov 2021 13:31:45 -0800 (PST)
+        Sun, 28 Nov 2021 16:50:15 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD800C06175B;
+        Sun, 28 Nov 2021 13:46:48 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id bu18so39531422lfb.0;
+        Sun, 28 Nov 2021 13:46:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hqqwFzuESSMW0jfkK2QrjmANVN0lbBWl/IRoqqwzlaA=;
-        b=OGkzeXXqF/r80GXewSEKN+gWZcT9R9NHUg4RZ2BQi1FAxk8/eeAmxkyB3uemAID09h
-         dSQBmsobE+Eub+Wzpe6ow+3ohI/ZUsykTqeNVO0f9cwO7gt1vjUyj/yPSUWzivOEIW90
-         jfEELvTYSl8v7+7HK7IoOeGZkLOr/EZRgCPvZGtjqPeHMYdNapLN81AxoQOj2NoeLAaW
-         dC88A58qAatfBmcMn3F0OfhZVyoJc9oF3D6rJpJs5HAYJztl111/oQ4gjVnOXOmM3G3i
-         vCGviULK7RYnOc6REiRvyp3itnpZR/FMEPjiX2wiOSg1f8eTDRMxIyYpTszQEMIdwwn/
-         KOVw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aW1opc2XMj6ECBMk4QPmwKIgh0Lk59SgGVK29sQZpz4=;
+        b=R6llHYtE4v699Erxb4KgZm1YmXx0LPI6U6dhewPpQOeeGCMqroHi34e6Jyz1j+3vSq
+         AlLo2ZMQ8g871ClBCNIpid/YzJlH/bUsn9AI3CuIt2+3LjHzsrHdjKoKSAr8kEFwq6xo
+         Ap4TIreND/zXytshIK+kEI5vaHsuQ8pFp3R+2CE+Bt7LYnk4/jsNFr4UwdA2TDf3nezq
+         RN9YRx5sH92WWWKVveWumH6Wweb1ufhuVG+5duuj+e0vqzld8tRJBKAOX57akik8MAYq
+         i8Z/uFRQLaKyL1zqunSNCUUt5agrxipH4zb/0lg3rjvHRD+V+7KsUXIQ59G7KGkvtJtQ
+         SGhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=hqqwFzuESSMW0jfkK2QrjmANVN0lbBWl/IRoqqwzlaA=;
-        b=Zkh/19s/UzppczcsqnkMN3erh2P0gfIqrz5xothd1dIv8Rpc/G/i12SK8mx4YnGhap
-         xsdAbzsAg3pO4NmDt/aVR721+9ZFWMxqHYlYcolYXxwFkUiCQa3T4aqZ17WNoYMntL1c
-         rJZCpHEkslKmAPQg8f+6DxAsvLb5DLym6NEI7SKRzLawIjZAfRMGD6tra/lxDTs6Jc9u
-         gt5lCqSrdBlY3mD9MdbnmhYTYoKQMV9LenmeQDMeBOyxJtrfxhhINstBAC3Zqd8nqKi5
-         kk96fVQBn0QeVVsv/K68pXnK2T+5jd7sSZWcKCnHdY1nUwStlKWGr7dBYowl+/vaEDKv
-         khcw==
-X-Gm-Message-State: AOAM531jn5YU0fsQEWzlh4CwM/bAfYdrdsPc0qmOLu7FuS8QwAPwPUiM
-        fpTBA2AQ1G5W3yStTLtf7nMsvt09+Ic=
-X-Google-Smtp-Source: ABdhPJxgOPj2S6BJzWOgPCRrn2IW5GKkMv7aH2gogt/zHQ/lSX21we7ICSaM0s2wXzYz/su/7RBvqw==
-X-Received: by 2002:ac2:4119:: with SMTP id b25mr41931675lfi.3.1638135103545;
-        Sun, 28 Nov 2021 13:31:43 -0800 (PST)
-Received: from [192.168.2.145] (94-29-46-111.dynamic.spd-mgts.ru. [94.29.46.111])
-        by smtp.googlemail.com with ESMTPSA id k15sm1163913ljg.123.2021.11.28.13.31.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Nov 2021 13:31:43 -0800 (PST)
-Subject: Re: [PATCH v3 05/14] ARM: tegra: Add device-tree for ASUS Transformer
- Prime TF201
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        David Heidelberg <david@ixit.cz>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Anton Bambura <jenneron@protonmail.com>,
-        Antoni Aloy Torrens <aaloytorrens@gmail.com>,
-        Nikola Milosavljevic <mnidza@outlook.com>,
-        Ion Agorria <ion@agorria.com>,
-        Ihor Didenko <tailormoon@rambler.ru>,
-        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>,
-        Raffaele Tranquillini <raffaele.tranquillini@gmail.com>,
-        Jasper Korten <jja2000@gmail.com>,
-        Thomas Graichen <thomas.graichen@gmail.com>,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211127142327.17692-1-digetx@gmail.com>
- <20211127142327.17692-6-digetx@gmail.com> <YaLgpb2hQGzQXrej@qmqm.qmqm.pl>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <8762c5e6-1ec0-4412-b3db-968551e15b30@gmail.com>
-Date:   Mon, 29 Nov 2021 00:31:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        bh=aW1opc2XMj6ECBMk4QPmwKIgh0Lk59SgGVK29sQZpz4=;
+        b=x6PdRMxF0EysPMWmlUDSlmohGsXOa0ju/lUeYdijV2Wpwyx0UMCY/tRIAO6UFTwr0Y
+         VWWNGbt03jyHEzc2kC1eQS/PMTXhK95D7FVz88AV3sDZDcpNBeBEYcaX1MkSWXXOHSfH
+         Q+bP/Yqtl+RPwhs3opSQb7R3+wx5OUMqvkIvD9SZbL64JZMZ70QL7F5F/YtVtFmHb3Rf
+         MqF8pT/C5HRq1+TOPrVnDKsS1MUtZwysFWUXn+MwSttn63qAklIv6UZn6NnaE+MCtDKB
+         DaPsBfnxPr2kGyLNC6i4cx61pdEsMSEIykEOY+6XKbd5nOyfLFBMmU/D3N4X7fWoXcXr
+         gWiQ==
+X-Gm-Message-State: AOAM532VkZTBoErYcj4pzHG0yL1brqKHTVQMCEZdt+mUK2Emw9IkIjX6
+        cWcUAL/tfskr09knon5LgTU=
+X-Google-Smtp-Source: ABdhPJw+hMc6eQam/JZYRHF9HLZpoWjG0svgOEXOY73j15pplGTRFuZF1Wl0BSdOjtI9NRkNxvu2gg==
+X-Received: by 2002:ac2:4aca:: with SMTP id m10mr43666913lfp.437.1638136007089;
+        Sun, 28 Nov 2021 13:46:47 -0800 (PST)
+Received: from localhost.localdomain (h-155-4-221-129.NA.cust.bahnhof.se. [155.4.221.129])
+        by smtp.gmail.com with ESMTPSA id m24sm1111027lfc.208.2021.11.28.13.46.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Nov 2021 13:46:46 -0800 (PST)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] thermal: intel_powerclamp: Constify static thermal_cooling_device_ops
+Date:   Sun, 28 Nov 2021 22:46:41 +0100
+Message-Id: <20211128214641.30953-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-In-Reply-To: <YaLgpb2hQGzQXrej@qmqm.qmqm.pl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-28.11.2021 04:51, Michał Mirosław пишет:
-> On Sat, Nov 27, 2021 at 05:23:18PM +0300, Dmitry Osipenko wrote:
->> From: Svyatoslav Ryhel <clamor95@gmail.com>
->>
->> Add device-tree for ASUS Transformer Prime TF201, which is NVIDIA
->> Tegra30-based tablet device.
->>
->> Co-developed-by: Ion Agorria <ion@agorria.com>
->> Signed-off-by: Ion Agorria <ion@agorria.com>
->> Co-developed-by: Maxim Schwalm <maxim.schwalm@gmail.com>
->> Signed-off-by: Maxim Schwalm <maxim.schwalm@gmail.com>
->> Signed-off-by: Svyatoslav Ryhel <clamor95@gmail.com>
->> ---
->>  arch/arm/boot/dts/Makefile                    |    1 +
->>  .../boot/dts/tegra30-asus-lvds-display.dtsi   |   46 +
->>  arch/arm/boot/dts/tegra30-asus-tf201.dts      |  623 ++++++
->>  .../dts/tegra30-asus-transformer-common.dtsi  | 1741 +++++++++++++++++
->>  4 files changed, 2411 insertions(+)
->>  create mode 100644 arch/arm/boot/dts/tegra30-asus-lvds-display.dtsi
->>  create mode 100644 arch/arm/boot/dts/tegra30-asus-tf201.dts
->>  create mode 100644 arch/arm/boot/dts/tegra30-asus-transformer-common.dtsi
-> 
-> I think the common.dtsi is combined from all the DT authors, so they all
-> should be mentioned in the co-developed/signed-off lines. (Or maybe just
-> split the common part out if you want to be more specific in assigning
-> credits?)
+The only usage of powerclamp_cooling_ops is to pass its address to
+thermal_cooling_device_register(), which takes a pointer to const struct
+thermal_cooling_device_ops. Make it const to allow the compiler to put
+it in read-only memory.
 
-I'll factor out the common part into separate patch and will make you
-the author of that patch since it really was derived from yours original
-TF300T DT. I actually wanted to do that previously, it's good that you
-reminded about it.
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+ drivers/thermal/intel/intel_powerclamp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->> +	i2c@7000c400 {
->> +		/* Atmel MXT768E touchscreen */
->> +		touchscreen@4d {
-> [...]
->> +			interrupt-parent = <&gpio>;
->> +			interrupts = <TEGRA_GPIO(H, 4) IRQ_TYPE_EDGE_FALLING>;
-> [...]
-> 
-> Nit: This could use 'interrupts-extended' as it's more readable, I think.
-> (There are similar cases in other DTs.)
+diff --git a/drivers/thermal/intel/intel_powerclamp.c b/drivers/thermal/intel/intel_powerclamp.c
+index 9b68489a2356..14256421d98c 100644
+--- a/drivers/thermal/intel/intel_powerclamp.c
++++ b/drivers/thermal/intel/intel_powerclamp.c
+@@ -641,7 +641,7 @@ static int powerclamp_set_cur_state(struct thermal_cooling_device *cdev,
+ }
+ 
+ /* bind to generic thermal layer as cooling device*/
+-static struct thermal_cooling_device_ops powerclamp_cooling_ops = {
++static const struct thermal_cooling_device_ops powerclamp_cooling_ops = {
+ 	.get_max_state = powerclamp_get_max_state,
+ 	.get_cur_state = powerclamp_get_cur_state,
+ 	.set_cur_state = powerclamp_set_cur_state,
+-- 
+2.34.1
 
-I don't have objections, although the classic variant is also good to me.
-
-I don't think that it makes sense to change only the Transformer DTs to
-use 'interrupts-extended'. I'd suggest to create a followup patches that
-will cleanup and improve all Tegra device-trees together, making them
-all more uniform and nicer to look.
-
->> +	uartb: serial@70006040 {
->> +		compatible = "nvidia,tegra30-hsuart";
-> [...]
-> 
-> I wonder why isn't this in the tegra30.dtsi? The DT shouldn't select a
-> driver - it should only describe the hardware.
-
-The "nvidia,tegra30-hsuart" implies that UART port is capable of
-performing the high speed transfers, which should be board dependent.
-Meanwhile "nvidia,tegra30-uart" should work for all hardware variants.
-That's how I understand it.
-
-The comment in the Tegra dtsi really shouldn't refer to the drivers.
-Changing that comment should be material for a separate patch. It could
-become a part of the DT cleanup patches together with the
-'interrupts-extended' changes.
