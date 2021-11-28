@@ -2,88 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E32460A56
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 22:28:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79696460A59
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 22:33:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240763AbhK1Vb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 16:31:27 -0500
-Received: from mail-wm1-f47.google.com ([209.85.128.47]:37836 "EHLO
-        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233831AbhK1V30 (ORCPT
+        id S236073AbhK1VhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 16:37:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236262AbhK1VfC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 16:29:26 -0500
-Received: by mail-wm1-f47.google.com with SMTP id k37-20020a05600c1ca500b00330cb84834fso15251435wms.2;
-        Sun, 28 Nov 2021 13:26:09 -0800 (PST)
+        Sun, 28 Nov 2021 16:35:02 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70623C061574;
+        Sun, 28 Nov 2021 13:31:45 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id u3so39362680lfl.2;
+        Sun, 28 Nov 2021 13:31:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hqqwFzuESSMW0jfkK2QrjmANVN0lbBWl/IRoqqwzlaA=;
+        b=OGkzeXXqF/r80GXewSEKN+gWZcT9R9NHUg4RZ2BQi1FAxk8/eeAmxkyB3uemAID09h
+         dSQBmsobE+Eub+Wzpe6ow+3ohI/ZUsykTqeNVO0f9cwO7gt1vjUyj/yPSUWzivOEIW90
+         jfEELvTYSl8v7+7HK7IoOeGZkLOr/EZRgCPvZGtjqPeHMYdNapLN81AxoQOj2NoeLAaW
+         dC88A58qAatfBmcMn3F0OfhZVyoJc9oF3D6rJpJs5HAYJztl111/oQ4gjVnOXOmM3G3i
+         vCGviULK7RYnOc6REiRvyp3itnpZR/FMEPjiX2wiOSg1f8eTDRMxIyYpTszQEMIdwwn/
+         KOVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=o+wK4OmDifQrSqKUMTc1/sdSUNGixNnHa1F6AolO5c4=;
-        b=BSbVjKe/7dkt5ZS5Lt7Y8Rw8mifgzybyTRrMEkPibzDYDxbWJtK6BT4dPY7pVg/YUP
-         9ifigZjnyouo684gv4Fo3IqqZJWA0klp5Ut0mAciBSWeHVmzNN/h9dnanVSTA3mQlm2s
-         PSVdDRnasS2s0tB1L/tUWarcehuHce0cDtTvHji5l3cW3lFeWfUgdXPgZHlgCbF3aipT
-         zpitVHxoYKkqLqgkaXDJdtAATPOTT25QLKWBEpM+ShoOuiOP0C321+3hNwwGSUwUe17f
-         2tlOvMUWVs6QWSkn1xtB7va/H6qTuEB2sbF5u3JJwkL5Tmc/6zfRmAkAw7nMMoZAX36N
-         wESQ==
-X-Gm-Message-State: AOAM531ltSFJ1plWtyp3z+mNfoFgRp2OveXgo/8t5kc0oN/BYZSmUUR7
-        tmMJWtGnGUTwBI1XkR8fCAo=
-X-Google-Smtp-Source: ABdhPJwxm8SsISwobAty1d50Tfyr4XXxZPxgb0IV0ZY6pw9vKcFbEUiWNHstSLfth3I25dyrvZU75Q==
-X-Received: by 2002:a1c:f005:: with SMTP id a5mr33115229wmb.19.1638134768892;
-        Sun, 28 Nov 2021 13:26:08 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id b10sm11969801wrt.36.2021.11.28.13.26.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 13:26:08 -0800 (PST)
-Date:   Sun, 28 Nov 2021 21:26:06 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] hv: utils: add PTP_1588_CLOCK to Kconfig to fix build
-Message-ID: <20211128212606.ft3qzwcsy3divl7z@liuwe-devbox-debian-v2>
-References: <20211126023316.25184-1-rdunlap@infradead.org>
- <MWHPR21MB159387A26F1FF1A77CEB4255D7649@MWHPR21MB1593.namprd21.prod.outlook.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hqqwFzuESSMW0jfkK2QrjmANVN0lbBWl/IRoqqwzlaA=;
+        b=Zkh/19s/UzppczcsqnkMN3erh2P0gfIqrz5xothd1dIv8Rpc/G/i12SK8mx4YnGhap
+         xsdAbzsAg3pO4NmDt/aVR721+9ZFWMxqHYlYcolYXxwFkUiCQa3T4aqZ17WNoYMntL1c
+         rJZCpHEkslKmAPQg8f+6DxAsvLb5DLym6NEI7SKRzLawIjZAfRMGD6tra/lxDTs6Jc9u
+         gt5lCqSrdBlY3mD9MdbnmhYTYoKQMV9LenmeQDMeBOyxJtrfxhhINstBAC3Zqd8nqKi5
+         kk96fVQBn0QeVVsv/K68pXnK2T+5jd7sSZWcKCnHdY1nUwStlKWGr7dBYowl+/vaEDKv
+         khcw==
+X-Gm-Message-State: AOAM531jn5YU0fsQEWzlh4CwM/bAfYdrdsPc0qmOLu7FuS8QwAPwPUiM
+        fpTBA2AQ1G5W3yStTLtf7nMsvt09+Ic=
+X-Google-Smtp-Source: ABdhPJxgOPj2S6BJzWOgPCRrn2IW5GKkMv7aH2gogt/zHQ/lSX21we7ICSaM0s2wXzYz/su/7RBvqw==
+X-Received: by 2002:ac2:4119:: with SMTP id b25mr41931675lfi.3.1638135103545;
+        Sun, 28 Nov 2021 13:31:43 -0800 (PST)
+Received: from [192.168.2.145] (94-29-46-111.dynamic.spd-mgts.ru. [94.29.46.111])
+        by smtp.googlemail.com with ESMTPSA id k15sm1163913ljg.123.2021.11.28.13.31.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Nov 2021 13:31:43 -0800 (PST)
+Subject: Re: [PATCH v3 05/14] ARM: tegra: Add device-tree for ASUS Transformer
+ Prime TF201
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        David Heidelberg <david@ixit.cz>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Anton Bambura <jenneron@protonmail.com>,
+        Antoni Aloy Torrens <aaloytorrens@gmail.com>,
+        Nikola Milosavljevic <mnidza@outlook.com>,
+        Ion Agorria <ion@agorria.com>,
+        Ihor Didenko <tailormoon@rambler.ru>,
+        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Raffaele Tranquillini <raffaele.tranquillini@gmail.com>,
+        Jasper Korten <jja2000@gmail.com>,
+        Thomas Graichen <thomas.graichen@gmail.com>,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211127142327.17692-1-digetx@gmail.com>
+ <20211127142327.17692-6-digetx@gmail.com> <YaLgpb2hQGzQXrej@qmqm.qmqm.pl>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <8762c5e6-1ec0-4412-b3db-968551e15b30@gmail.com>
+Date:   Mon, 29 Nov 2021 00:31:34 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR21MB159387A26F1FF1A77CEB4255D7649@MWHPR21MB1593.namprd21.prod.outlook.com>
+In-Reply-To: <YaLgpb2hQGzQXrej@qmqm.qmqm.pl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 27, 2021 at 07:12:11PM +0000, Michael Kelley (LINUX) wrote:
-> From: Randy Dunlap <rdunlap@infradead.org> Sent: Thursday, November 25, 2021 6:33 PM
-> > 
-> > The hyperv utilities use PTP clock interfaces and should depend a
-> > a kconfig symbol such that they will be built as a loadable module or
-> > builtin so that linker errors do not happen.
-> > 
-> > Prevents these build errors:
-> > 
-> > ld: drivers/hv/hv_util.o: in function `hv_timesync_deinit':
-> > hv_util.c:(.text+0x37d): undefined reference to `ptp_clock_unregister'
-> > ld: drivers/hv/hv_util.o: in function `hv_timesync_init':
-> > hv_util.c:(.text+0x738): undefined reference to `ptp_clock_register'
-> > 
-> > Fixes: 46a971913611a ("Staging: hv: move hyperv code out of staging directory")
+28.11.2021 04:51, Michał Mirosław пишет:
+> On Sat, Nov 27, 2021 at 05:23:18PM +0300, Dmitry Osipenko wrote:
+>> From: Svyatoslav Ryhel <clamor95@gmail.com>
+>>
+>> Add device-tree for ASUS Transformer Prime TF201, which is NVIDIA
+>> Tegra30-based tablet device.
+>>
+>> Co-developed-by: Ion Agorria <ion@agorria.com>
+>> Signed-off-by: Ion Agorria <ion@agorria.com>
+>> Co-developed-by: Maxim Schwalm <maxim.schwalm@gmail.com>
+>> Signed-off-by: Maxim Schwalm <maxim.schwalm@gmail.com>
+>> Signed-off-by: Svyatoslav Ryhel <clamor95@gmail.com>
+>> ---
+>>  arch/arm/boot/dts/Makefile                    |    1 +
+>>  .../boot/dts/tegra30-asus-lvds-display.dtsi   |   46 +
+>>  arch/arm/boot/dts/tegra30-asus-tf201.dts      |  623 ++++++
+>>  .../dts/tegra30-asus-transformer-common.dtsi  | 1741 +++++++++++++++++
+>>  4 files changed, 2411 insertions(+)
+>>  create mode 100644 arch/arm/boot/dts/tegra30-asus-lvds-display.dtsi
+>>  create mode 100644 arch/arm/boot/dts/tegra30-asus-tf201.dts
+>>  create mode 100644 arch/arm/boot/dts/tegra30-asus-transformer-common.dtsi
 > 
-> Seems like the "Fixes" tag should reference something a little newer than
-> when the Hyper-V code was first added.  Either commit 3716a49a81ba
-> ("hv_utils: implement Hyper-V PTP source") or commit e5f31552674e 
-> ("ethernet: fix PTP_1588_CLOCK dependencies") when
-> PTP_1588_CLOCK_OPTIONAL was added.
-[...]
+> I think the common.dtsi is combined from all the DT authors, so they all
+> should be mentioned in the co-developed/signed-off lines. (Or maybe just
+> split the common part out if you want to be more specific in assigning
+> credits?)
+
+I'll factor out the common part into separate patch and will make you
+the author of that patch since it really was derived from yours original
+TF300T DT. I actually wanted to do that previously, it's good that you
+reminded about it.
+
+>> +	i2c@7000c400 {
+>> +		/* Atmel MXT768E touchscreen */
+>> +		touchscreen@4d {
+> [...]
+>> +			interrupt-parent = <&gpio>;
+>> +			interrupts = <TEGRA_GPIO(H, 4) IRQ_TYPE_EDGE_FALLING>;
+> [...]
 > 
-> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+> Nit: This could use 'interrupts-extended' as it's more readable, I think.
+> (There are similar cases in other DTs.)
 
-I used 3716a49a81ba in the Fixes tag and pushed it to hyperv-fixes.
+I don't have objections, although the classic variant is also good to me.
 
-Wei.
+I don't think that it makes sense to change only the Transformer DTs to
+use 'interrupts-extended'. I'd suggest to create a followup patches that
+will cleanup and improve all Tegra device-trees together, making them
+all more uniform and nicer to look.
+
+>> +	uartb: serial@70006040 {
+>> +		compatible = "nvidia,tegra30-hsuart";
+> [...]
+> 
+> I wonder why isn't this in the tegra30.dtsi? The DT shouldn't select a
+> driver - it should only describe the hardware.
+
+The "nvidia,tegra30-hsuart" implies that UART port is capable of
+performing the high speed transfers, which should be board dependent.
+Meanwhile "nvidia,tegra30-uart" should work for all hardware variants.
+That's how I understand it.
+
+The comment in the Tegra dtsi really shouldn't refer to the drivers.
+Changing that comment should be material for a separate patch. It could
+become a part of the DT cleanup patches together with the
+'interrupts-extended' changes.
