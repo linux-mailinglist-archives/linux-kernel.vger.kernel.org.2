@@ -2,91 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1976D4605E2
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 12:21:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA944605EC
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 12:42:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352086AbhK1LYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 06:24:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53512 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235611AbhK1LWT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 06:22:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1638098340;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=UGK+Dn6UZl9sr7vGdBkJU4cqFeth9dYn+pKxQkt6tRs=;
-        b=eJMHp7tQlsWEWGpfub7gBbnOZ18x3OYp+wzpFUHSNA9JzkIrriLy+dsgTtphG1F7RpjJ4I
-        4KGL/wsF/gcimWflxv6elQmrifGRfWzp/yAQWOqfPBMN/TyNOSi/WB8GrQ03x/CrVaY4os
-        oLQS7fHMMF1zTSaBB4oH085oT15g3yI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-288-oWx_jglROaGSvA8_QSgh_g-1; Sun, 28 Nov 2021 06:18:56 -0500
-X-MC-Unique: oWx_jglROaGSvA8_QSgh_g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9E98B1006AA0;
-        Sun, 28 Nov 2021 11:18:55 +0000 (UTC)
-Received: from starship (unknown [10.40.192.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DADEC60854;
-        Sun, 28 Nov 2021 11:18:53 +0000 (UTC)
-Message-ID: <e52068a6e98031a386b5052a166a55c94fe940f6.camel@redhat.com>
-Subject: Commit 'hugetlbfs: extend the definition of hugepages parameter to
- support node allocation' breaks old numa less syntax of reserving hugepages
- on boot.
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Zhenguo Yao <yaozhenguo1@gmail.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Date:   Sun, 28 Nov 2021 13:18:52 +0200
+        id S1343522AbhK1Lph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 06:45:37 -0500
+Received: from mout.gmx.net ([212.227.15.18]:41949 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232090AbhK1Lnc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Nov 2021 06:43:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1638099593;
+        bh=U5vBJPo7borxDUYLvOOfeoJJZMpeXlH9wqwpUhA12Sg=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=HLyTw5WxYbk+fkhC8eui+sYzC9JSQ//YRgOVhCdiLQTG9H1hVtaEuLoDEQXuH+KJ1
+         zqgXOf1+KXD/DgT0jvic5OBPkLRZhWnEj0Nmdq1RXuYCpZyha2v7pg/5fAYPfXWAOt
+         b0/daOiIJX5C7oKttG75wsIuIZjtuqbukb5Y3zMU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.150.210]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MVN6j-1n0Gys2EHX-00SNIL; Sun, 28
+ Nov 2021 12:39:53 +0100
+Message-ID: <941f378e1ea2b32cac0adee1e81637ab6d001f1e.camel@gmx.de>
+Subject: Re: [PATCH 1/1] mm: vmscan: Reduce throttling due to a failure to
+ make progress
+From:   Mike Galbraith <efault@gmx.de>
+To:     Alexey Avramov <hakavlad@inbox.lv>,
+        Mel Gorman <mgorman@techsingularity.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Rik van Riel <riel@surriel.com>,
+        Darrick Wong <djwong@kernel.org>, regressions@lists.linux.dev,
+        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Sun, 28 Nov 2021 12:39:51 +0100
+In-Reply-To: <252cd5acd9bf6588ec87ce02884925c737b6a8b7.camel@gmx.de>
+References: <20211125151853.8540-1-mgorman@techsingularity.net>
+         <20211127011246.7a8ac7b8@mail.inbox.lv>
+         <20211126165211.GL3366@techsingularity.net>
+         <20211128042635.543a2d04@mail.inbox.lv>
+         <252cd5acd9bf6588ec87ce02884925c737b6a8b7.camel@gmx.de>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+User-Agent: Evolution 3.42.1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:gkJ6likBbom3JbAxnrzHJYF3PmTbT8ovSN1QHsR8IdkC+Eep2Sp
+ f34hU1l06wx3zlgxBefHCOMZHgZjBMdQFscuTcLF+bFls2DmcskTnECyYIUE3ZtrumTi6wJ
+ p/7upRKJjPhywLYQmsBZViGJei3fplcha8zCt27xHabG+NGs5LJHsHXPRYRFeILoYpRZq6p
+ OcsiMoIetx4dkzra0hBMQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:glpZMHVX8vs=:YCYA40Ri/MIKsfJCRM512B
+ uTmAyYlSt46EvWJyLYgYRb7IjIw3+FejpNDOacc4zrwHTwAYeBprK+rqSquy8krS88o7ZJqsE
+ xQdJyB+L/4tGhejK9c7ApiCxmxk8k/WO/suNOLKrPhfZDOWKjffrTlRodbmpGYjBbichhAx1f
+ dqfLVNYSAypRp/JXsRMQUv2ciU7TLaI2+POXXoGXHqfs5jGsFS3MtOvQX9D9fhwRqHAHOtvEo
+ FgX0H+ZqGt07IK5nYlPr+yp257SJqhQbhYVjhoDVsNQNMyN3plu9OZJaotLN0obzAgI8ceb/K
+ dla3XPR+Tyl2G+CDubJejYoBF0gWB/K9d8ikFQBAr9nRa/zPFyQouwAHpmESY4CkTk+KzBoeR
+ NEJCBv1jknXv8EbKjgxLQTOX3PpPMLRm2tyKT7RPdxwHpj71DkzcC1dQF2KuAqlItkvr6JQ6T
+ YJuNg0PC7pKmK+QptlB5vGnRjoMkGcaUA5lhKNLNrJH/5D5ZcJJMi0R1p7ATVzCmcr7rtS7BO
+ 228f4puhmk+pdvwT2/yeLS9wnRHRTV7ReSE/Peu9Fk9zqQDltQax2hpbI6Nde7LKW0WaCpYKQ
+ GYyBviUPj0+mgswd4/XHn3LUjFpGyjl5iPbfl0WH9MeVjNOWsaT/ajQhrzxTL24THZ2f4L9p1
+ G7QUuxAZDs8Jn16+l4ipnHgkypsyBb2/JIHutZsZ0D4T69pCYGx6hFDRqs5glX5cog7oq1YFH
+ 6FtF7FzfOXZSapKPNENnHWdf161+JHhbsNi24q3w/I0FS8aLGwSFTXTfHvL6az8iak7grvm/3
+ RrYQxuCt2yV402IGqVDahEhZNlChhi8QQmij9J9Xyi0Sq3aqHbTqXSE63PhKx+hYn+fN7C6ZL
+ /L8JVAgrLmV4OiVMlIWgoQc/soQvwrhDmDJpK9m5r31/V4IXclKg1shDgblJ2I9B8JslgCqB/
+ znfLGjCjdltQ7rxHQL6kzdi3vhoUuEZa+UdoxT4DRLeLiQt6TGM8EnwkzmAm9bIbChHaLpLXD
+ /b/xPt89be+E2iBGEJG+inmZmU2brz2jlW5V/0AZtcH8nEyHRRdByU5pU8X3BMcPgjeLaAK0h
+ 74bmdPonySht7A=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 2021-11-28 at 11:00 +0100, Mike Galbraith wrote:
+> On Sun, 2021-11-28 at 04:26 +0900, Alexey Avramov wrote:
+> > I will present the results of the new tests here.
+> >
+> > TLDR;
+> > =3D=3D=3D=3D=3D
+> > No one Mel's patch doesn't prevent stalls in my tests.
+>
+> Seems there may be a problem with the THROTTLE_WRITEBACK bits..
 
-dmesg prints this:
+Disregard.  I backed hacklet out again, and one-liner that had ground
+my box to fine powder was harmless.  Hmm.
 
-HugeTLB: allocating 64 of page size 1.00 GiB failed.  Only allocated 0 hugepages
-
-Huge pages were allocated on kernel command line (1/2 of 128GB system):
-
-'default_hugepagesz=1G hugepagesz=1G hugepages=64'
-
-This is 3970X and no real support/need for NUMA, thus only fake NUMA node 0 is present.
-
-Reverting the commit helps.
-
-New syntax also works ( hugepages=0:64 )
-
-I can test any patches for this bug.
-
-
-Also unrelated, is there any progress on allocating 1GB pages on demand so that I could
-allocate them only when I run a VM?
-
-i don't mind having these pages to be marked as to be used for userspace only,
-since as far as I remember its the kernel usage that makes some page unmoveable.
-
-Last time (many years ago) I tried to create a zone with only userspace pages
-(I don't remember what options I used) but it didn't work.
-
-Is there a way to debug what is causing unmoveable pages and doesn't let
-/proc/sys/vm/nr_hugepages work (I tried it today and as usual the number
-it can allocate steadly decreases over time).
-
-Thanks,
-Best regards,
-	Maxim Levitsky
-
-
-
+	-Mike
+>
