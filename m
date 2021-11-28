@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D608460972
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 20:36:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15A3F460973
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 20:37:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357636AbhK1TkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 14:40:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238479AbhK1TiE (ORCPT
+        id S1357712AbhK1TkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 14:40:12 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:35514 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238477AbhK1TiE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 28 Nov 2021 14:38:04 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD5FC061746
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 11:34:47 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BCF36B80D61
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 19:34:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 995A7C004E1;
-        Sun, 28 Nov 2021 19:34:43 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 33AE8B80D62
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 19:34:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C063C53FC7;
+        Sun, 28 Nov 2021 19:34:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638128084;
-        bh=7ST2ofIlYLSNX0vDroI8cYNghHTs9+e2IKjOQvMRuKo=;
+        s=k20201202; t=1638128085;
+        bh=9j+uVxoMxAiknvBgP/E7zv/41CmvZWStZ5FHjtAbUA0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lTW8LTJbAn517sltoYWZysaoWKSJHxnbrvJ8w11p3D+sPFSvllZixGyTkC8BOTM6X
-         mmaUzpOS1uLd5ZH/jlwJxgRsnQy6i2jX28TGeL1rbks+oumEt7wQp37Scjk0NfQwe6
-         nC8Mj6XVJpDQUgVzChLxQ9ZDKFC98HWYNSESt8E3ZVgMeX9CCjAT5pFNDGvIAGRURA
-         DrBTFZw8r2iYalaU/CZesAPEe8qjlbnLHg+jW0Ubu4PCzRIcLMiecxQpxWP8pCjvep
-         b/iKoeyntP6PNH6HlFJ3n2qsIR3oB2vWDyPBvYDkg1juI0d4Oa6YEPMsZqR411NpVd
-         hJ9gky0cGOg/Q==
+        b=IisPMzwe3U0jJp5rHqvztxYX9yESJzPkcjbRW4enh+wSbCtJYGSYBCMSKnfK5L6+O
+         nHLTpWFtsM5Lk1Sf/tfi4lGnEyEze8htFmojPd9Q/3rvD64NJQ/IXvuhzO2bChYgNc
+         Rc6HaElPU77qGQiRUmbSsJ1O0ANbam0QmWtFoyRUPTkdeLb9NAIjyFO0dpHoeHcNjd
+         Ksp4POx/zdEq26ER/Q8Bsc5GECaaC9VG9+pZM7Rn5Iby1zrSjuGC3a6CP5zaF7E6Vp
+         7fo8YyoaXVFrixqY5FSLxDuOayQz5To6NEPMtUVRVgRmcpG9S3o0KbcuTzSfsamXhd
+         NOnHGOyzadvHg==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Ofir Bitton <obitton@habana.ai>
-Subject: [PATCH 04/12] habanalabs: move device boot warnings to the correct location
-Date:   Sun, 28 Nov 2021 21:34:27 +0200
-Message-Id: <20211128193435.266534-4-ogabbay@kernel.org>
+Cc:     Dani Liberman <dliberman@habana.ai>
+Subject: [PATCH 05/12] habanalabs: fix race condition in multi CS completion
+Date:   Sun, 28 Nov 2021 21:34:28 +0200
+Message-Id: <20211128193435.266534-5-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211128193435.266534-1-ogabbay@kernel.org>
 References: <20211128193435.266534-1-ogabbay@kernel.org>
@@ -47,95 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ofir Bitton <obitton@habana.ai>
+From: Dani Liberman <dliberman@habana.ai>
 
-As device boot warnings clears the indication from the error mask,
-they must be located together before the unknown error validation.
+Race example scenario:
+1. User have 2 threads that waits on multi CS:
+   - thread_0 waits on QID 0 and uses multi CS context 0.
+   - thread_1 waits on QID 1 and uses multi CS context 1.
+2. thread_1 got completion and release multi CS context 1.
+3. CS related to multi CS of thread_0 starts executing
+   complete_multi_cs function, the first iteration of the loop
+   completes the multi CS of thread_0, hence multi CS context 0
+   is released.
+4. thread_1 waits on QID 1 and uses multi CS context 0.
+5. thread_0 waits on QID 0 and uses multi CS context 1.
+6. The second iterattion of the loop (from step 3) starts, which
+   means, start checking multi CS context 1:
+   - multi CS contetxt is being used by thread_0 waiting on QID 0.
+   - The fence of the CS (still CS from step 3) has QID map the same
+     as the multi CS context 1.
+   - multi CS context 1 (thread_0) gets completion on CS that triggered
+     already thread_0 (with multi CS context 0) and is no longer
+     being waited on.
 
-Signed-off-by: Ofir Bitton <obitton@habana.ai>
+Fixed by exiting the loop in complete_multi_cs after getting completion
+
+Signed-off-by: Dani Liberman <dliberman@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/misc/habanalabs/common/firmware_if.c | 45 ++++++++++----------
- 1 file changed, 23 insertions(+), 22 deletions(-)
+ drivers/misc/habanalabs/common/command_submission.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/misc/habanalabs/common/firmware_if.c b/drivers/misc/habanalabs/common/firmware_if.c
-index aea5904332fd..cf67800f2b47 100644
---- a/drivers/misc/habanalabs/common/firmware_if.c
-+++ b/drivers/misc/habanalabs/common/firmware_if.c
-@@ -443,15 +443,6 @@ static bool fw_report_boot_dev0(struct hl_device *hdev, u32 err_val,
- 		err_exists = true;
- 	}
+diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
+index c1fd4ba14c60..4e893364a3cc 100644
+--- a/drivers/misc/habanalabs/common/command_submission.c
++++ b/drivers/misc/habanalabs/common/command_submission.c
+@@ -545,6 +545,13 @@ static void complete_multi_cs(struct hl_device *hdev, struct hl_cs *cs)
+ 			 * mcs fences.
+ 			 */
+ 			fence->mcs_handling_done = true;
++			/*
++			 * Since CS (and its related fence) can be associated with only one
++			 * multi CS context, once it triggered multi CS completion no need to
++			 * continue checking other multi CS contexts.
++			 */
++			spin_unlock(&mcs_compl->lock);
++			break;
+ 		}
  
--	if (err_val & CPU_BOOT_ERR0_DRAM_SKIPPED) {
--		dev_warn(hdev->dev,
--			"Device boot warning - Skipped DRAM initialization\n");
--		/* This is a warning so we don't want it to disable the
--		 * device
--		 */
--		err_val &= ~CPU_BOOT_ERR0_DRAM_SKIPPED;
--	}
--
- 	if (err_val & CPU_BOOT_ERR0_BMC_WAIT_SKIPPED) {
- 		if (hdev->bmc_enable) {
- 			dev_err(hdev->dev,
-@@ -495,15 +486,6 @@ static bool fw_report_boot_dev0(struct hl_device *hdev, u32 err_val,
- 		err_exists = true;
- 	}
- 
--	if (err_val & CPU_BOOT_ERR0_PRI_IMG_VER_FAIL) {
--		dev_warn(hdev->dev,
--			"Device boot warning - Failed to load preboot primary image\n");
--		/* This is a warning so we don't want it to disable the
--		 * device as we have a secondary preboot image
--		 */
--		err_val &= ~CPU_BOOT_ERR0_PRI_IMG_VER_FAIL;
--	}
--
- 	if (err_val & CPU_BOOT_ERR0_SEC_IMG_VER_FAIL) {
- 		dev_err(hdev->dev, "Device boot error - Failed to load preboot secondary image\n");
- 		err_exists = true;
-@@ -523,10 +505,23 @@ static bool fw_report_boot_dev0(struct hl_device *hdev, u32 err_val,
- 	if (sts_val & CPU_BOOT_DEV_STS0_ENABLED)
- 		dev_dbg(hdev->dev, "Device status0 %#x\n", sts_val);
- 
--	if (!err_exists && (err_val & ~CPU_BOOT_ERR0_ENABLED)) {
--		dev_err(hdev->dev,
--			"Device boot error - unknown ERR0 error 0x%08x\n", err_val);
--		err_exists = true;
-+	/* All warnings should go here in order not to reach the unknown error validation */
-+	if (err_val & CPU_BOOT_ERR0_DRAM_SKIPPED) {
-+		dev_warn(hdev->dev,
-+			"Device boot warning - Skipped DRAM initialization\n");
-+		/* This is a warning so we don't want it to disable the
-+		 * device
-+		 */
-+		err_val &= ~CPU_BOOT_ERR0_DRAM_SKIPPED;
-+	}
-+
-+	if (err_val & CPU_BOOT_ERR0_PRI_IMG_VER_FAIL) {
-+		dev_warn(hdev->dev,
-+			"Device boot warning - Failed to load preboot primary image\n");
-+		/* This is a warning so we don't want it to disable the
-+		 * device as we have a secondary preboot image
-+		 */
-+		err_val &= ~CPU_BOOT_ERR0_PRI_IMG_VER_FAIL;
- 	}
- 
- 	if (err_val & CPU_BOOT_ERR0_TPM_FAIL) {
-@@ -538,6 +533,12 @@ static bool fw_report_boot_dev0(struct hl_device *hdev, u32 err_val,
- 		err_val &= ~CPU_BOOT_ERR0_TPM_FAIL;
- 	}
- 
-+	if (!err_exists && (err_val & ~CPU_BOOT_ERR0_ENABLED)) {
-+		dev_err(hdev->dev,
-+			"Device boot error - unknown ERR0 error 0x%08x\n", err_val);
-+		err_exists = true;
-+	}
-+
- 	/* return error only if it's in the predefined mask */
- 	if (err_exists && ((err_val & ~CPU_BOOT_ERR0_ENABLED) &
- 				lower_32_bits(hdev->boot_error_status_mask)))
+ 		spin_unlock(&mcs_compl->lock);
 -- 
 2.25.1
 
