@@ -2,162 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E07460ADB
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 23:43:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E089460AE9
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 23:52:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359361AbhK1Wqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 17:46:49 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:51614 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235189AbhK1Wos (ORCPT
+        id S1347913AbhK1Wzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 17:55:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235189AbhK1Wxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 17:44:48 -0500
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-287-ok2-tAiAMcm0MZnoOWqcKg-1; Sun, 28 Nov 2021 22:41:29 +0000
-X-MC-Unique: ok2-tAiAMcm0MZnoOWqcKg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.26; Sun, 28 Nov 2021 22:41:28 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.026; Sun, 28 Nov 2021 22:41:28 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Noah Goldstein' <goldstein.w.n@gmail.com>
-CC:     Eric Dumazet <edumazet@google.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "alexanderduyck@fb.com" <alexanderduyck@fb.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v1] x86/lib: Optimize 8x loop and memory clobbers in
- csum_partial.c
-Thread-Topic: [PATCH v1] x86/lib: Optimize 8x loop and memory clobbers in
- csum_partial.c
-Thread-Index: AQHX4nNzHa79im/GnUeKV4t1ya1z3awZWESAgAAYhYCAABG+4A==
-Date:   Sun, 28 Nov 2021 22:41:28 +0000
-Message-ID: <1ac1f60c643a478d84862ac264437d14@AcuMS.aculab.com>
-References: <20211125193852.3617-1-goldstein.w.n@gmail.com>
- <CANn89iLnH5B11CtzZ14nMFP7b--7aOfnQqgmsER+NYNzvnVurQ@mail.gmail.com>
- <CAFUsyfK-znRWJN7FTMdJaDTd45DgtBQ9ckKGyh8qYqn0eFMMFA@mail.gmail.com>
- <CAFUsyfLKqonuKAh4k2qdBa24H1wQtR5FkAmmtXQGBpyizi6xvQ@mail.gmail.com>
- <CAFUsyfJ619Jx_BS515Se0V_zRdypOg3_2YzbKUk5zDBNaixhaQ@mail.gmail.com>
- <8e4961ae0cf04a5ca4dffdec7da2e57b@AcuMS.aculab.com>
- <CAFUsyfLoEckBrnYKUgqWC7AJPTBDfarjBOgBvtK7eGVZj9muYQ@mail.gmail.com>
-In-Reply-To: <CAFUsyfLoEckBrnYKUgqWC7AJPTBDfarjBOgBvtK7eGVZj9muYQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sun, 28 Nov 2021 17:53:31 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E81BC061574;
+        Sun, 28 Nov 2021 14:50:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=89ua7qdKP6T880mk2hVigb/6DUZHisrYoIWnsSLq7PM=; b=oodOHHaWTLIMIQudG7ZEfzrvpS
+        GlR78B93L+U4umKVCtUlo9c4rnfsdGI9a0V5kBJRKmMnLzhEN4cbITq9KdRFI4mv0krcLvS1d8pMw
+        Yysvc+M92FI1318IC3ZPpjAi3YOeo+gUockgr5jCt190CHUlNSmk4puu8qpoT/w0tmSDz5g2c/89J
+        0cp3mRjg9WVmiQQy54F9BYPMsvd4wupOr2CCVeaj5KAw9H8ADf64r8bj9zKghwyTaVCO4GWb2PznN
+        4ZlYMZHRFIqUTqTSz09aZ3bnbgc2kq7wcPFVw8jBgID5ty7BQ2n9DqWEAHQBH23SqbaBsXfVaWo7u
+        FbyEXpKw==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mrSzl-004Yt0-RY; Sun, 28 Nov 2021 22:50:07 +0000
+Message-ID: <8752eeae-6280-310e-85f1-bc0e594202fc@infradead.org>
+Date:   Sun, 28 Nov 2021 14:49:32 -0800
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH] hv: utils: add PTP_1588_CLOCK to Kconfig to fix build
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+To:     Wei Liu <wei.liu@kernel.org>,
+        "Michael Kelley (LINUX)" <mikelley@microsoft.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20211126023316.25184-1-rdunlap@infradead.org>
+ <MWHPR21MB159387A26F1FF1A77CEB4255D7649@MWHPR21MB1593.namprd21.prod.outlook.com>
+ <20211128212606.ft3qzwcsy3divl7z@liuwe-devbox-debian-v2>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20211128212606.ft3qzwcsy3divl7z@liuwe-devbox-debian-v2>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTm9haCBHb2xkc3RlaW4NCj4gU2VudDogMjggTm92ZW1iZXIgMjAyMSAyMTowMA0KPiAN
-Cj4gT24gU3VuLCBOb3YgMjgsIDIwMjEgYXQgMTo0NyBQTSBEYXZpZCBMYWlnaHQgPERhdmlkLkxh
-aWdodEBhY3VsYWIuY29tPiB3cm90ZToNCj4gPg0KPiA+IC4uLg0KPiA+ID4gUmVnYXJkaW5nIHRo
-ZSAzMiBieXRlIGNhc2UsIGFkZGluZyB0d28gYWNjdW11bGF0b3JzIGhlbHBzIHdpdGggdGhlIGxh
-dGVuY3kNCj4gPiA+IG51bWJlcnMgYnV0IGNhdXNlcyBhIHJlZ3Jlc3Npb24gaW4gdGhyb3VnaHB1
-dCBmb3IgdGhlIDQwLzQ4IGJ5dGUgY2FzZXMuIFdoaWNoDQo+ID4gPiBpcyB0aGUgbW9yZSBpbXBv
-cnRhbnQgbWV0cmljIGZvciB0aGUgdXNhZ2Ugb2YgY3N1bV9wYXJ0aWFsKCk/DQo+ID4gPg0KPiA+
-ID4gSGVyZSBhcmUgdGhlIG51bWJlcnMgZm9yIHRoZSBzbWFsbGVyIHNpemVzOg0KPiA+ID4NCj4g
-PiA+IHNpemUsIGxhdCBvbGQsICAgIGxhdCB2ZXIyLCAgICBsYXQgdmVyMSwgICAgdHB1dCBvbGQs
-ICAgdHB1dCB2ZXIyLCAgIHRwdXQgdmVyMQ0KPiA+ID4gICAgMCwgICA0Ljk2MSwgICAgICAgNC41
-MDMsICAgICAgIDQuOTAxLCAgICAgICA0Ljg4NywgICAgICAgNC4zOTksICAgICAgIDQuOTUxDQo+
-ID4gPiAgICA4LCAgIDUuNTkwLCAgICAgICA1LjU5NCwgICAgICAgNS42MjAsICAgICAgIDQuMjI3
-LCAgICAgICA0LjExMCwgICAgICAgNC4yNTINCj4gPiA+ICAgMTYsICAgNi4xODIsICAgICAgIDYu
-Mzk4LCAgICAgICA2LjIwMiwgICAgICAgNC4yMzMsICAgICAgIDQuMDYyLCAgICAgICA0LjI3OA0K
-PiA+ID4gICAyNCwgICA3LjM5MiwgICAgICAgNy41OTEsICAgICAgIDcuMzgwLCAgICAgICA0LjI1
-NiwgICAgICAgNC4yNDYsICAgICAgIDQuMjc5DQo+ID4gPiAgIDMyLCAgIDcuMzcxLCAgICAgICA2
-LjM2NiwgICAgICAgNy4zOTAsICAgICAgIDQuNTUwLCAgICAgICA0LjkwMCwgICAgICAgNC41MzcN
-Cj4gPiA+ICAgNDAsICAgOC42MjEsICAgICAgIDcuNDk2LCAgICAgICA4LjYwMSwgICAgICAgNC44
-NjIsICAgICAgIDUuMTYyLCAgICAgICA0LjgzNg0KPiA+ID4gICA0OCwgICA5LjQwNiwgICAgICAg
-OC4xMjgsICAgICAgIDkuMzc0LCAgICAgICA1LjIwNiwgICAgICAgNS43MzYsICAgICAgIDUuMjM0
-DQo+ID4gPiAgIDU2LCAgMTAuNTM1LCAgICAgICA5LjE4OSwgICAgICAxMC41MjIsICAgICAgIDUu
-NDE2LCAgICAgICA1Ljc3MiwgICAgICAgNS40NDcNCj4gPiA+ICAgNjQsICAxMC4wMDAsICAgICAg
-IDcuNDg3LCAgICAgICA3LjU5MCwgICAgICAgNi45NDYsICAgICAgIDYuOTc1LCAgICAgICA2Ljk4
-OQ0KPiA+ID4gICA3MiwgIDExLjE5MiwgICAgICAgOC42MzksICAgICAgIDguNzYzLCAgICAgICA3
-LjIxMCwgICAgICAgNy4zMTEsICAgICAgIDcuMjc3DQo+ID4gPiAgIDgwLCAgMTEuNzM0LCAgICAg
-ICA5LjE3OSwgICAgICAgOS40MDksICAgICAgIDcuNjA1LCAgICAgICA3LjYyMCwgICAgICAgNy41
-NDgNCj4gPiA+ICAgODgsICAxMi45MzMsICAgICAgMTAuNTQ1LCAgICAgIDEwLjU4NCwgICAgICAg
-Ny44NzgsICAgICAgIDcuOTAyLCAgICAgICA3Ljg1OA0KPiA+ID4gICA5NiwgIDEyLjk1MiwgICAg
-ICAgOS4zMzEsICAgICAgMTAuNjI1LCAgICAgICA4LjE2OCwgICAgICAgOC40NzAsICAgICAgIDgu
-MjA2DQo+ID4gPiAgMTA0LCAgMTQuMjA2LCAgICAgIDEwLjQyNCwgICAgICAxMS44MzksICAgICAg
-IDguNDkxLCAgICAgICA4Ljc4NSwgICAgICAgOC41MDINCj4gPiA+ICAxMTIsICAxNC43NjMsICAg
-ICAgMTEuNDAzLCAgICAgIDEyLjQxNiwgICAgICAgOC43OTgsICAgICAgIDkuMTM0LCAgICAgICA4
-Ljc3MQ0KPiA+ID4gIDEyMCwgIDE1Ljk1NSwgICAgICAxMi42MzUsICAgICAgMTMuNjUxLCAgICAg
-ICA5LjE3NSwgICAgICAgOS40OTQsICAgICAgIDkuMTMwDQo+ID4gPiAgMTI4LCAgMTUuMjcxLCAg
-ICAgIDEwLjU5OSwgICAgICAxMC43MjQsICAgICAgIDkuNzI2LCAgICAgICA5LjY3MiwgICAgICAg
-OS42NTUNCj4gPiA+DQo+ID4gPiAndmVyMicgdXNlcyB0d28gYWNjdW11bGF0b3JzIGZvciAzMiBi
-eXRlIGNhc2UgYW5kIGhhcyBiZXR0ZXIgbGF0ZW5jeSBudW1iZXJzDQo+ID4gPiBidXQgcmVncmVz
-c2lvbnMgaW4gdHB1dCBjb21wYXJlZCB0byAnb2xkJyBhbmQgJ3ZlcjEnLiAndmVyMScgaXMgdGhl
-DQo+ID4gPiBpbXBsZW1lbnRhdGlvbg0KPiA+ID4gcG9zdGVkIHdoaWNoIGhhcyBlc3NlbnRpYWxs
-eSB0aGUgc2FtZSBudW1iZXJzIGZvciB0cHV0L2xhdCBhcyAnb2xkJw0KPiA+ID4gZm9yIHNpemVz
-IFswLCA2M10uDQo+ID4NCj4gPiBXaGljaCBjcHUgYXJlIHlvdSB0ZXN0aW5nIG9uIC0gaXQgd2ls
-bCBtYWtlIGEgYmlnIGRpZmZlcmVuY2UgPw0KPiANCj4gVGlnZXJsYWtlLCBhbHRob3VnaCBhc3N1
-bWluZyBgYWRjYCBhcyB0aGUgYm90dGxlbmVjaywgdGhlIHJlc3VsdHMNCj4gc2hvdWxkIGJlIGxh
-cmdlbHkgaW5kZXBlbmRlbnQuDQoNClRoZSBjcHUgZGVmaW5pdGVseSBtYWtlcyBhIGRpZmZlcmVu
-Y2UuDQpBbHRob3VnaCB0aGUgYmlnIGNoYW5nZXMgZm9yIEludGVsIG1haW5zdHJlYW0gY3B1IHdh
-cyBiZWZvcmUgSXZ5L1NhbmR5IGJyaWRnZQ0KYW5kIHRvIEJyb2Fkd2VsbC9IYXN3ZWxsLiBUaGV5
-IGltcHJvdmVkIHRoZSBsYXRlbmN5IGZvciBhZGMgZnJvbSAyIGNsb2Nrcw0KdG8gMSBjbG9jay4N
-ClRoZSBsYXRlciBjcHUgYWxzbyBoYXZlIGV4dHJhIGluc3RydWN0aW9uIHBvcnRzIC0gd2hpY2gg
-Y2FuIGhlbHANCnBhcmFsbGVsIGV4Y2V1dGlvbi4NClRoYXQgY291bGQgd2VsbCBtYWtlIGEgYmln
-IGRpZmZlcmVuY2Ugd2hlcmUgeW91J3ZlIGR1cGxpY2F0ZWQgdGhlIGFkYyBjaGFpbi4NCg0KSW50
-ZXJlc3RpbmcgYW4gYWRjIGNoYWluIGNhbiBvbmx5IGRvIG9uZSBhZGQgKDggYnl0ZXMpIHBlciBj
-bG9jay4NCkJ1dCB5b3Ugc2hvdWxkIGJlIGFibGUgdG8gZG8gdHdvIDQgYnl0ZSBsb2FkcyBhbmQg
-YWRkIHRvIHR3byBzZXBhcmF0ZQ0KNjRiaXQgcmVnaXN0ZXIgZXZlcnkgY2xvY2suDQpUaGF0IGlz
-IGFsc28gOCBieXRlcy9jbG9jay4NClNvIGEgQyBsb29wOg0KCWZvciAoO2J1ZiAhPSBidWZfZW5k
-OyBidWYgKz0gMikgew0KCQlzdW1fNjRhICs9IGJ1Zl8zMlswXTsNCgkJc3VtXzY0YiArPSBidWZf
-MzJbMV07DQoJfQ0KTWlnaHQgYmUgYXMgZmFzdCBhcyB0aGUgYXNtIG9uZSENCkl0IHByb2JhYmx5
-IG5lZWRzIHVucm9sbGluZyBvbmNlLCBhbmQgbWF5IG5lZWQgJ2FkanVzdGluZycNCnNvIHRoYXQg
-dGhlIGxvb3AgdGVzdCBpcyAnYWRkICRkLCAlcmVnOyBqbnogMWInDQpUaGUgJ2FkZCcgYW5kICdq
-bnonIHNob3VsZCB0aGVuIGdldCAnZnVzZWQnIGludG8gYSBzaW5nbGUgdS1vcC4NCg0KPiA+IEFu
-ZCB3aGF0IGFyZSB5b3UgbWVhc2luZyB0aHJvdWdocHV0IGluPw0KPiANCj4gUnVubmluZyBiYWNr
-IHRvIGJhY2sgaXRlcmF0aW9ucyB3aXRoIHRoZSBzYW1lIGlucHV0IHdpdGhvdXQgYW55DQo+IGRl
-cGVuZGVuY3kgYmV0d2VlbiBpdGVyYXRpb25zLiBUaGUgT29PIHdpbmRvdyB3aWxsIGluY2x1ZGUN
-Cj4gbXVsdGlwbGUgaXRlcmF0aW9ucyBhdCBvbmNlLg0KPiANCj4gPiBBbmQgYXJlIHlvdSB0ZXN0
-aW5nIGFsaWduZWQgb3IgbWlzLWFsaWduZWQgNjRiaXQgcmVhZHM/DQo+IA0KPiBBbGlnbmVkIGFz
-IHRoYXQgaXMgdGhlIGNvbW1vbiBjYXNlLg0KDQpJIHdhcyB0aGlua2luZyB0aGF0IHRoZSBjb2Rl
-IHRvIGFsaWduIHRoZSBidWZmZXIgc3RhcnQgbWF5IG5vdA0KYmUgbmVlZGVkIC0gc28gdGhlIHRl
-c3QgY2FuIGJlIHJlbW92ZWQgd2l0aG91dCBhZmZlY3RpbmcgcGVyZm9ybWFuY2UuDQpFc3BlY2lh
-bGx5IGlmIGFsaWduZWQgYnVmZmVycyBhcmUgJ2V4cGVjdGVkJw0KU28geW91IGp1c3QgaGF2ZSB0
-byBzdXBwb3J0IHZhcmlhYmxlIGxlbmd0aHMsIG5vdCBhbGlnbm1lbnRzLg0KDQo+ID4gSSB0aGlu
-ayBvbmUgb2YgdGhlIHBlcmZvcm1hbmNlIGNvdW50ZXJzIHdpbGwgZ2l2ZSAnY3B1IGNsb2Nrcycu
-DQo+IA0KPiBUaW1lIGlzIGluIFJlZiBDeWNsZXMgdXNpbmcgYHJkdHNjYA0KDQpIbW1tLi4uDQpV
-bmxlc3MgeW91IG1hbmFnZSB0byBsb2NrIHRoZSBjcHUgZnJlcXVlbmN5IGdvdmVybm9yIChvciB3
-aGF0ZXZlciBpdA0KaXMgY2FsbGVkKSByZHRzYyBpcyBhbG1vc3QgdXNlbGVzcyBmb3IgdGltaW5n
-IGluc3RydWN0aW9ucy4NClRoZSBjcHUgaGFyZHdhcmUgd2lsbCBjaGFuZ2UgdGhlIGNsb2NrIG11
-bHRpcGxpZXIgb24geW91Lg0KDQpJJ3ZlIHVzZWQgaGlzdG9ncmFtW2RlbHRhX2N5bGVzKCkgPj4g
-bl0rKyAod2l0aCBib3VuZCBjaGVja2luZykgdG8NCmdldCBhIGRpc3RyaWJ1dGlvbiBvZiB0aGUg
-Y29zdCBvZiBlYWNoIHBhc3MgLSByYXRoZXIgdGhhbiBhbiBhdmVyYWdlLg0KSSBsYXN0IHVzZWQg
-dGhhdCB0ZXN0aW5nIHdyaXRldigiZGV2L251bGwiLCAuLi4pLg0KRWFjaCBydW4gZ2F2ZSBhIHNo
-YXJwIHBlYWsgLSBidXQgaXQgZGlmZmVyZWQgcnVuIHRvIHJ1biENClBvc3NpYmx5IGJlY2F1c2Ug
-b2YgdGhlIHJlbGF0aXZlIGFsaWdubWVudCBvZiB0aGUgc3RhY2tzIGFuZCBidWZmZXJzLg0KDQou
-Lg0KPiA+IFVzaW5nIGFkeGMvYWR4byB0b2dldGhlciBpcyBhIHJpZ2h0IFBJVEEuDQo+IA0KPiBJ
-J20gYSBiaXQgaGVzaXRhbnQgYWJvdXQgYWR4Yy9hZHhvIGJlY2F1c2UgdGhleSBhcmUgZXh0ZW5z
-aW9ucyBzbw0KPiBzdXBwb3J0IHdpbGwgbmVlZCB0byBiZSB0ZXN0ZWQuDQoNCkluZGVlZC4NCg0K
-PiBodHRwczovL2xvcmUua2VybmVsLm9yZy9sa21sL0NBTm44OWlMcEZPb2tfdHY9REtzTFgxbXha
-R2RIUWdBVGRXNFhzMHJjNm9hWFFFYTVOZ0BtYWlsLmdtYWlsLmNvbS9ULw0KDQpBaCB0aGF0IGlz
-IHlvdXIgcGF0Y2ggdGhhdCBqdXN0IGNoYW5nZXMgdGhlIGFzbSgpIGJsb2NrLg0KSSB3YXMgbG9v
-a2luZyBmb3IgRXJpYydzIGNoYW5nZXMgYXMgd2VsbC4NCg0KSSBzcGVudCB0b28gbG9uZyB0cnlp
-bmcgdG8gb3B0aW1pc2UgdGhpcyBjb2RlIGxhc3QgeWVhci4NCk1vc3RseSBiZWNhdXNlIEkgZm91
-bmQgYSByZWFsbHkgY3JhcCB2ZXJzaW9uIGluIG9uZSBvZiBvdXIgYXBwbGljYXRpb25zDQp0aGF0
-IGlzIGNoZWNrc3VtbWluZyBVRFAvSVB2NCBSVFAgcGFja2V0cyBiZWZvcmUgc2VuZGluZyB0aGVt
-IG9uIGEgUkFXDQpzb2NrZXQuIFRoZXNlIGFyZSBhYm91dCAyMDAgYnl0ZXMgZWFjaCBhbmQgd2Ug
-YXJlIHNlbmRpbmcgMTAwcyBldmVyeSAyMG1zLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBB
-ZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMs
-IE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+
+
+On 11/28/21 13:26, Wei Liu wrote:
+> On Sat, Nov 27, 2021 at 07:12:11PM +0000, Michael Kelley (LINUX) wrote:
+>> From: Randy Dunlap <rdunlap@infradead.org> Sent: Thursday, November 25, 2021 6:33 PM
+>>>
+>>> The hyperv utilities use PTP clock interfaces and should depend a
+>>> a kconfig symbol such that they will be built as a loadable module or
+>>> builtin so that linker errors do not happen.
+>>>
+>>> Prevents these build errors:
+>>>
+>>> ld: drivers/hv/hv_util.o: in function `hv_timesync_deinit':
+>>> hv_util.c:(.text+0x37d): undefined reference to `ptp_clock_unregister'
+>>> ld: drivers/hv/hv_util.o: in function `hv_timesync_init':
+>>> hv_util.c:(.text+0x738): undefined reference to `ptp_clock_register'
+>>>
+>>> Fixes: 46a971913611a ("Staging: hv: move hyperv code out of staging directory")
+>>
+>> Seems like the "Fixes" tag should reference something a little newer than
+>> when the Hyper-V code was first added.  Either commit 3716a49a81ba
+>> ("hv_utils: implement Hyper-V PTP source") or commit e5f31552674e
+>> ("ethernet: fix PTP_1588_CLOCK dependencies") when
+>> PTP_1588_CLOCK_OPTIONAL was added.
+> [...]
+>>
+>> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+> 
+> I used 3716a49a81ba in the Fixes tag and pushed it to hyperv-fixes.
+> 
+> Wei.
+
+Oh, thank you.
+
+~Randy
 
