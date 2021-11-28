@@ -2,78 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EEE84607D9
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 18:10:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FCA34607DF
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 18:11:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358487AbhK1RNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 12:13:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43218 "EHLO
+        id S1358753AbhK1RPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 12:15:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231855AbhK1RLv (ORCPT
+        with ESMTP id S234648AbhK1RNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 12:11:51 -0500
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 155CEC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 09:08:35 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 988D242684;
-        Sun, 28 Nov 2021 17:08:30 +0000 (UTC)
-To:     Andrew Lunn <andrew@lunn.ch>, Tianhao Chai <cth451@gmail.com>
-Cc:     Igor Russkikh <irusskikh@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>
-References: <20211128023733.GA466664@cth-desktop-dorm.mad.wi.cth451.me>
- <YaOvShya4kP4SRk7@lunn.ch>
-From:   Hector Martin <marcan@marcan.st>
-Subject: Re: [PATCH] ethernet: aquantia: Try MAC address from device tree
-Message-ID: <37679b8b-7a81-5605-23af-e442f9e91816@marcan.st>
-Date:   Mon, 29 Nov 2021 02:08:28 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Sun, 28 Nov 2021 12:13:06 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E23DEC061748
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 09:09:49 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id j3so31417953wrp.1
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 09:09:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/yxy7igUIzD5d3hWmN5Qkd98jhWVRja4dh3krlzXO+g=;
+        b=oE8hRthZ77ihjHp5OUMH2PflxLKomEon44x5+V7u/XAF72chxz1jX20/3kSHpZkO70
+         QNWxR0ElNPEPjCk/jGeVyAf5KpQ0LUgI77BbAnK6sm36rTyJ/g8UhcDVAq9gq+3YvWEz
+         PA1Nf5McF+Jj8Zo/xawDFP6v2e3HL2+8lASSVa+lpl+Vm+p/UOeIKiX3epi446toUnuq
+         4/hKsWs5qKyjDMZIxRDpytrQLPeoGb/1sOHm845V5QxQAaolja665geP1Rfj7fMW9lZq
+         1slLOohDoyCDHlNW7qoua8lWlVfc55JjKicUpf7UliUX7X/gaexTURebRQvmEb8zWSwb
+         39gQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/yxy7igUIzD5d3hWmN5Qkd98jhWVRja4dh3krlzXO+g=;
+        b=rnDWy4Ew/lXWDdplQivN5gtXGY4HEuN1/foYbSKDC/gTvmePZfNKaIxhhpttsGY1Pb
+         hZ0ZXkUIn0O0Wzxkm4JiI/F/m4YNn8DKpewFys1TunAQGUSVEtgEOJMjKT/j+ygOBIoC
+         8Nb1xsyVSLH5SJrQdQfPzUwIOZPe4ji9bK8IbtLJEuLBO40mLN8jPqJtQG9Qt8Rt56Fm
+         qa14CjCRohr/O2bmqWOEqSa6sVIF8+VpkcMUK/9kXkc5/36BlE+DJaYF05ZK/MB9ZZ6C
+         LU71O5kn4XGCGuxQFevreCyGHDjxG5VTZ/B/Pu+R70KNnWU7ikpWhj8F6sObn57SOZvi
+         fCZw==
+X-Gm-Message-State: AOAM533MG7otmjdSnduozE/ZEqaQ55Faub3Fc+NuuUtmCeUaGaAorGJ4
+        PVqnnknLPq9jkJFLsb+Vd+M=
+X-Google-Smtp-Source: ABdhPJyVT90TpYBg485ng3xlkMp9j/gSUgzUn7bZuH4yXSyh6LGOUm93VV9Y9XNTwrhLLsjwCfCR/A==
+X-Received: by 2002:a5d:4cd1:: with SMTP id c17mr27948157wrt.31.1638119388584;
+        Sun, 28 Nov 2021 09:09:48 -0800 (PST)
+Received: from localhost.localdomain ([2a02:8108:96c0:3b88::ac86])
+        by smtp.gmail.com with ESMTPSA id n15sm18243845wmq.38.2021.11.28.09.09.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Nov 2021 09:09:48 -0800 (PST)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH v2 00/10] staging: r8188eu: remove rf_type and rtw_rf_config
+Date:   Sun, 28 Nov 2021 18:09:14 +0100
+Message-Id: <20211128170924.5874-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.34.0
 MIME-Version: 1.0
-In-Reply-To: <YaOvShya4kP4SRk7@lunn.ch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/11/2021 01.33, Andrew Lunn wrote:
-> On Sat, Nov 27, 2021 at 08:37:33PM -0600, Tianhao Chai wrote:
->> Apple M1 Mac minis (2020) with 10GE NICs do not have MAC address in the
->> card, but instead need to obtain MAC addresses from the device tree. In
->> this case the hardware will report an invalid MAC.
->>
->> Currently atlantic driver does not query the DT for MAC address and will
->> randomly assign a MAC if the NIC doesn't have a permanent MAC burnt in.
->> This patch causes the driver to perfer a valid MAC address from OF (if
->> present) over HW self-reported MAC and only fall back to a random MAC
->> address when neither of them is valid.
-> 
-> This is a change in behaviour, and could cause regressions. It would
-> be better to keep with the current flow. Call
-> aq_fw_ops->get_mac_permanent() first. If that does not give a valid
-> MAC address, then try DT, and lastly use a random MAC address.
+This series removes rf_type from struct hal_data_8188e and the
+module paramater rtw_rc_config.
 
-On DT platforms, it is expected that the device tree MAC will override 
-whatever the device thinks is its MAC address. See tg3, igb, igc, r8169, 
-for examples where eth_platform_get_mac_address takes precedence over 
-everything else.
+Tested on x86_64 with InterTech DMG-02.
 
-I would not expect any other existing platform to have a MAC assigned to 
-the device in this way using these cards; if any platforms do, chances 
-are they intended it for it to be used and this patch will fix a current 
-bug. If some platforms out there really have bogus MACs assigned in this 
-way, that's a firmware bug, and we'd have to find out and add explicit, 
-targeted workaround code. Are you aware of any such platforms? :)
+v2:
+included the previously sent series
+"staging: r8188eu: remove more usages of rf_type"
+
+Michael Straube (10):
+  staging: r8188eu: remove rf_type from rtw_update_ht_cap()
+  staging: r8188eu: remove rf_type from issue_assocreq()
+  staging: r8188eu: remove rf_type from storePwrIndexDiffRateOffset()
+  staging: r8188eu: remove rf_type from getTxPowerIndex88E()
+  staging: r8188eu: remove TxCount from getTxPowerIndex88E()
+  staging: r8188eu: remove rf_type from writeOFDMPowerReg88E()
+  staging: r8188eu: remove rf_type from bb_reg_dump()
+  staging: r8188eu: remove unused HW_VAR_RF_TYPE
+  staging: r8188eu: remove rf_type from struct hal_data_8188e
+  staging: r8188eu: remove module parameter rtw_rf_config
+
+ drivers/staging/r8188eu/core/rtw_mlme.c       | 12 +--
+ drivers/staging/r8188eu/core/rtw_mlme_ext.c   | 25 ++----
+ .../staging/r8188eu/hal/rtl8188e_hal_init.c   |  4 -
+ drivers/staging/r8188eu/hal/rtl8188e_phycfg.c | 85 +++----------------
+ drivers/staging/r8188eu/hal/rtl8188e_rf6052.c |  6 +-
+ drivers/staging/r8188eu/hal/usb_halinit.c     |  3 -
+ drivers/staging/r8188eu/include/drv_types.h   |  1 -
+ drivers/staging/r8188eu/include/hal_intf.h    |  1 -
+ .../staging/r8188eu/include/rtl8188e_hal.h    |  3 -
+ drivers/staging/r8188eu/include/rtw_rf.h      | 10 ---
+ drivers/staging/r8188eu/os_dep/ioctl_linux.c  | 27 ++----
+ drivers/staging/r8188eu/os_dep/os_intfs.c     |  3 -
+ 12 files changed, 30 insertions(+), 150 deletions(-)
 
 -- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+2.34.0
+
