@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18887460919
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3A146091A
 	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 19:48:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359154AbhK1Svm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 13:51:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36138 "EHLO
+        id S1359190AbhK1Svn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 13:51:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232558AbhK1Sta (ORCPT
+        with ESMTP id S238301AbhK1Stc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 13:49:30 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0268C06174A;
-        Sun, 28 Nov 2021 10:46:13 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id z5so62561683edd.3;
-        Sun, 28 Nov 2021 10:46:13 -0800 (PST)
+        Sun, 28 Nov 2021 13:49:32 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5DEC061756;
+        Sun, 28 Nov 2021 10:46:15 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id t5so62676007edd.0;
+        Sun, 28 Nov 2021 10:46:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wpnEgkip+Kt8m4w9l8JR2NtbEGgQKuW0np00Xo92hpg=;
-        b=hh0Q9boFoXqFrYUuvsMPUYuGWC6x4nSAFx0ol3cUf6OUKmKkYGF1dhzLjtecbV6+D0
-         4qRDANAEf0lfqSlg1cLJEMD+l5+oLFnBqOy/rUGIo4BZZwNmXGHpEzQ1cUqMWn4966H0
-         bEzMaFtx5GnMRTKYqgYt8F4c7iIaoA9owclmY4OCTYJFxhZg01VO7amPl5XbaDdccCdR
-         I3P7d8yLPuvllBlIWLaqRsS2kzlk2ypzqFFaDyuJZo28913LDr34dDsahuL6dsWAeFj7
-         3wJ1AMcKQRLE0Vepvl7sVtFHAqCvjSRP8OfA51ekJ/jSlM4DMB7/Saez1yM8jrHIFG+1
-         s9dQ==
+        bh=7zper/oRWwE3imxn/cLlSmDdkvNOi7B9bVzq3y2Trn0=;
+        b=hx28hZoGiVOwxCKi9x1RfD68kvtKvyGKt3ZxkcRBPPXtrlBfaPTL903plk+oWL4FZj
+         gD49PdWTR4QG8EzAfLVSexh8hpyYKIAownDf/YHeMAPaxkNwMf4awAWVP6Thah4a1ryt
+         Vy9BNVq5orlRf/lajAQiFi/7loksmTNvag61nWhCKQGwLperEYF1P/HI1QtqeDvtK1+m
+         Xm8DSvKrBhJ02pRiwLngpTrC7+UnjWlTpEVD03se+QjfF/pgnv3ivVFczMZomD2zU6Mx
+         SzuGbbEtd13eOkLLCdhVqtNUFYiDG3BPNu+DBy2CPUk6k1ce/2Krsh1AgOrtwVahzHcz
+         muZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wpnEgkip+Kt8m4w9l8JR2NtbEGgQKuW0np00Xo92hpg=;
-        b=7jpSDOlN4SRSdNwIbZn3qEYNt1t5mG2oZ3cMR4XiR8wlmuTxm1lqmOfXNHHphKd4GS
-         wLcFvSLekRXvpHpqkxnS7MHvWzeiCymEgAB/24dAABGhyxCgvnottzZWq1EN434UvqJC
-         4sSh9eLYXyWPhK3Fd697+Jc6jxRDy3gyqRkVzVfbtnO9KyY9WhbELyBr0Q0XlhirGB8k
-         wjyTLuP99VeSXZ1h9AhYLvuXKgRru58Qw1AflhEwxlJJljaLC2a87HCrK/E4PSQXNKBT
-         YIWx9BUa4tO8Yg1yoNOSNrWpW+pGfSCHlzrldLqKRPYLHnAjOYE438JMFW+IcUqSTEfZ
-         r+JA==
-X-Gm-Message-State: AOAM532Ot2JZQ0EG+gI2JD0H4/CgcbW1Ff1U6Cs+8Y0HrGc8T/vOFcr5
-        IDnW87MMIu/xaRGNfmhVBVs=
-X-Google-Smtp-Source: ABdhPJxOsQ54yX7NIsXdO48HC6ayenrjpqbywAyUyjdQm4LtgjUekdGUYvoZnAk2NDlw7oDodwzrwg==
-X-Received: by 2002:a05:6402:d49:: with SMTP id ec9mr66552057edb.235.1638125172292;
-        Sun, 28 Nov 2021 10:46:12 -0800 (PST)
+        bh=7zper/oRWwE3imxn/cLlSmDdkvNOi7B9bVzq3y2Trn0=;
+        b=4wkEc0ON4f8WRPZmr//9J7N1kZ+5yk7g2OFlVVDSQ8HAyKgGdyGs0z0j55WC5YkRdd
+         FIhV7YnpSesISxmFXPVfAaYxWOtbcXc5Y33r0V/WRNjgW70SVNutbJiQ4IhuMAXT8psU
+         NgWLg6JdZ20kAPCp18J2czZvRgQ3TY4qX0jV8p1hiBO50Ble/bw/7RfVZ/b1QAmKRFh7
+         ubBJYD8lFYlDOsZm08b1xvGnQUlx7fKkJC54/2yKtJ8VHWY2hX1ZfRSBpVrJnXv77f2k
+         Ld7VhzQ8S67rX9DmabvfNYrl/LrA86pPS03XMvrH5rQ1vVyzB6g3Vl1vzedOYcAT4QyL
+         /HJg==
+X-Gm-Message-State: AOAM5323l4RkTJAwuev2jQgTKJ/LllkGx9Q67+/IIfUyKWifBel6u1xq
+        N6Gh8xBPnOSGEtFgr8Ie/MQ=
+X-Google-Smtp-Source: ABdhPJwZgncrx6pWXJ1ilrZrryFxIRYG7hKEgMB2maYBQjExZcNqjKRO/TExpO+QJ4rF/Wb8lKQgdg==
+X-Received: by 2002:a05:6402:4413:: with SMTP id y19mr66464941eda.26.1638125173913;
+        Sun, 28 Nov 2021 10:46:13 -0800 (PST)
 Received: from localhost.localdomain ([94.179.32.10])
-        by smtp.gmail.com with ESMTPSA id g1sm6072900eje.105.2021.11.28.10.46.11
+        by smtp.gmail.com with ESMTPSA id g1sm6072900eje.105.2021.11.28.10.46.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 10:46:12 -0800 (PST)
+        Sun, 28 Nov 2021 10:46:13 -0800 (PST)
 From:   Denis Pauk <pauk.denis@gmail.com>
 Cc:     eugene.shalygin@gmail.com, andy.shevchenko@gmail.com,
         pauk.denis@gmail.com, platform-driver-x86@vger.kernel.org,
+        Olli Asikainen <olli.asikainen@gmail.com>,
         Guenter Roeck <linux@roeck-us.net>,
         Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/3] hwmon: (nct6775) Implement custom lock by ACPI mutex
-Date:   Sun, 28 Nov 2021 20:45:47 +0200
-Message-Id: <20211128184549.9161-3-pauk.denis@gmail.com>
+Subject: [PATCH v2 3/3] hwmon: (nct6775) add MAXIMUS VII HERO
+Date:   Sun, 28 Nov 2021 20:45:48 +0200
+Message-Id: <20211128184549.9161-4-pauk.denis@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211128184549.9161-1-pauk.denis@gmail.com>
 References: <20211128184549.9161-1-pauk.denis@gmail.com>
@@ -67,152 +68,172 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use ACPI lock when the board has a separate lock for monitoring IO.
+ASUS MAXIMUS VII HERO board has got a nct6775 chip, but by default
+there's no use of it because of resource conflict with WMI method.
+
+This commit adds MAXIMUS VII HERO to the list of boards and provides
+ACPI mutex name that can be used as shared lock with ASUS WMI.
+
+Logic checks that mutex is available. If mutex is not available
+tries to get a chip ID by ACPI WMI interface.
 
 BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=204807
 Signed-off-by: Denis Pauk <pauk.denis@gmail.com>
+Tested-by: Olli Asikainen <olli.asikainen@gmail.com>
 
 ---
 Changes in v2:
 - Fix commit message.
-- Use an anonymous union for mutexes.
-- Use temporary status varibale in acpi calls.
+- Remove default acpi_board_ANY and use NULL instead.
+- Use chip ID everywhere.
 ---
- drivers/hwmon/nct6775.c | 59 +++++++++++++++++++++++++++++++++--------
- 1 file changed, 48 insertions(+), 11 deletions(-)
+ drivers/hwmon/nct6775.c | 118 ++++++++++++++++++++++++++--------------
+ 1 file changed, 76 insertions(+), 42 deletions(-)
 
 diff --git a/drivers/hwmon/nct6775.c b/drivers/hwmon/nct6775.c
-index 049c42ea66bb..206c20a1ae9b 100644
+index 206c20a1ae9b..ea99f68b9146 100644
 --- a/drivers/hwmon/nct6775.c
 +++ b/drivers/hwmon/nct6775.c
-@@ -140,6 +140,7 @@ struct nct6775_sio_data {
- 	int ld;
- 	enum kinds kind;
- 	enum sensor_access access;
-+	acpi_handle acpi_wmi_mutex;
+@@ -5109,34 +5109,59 @@ static int __init nct6775_find(int sioaddr, struct nct6775_sio_data *sio_data)
+  */
+ static struct platform_device *pdev[2];
  
- 	/* superio_() callbacks  */
- 	void (*sio_outb)(struct nct6775_sio_data *sio_data, int reg, int val);
-@@ -155,6 +156,8 @@ struct nct6775_sio_data {
- #define ASUSWMI_METHODID_RHWM		0x5248574D
- #define ASUSWMI_METHODID_WHWM		0x5748574D
- #define ASUSWMI_UNSUPPORTED_METHOD	0xFFFFFFFE
-+/* Wait for up to 0.5 s to acquire the lock */
-+#define ASUSWMI_LOCK_TIMEOUT_MS		500
+-static const char * const asus_wmi_boards[] = {
+-	"ProArt X570-CREATOR WIFI",
+-	"Pro WS X570-ACE",
+-	"PRIME B360-PLUS",
+-	"PRIME B460-PLUS",
+-	"PRIME X570-PRO",
+-	"ROG CROSSHAIR VIII DARK HERO",
+-	"ROG CROSSHAIR VIII FORMULA",
+-	"ROG CROSSHAIR VIII HERO",
+-	"ROG CROSSHAIR VIII IMPACT",
+-	"ROG STRIX B550-E GAMING",
+-	"ROG STRIX B550-F GAMING",
+-	"ROG STRIX B550-F GAMING (WI-FI)",
+-	"ROG STRIX B550-I GAMING",
+-	"ROG STRIX X570-F GAMING",
+-	"ROG STRIX Z390-E GAMING",
+-	"ROG STRIX Z490-I GAMING",
+-	"TUF GAMING B550M-PLUS",
+-	"TUF GAMING B550M-PLUS (WI-FI)",
+-	"TUF GAMING B550-PLUS",
+-	"TUF GAMING B550-PRO",
+-	"TUF GAMING X570-PLUS",
+-	"TUF GAMING X570-PLUS (WI-FI)",
+-	"TUF GAMING X570-PRO (WI-FI)",
+-	"TUF GAMING Z490-PLUS",
+-	"TUF GAMING Z490-PLUS (WI-FI)",
++struct acpi_board_info {
++	char *acpi_mutex_path;
+ };
  
- static int nct6775_asuswmi_evaluate_method(u32 method_id, u8 bank, u8 reg, u8 val, u32 *retval)
- {
-@@ -1243,7 +1246,11 @@ struct nct6775_data {
- 	unsigned int (*fan_from_reg)(u16 reg, unsigned int divreg);
- 	unsigned int (*fan_from_reg_min)(u16 reg, unsigned int divreg);
- 
--	struct mutex update_lock;
-+	union {
-+		struct mutex update_lock;	/* non ACPI lock */
-+		acpi_handle acpi_wmi_mutex;	/* ACPI lock */
-+	} mlock;
-+
- 	bool valid;		/* true if following fields are valid */
- 	unsigned long last_updated;	/* In jiffies */
- 
-@@ -1563,6 +1570,26 @@ static int nct6775_wmi_write_value(struct nct6775_data *data, u16 reg, u16 value
- 	return res;
- }
- 
-+static int nct6775_wmi_lock(struct nct6775_data *data)
-+{
-+	acpi_status status;
-+
-+	status = acpi_acquire_mutex(data->mlock.acpi_wmi_mutex, NULL, ASUSWMI_LOCK_TIMEOUT_MS);
-+	if (ACPI_FAILURE(status))
-+		return -EIO;
-+
-+	return 0;
++#define DMI_ASUS_BOARD_INFO(name, mutex_path)			\
++static struct acpi_board_info name = {				\
++	.acpi_mutex_path = mutex_path,				\
 +}
 +
-+static void nct6775_wmi_unlock(struct nct6775_data *data, struct device *dev)
-+{
-+	acpi_status status;
++DMI_ASUS_BOARD_INFO(acpi_board_MAXIMUS_VII_HERO, "\\_SB_.PCI0.LPCB.SIO1.MUT0");
++DMI_ASUS_BOARD_INFO(acpi_board_ROG_STRIX_B550_E_GAMING, "\\_SB.PCI0.SBRG.SIO1.MUT0");
 +
-+	status = acpi_release_mutex(data->mlock.acpi_wmi_mutex, NULL);
-+	if (ACPI_FAILURE(status))
-+		dev_err(dev, "Failed to release mutex.");
++#define DMI_EXACT_MATCH_ASUS_BOARD_NAME(name, info) {			\
++	.matches = {								\
++		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "ASUSTeK COMPUTER INC."),	\
++		DMI_EXACT_MATCH(DMI_BOARD_NAME, name),				\
++	},									\
++	.driver_data = info,							\
 +}
 +
- /*
-  * On older chips, only registers 0x50-0x5f are banked.
-  * On more recent chips, all registers are banked.
-@@ -1922,14 +1949,14 @@ static void nct6775_update_pwm_limits(struct device *dev)
- 
- static int nct6775_lock(struct nct6775_data *data)
++static const struct dmi_system_id asus_wmi_info_table[] = {
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("MAXIMUS VII HERO", &acpi_board_MAXIMUS_VII_HERO),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("PRIME B360-PLUS", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("PRIME B460-PLUS", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("PRIME B550M-A (WI-FI)", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("PRIME X570-PRO", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("Pro WS X570-ACE", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ProArt X570-CREATOR WIFI", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG CROSSHAIR VIII DARK HERO", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG CROSSHAIR VIII FORMULA", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG CROSSHAIR VIII HERO", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG CROSSHAIR VIII IMPACT", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG STRIX B550-E GAMING",
++					&acpi_board_ROG_STRIX_B550_E_GAMING),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG STRIX B550-F GAMING", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG STRIX B550-F GAMING (WI-FI)", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG STRIX B550-I GAMING", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG STRIX X570-F GAMING", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG STRIX Z390-E GAMING", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG STRIX Z490-I GAMING", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("TUF GAMING B550-PLUS", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("TUF GAMING B550-PRO", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("TUF GAMING B550M-PLUS", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("TUF GAMING B550M-PLUS (WI-FI)", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("TUF GAMING X570-PLUS", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("TUF GAMING X570-PLUS (WI-FI)", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("TUF GAMING X570-PRO (WI-FI)", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("TUF GAMING Z490-PLUS", NULL),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("TUF GAMING Z490-PLUS (WI-FI)", NULL),
++	{}
++};
++MODULE_DEVICE_TABLE(dmi, asus_wmi_info_table);
++
+ static int __init sensors_nct6775_init(void)
  {
--	mutex_lock(&data->update_lock);
-+	mutex_lock(&data->mlock.update_lock);
- 
- 	return 0;
- }
- 
- static void nct6775_unlock(struct nct6775_data *data, struct device *dev)
- {
--	mutex_unlock(&data->update_lock);
-+	mutex_unlock(&data->mlock.update_lock);
- }
- 
- static struct nct6775_data *nct6775_update_device(struct device *dev)
-@@ -4061,9 +4088,15 @@ static int nct6775_probe(struct platform_device *pdev)
- 		data->write_value = nct6775_wmi_write_value;
- 	}
- 
--	mutex_init(&data->update_lock);
--	data->lock = nct6775_lock;
--	data->unlock = nct6775_unlock;
-+	if (sio_data->acpi_wmi_mutex) {
-+		data->mlock.acpi_wmi_mutex = sio_data->acpi_wmi_mutex;
-+		data->lock = nct6775_wmi_lock;
-+		data->unlock = nct6775_wmi_unlock;
-+	} else {
-+		mutex_init(&data->mlock.update_lock);
-+		data->lock = nct6775_lock;
-+		data->unlock = nct6775_unlock;
-+	}
- 
- 	data->name = nct6775_device_names[data->kind];
- 	data->bank = 0xff;		/* Force initial bank selection */
-@@ -5114,6 +5147,7 @@ static int __init sensors_nct6775_init(void)
+ 	int i, err;
+@@ -5146,28 +5171,37 @@ static int __init sensors_nct6775_init(void)
+ 	struct nct6775_sio_data sio_data;
  	int sioaddr[2] = { 0x2e, 0x4e };
  	enum sensor_access access = access_direct;
- 	const char *board_vendor, *board_name;
-+	acpi_handle acpi_wmi_mutex = NULL;
- 	u8 tmp;
+-	const char *board_vendor, *board_name;
++	const struct dmi_system_id *dmi_id;
++	struct acpi_board_info *board_info;
+ 	acpi_handle acpi_wmi_mutex = NULL;
+-	u8 tmp;
++	acpi_status status;
++	u8 tmp = 0;
  
  	err = platform_driver_register(&nct6775_driver);
-@@ -5159,6 +5193,7 @@ static int __init sensors_nct6775_init(void)
- 		found = true;
+ 	if (err)
+ 		return err;
  
- 		sio_data.access = access;
-+		sio_data.acpi_wmi_mutex = acpi_wmi_mutex;
- 
- 		if (access == access_asuswmi) {
- 			sio_data.sio_outb = superio_wmi_outb;
-@@ -5186,11 +5221,13 @@ static int __init sensors_nct6775_init(void)
- 			res.end = address + IOREGION_OFFSET + IOREGION_LENGTH - 1;
- 			res.flags = IORESOURCE_IO;
- 
--			err = acpi_check_resource_conflict(&res);
--			if (err) {
--				platform_device_put(pdev[i]);
--				pdev[i] = NULL;
--				continue;
-+			if (!acpi_wmi_mutex) {
-+				err = acpi_check_resource_conflict(&res);
-+				if (err) {
-+					platform_device_put(pdev[i]);
-+					pdev[i] = NULL;
-+					continue;
+-	board_vendor = dmi_get_system_info(DMI_BOARD_VENDOR);
+-	board_name = dmi_get_system_info(DMI_BOARD_NAME);
+-
+-	if (board_name && board_vendor &&
+-	    !strcmp(board_vendor, "ASUSTeK COMPUTER INC.")) {
+-		err = match_string(asus_wmi_boards, ARRAY_SIZE(asus_wmi_boards),
+-				   board_name);
+-		if (err >= 0) {
+-			/* if reading chip id via WMI succeeds, use WMI */
+-			if (!nct6775_asuswmi_read(0, NCT6775_PORT_CHIPID, &tmp)) {
+-				pr_info("Using Asus WMI to access %#x chip.\n", tmp);
+-				access = access_asuswmi;
+-			} else {
+-				pr_err("Can't read ChipID by Asus WMI.\n");
++	dmi_id = dmi_first_match(asus_wmi_info_table);
++	if (dmi_id) {
++		/* if reading chip ID via WMI succeeds, use WMI */
++		if (!nct6775_asuswmi_read(0, NCT6775_PORT_CHIPID, &tmp) &&
++		    tmp) {
++			pr_info("Using Asus WMI to access %#x chip.\n", tmp);
++			access = access_asuswmi;
++		} else {
++			pr_err("Can't read chip ID by Asus WMI.\n");
++		}
++
++		if (dmi_id->driver_data) {
++			board_info = dmi_id->driver_data;
++			if (board_info->acpi_mutex_path) {
++				status = acpi_get_handle(NULL, board_info->acpi_mutex_path,
++							 &acpi_wmi_mutex);
++				if (!ACPI_FAILURE(status)) {
++					pr_info("Using Asus WMI mutex: %s\n",
++						board_info->acpi_mutex_path);
++					access = access_direct;
 +				}
  			}
- 
- 			err = platform_device_add_resources(pdev[i], &res, 1);
+ 		}
+ 	}
 -- 
 2.33.0
 
