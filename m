@@ -2,117 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A8446057E
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 10:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9E146057F
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 10:48:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357032AbhK1Jvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 04:51:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240660AbhK1Jta (ORCPT
+        id S1357049AbhK1Jve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 04:51:34 -0500
+Received: from vulcan.natalenko.name ([104.207.131.136]:52006 "EHLO
+        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240812AbhK1Jtc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 04:49:30 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F116C061574;
-        Sun, 28 Nov 2021 01:46:14 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id t9so12626225wrx.7;
-        Sun, 28 Nov 2021 01:46:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=MyxG4fZuu+tZlzqJDqxR4dVlSnGITUq8koTwfVub/a8=;
-        b=QrZMkCn+j6+bK+NlmSrz5Um0jgoGm9qle6SWq2Tr9wdHc1gKAvd72yGwox4NzdGUdH
-         8zWrlp6UIDmukQ0FI5gy9YRXsHKdYFi9KpgCGbvJJTcY5wao7OUV206nTIlz7ZqzmtNU
-         pog+IwHDCKn4aQbBpDkpoSmgzcN2o06KrLge23CH7XLfyziuYBUFs5qK0S2fTa9epa8o
-         aN89tcTJ7s6JzB2w+tqVg0V1uR4DiGcMFQD9kSGRb7ueqN+gBe/IyrbjfBb+Ukvi/Gmz
-         LShk8EpMolVVdatVNfdId1RQ1ESrgxiaEPX8XqKTdIQ7ytvBlPo9lwRU3azYSIDPFbUn
-         ZqRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=MyxG4fZuu+tZlzqJDqxR4dVlSnGITUq8koTwfVub/a8=;
-        b=Jsy5vjJ2tMKxAkC0dwHTHiwDTBkGhlCz68KY+Y0Ek6KknYWGik/bzy0sl9DwXBXIV7
-         reAaFerDFip5XvqBlTcEo/8q+TxyGI7XF4j8644bwYhnctexYQ3MqM07NwlGmaEjWc4P
-         9j/TqfqIC9/tAOkUCJ/U9tCgA2/PysrPwmYi22LS8QLaB7MWc3B2iMrcKFvzghzfKlqU
-         Jfmsf8AIfM5HAKnd5jYU3KITrocoa1htMrXtJIo0cvnTbPwaX/GsvCdSvTE7Z8jZsArX
-         pMW0tCKujtQHD4A7SMcvAalhRZfuyJYSe0uVtbiUrULGslKDY2IGS5oSeb97TQg7hilE
-         efNg==
-X-Gm-Message-State: AOAM533GO5ohNovfq6ZUakq36gA2RKmyBLhlesGKJhJaAkI6xBP1qwA+
-        HZ05jIFNVdB7VGh2zeFJyt3hA3ocMdb8Fg==
-X-Google-Smtp-Source: ABdhPJxTTa6uZl+HmYtxgDzC9p7fkNcCeg2eRP9jtICua0t9IkNrWJw7UEJpmoyrTKvJKtV8vb8Y1Q==
-X-Received: by 2002:a5d:69ce:: with SMTP id s14mr26150329wrw.25.1638092773102;
-        Sun, 28 Nov 2021 01:46:13 -0800 (PST)
-Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
-        by smtp.gmail.com with ESMTPSA id x4sm15567607wmi.3.2021.11.28.01.46.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 01:46:12 -0800 (PST)
-Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
-Date:   Sun, 28 Nov 2021 10:46:11 +0100
-From:   Salvatore Bonaccorso <carnil@debian.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 088/323] locking/lockdep: Avoid RCU-induced noinstr
- fail
-Message-ID: <YaNP46ypf6xcTcJH@eldamar.lan>
-References: <20211124115718.822024889@linuxfoundation.org>
- <20211124115721.937655496@linuxfoundation.org>
+        Sun, 28 Nov 2021 04:49:32 -0500
+Received: from spock.localnet (unknown [83.148.33.151])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id D350ACC7EE1;
+        Sun, 28 Nov 2021 10:46:14 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1638092775;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iM+aL8jeAt4cg5fhsgrfFKN3ueURdDL5JvxMcrQsfmQ=;
+        b=jW8nNWmxjbxGsyrMrPfbo5WXu7Pz2LrNfdyOPJzgGYtsnFroZEarAeeKLWPUl+1NfjTjde
+        vRInDaFKIlDF4dbNKDgUR00C1J5z3tAVritryAYczzE/y3B3YHdAMmQ1MC9AHOmjf7A/hK
+        k0Yg7FPmhmX73zlO/vZbRNssUjvJYSE=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     linux-kernel@vger.kernel.org, Angelo Haller <lkml@szanni.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Will Deacon <will@kernel.org>, linux-rt-users@vger.kernel.org
+Subject: Re: sched: some non-GPL symbols becoming GPL-only with CONFIG_PREEMPT_RT enabled
+Date:   Sun, 28 Nov 2021 10:46:13 +0100
+Message-ID: <2606453.mvXUDI8C0e@natalenko.name>
+In-Reply-To: <5475c3ab-a53c-8728-98c5-98fd948ff556@szanni.org>
+References: <5475c3ab-a53c-8728-98c5-98fd948ff556@szanni.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211124115721.937655496@linuxfoundation.org>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello.
 
-On Wed, Nov 24, 2021 at 12:54:38PM +0100, Greg Kroah-Hartman wrote:
-> From: Peter Zijlstra <peterz@infradead.org>
-> 
-> [ Upstream commit ce0b9c805dd66d5e49fd53ec5415ae398f4c56e6 ]
-> 
-> vmlinux.o: warning: objtool: look_up_lock_class()+0xc7: call to rcu_read_lock_any_held() leaves .noinstr.text section
+On ned=C4=9Ble 28. listopadu 2021 1:07:49 CET Angelo Haller wrote:
+> Greetings. I hope I picked the right mailing list, as this issue might
+> be one that affects various subsystems and components:
+>=20
+> When compiling kernel 5.15 (and 5.16-rc2) with `CONFIG_PREEMPT_RT`
+> enabled, some of the symbols being exported as `EXPORT_SYMBOL` suddenly
+> become `EXPORT_SYMBOL_GPL` through transitive effects.
+>=20
+> In particular the symbols `migrate_enable` and `migrate_disable` are
+> currently marked as `EXPORT_SYMBOL_GPL` - yet are called from multiple
+> functions that are marked as `EXPORT_SYMBOL`.
+>=20
+> Here an (incomplete?) listing of call sites I came across:
+>=20
+> kernel/locking/spinlock_rt.c - rt_spin_unlock()
+> kernel/locking/spinlock_rt.c - rt_read_unlock()
+> kernel/locking/spinlock_rt.c - rt_write_unlock()
+> mm/highmem.c - kunmap_local_indexed()
+>=20
+> The issue I'm facing in particular is kmap_atomic() calling
+> `migrate_disable` and therefore suddenly becoming GPL-only. This breaks
+> the out-of-tree CDDL licensed module ZFS and has been reported before
+> already [0]. The conversation seemingly going nowhere - or patches at
+> least not being applied upstream. Downstream issue for reference [1].
 
-For 4.19.218 at least this commit seems to cause a build failure for
-cpupower, if warnings are treated as errors, I have not seen the same
-for the 5.10.80 build:
+What about going the other way around and let ZFS be re-licensed under GPL?
 
-gcc -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -DVERSION=\"4.19\" -DPACKAGE=\"cpupower\" -DPACKAGE_BUGREPORT=\"Debian\ \(reportbug\ linux-cpupower\)\" -D_GNU_SOURCE -pipe -DNLS -Wall -Wchar-subscripts -Wpointer-arith
- -Wsign-compare -Wno-pointer-sign -Wdeclaration-after-statement -Wshadow -Os -fomit-frame-pointer -fPIC -o /home/build/linux-4.19.218/debian/build/build-tools/tools/power/cpupower/lib/cpupower.o -c lib/cpupower.c
-In file included from lockdep.c:28:
-../../../kernel/locking/lockdep.c: In function ‘look_up_lock_class’:
-../../../kernel/locking/lockdep.c:694:2: error: implicit declaration of function ‘hlist_for_each_entry_rcu_notrace’; did you mean ‘hlist_for_each_entry_continue’? [-Werror=implicit-function-declaration]
-  hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
-  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  hlist_for_each_entry_continue
-../../../kernel/locking/lockdep.c:694:53: error: ‘hash_entry’ undeclared (first use in this function); did you mean ‘hash_ptr’?
-  hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
-                                                     ^~~~~~~~~~
-                                                     hash_ptr
-../../../kernel/locking/lockdep.c:694:53: note: each undeclared identifier is reported only once for each function it appears in
-../../../kernel/locking/lockdep.c:694:64: error: expected ‘;’ before ‘{’ token
-  hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
-                                                                ^~
-                                                                ;
-../../../kernel/locking/lockdep.c:706:1: warning: control reaches end of non-void function [-Wreturn-type]
- }
- ^
-cc1: some warnings being treated as errors
-make[5]: *** [/home/build/linux-4.19.218/tools/build/Makefile.build:97: /home/build/linux-4.19.218/debian/build/build-tools/tools/lib/lockdep/lockdep.o] Error 1
-make[4]: *** [Makefile:121: /home/build/linux-4.19.218/debian/build/build-tools/tools/lib/lockdep/liblockdep-in.o] Error 2
-make[4]: Leaving directory '/home/build/linux-4.19.218/tools/lib/lockdep'
-make[3]: *** [/home/build/linux-4.19.218/debian/rules.d/tools/lib/lockdep/Makefile:16: all] Error 2
-make[3]: Leaving directory '/home/build/linux-4.19.218/debian/build/build-tools/tools/lib/lockdep'
-make[2]: *** [debian/rules.real:795: build-liblockdep] Error 2
-make[2]: *** Waiting for unfinished jobs....
+> As the original implementation of `migrate_enable` and `migrate_disable`
+> is apparently by Peter Zijlstra [2]. Peter would you be willing to
+> re-license both symbols `migrate_enable` and `migrate_disable` as
+> `EXPORT_SYMBOL`?
+>=20
+> The bigger issue I'm seeing though is that there is currently no
+> automated test to uncover exported symbols changing their license
+> depending on build configuration? I am not intimately familiar with the
+> API guarantees the kernel gives, but this seems like a violation. There
+> might be other symbols with similar licensing problems.
+>=20
+> I can open a bugzilla ticket too - if that is preferred.
+>=20
+> Angelo
+>=20
+>=20
+> [0]
+> https://lore.kernel.org/linux-rt-users/20201208212841.694b3022@orivej.ori=
+vej
+> .org/T/ [1] https://github.com/openzfs/zfs/issues/11097
+> [2]
+> https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/dif=
+f/p
+> atches/0009-sched-Add-migrate_disable.patch?h=3Dv5.9-rc8-rt14-patches&id=
+=3D9a89b
+> fdb3bc77aecdd0ff8cc69b595541c7b50c4
 
-I was not yet able to look further on it.
 
-Regards,
-Salvatore
+=2D-=20
+Oleksandr Natalenko (post-factum)
+
+
