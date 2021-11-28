@@ -2,97 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 313B1460544
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 09:16:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6BE460549
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 09:16:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242891AbhK1ITt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 03:19:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356945AbhK1IRs (ORCPT
+        id S1356945AbhK1ITw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 03:19:52 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:44782 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1356950AbhK1IRu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 03:17:48 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D16D3C0613F7;
-        Sun, 28 Nov 2021 00:14:14 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id a18so29286497wrn.6;
-        Sun, 28 Nov 2021 00:14:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=JPdu/MwrlQhTPRIOqqddF7qUaoIy6oyGEzbM7B0SRMM=;
-        b=Ek2+YONlt98jRkEQLJuGscjMRdaQP7ve0NhCBsjAtQLiIezLPifq5ALv3JMQftk3lF
-         lJA2qbssuNwgL2Z8LKsVfZQO1uTIyD1LGZeT4PZueCpubW0LLV8W08cWJFJMonCIhsg+
-         SMnmbpXRJmCo8EnPWDnWyNUWjNClnJUXE2fdIPEvF+IG6kwbXxa6LsbSWB459wfvmxbG
-         5wZFcg+WqxTmJrYPNfy//95dL3MtNNfBOZsAv+EMoT4ZO/LfBoVQaGa90p8qf4/DY55P
-         X9KhNQWcEn9RyVg1IkKvSou4CiLN4yGCRMSY0uuv2r+VMTlpSkSNYqkvhbPUmqj44NDl
-         tYyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=JPdu/MwrlQhTPRIOqqddF7qUaoIy6oyGEzbM7B0SRMM=;
-        b=K55mZTrkP9df8ocxeDJbJOq6VfBfyKPiHaGrtTg4pA9Bt3BmQfB5cUaxyBnqi5ZHuC
-         EjCjx4Ct4BgGoZGqCH58X6cH4ZvKjkT6BwPDrOKzdu/Mgn5XrHYd0GURa/xvoX+b9qFR
-         j58EAAuuvAOP0RYE+MJZROFsVmYSwGPQ3olwGAmRvXpIa7FD7T7WXeshsPmrqk4gVdtb
-         JhWV9wpwkRllebHvFIl8wQu27uDj2UnRZFNwyCUQXzqPe/4xeh9pDJEoaKfx7VpLVH5f
-         /PEZdN4yF6MdOfaaIT9SIZo5iOFXgNMNDYQ8kYvvldw6NwZF98xXEsM+XWiidwGjtYQ2
-         fIlw==
-X-Gm-Message-State: AOAM533893gNCw2xYRzEmUdYe3VyRJYpR8+Wg3umm/SEFfZI056Hjela
-        wq8C3LksGINMPx0LiPJDjA4=
-X-Google-Smtp-Source: ABdhPJw93XbQNaNAGK3Owx80LTelI1SHiOIqAPj+GZcDM5hGvKiR0GQVklYL4VCabXQJt3br41nnZA==
-X-Received: by 2002:a5d:61cf:: with SMTP id q15mr25690774wrv.623.1638087253507;
-        Sun, 28 Nov 2021 00:14:13 -0800 (PST)
-Received: from [192.168.123.240] (static.235.156.203.116.clients.your-server.de. [116.203.156.235])
-        by smtp.gmail.com with ESMTPSA id l21sm10446875wrb.38.2021.11.28.00.14.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Nov 2021 00:14:13 -0800 (PST)
-Message-ID: <c7818253-44b0-777b-669a-ec950e1b2570@gmail.com>
-Date:   Sun, 28 Nov 2021 16:13:00 +0800
+        Sun, 28 Nov 2021 03:17:50 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7EBF6B80B5F;
+        Sun, 28 Nov 2021 08:14:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD3F1C004E1;
+        Sun, 28 Nov 2021 08:14:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1638087272;
+        bh=39xPZMfe1ibuiHjcR8GPwApROOOXNw4PxPfnXkQy+GA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bTVi1qpOMK3snj3/5ngTGJBwNOtzVHs6mmhM7bpLN2Ylw7BStAeJBwg+ljnNqImWZ
+         GJF0n6LGABUqLnff6dpEUz3OopAoWIvmyR+6cd/4B3EaStgj6mJ/iqaWRy/CM3Fh7s
+         YIqq4s/fj/XxocPyvN10jawk/Ii1e5eiWoNokMBg=
+Date:   Sun, 28 Nov 2021 09:14:28 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-mmc@vger.kernel.org
+Subject: Re: [PATCH 3/3] blk-crypto: show crypto capabilities in sysfs
+Message-ID: <YaM6ZJUByYXaI3/X@kroah.com>
+References: <20211126212514.173334-1-ebiggers@kernel.org>
+ <20211126212514.173334-4-ebiggers@kernel.org>
+ <YaH1CmHClx5WvDWD@kroah.com>
+ <YaKZUu0tQc8bblmI@sol.localdomain>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:95.0) Gecko/20100101
- Thunderbird/95.0
-Subject: Re: [PATCH 2/3] mm: page table check
-Content-Language: en-US
-To:     Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Paul Turner <pjt@google.com>, weixugc@google.com,
-        Greg Thelen <gthelen@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Will Deacon <will@kernel.org>, Mike Rapoport <rppt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>, masahiroy@kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        frederic@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-References: <20211123214814.3756047-1-pasha.tatashin@soleen.com>
- <20211123214814.3756047-3-pasha.tatashin@soleen.com>
- <6d82e674-76dc-f3b0-2e53-a92eeb249eff@gmail.com>
- <CA+CK2bAX2XmMrt9RBGiUV7LG_sbpB7ov6bxMVjr5FSBVirE1CA@mail.gmail.com>
-From:   Fusion Future <qydwhotmail@gmail.com>
-In-Reply-To: <CA+CK2bAX2XmMrt9RBGiUV7LG_sbpB7ov6bxMVjr5FSBVirE1CA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YaKZUu0tQc8bblmI@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Here is the config:
+On Sat, Nov 27, 2021 at 12:47:14PM -0800, Eric Biggers wrote:
+> Hi Greg, thanks for the review!
+> 
+> On Sat, Nov 27, 2021 at 10:06:18AM +0100, Greg KH wrote:
+> > > diff --git a/Documentation/block/queue-sysfs.rst b/Documentation/block/queue-sysfs.rst
+> > > index 3f569d5324857..252939f340459 100644
+> > > --- a/Documentation/block/queue-sysfs.rst
+> > > +++ b/Documentation/block/queue-sysfs.rst
+> > 
+> > Why is all of this information not in Documentation/ABI/ like the rest
+> > of the kernel's sysfs information?  When it is there it can be
+> > automatically tested as well.
+> > 
+> > Please don't add new entries to the wrong place if at all possible.
+> 
+> Some of the block queue attributes are documented in
+> Documentation/ABI/testing/sysfs-block, but Documentation/block/queue-sysfs.rst
+> seems to be the authoritative source in practice.  I checked all QUEUE_*_ENTRY
+> in block/blk-sysfs.c, and I got:
+> 
+> - 16 attributes are documented in both places
+> - 23 attributes are documented in Documentation/block/ only
+> - 0 attributes are documented in Documentation/ABI/ only
+> - 2 attributes ("virt_boundary_mask" and "stable_writes") not documented in
+>   either place
+> 
+> So most block queue attributes are documented only in Documentation/block/.  And
+> if I added my new attributes to Documentation/ABI/ only, as you're requesting,
+> they would be the only block queue attributes that would be documented in only
+> that place.  I think that would make things worse, as then there would be no
+> authoritative source anymore.
 
-https://pastebin.com/AsLukrbE
+I agree, it should all move to the proper location in Documentation/ABI/
+as that is where all sysfs attributes need to be documented.  Block
+queues are not special here.
 
-I can't stably reproduce the bug, but it seems it's likely to happen 
-when a music is playing in the background or there is a file operation.
+> If both you and the block people agree that *all* block queue attributes should
+> be documented in Documentation/ABI/ only, I'd be glad to send a separate patch
+> that adds anything missing to Documentation/ABI/testing/sysfs-block, then
+> removes Documentation/block/queue-sysfs.rst.  (BTW, shouldn't it really be in
+> Documentation/ABI/stable/?  This ABI has been around a long time, so surely
+> users are relying on it.)  But it doesn't seem fair to block this patch on that.
 
-I encountered it again on linux-next-20211126 when I was trying to 
-extract a rar file, and the sound is constantly repeating when my system 
-freezes, but nothing useful in journalctl.
+"stable" is fine with me, people abuse "testing" by throwing everything
+into it.
+
+> 
+> > > +static ssize_t blk_crypto_max_dun_bits_show(struct blk_crypto_profile *profile,
+> > > +					    struct blk_crypto_attr *attr,
+> > > +					    char *page)
+> > > +{
+> > > +	return sprintf(page, "%u\n", 8 * profile->max_dun_bytes_supported);
+> > 
+> > sysfs_emit() please, for this, and all other show functions.
+> 
+> Sure.  Note that in .show() functions kernel-wide, it appears that sprintf() is
+> much more commonly used than sysfs_emit().  Is there any plan to convert these?
+> As-is, if people use existing code as a reference, it will be "wrong" most of
+> the time, which is unfortunate.
+
+Doing a wholesale replacement across the kernel is a pain and disruptive
+and not really needed.  But for all new code, please use the new
+functions.  If you want to convert your driver/subsystem to the new
+functions, no objection from me!
+
+> > > +}
+> > > +
+> > > +static ssize_t blk_crypto_num_keyslots_show(struct blk_crypto_profile *profile,
+> > > +					    struct blk_crypto_attr *attr,
+> > > +					    char *page)
+> > > +{
+> > > +	return sprintf(page, "%u\n", profile->num_slots);
+> > > +}
+> > > +
+> > > +#define BLK_CRYPTO_RO_ATTR(_name)			\
+> > > +static struct blk_crypto_attr blk_crypto_##_name = {	\
+> > > +	.attr	= { .name = #_name, .mode = 0444 },	\
+> > 
+> > __ATTR_RO()?
+> 
+> Sure.  This would require removing the "blk_crypto_" prefix from the .show()
+> functions, which I'd prefer to have, but it doesn't really matter.
+
+Ah, you are right, but I think using the default macros sometimes can be
+nicer as they are easier to verify you are doing things correctly.
+
+> > > +static const struct attribute_group *blk_crypto_attr_groups[] = {
+> > > +	&blk_crypto_attr_group,
+> > > +	&blk_crypto_modes_attr_group,
+> > > +	NULL,
+> > > +};
+> > 
+> > ATTRIBUTE_GROUP()?
+> > 
+> > Hm, maybe not, but I think it could be used here.
+> 
+> ATTRIBUTE_GROUP() doesn't exist; probably you're referring to
+> ATTRIBUTE_GROUPS()?  ATTRIBUTE_GROUPS() is only usable when there is only one
+> attribute group.  In this case, there are two attribute groups.
+
+You are right, sorry.
+
+> > > +static int __init blk_crypto_sysfs_init(void)
+> > > +{
+> > > +	int i;
+> > > +
+> > > +	BUILD_BUG_ON(BLK_ENCRYPTION_MODE_INVALID != 0);
+> > > +	for (i = 1; i < BLK_ENCRYPTION_MODE_MAX; i++) {
+> > > +		struct blk_crypto_attr *attr = &__blk_crypto_mode_attrs[i];
+> > 
+> > sysfs_attr_init() might be needed here, have you run with lockdep
+> > enabled?
+> 
+> It's not needed because __blk_crypto_mode_attrs isn't dynamically allocated
+> memory.  Yes, I've run with lockdep enabled.
+
+Ok, good, just checking.
+
+thanks,
+
+greg k-h
