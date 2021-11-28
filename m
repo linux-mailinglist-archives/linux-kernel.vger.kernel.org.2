@@ -2,235 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E921460B40
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 00:42:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7F3B460B45
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 00:47:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359713AbhK1Xpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 18:45:30 -0500
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:33325 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241517AbhK1Xn2 (ORCPT
+        id S1359616AbhK1Xun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 18:50:43 -0500
+Received: from mail-oo1-f49.google.com ([209.85.161.49]:38807 "EHLO
+        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233560AbhK1Xsm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 18:43:28 -0500
-Received: by mail-ot1-f46.google.com with SMTP id 35-20020a9d08a6000000b00579cd5e605eso23120246otf.0;
-        Sun, 28 Nov 2021 15:40:12 -0800 (PST)
+        Sun, 28 Nov 2021 18:48:42 -0500
+Received: by mail-oo1-f49.google.com with SMTP id w15-20020a4a9d0f000000b002c5cfa80e84so5161212ooj.5;
+        Sun, 28 Nov 2021 15:45:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=V987jWUcwu1zEBDpeF1bKg7l3lsSBlLTX24rVQBKc+k=;
-        b=el6DVisk0dQMA98cby+8glDjkuwgz/aqMNw/CgYK0Tr6S2OKM0YK0UY9hqpK91uPpR
-         Pi0LD2v7n2pUfS1D6gHcNps7mZxyw254W+dfvDUgN529ghX33G2f8q3tHZClGSKtue0i
-         7d7ntvfsPgHZVzKN/NV6CEyr4rkQJqsziVZWYnUsPRmG7dOIFtYOvQE58dGlAyIsXejE
-         vWpRbYEXottyRKVN1K5Z67S04KShuGYvj75QY3Ty+7ReyO2/u/ucKnT0csere+MXZk4K
-         kYjzP6dGETlQbEoRjb1GcoNbHDPfuXa3XVaaYWqWEuSY+7wX+rhnHt7btodJcF1oPkb+
-         J2eQ==
-X-Gm-Message-State: AOAM533WxaigykjPI6pUtZyzxY0Yr4a/AVHUBnaZ0zJkaNPra9iHuyJ7
-        orDZ/eBGE+6FV81sT6gE6oycZEscdw==
-X-Google-Smtp-Source: ABdhPJzm5/DjIBj7g5Z7Q05TRAVUzBX52plVej9XZqyF8OnFiNJZl9JuOET6abxyklxQT3lkl4tq3A==
-X-Received: by 2002:a05:6830:2b25:: with SMTP id l37mr41320213otv.298.1638142811679;
-        Sun, 28 Nov 2021 15:40:11 -0800 (PST)
+        bh=j1bNxGTLKwnOkIQ3OD4aqwYap1kbW7vuiCRU2yUm5aE=;
+        b=wnZuIQIXfy0dhIyCFe8kwsE0dq7tOLAQ336DtHZT7Au8u7/EylwJAFJYQ5oNtwkdk2
+         BlASpD1BKZiPyr5XXyd8kAkuSSZjo7oIQh2EGVli7VaPYM17nGqT4XJec52QuZJ6uiI8
+         pX/mcGGJ5i0WbVxDptJrUC6Zu7zRBGl706YXAu3kVA1+8kkGjZxKlJBg9QYl6ziAPStv
+         MNEc2xioMwEyr1KMnENuPTPjYv4XPxhAc4s72K5+mxyHuX4+wpkay5wFzy9sRKoMATra
+         FDWL4guM3Aa178LRcc4JnMdQf1iQS5DHDS4lqfnJ7IKI9prZMhLMr4u747EJ0dV+/fKs
+         bRRQ==
+X-Gm-Message-State: AOAM531okzdyzfBazkZon48r8OSdO1LRaIgnZ29fDI6CcOfp7xjKOtsN
+        YGIpQuEViYaIcQG5npi45D/Q6Uevew==
+X-Google-Smtp-Source: ABdhPJzclhrek5Yh54TMLe3ygipLJxYxBpq59+BJkrZd1tr2X8PDt2gvWjWXw2eNiqZmzg7v0r99lg==
+X-Received: by 2002:a4a:dd04:: with SMTP id m4mr29583601oou.18.1638143125503;
+        Sun, 28 Nov 2021 15:45:25 -0800 (PST)
 Received: from robh.at.kernel.org ([2607:fb90:5fe7:4487:4f99:dbc0:75d1:3e27])
-        by smtp.gmail.com with ESMTPSA id p14sm2065193oov.0.2021.11.28.15.40.09
+        by smtp.gmail.com with ESMTPSA id w71sm2613703oiw.6.2021.11.28.15.45.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 15:40:10 -0800 (PST)
-Received: (nullmailer pid 2830943 invoked by uid 1000);
-        Sun, 28 Nov 2021 23:40:08 -0000
-Date:   Sun, 28 Nov 2021 17:40:08 -0600
+        Sun, 28 Nov 2021 15:45:24 -0800 (PST)
+Received: (nullmailer pid 2837880 invoked by uid 1000);
+        Sun, 28 Nov 2021 23:45:11 -0000
+Date:   Sun, 28 Nov 2021 17:45:11 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, UNGLinuxDriver@microchip.com,
-        p.zabel@pengutronix.de, linux@armlinux.org.uk, andrew@lunn.ch,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v4 1/6] dt-bindings: net: lan966x: Add
- lan966x-switch bindings
-Message-ID: <YaQTWG6g8nNP7GGX@robh.at.kernel.org>
-References: <20211126090540.3550913-1-horatiu.vultur@microchip.com>
- <20211126090540.3550913-2-horatiu.vultur@microchip.com>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Shawn Guo <shawnguo@kernel.org>, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        devicetree@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
+        aford@beaconembedded.com, Fabio Estevam <festevam@gmail.com>,
+        tharvey@gateworks.com, NXP Linux Team <linux-imx@nxp.com>
+Subject: Re: [PATCH V4 4/9] dt-bindings: soc: add binding for i.MX8MN DISP
+ blk-ctrl
+Message-ID: <YaQUh9H9isjal6gb@robh.at.kernel.org>
+References: <20211128131853.15125-1-aford173@gmail.com>
+ <20211128131853.15125-5-aford173@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211126090540.3550913-2-horatiu.vultur@microchip.com>
+In-Reply-To: <20211128131853.15125-5-aford173@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 10:05:35AM +0100, Horatiu Vultur wrote:
-> Document the lan966x switch device driver bindings
+On Sun, 28 Nov 2021 07:18:47 -0600, Adam Ford wrote:
+> Add the DT binding for the i.MX8MN DISP blk-ctrl.
 > 
-> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 > ---
->  .../net/microchip,lan966x-switch.yaml         | 149 ++++++++++++++++++
->  1 file changed, 149 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/microchip,lan966x-switch.yaml
+>  .../soc/imx/fsl,imx8mn-disp-blk-ctrl.yaml     | 97 +++++++++++++++++++
+>  1 file changed, 97 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/net/microchip,lan966x-switch.yaml b/Documentation/devicetree/bindings/net/microchip,lan966x-switch.yaml
-> new file mode 100644
-> index 000000000000..9367491dd2d5
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/microchip,lan966x-switch.yaml
-> @@ -0,0 +1,149 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/microchip,lan966x-switch.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Microchip Lan966x Ethernet switch controller
-> +
-> +maintainers:
-> +  - Horatiu Vultur <horatiu.vultur@microchip.com>
-> +
-> +description: |
-> +  The lan966x switch is a multi-port Gigabit AVB/TSN Ethernet Switch with
-> +  two integrated 10/100/1000Base-T PHYs. In addition to the integrated PHYs,
-> +  it supports up to 2RGMII/RMII, up to 3BASE-X/SERDES/2.5GBASE-X and up to
-> +  2 Quad-SGMII/Quad-USGMII interfaces.
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "^switch@[0-9a-f]+$"
-> +
-> +  compatible:
-> +    const: microchip,lan966x-switch
-> +
-> +  reg:
-> +    items:
-> +      - description: cpu target
-> +      - description: general control block target
-> +
-> +  reg-names:
-> +    items:
-> +      - const: cpu
-> +      - const: gcb
-> +
-> +  interrupts:
-> +    minItems: 1
-> +    items:
-> +      - description: register based extraction
-> +      - description: frame dma based extraction
-> +
-> +  interrupt-names:
-> +    minItems: 1
-> +    items:
-> +      - const: xtr
-> +      - const: fdma
-> +
-> +  resets:
-> +    items:
-> +      - description: Reset controller used for switch core reset (soft reset)
-> +      - description: Reset controller used for releasing the phy from reset
-> +
-> +  reset-names:
-> +    items:
-> +      - const: switch
-> +      - const: phy
-> +
-> +  ethernet-ports:
-> +    type: object
-> +    patternProperties:
-> +      "^port@[0-9a-f]+$":
-> +        type: object
 
-This needs a reference to ethernet-controller.yaml so that all the 
-properties have a type applied.
-
-See dsa.yaml for an example.
-
-> +
-> +        properties:
-> +          '#address-cells':
-> +            const: 1
-> +          '#size-cells':
-> +            const: 0
-> +
-> +          reg:
-> +            description:
-> +              Switch port number
-> +
-> +          phys:
-> +            description:
-> +              Phandle of a Ethernet SerDes PHY
-> +
-> +          phy-mode:
-> +            description:
-> +              This specifies the interface used by the Ethernet SerDes towards
-> +              the PHY or SFP.
-
-Presumably only some subset of all defined modes are possible on this 
-h/w?
-
-> +
-> +          phy-handle:
-> +            description:
-> +              Phandle of a Ethernet PHY.
-> +
-> +          sfp:
-> +            description:
-> +              Phandle of an SFP.
-> +
-> +          managed: true
-> +
-> +        required:
-> +          - reg
-> +          - phys
-> +          - phy-mode
-> +
-> +        oneOf:
-> +          - required:
-> +              - phy-handle
-> +          - required:
-> +              - sfp
-> +              - managed
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - interrupts
-> +  - interrupt-names
-> +  - resets
-> +  - reset-names
-> +  - ethernet-ports
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    switch: switch@e0000000 {
-> +      compatible = "microchip,lan966x-switch";
-> +      reg =  <0xe0000000 0x0100000>,
-> +             <0xe2000000 0x0800000>;
-> +      reg-names = "cpu", "gcb";
-> +      interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
-> +      interrupt-names = "xtr";
-> +      resets = <&switch_reset 0>, <&phy_reset 0>;
-> +      reset-names = "switch", "phy";
-> +      ethernet-ports {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        port0: port@0 {
-> +          reg = <0>;
-> +          phy-handle = <&phy0>;
-> +          phys = <&serdes 0 0>;
-> +          phy-mode = "gmii";
-> +        };
-> +
-> +        port1: port@1 {
-> +          reg = <1>;
-> +          sfp = <&sfp_eth1>;
-> +          managed = "in-band-status";
-> +          phys = <&serdes 2 4>;
-> +          phy-mode = "sgmii";
-> +        };
-> +      };
-> +    };
-> +
-> +...
-> -- 
-> 2.33.0
-> 
-> 
+Reviewed-by: Rob Herring <robh@kernel.org>
