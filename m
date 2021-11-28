@@ -2,81 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39DB04606F1
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 15:31:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC654606FC
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 15:52:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357936AbhK1Oeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 09:34:44 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:45732 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358035AbhK1Ocn (ORCPT
+        id S1357945AbhK1Ozp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 09:55:45 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:36526 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1352701AbhK1Oxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 09:32:43 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D962161012;
-        Sun, 28 Nov 2021 14:29:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 673A1C004E1;
-        Sun, 28 Nov 2021 14:29:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1638109766;
-        bh=5CIWnX4jEum1UXPdmPD036y813Y+usP22f2Ah132sPA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rlIdML7W1m/jo/cdz79UYbWa58tgd07DOfUgcE3tXd2kr8pggyxRkNTInwVo/O2m1
-         SQE463wvwCjhvXpNMGmH5b0mf7pDunK4SM48+wFEobLW7iQKknQ/aSHGHoaoyRceGT
-         aBEzvK6Gb+OVilSBzwoFaetmQJSVDGBGP7l/7sDk=
-Date:   Sun, 28 Nov 2021 15:29:22 +0100
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     "Winkler, Tomas" <tomas.winkler@intel.com>
-Cc:     Haakon Bugge <haakon.bugge@oracle.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-Subject: Re: [PATCH] mei: Remove some dead code
-Message-ID: <YaOSQrGqogbFGAqJ@kroah.com>
-References: <3f904c291f3eed06223dd8d494028e0d49df6f10.1636711522.git.christophe.jaillet@wanadoo.fr>
- <80B25490-FE92-420E-A506-C92A996EF174@oracle.com>
- <17d6896a6abf49138556e34cb426d575@intel.com>
+        Sun, 28 Nov 2021 09:53:44 -0500
+X-UUID: ec9b61076a0d4450a92c73cc97b8ee90-20211128
+X-UUID: ec9b61076a0d4450a92c73cc97b8ee90-20211128
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <jason-jh.lin@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1340841150; Sun, 28 Nov 2021 22:50:23 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sun, 28 Nov 2021 22:50:22 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 28 Nov 2021 22:50:22 +0800
+Message-ID: <1807a4c28ee57aa9c61ccecbc87dae749ae14808.camel@mediatek.com>
+Subject: Re: [PATCH 1/3] mialbox: move cmdq suspend,resume and remove after
+ cmdq_mbox_flush
+From:   Jason-JH Lin <jason-jh.lin@mediatek.com>
+To:     Tzung-Bi Shih <tzungbi@google.com>
+CC:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Jassi Brar" <jassisinghbrar@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        "Daniel Vetter" <daniel@ffwll.ch>,
+        <dri-devel@lists.freedesktop.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <hsinyi@chromium.org>,
+        <fshao@chromium.org>, <nancy.lin@mediatek.com>,
+        <singo.chang@mediatek.com>
+Date:   Sun, 28 Nov 2021 22:50:22 +0800
+In-Reply-To: <YZXqxaVANvrv53t3@google.com>
+References: <20211117064158.27451-1-jason-jh.lin@mediatek.com>
+         <20211117064158.27451-2-jason-jh.lin@mediatek.com>
+         <YZXqxaVANvrv53t3@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <17d6896a6abf49138556e34cb426d575@intel.com>
+Content-Transfer-Encoding: 7bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 28, 2021 at 11:12:33AM +0000, Winkler, Tomas wrote:
+Hi Tzung-Bi,
+
+Thanks for the reviews.
+
+On Thu, 2021-11-18 at 13:55 +0800, Tzung-Bi Shih wrote:
+> On Wed, Nov 17, 2021 at 02:41:56PM +0800, jason-jh.lin wrote:
 > 
-> > 
-> > 
-> > > On 12 Nov 2021, at 11:06, Christophe JAILLET
-> > <christophe.jaillet@wanadoo.fr> wrote:
-> > >
-> > > 'generated' is known to be true here, so "true || whatever" will still
-> > > be true.
-> > >
-> > > So, remove some dead code.
-> > >
-> > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > > ---
-> > > This is also likely that a bug is lurking here.
-> > >
-> > > Maybe, the following was expected:
-> > > -	generated = generated ||
-> > > +	generated =
-> > > 		(hisr & HISR_INT_STS_MSK) ||
-> > > 		(ipc_isr & SEC_IPC_HOST_INT_STATUS_PENDING);
-> > >
-> > > ?
-> > 
-> > I concur about your analysis, but I do not know the intent here.
-> Your fix  is okay, I can ack that patch. 
+> Typo in the commit title "mialbox: move cmdq suspend,resume and
+> remove after cmdq_mbox_flush".
+> 
+> s/mialbox/mailbox/
+-- 
+I'll fix this typo at the next version.
 
-Is that an ack of this patch?  If so, please provide that...
+Regards,
+Jason-JH Lin <jason-jh.lin@mediatek.com>
 
-thanks,
-
-greg k-h
