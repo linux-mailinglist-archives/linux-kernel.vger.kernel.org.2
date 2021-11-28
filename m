@@ -2,97 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBFE84609CF
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 21:54:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 312FD4609D2
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 21:54:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358099AbhK1U5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 15:57:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35072 "EHLO
+        id S1358291AbhK1U5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 15:57:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240163AbhK1UzK (ORCPT
+        with ESMTP id S243450AbhK1UzO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 15:55:10 -0500
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 974EBC061748;
-        Sun, 28 Nov 2021 12:51:53 -0800 (PST)
-Received: by mail-ua1-x931.google.com with SMTP id a14so29849703uak.0;
-        Sun, 28 Nov 2021 12:51:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mJdw8+B+469lEUinr7Yxatle2qjN+p5Ob+KVnBKytm4=;
-        b=dsu13FhAcDiygfmSbxULHp4GEXJHqRU/YAenvG+Tf7Hz2aiMpp/AE+rnWDXLY1NAJW
-         wgyfTW89QOPU3zdLqhiVSP/Sv+svFMu2mBPy6aYXpcCuGC5wXvpXejTKbvEidiYvFch6
-         IGDdl/Nmp6Skz6Zq0rCuNxd8RGBWWKscG5C3sMmi0UCiPy8u3oGMD8kdz2SkvXQvoT4G
-         Yni7dznjeI2jiVZ7ps7NBDG5KCwt7tlunIqH4dBqDofe2FRCazrz2W+7KpnKXQHUccoh
-         ftuu9mf2t7a57InoQ3uDY9qPBPVIqK9kleBEVlOtqNyLMPX3rDzsRMWpXq/yYR+nEt+v
-         QMjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mJdw8+B+469lEUinr7Yxatle2qjN+p5Ob+KVnBKytm4=;
-        b=wIqkuEJXPgnHhS0PBMIUJnkVFpSpaZZ2d4BgZVAzQ/ZU8JQK6rOT925q0siUkbzDwh
-         NkQ2nIn/w5FTKJo2z6EXqbZVL8T1fYj9EIoSBAIfc9HdY7e2bSo3hp0zKuLDDq/jqPzU
-         9BqNa1o3WRzYAmUjXgX9UrWAxlGVGZR2yF9oBUJNXpwFqsWljWlF5OmjAvGiNdhV3wst
-         XE3ZC0WDsvXnINvtMW6E/lJASCnlaxzHSWHeN3A7D75RKNwFgCG09IyK9uO4MKRAwhmW
-         UuA8GuT2gI5cEQNHCrUufv531dQt9cES8dmoQKBR69ezyYEmq5dVrLsz3PoX0hjk8tzE
-         wknQ==
-X-Gm-Message-State: AOAM531sX7jbHAaT3QihZiIbhf/ttlwAvSLpiAmjHyeJ4DmAPIbu+2bf
-        Ur5DK69SQn8nG5W5VOzrFOhJ0FLajp8Lc6U7RH0=
-X-Google-Smtp-Source: ABdhPJynMWaOJnX0hrkBHJUH9VWS97JL7n8UsFCkiw/NzxJUQXKpFjsZQm64YrPy9ZIE5Gxp2tLJ3pplY9uaDBQFqlQ=
-X-Received: by 2002:a67:e003:: with SMTP id c3mr28621655vsl.51.1638132712814;
- Sun, 28 Nov 2021 12:51:52 -0800 (PST)
+        Sun, 28 Nov 2021 15:55:14 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23AF6C061756;
+        Sun, 28 Nov 2021 12:51:58 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4J2LJD51VWz4xQs;
+        Mon, 29 Nov 2021 07:51:55 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1638132716;
+        bh=4n4EyW8mjec4vXK3msghbyzqZgzR3H9Xayy3JzGc36Y=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ada6AiNsdUypRax4XdKIK+zrXAnXbhwUKSlktQzdHHCFhuufuaVFY4Zq6suiPhWvr
+         tFCH/ej/O3LhTc+pvS4lnOaP9ooKomBNVcLp9HJf3Oi59yaSElB/NLdmQ9rd3j0E51
+         jq4w/tEVeQj0Y2hvBrAMAPNV536KOghkiidUQz2DgGb3WEnym2+Biapat9Mw9H42nX
+         FB5WNRuq3hIOKPzslh/AKjGGIfICA2+EVrVcieSJyB5GjQCLgOmTAfkggd/Y3g+x5d
+         38FFIuwxUVPcBRWaGaiRkDdvYNJneW2jT11TyolbH5RkZ33hE+cK0bEChQm3PTXs0D
+         b3fhWxQnPUChw==
+Date:   Mon, 29 Nov 2021 07:51:54 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        Wireless <linux-wireless@vger.kernel.org>
+Cc:     Baligh Gasmi <gasmibal@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the mac80211-next
+ tree
+Message-ID: <20211129075154.2d4f922c@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20211125211443.1150135-1-Mr.Bossman075@gmail.com> <20211125211443.1150135-12-Mr.Bossman075@gmail.com>
-In-Reply-To: <20211125211443.1150135-12-Mr.Bossman075@gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Sun, 28 Nov 2021 17:51:42 -0300
-Message-ID: <CAOMZO5A8sOJLmYWLU4BZzL=C-PnXvgDOYEodtg6sHcP7tetJkg@mail.gmail.com>
-Subject: Re: [PATCH v3 11/13] mmc: sdhci-esdhc-imx: Add sdhc support for
- i.MXRT series
-To:     Jesse Taube <mr.bossman075@gmail.com>
-Cc:     NXP Linux Team <linux-imx@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Stefan Agner <stefan@agner.ch>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Abel Vesa <abel.vesa@nxp.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Giulio Benetti <giulio.benetti@benettiengineering.com>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-serial@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/smN1nSGsTjQOSbfZkwWY=z4";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 6:15 PM Jesse Taube <mr.bossman075@gmail.com> wrote:
->
-> From: Jesse Taube <mr.bossman075@gmail.com>
->
-> Add support for i.MXRT1050's sdhc.
->
-> Cc: Giulio Benetti <giulio.benetti@benettiengineering.com>
-> Signed-off-by: Jesse Taube <Mr.Bossman075@gmail.com>
+--Sig_/smN1nSGsTjQOSbfZkwWY=z4
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Hi all,
+
+Commit
+
+  2f6fedd9ff71 ("mac80211: remove useless ieee80211_vif_is_mesh() check")
+
+is missing a Signed-off-by from its author.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/smN1nSGsTjQOSbfZkwWY=z4
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGj6+oACgkQAVBC80lX
+0Gz2ogf/cPVQWo2TE8kCItEI4h5lfWAkPrpxTneedxYziMwjsFkv0J/AB8Sw9Vam
++093aS4YEuMUqzCUW7FS+v30cvLaxZ0BxU0lurwKKOx3wMVdNdkPkeZ09O8S03jd
+16MNsmrCgzYCtEj3tkhnjKsbddeuaUJYDDGwISO7Oq9iX6UUfuYkmhpD94jKX5/I
+wOgkt9Y8dsr35U+UNZToHdXAr58IGxJU0kX+TklS93wcceR8JoRwLx0H1Or+udVi
+mrv94f52kq0u8DsUmniKjKWY85A5v0c8EcyOJ59KC/rkhD/5K4sVzt/TjRdITvWu
+xLRQwcmm95rcQgvMIruL4R6qAimXQw==
+=U07F
+-----END PGP SIGNATURE-----
+
+--Sig_/smN1nSGsTjQOSbfZkwWY=z4--
