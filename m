@@ -2,131 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94BB04605B1
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 11:37:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B104D4605B4
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 11:42:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357114AbhK1KkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 05:40:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234612AbhK1KiP (ORCPT
+        id S1357124AbhK1KpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 05:45:18 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:40866 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235416AbhK1KnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 05:38:15 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDBBC061574;
-        Sun, 28 Nov 2021 02:34:59 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Sun, 28 Nov 2021 05:43:17 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D88F260F17;
-        Sun, 28 Nov 2021 10:34:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D3F1C004E1;
-        Sun, 28 Nov 2021 10:34:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638095698;
-        bh=+8T3JcjffAOWYDApIveGl9HhTHeoo4rTTyhbueXv0QI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=q/2TbPHtAaSsEKff9XOEXMGU1xfRPZTrMxRtH1qzxYWwGLCS+Ucw59axB7CeqKkTL
-         aJOIf3/Za+8U4Ajcc5S9YWVYztV7HkuGSi5lIVHfIAcY0ni0CZXihirmlgaFH8F7Yr
-         QE31eqW/NUz7bg0mALlcHlZ1p1kiKqaM8FwvJW8rTs1xpVGbVr3/m8AmAwhKXU2SUw
-         e2CSH6rpD7r8Fq6GX0m5S95aBpVuFO7Ryd4xoa6e8lRcbINArqn5AXY+Ex9xRTj2IN
-         tv55Gf+cSsvyPhGcPN+7DarOAZFrR4mPFK8g9dsTrxc21l0XotbujLEKWYp6+9ngjW
-         okUnX0rKuyP6A==
-Date:   Sun, 28 Nov 2021 19:34:50 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Steven Rostedt <rostedt@goodmis.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>
-Subject: Re: [RFC 0/8] perf/bpf: Add batch support for [ku]probes attach
-Message-Id: <20211128193450.8147832ab7d0d10494102ffb@kernel.org>
-In-Reply-To: <20211124084119.260239-1-jolsa@kernel.org>
-References: <20211124084119.260239-1-jolsa@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 64E462170C;
+        Sun, 28 Nov 2021 10:40:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1638096000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9DkhicfqLgdXO/jo7jYDrCXnxFhkX5WqR1peT7wdlYw=;
+        b=C5C+XClBXZ+iT3kyeVBwoKht0lHSh8c7+AFc6a8qmWCd/v7iVdImwgGur1UTeBAqKOHGMO
+        O9iTzatgwDXk48NuT9TeOUVOdapBCnrqQ9JatN/Ki7BbC4g3e/dVM1ntceZT54QERW0PHl
+        7K2kRTiKJtkgg7nteArajg3ZV5LArn0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1638096000;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9DkhicfqLgdXO/jo7jYDrCXnxFhkX5WqR1peT7wdlYw=;
+        b=pplJvuI3Zc/0Xjxia1FxB1WAPVmkDDGqPv+bm9OhREjYebk9AyJM5pWaO/ocRNg7rrznhu
+        IVKBiozYvlk/haAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3BBF813446;
+        Sun, 28 Nov 2021 10:40:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id dCMDDYBco2GdSAAAMHmgww
+        (envelope-from <hare@suse.de>); Sun, 28 Nov 2021 10:40:00 +0000
+Subject: Re: [PATCH RFT 1/3] blk-mq: Drop busy_iter_fn blk_mq_hw_ctx argument
+To:     John Garry <john.garry@huawei.com>, axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com, kashyap.desai@broadcom.com
+References: <1635852455-39935-1-git-send-email-john.garry@huawei.com>
+ <1635852455-39935-2-git-send-email-john.garry@huawei.com>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <395729f9-7885-cc76-9055-7467af84c2e3@suse.de>
+Date:   Sun, 28 Nov 2021 11:39:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <1635852455-39935-2-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
-
-On Wed, 24 Nov 2021 09:41:11 +0100
-Jiri Olsa <jolsa@redhat.com> wrote:
-
-> hi,
-> adding support to create multiple kprobes/uprobes within single
-> perf event. This way we can associate single bpf program with
-> multiple kprobes.
-
-Thanks for the change, basically, you can repeatedly call the
-create_local_trace_kprobe() and register it.
-
+On 11/2/21 12:27 PM, John Garry wrote:
+> The only user of blk_mq_hw_ctx blk_mq_hw_ctx argument is
+> blk_mq_rq_inflight().
 > 
-> Sending this as RFC because I'm not completely sure I haven't
-> missed anything in the trace/events area.
-
-OK let me check that.
-
-Thanks,
-
+> Function blk_mq_rq_inflight() uses the hctx to find the associated request
+> queue to match against the request. However this same check is already
+> done in caller bt_iter(), so drop this check.
 > 
-> Also it needs following uprobe fix to work properly:
->   https://lore.kernel.org/lkml/20211123142801.182530-1-jolsa@kernel.org/
+> With that change there are no more users of busy_iter_fn blk_mq_hw_ctx
+> argument, so drop the argument.
 > 
-> Also available at:
->   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
->   bpf/kuprobe_batch
-> 
-> thanks,
-> jirka
-> 
-> 
+> Signed-off-by: John Garry <john.garry@huawei.com>
 > ---
-> Jiri Olsa (8):
->       perf/kprobe: Add support to create multiple probes
->       perf/uprobe: Add support to create multiple probes
->       libbpf: Add libbpf__kallsyms_parse function
->       libbpf: Add struct perf_event_open_args
->       libbpf: Add support to attach multiple [ku]probes
->       libbpf: Add support for k[ret]probe.multi program section
->       selftest/bpf: Add kprobe multi attach test
->       selftest/bpf: Add uprobe multi attach test
+>   block/blk-mq-tag.c     |  2 +-
+>   block/blk-mq.c         | 17 ++++++++---------
+>   include/linux/blk-mq.h |  3 +--
+>   3 files changed, 10 insertions(+), 12 deletions(-)
 > 
->  include/uapi/linux/perf_event.h                            |   1 +
->  kernel/trace/trace_event_perf.c                            | 214 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------
->  kernel/trace/trace_kprobe.c                                |  47 ++++++++++++++++---
->  kernel/trace/trace_probe.c                                 |   2 +-
->  kernel/trace/trace_probe.h                                 |   6 ++-
->  kernel/trace/trace_uprobe.c                                |  43 +++++++++++++++--
->  tools/include/uapi/linux/perf_event.h                      |   1 +
->  tools/lib/bpf/libbpf.c                                     | 235 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--------------
->  tools/lib/bpf/libbpf.h                                     |  25 +++++++++-
->  tools/lib/bpf/libbpf_internal.h                            |   5 ++
->  tools/testing/selftests/bpf/prog_tests/multi_kprobe_test.c |  83 +++++++++++++++++++++++++++++++++
->  tools/testing/selftests/bpf/prog_tests/multi_uprobe_test.c |  97 ++++++++++++++++++++++++++++++++++++++
->  tools/testing/selftests/bpf/progs/multi_kprobe.c           |  58 +++++++++++++++++++++++
->  tools/testing/selftests/bpf/progs/multi_uprobe.c           |  26 +++++++++++
->  14 files changed, 765 insertions(+), 78 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/multi_kprobe_test.c
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/multi_uprobe_test.c
->  create mode 100644 tools/testing/selftests/bpf/progs/multi_kprobe.c
->  create mode 100644 tools/testing/selftests/bpf/progs/multi_uprobe.c
-> 
+Reviewed-by Hannes Reinecke <hare@suse.de>
 
+Cheers,
 
+Hannes
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
