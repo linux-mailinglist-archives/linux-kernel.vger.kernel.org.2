@@ -2,87 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F46460777
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 17:26:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A6B3460771
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 17:24:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358356AbhK1Q32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 11:29:28 -0500
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:41910 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238588AbhK1Q11 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1353285AbhK1Q11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sun, 28 Nov 2021 11:27:27 -0500
-Received: by mail-ot1-f46.google.com with SMTP id n17-20020a9d64d1000000b00579cf677301so21987014otl.8;
-        Sun, 28 Nov 2021 08:24:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cG1qxa/rrWWVkdtvrfpLEg36+/zmkNfWQBfrO1J/AJ0=;
-        b=Y4R8HUxR4nPF66pwl+Rso9ofnZW8T8ipbwELKDPcJoHJYVsm6UrMgEviUEhBjEEbaE
-         yAirSGnTyVwDncf63FK+HV9o2kgdvTbwvNUu9xzYw+6To27ZTTYZE8Yo4QTPjDbZ4EdZ
-         rO3zwzjRYfXz4BjCsAigO9l42O4RzfkzGeNwVYC/CPGIYJotOGiTB8Lt8Hj6CCdI2UA5
-         vCYwH7jvcbfPWXHinC1FwRPhE9Zc6wAJs+h7ij8/AI/rQarSA+rFCuRdL29a8vz4/ICi
-         FfoKabVxr3uvmvRr9KqxHQurF3cTCk1uqzKX3CoWPsdQQe58ILn+CyWlmZ3YNSpI366z
-         PoIQ==
-X-Gm-Message-State: AOAM530L4teBbE53bhcSYmaxXKKIOnnbYVHIyU89xXKqPuc/gMpGjg2g
-        IKtXS/7dul5newc5mY8qQA==
-X-Google-Smtp-Source: ABdhPJyWZF1O9whdWrlsXv2WYoE8bZeLc/P4hZdeAVDksjHc648kjfISaZc4QX6fv/dSf1HH3LVmTQ==
-X-Received: by 2002:a05:6830:22d8:: with SMTP id q24mr38568389otc.170.1638116650419;
-        Sun, 28 Nov 2021 08:24:10 -0800 (PST)
-Received: from robh.at.kernel.org ([2607:fb90:20d6:afc8:f6e9:d57a:3e26:ee41])
-        by smtp.gmail.com with ESMTPSA id h3sm1933422ooe.13.2021.11.28.08.24.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 08:24:09 -0800 (PST)
-Received: (nullmailer pid 2660694 invoked by uid 1000);
-        Sun, 28 Nov 2021 16:24:04 -0000
-Date:   Sun, 28 Nov 2021 10:24:04 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mark Kettenis <kettenis@openbsd.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-serial@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v3 07/11] dt-bindings: arm: apple: Add apple,pmgr binding
-Message-ID: <YaOtJPF+3ie2WyPB@robh.at.kernel.org>
-References: <20211124073419.181799-1-marcan@marcan.st>
- <20211124073419.181799-8-marcan@marcan.st>
+Received: from sender4-op-o15.zoho.com ([136.143.188.15]:17537 "EHLO
+        sender4-op-o15.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235988AbhK1QZ0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Nov 2021 11:25:26 -0500
+X-Greylist: delayed 58592 seconds by postgrey-1.27 at vger.kernel.org; Sun, 28 Nov 2021 11:25:26 EST
+ARC-Seal: i=1; a=rsa-sha256; t=1638116509; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=M6xT5h0zClw8DD+dgU9Xl3+v+ePIn06JCTs4rk+XqsFLXbZMzjr0N4hrArHarE2PDP9V9kwQY+ZmJE0rpod6MIQbBVsI5oTNIK7kpu1nFHFlJM137Bc4OpwiW30gm7sQYEldgFqmSs/+fPONHv3Q+2pNFLq0z22sOIO/4ZV9n2s=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1638116509; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=YYeOwx6CNvENJgb27Vn+FmTcemWXvXDoI8iKqqUTwyQ=; 
+        b=m+G2YSLQIL+JbtZWLEcNRau4XYq2B9bENkqxjj5PdTEqwU4hjDd2oRTy3AeC9P7Gm+a2+bvB/WT2p+t5f3mAkg2DFd1L0n6IGaWRj00Y5auFS5lbMC6GxLYPP/jtTUPWuiRVSj7zUhzWkdLo7Pz/WNGX0fwxPI6bIBmsA7BJwlU=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=szanni.org;
+        spf=pass  smtp.mailfrom=angelo@szanni.org;
+        dmarc=pass header.from=<lkml@szanni.org>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1638116509;
+        s=zoho; d=szanni.org; i=lkml@szanni.org;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:In-Reply-To:Content-Type:Content-Transfer-Encoding;
+        bh=YYeOwx6CNvENJgb27Vn+FmTcemWXvXDoI8iKqqUTwyQ=;
+        b=NeOEjEaZGHcT4y9IZXgSxEIQqjmtypIpD4ts4W1nSokthyLL/PJWafG9r3OLTUvz
+        a490hMNHjePMdH8z39+krzkxICIiAM3nZchpkSFn7xZQZjaBx9OHMJMeYFYMSalXLZd
+        uGy3QlemYAxtArAYBuQ6M3teWXCAWZSxPFcTDims=
+Received: from [192.168.0.128] (200.60.135.218 [200.60.135.218]) by mx.zohomail.com
+        with SMTPS id 163811650856923.573649579276434; Sun, 28 Nov 2021 08:21:48 -0800 (PST)
+Message-ID: <3bbacbed-2c52-f37f-070c-adece794e3ef@szanni.org>
+Date:   Sun, 28 Nov 2021 11:24:12 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211124073419.181799-8-marcan@marcan.st>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: sched: some non-GPL symbols becoming GPL-only with
+ CONFIG_PREEMPT_RT enabled
+Content-Language: en-US
+To:     linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Will Deacon <will@kernel.org>, linux-rt-users@vger.kernel.org,
+        Oleksandr Natalenko <oleksandr@natalenko.name>
+References: <5475c3ab-a53c-8728-98c5-98fd948ff556@szanni.org>
+ <2606453.mvXUDI8C0e@natalenko.name>
+From:   Angelo Haller <lkml@szanni.org>
+In-Reply-To: <2606453.mvXUDI8C0e@natalenko.name>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 16:34:17 +0900, Hector Martin wrote:
-> The PMGR block in Apple Silicon SoCs is responsible for SoC power
-> management. There are two PMGRs in T8103, with different register
-> layouts but compatible registers. In order to support this as well
-> as future SoC generations with backwards-compatible registers, we
-> declare these blocks as syscons and bind to individual registers
-> in child nodes. Each register controls one SoC device.
+On 28/11/2021 04.46, Oleksandr Natalenko wrote:
+> Hello.
 > 
-> The respective apple compatibles are defined in case device-specific
-> quirks are necessary in the future, but currently these nodes are
-> expected to be bound by the generic syscon driver.
+> On neděle 28. listopadu 2021 1:07:49 CET Angelo Haller wrote:
+>> Greetings. I hope I picked the right mailing list, as this issue might
+>> be one that affects various subsystems and components:
+>>
+>> When compiling kernel 5.15 (and 5.16-rc2) with `CONFIG_PREEMPT_RT`
+>> enabled, some of the symbols being exported as `EXPORT_SYMBOL` suddenly
+>> become `EXPORT_SYMBOL_GPL` through transitive effects.
+>>
+>> In particular the symbols `migrate_enable` and `migrate_disable` are
+>> currently marked as `EXPORT_SYMBOL_GPL` - yet are called from multiple
+>> functions that are marked as `EXPORT_SYMBOL`.
+>>
+>> Here an (incomplete?) listing of call sites I came across:
+>>
+>> kernel/locking/spinlock_rt.c - rt_spin_unlock()
+>> kernel/locking/spinlock_rt.c - rt_read_unlock()
+>> kernel/locking/spinlock_rt.c - rt_write_unlock()
+>> mm/highmem.c - kunmap_local_indexed()
+>>
+>> The issue I'm facing in particular is kmap_atomic() calling
+>> `migrate_disable` and therefore suddenly becoming GPL-only. This breaks
+>> the out-of-tree CDDL licensed module ZFS and has been reported before
+>> already [0]. The conversation seemingly going nowhere - or patches at
+>> least not being applied upstream. Downstream issue for reference [1].
 > 
-> Reviewed-by: Mark Kettenis <kettenis@openbsd.org>
-> Signed-off-by: Hector Martin <marcan@marcan.st>
-> ---
->  .../bindings/arm/apple/apple,pmgr.yaml        | 134 ++++++++++++++++++
->  1 file changed, 134 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/arm/apple/apple,pmgr.yaml
+> What about going the other way around and let ZFS be re-licensed under GPL?
 > 
+That would be lovely but is unlikely to ever happen. Numerous people 
+have tried over the years - many, including me, would love for ZFS to be 
+mainlined but unless Oracle decides to re-license the original code this 
+will most likely not happen [3].
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+This is not really the main issue I was trying to highlight though.
+What I was highlighting is the fact that exported symbols change license 
+depending on the kconfig!
+This will randomly stop dkms modules from building depending on my (or 
+my distributions) kconfig. To me as a user this effectively BREAKS user 
+space.
+And yes, I am aware exported symbols are not syscalls but I thought 
+there was at least some type of stability guarantee within the same 
+kernel version. Maybe my thoughts on that matter are incorrect though.
+
+[3] https://github.com/openzfs/zfs/issues/8314
+>> As the original implementation of `migrate_enable` and `migrate_disable`
+>> is apparently by Peter Zijlstra [2]. Peter would you be willing to
+>> re-license both symbols `migrate_enable` and `migrate_disable` as
+>> `EXPORT_SYMBOL`?
+>>
+>> The bigger issue I'm seeing though is that there is currently no
+>> automated test to uncover exported symbols changing their license
+>> depending on build configuration? I am not intimately familiar with the
+>> API guarantees the kernel gives, but this seems like a violation. There
+>> might be other symbols with similar licensing problems.
+>>
+>> I can open a bugzilla ticket too - if that is preferred.
+>>
+>> Angelo
+>>
+>>
+>> [0]
+>> https://lore.kernel.org/linux-rt-users/20201208212841.694b3022@orivej.orivej
+>> .org/T/ [1] https://github.com/openzfs/zfs/issues/11097
+>> [2]
+>> https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/diff/p
+>> atches/0009-sched-Add-migrate_disable.patch?h=v5.9-rc8-rt14-patches&id=9a89b
+>> fdb3bc77aecdd0ff8cc69b595541c7b50c4
+> 
+> 
