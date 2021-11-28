@@ -2,85 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E65404607A0
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 17:37:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51D604607A6
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 17:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358481AbhK1Qkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 11:40:40 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:48212 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358557AbhK1Qij (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 11:38:39 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1638117322;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=y5DlAw5YhOVaK5VzZnJ3n0hgyQh2ZS1Mor+t0574Z7U=;
-        b=ELCZ2rx1vInZwPFgR6y6NcEQCNM2tM/D5DPypiKVg2/7AMMS8z7zxvfcof2jXqOofbr+KZ
-        PitFgM1LcV2KUZZpwCAyE8l9qp9tGqZlgIIRI8P5C4CCbUq9EMmFQr2Mq/OWSt9O4lFImd
-        iw8lxv/YFqr5EwxBv/OhPBo/A7RTgqPZmZDrI/qzu1klMTJwoBPF4WJgqSqVVC2WS3Vj3V
-        SJKOI84jAoCUqATjJp10ZT6XDR7tmv/L42fQt0PeVefwgJu7+h/zUZi4/uTKnMKlGr0W5z
-        ajeYIkvoCxWrLmD2lKN2k4rIfwlqfUfYbtlm5WRVOJNWgWlumRMKCoSABOwOIA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1638117322;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=y5DlAw5YhOVaK5VzZnJ3n0hgyQh2ZS1Mor+t0574Z7U=;
-        b=ACdPSZ1O8IQcW9+aXoaCyRKeHDUyG20Po2d52FbNjWHa7Jn9E5GpS+0ZVMLwXlWdOEbZhe
-        HmMd7PXg2K06w3Bw==
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [GIT pull] x86/urgent for v5.16-rc3
-References: <163811728418.767205.14544746031342483043.tglx@xen13>
-Message-ID: <163811728858.767205.8050385026777394335.tglx@xen13>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1358373AbhK1QoI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 28 Nov 2021 11:44:08 -0500
+Received: from mga14.intel.com ([192.55.52.115]:22927 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1358420AbhK1QmG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Nov 2021 11:42:06 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10181"; a="236080093"
+X-IronPort-AV: E=Sophos;i="5.87,271,1631602800"; 
+   d="scan'208";a="236080093"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2021 08:38:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,271,1631602800"; 
+   d="scan'208";a="539733855"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga001.jf.intel.com with ESMTP; 28 Nov 2021 08:38:50 -0800
+Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Sun, 28 Nov 2021 08:38:49 -0800
+Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
+ HASMSX602.ger.corp.intel.com (10.184.107.142) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Sun, 28 Nov 2021 18:38:47 +0200
+Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
+ HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.2308.020;
+ Sun, 28 Nov 2021 18:38:47 +0200
+From:   "Winkler, Tomas" <tomas.winkler@intel.com>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     Haakon Bugge <haakon.bugge@oracle.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "OFED mailing list" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: RE: [PATCH] mei: Remove some dead code
+Thread-Topic: [PATCH] mei: Remove some dead code
+Thread-Index: AQHX16z+MGID8V6pdUm1z2bNCeUOWqv/oKGAgBlBgNCAABWpAIAARYjg
+Date:   Sun, 28 Nov 2021 16:38:47 +0000
+Message-ID: <15b253e2abd049e6a9ebb4efafc10292@intel.com>
+References: <3f904c291f3eed06223dd8d494028e0d49df6f10.1636711522.git.christophe.jaillet@wanadoo.fr>
+ <80B25490-FE92-420E-A506-C92A996EF174@oracle.com>
+ <17d6896a6abf49138556e34cb426d575@intel.com> <YaOSQrGqogbFGAqJ@kroah.com>
+In-Reply-To: <YaOSQrGqogbFGAqJ@kroah.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.6.200.16
+x-originating-ip: [10.184.70.1]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Date:   Sun, 28 Nov 2021 17:35:21 +0100 (CET)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
 
-please pull the latest x86/urgent branch from:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2021-=
-11-28
-
-up to:  c0f2077baa41: x86/boot: Mark prepare_command_line() __init
-
-
-A single fix for a missing __init annotation of prepare_command_line().
-
-Thanks,
-
-	tglx
-
------------------->
-Borislav Petkov (1):
-      x86/boot: Mark prepare_command_line() __init
-
-
- arch/x86/kernel/setup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index c410be738ae7..6a190c7f4d71 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -742,7 +742,7 @@ dump_kernel_offset(struct notifier_block *self, unsigned =
-long v, void *p)
- 	return 0;
- }
-=20
--static char *prepare_command_line(void)
-+static char * __init prepare_command_line(void)
- {
- #ifdef CONFIG_CMDLINE_BOOL
- #ifdef CONFIG_CMDLINE_OVERRIDE
+> On Sun, Nov 28, 2021 at 11:12:33AM +0000, Winkler, Tomas wrote:
+> >
+> > >
+> > >
+> > > > On 12 Nov 2021, at 11:06, Christophe JAILLET
+> > > <christophe.jaillet@wanadoo.fr> wrote:
+> > > >
+> > > > 'generated' is known to be true here, so "true || whatever" will
+> > > > still be true.
+> > > >
+> > > > So, remove some dead code.
+> > > >
+> > > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> > > > ---
+> > > > This is also likely that a bug is lurking here.
+> > > >
+> > > > Maybe, the following was expected:
+> > > > -	generated = generated ||
+> > > > +	generated =
+> > > > 		(hisr & HISR_INT_STS_MSK) ||
+> > > > 		(ipc_isr & SEC_IPC_HOST_INT_STATUS_PENDING);
+> > > >
+> > > > ?
+> > >
+> > > I concur about your analysis, but I do not know the intent here.
+> > Your fix  is okay, I can ack that patch.
+> 
+> Is that an ack of this patch?  If so, please provide that...
+Acked-by: Tomas Winkler <tomas.winkler@intel.com>
+Thanks
+Tomas
 
