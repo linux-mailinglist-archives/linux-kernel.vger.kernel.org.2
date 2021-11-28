@@ -2,84 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 324F0460666
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 14:19:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81736460668
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 14:21:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357494AbhK1NWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 08:22:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49634 "EHLO
+        id S1357631AbhK1NYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 08:24:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345293AbhK1NUo (ORCPT
+        with ESMTP id S1352642AbhK1NWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 08:20:44 -0500
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E440AC061746
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 05:17:27 -0800 (PST)
-Received: by mail-ua1-x931.google.com with SMTP id n6so28385048uak.1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 05:17:27 -0800 (PST)
+        Sun, 28 Nov 2021 08:22:32 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A391C061748;
+        Sun, 28 Nov 2021 05:19:16 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id v23so17508177iom.12;
+        Sun, 28 Nov 2021 05:19:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7whuhitVqPnZipfah97TIBIyag3vXAwUvYkJpquBSrU=;
-        b=Qut2xFPsrGNP7QzIatUjPh112CGOyBKAFtaiKWt7oknS3e3elMukv8TEerX8+sKXPf
-         mJYzduV+T784qBHP2lLUgIaYzdJSsnKE6BiBPYRknHzOw+qlCKEMpnZrrqde/g6V3ZrI
-         D/NsTx2ampFgtvcjWZLgyhsdxucTEn3IFIGH8=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rgH6bDvZzbG8b8t+1LLRo1oRPHaeFK2CSFYLS3VI3Ak=;
+        b=llDkk7kaNIFNgZZvbTKAZRmDr4SPfRqb/3DUU8c+ES5LXxNLZhox2Eqyyte2epBWyP
+         az9XGNDrP9UtfmLPNAhVe4FpJFNHA8ED/i2J+3uahaNz1Li9mb4r6gwPeXGB19YsZHyJ
+         suhVunEEq2DkxKxHMcY9pxgj5wiKAY00rE7xAF2qi7Den+9i0viMVQi3ClssFbIz9EC5
+         cgyLQpFbz98vxasr9HFscuYIoHLaJZ4/s5IjiYocgOWVX5Wowq+xADdVcBKz+FHvz1Qq
+         bJkENBOEeuOJbexvb7JqDyPTKqgoU8W6E9pgYKHBZIAxFzjuFFvzAPbmdCocJfjb+S+A
+         CUbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7whuhitVqPnZipfah97TIBIyag3vXAwUvYkJpquBSrU=;
-        b=W9JvmHcFvhrb09C5oyUEB2ckx9bXwcu+s7j2mfyfa2QvI8VeEYbIcsDPc9zQYGEzdJ
-         eCh6YxKGSFh3zfoa8lRiKQ6hsKou4267/b689cJQehuOKwta9nraCsSGNR8tMTYV0JU6
-         RUfZ++YewwtD/7tUdXlb9Voa4ZJSYPgCA/LwX1XMfqoM/md9F8136GnChDE1OVhZsRck
-         3y0XMqRlYzr23uRR1X/CHg9e8yiUVp5C+8TofrPzxvm5C1D/QWTdqmT8hGIrB6owHH+8
-         kHLqfjlDy11QADpP94YwhauSyMdwZL+kz3PA8XvGAlkEXnJ7yr3VI9n6vM6nHnFCxg3W
-         V1Xw==
-X-Gm-Message-State: AOAM533raBEwhsM2WKySXUIqEzEAO7iT+2sk2Y+Gs/UxrD9q/35HRHqR
-        mh60EKR42I1CHDRqQ1Irb9weSMVWZUgR0Q9K5DzgKUaQY/8=
-X-Google-Smtp-Source: ABdhPJyZxe5YIKk6QpWHAe4AORoq3DVeSfu4IYXAhafnMShxVmuFujEF374iQEYwpRHvwBOmiIsTOa1Yeask/tphui0=
-X-Received: by 2002:ab0:6ecf:: with SMTP id c15mr45724445uav.113.1638105446637;
- Sun, 28 Nov 2021 05:17:26 -0800 (PST)
-MIME-Version: 1.0
-References: <20211126202144.72936-1-romain.perier@gmail.com> <20211126202144.72936-7-romain.perier@gmail.com>
-In-Reply-To: <20211126202144.72936-7-romain.perier@gmail.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Sun, 28 Nov 2021 22:17:16 +0900
-Message-ID: <CAFr9PXmpKrcPXL=EdL-uGu0X3nZBrAVcBSDqSbaDEvRhE6Abiw@mail.gmail.com>
-Subject: Re: [PATCH 5/5] ARM: dts: mstar: Switch to compatible
- "mstar,ssd20xd-timer" on ssd20xd
-To:     Romain Perier <romain.perier@gmail.com>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rgH6bDvZzbG8b8t+1LLRo1oRPHaeFK2CSFYLS3VI3Ak=;
+        b=rKRze46vWqnuvzqtkVPbsAyq8xp5TVmzcJJbl7S0cQeMH/ss07Ohz+CYNPVIO7V5ZE
+         xIdRvv0tWXjlq34T9RCGB8Dgm6MYV4N4ZsN7mx5aMASvgOZKVf62bues8ZPPhhwYvfKV
+         L8XQm6FqhFjpyPRQPWXoepC0eOXHb1WMXpLXe5z0e4ACmhDqvFLIfjFlHGMdobmaE/z0
+         lOtecQIlxbcz7Vcz9jIY47k/mn8y5q1EtHM7PUhlALBTG+NGNJpdmjV+G4u1LUS9N6OE
+         xfjGR4ey/9H8N1moQKCx15ltP9kNtmz7WaaxXsG0m+2iqVRzUWdtpfyv85PzrTzRuWMt
+         1TGw==
+X-Gm-Message-State: AOAM5337CwVQDUY2L6QDzKLtubwrQCHwXyDSlICLN2AS11LHUO0D+vMs
+        fOWvcuFWdpeCN5mHin0OUS8N86ArD7DIow==
+X-Google-Smtp-Source: ABdhPJy/IdK3EwHgNszHnLIx5GT3XZ8aG2lh43dN8vG+3jVJtIFrB5omHokIpsvev9y1/0lD2R+K3g==
+X-Received: by 2002:a02:ccb3:: with SMTP id t19mr57646053jap.145.1638105555709;
+        Sun, 28 Nov 2021 05:19:15 -0800 (PST)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:2a06:17d2:47df:6c8e])
+        by smtp.gmail.com with ESMTPSA id q12sm6990413ile.77.2021.11.28.05.19.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Nov 2021 05:19:15 -0800 (PST)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     aford@beaconembedded.com, tharvey@gateworks.com,
+        Adam Ford <aford173@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V4 0/9] arm64: imx8mn: Enable more imx8m Nano functions
+Date:   Sun, 28 Nov 2021 07:18:43 -0600
+Message-Id: <20211128131853.15125-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Romain,
+The i.MX8M Nano is similar to the i.MX8M Mini in some ways, but very
+different in others.  With the blk-ctrl driver for Mini in place,
+this series expands the blk-ctrl driver to support the Nano which
+opens the door for additional functions in the future.  As part of
+this series, it also addresses some issues in the GPCv2 driver and
+finally adds support for enabling USB and GPU.
 
-On Sat, 27 Nov 2021 at 05:22, Romain Perier <romain.perier@gmail.com> wrote:
->
-> This defines the real oscillators as input of timer1 and timer2 and
-> switch to "mstar,ssd20xd-timer".
->
-> Signed-off-by: Romain Perier <romain.perier@gmail.com>
-> ---
->  .../arm/boot/dts/mstar-infinity2m-ssd20xd.dtsi | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
->
-> diff --git a/arch/arm/boot/dts/mstar-infinity2m-ssd20xd.dtsi b/arch/arm/boot/dts/mstar-infinity2m-ssd20xd.dtsi
+V4:  Rebase on top of [1] which fixes hangs caused from CSI and DSI reset
+     and add the same fixes for CSI and DSI to the Nano
+V3:  Fixes an the yaml example
+V2:  Fixes the clock count in the blk-ctrl
 
-I just noticed this during testing. I think we should put this in
-mstar-infinity2m.dts. All of the infinity2m chips use the same die
-from what I can tell so if the ssd201/ssd202d needs this then anything
-else that includes mstar-infinity2m.dtsi will too.
+[1] - https://www.spinics.net/lists/arm-kernel/msg936266.html
 
-Cheers,
+Adam Ford (9):
+  soc: imx: gpcv2: keep i.MX8MN gpumix bus clock enabled
+  soc: imx: gpcv2: Add dispmix and mipi domains to imx8mn
+  dt-bindings: power: imx8mn: add defines for DISP blk-ctrl domains
+  dt-bindings: soc: add binding for i.MX8MN DISP blk-ctrl
+  soc: imx: imx8m-blk-ctrl: add i.MX8MN DISP blk-ctrl
+  arm64: dts: imx8mn: add GPC node
+  arm64: dts: imx8mn: put USB controller into power-domains
+  arm64: dts: imx8mn: add DISP blk-ctrl
+  arm64: dts: imx8mn: Enable GPU
 
-Daniel
+ .../soc/imx/fsl,imx8mn-disp-blk-ctrl.yaml     |  97 +++++++++++++++++
+ arch/arm64/boot/dts/freescale/imx8mn.dtsi     | 103 ++++++++++++++++++
+ drivers/soc/imx/gpcv2.c                       |  26 +++++
+ drivers/soc/imx/imx8m-blk-ctrl.c              |  77 ++++++++++++-
+ include/dt-bindings/power/imx8mn-power.h      |   5 +
+ 5 files changed, 307 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/soc/imx/fsl,imx8mn-disp-blk-ctrl.yaml
+
+--
+2.32.0
+
