@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0F74607B2
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 17:48:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 510D04607B4
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 17:48:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350739AbhK1QvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 11:51:16 -0500
-Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:60068 "EHLO
+        id S1358510AbhK1Qvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 11:51:37 -0500
+Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:53782 "EHLO
         smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243266AbhK1QtP (ORCPT
+        with ESMTP id S1352946AbhK1Qte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 11:49:15 -0500
+        Sun, 28 Nov 2021 11:49:34 -0500
 Received: from pop-os.home ([86.243.171.122])
         by smtp.orange.fr with ESMTPA
-        id rNJMmflft2lVYrNJNmrScH; Sun, 28 Nov 2021 17:45:58 +0100
+        id rNJgmflov2lVYrNJhmrSfR; Sun, 28 Nov 2021 17:46:17 +0100
 X-ME-Helo: pop-os.home
 X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Sun, 28 Nov 2021 17:45:58 +0100
+X-ME-Date: Sun, 28 Nov 2021 17:46:17 +0100
 X-ME-IP: 86.243.171.122
 From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 To:     Felix.Kuehling@amd.com, alexander.deucher@amd.com,
@@ -26,68 +26,80 @@ To:     Felix.Kuehling@amd.com, alexander.deucher@amd.com,
 Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 1/2] drm/amdkfd: Use bitmap_zalloc() when applicable
-Date:   Sun, 28 Nov 2021 17:45:55 +0100
-Message-Id: <f12820f6c5fca9b10ac8f82b3689c50ccb6966aa.1638117878.git.christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 2/2] drm/amdkfd: Use non-atomic bitmap functions when possible
+Date:   Sun, 28 Nov 2021 17:46:15 +0100
+Message-Id: <d18382516544c0a8c0b8e563087cb6a8b2893078.1638117878.git.christophe.jaillet@wanadoo.fr>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <f12820f6c5fca9b10ac8f82b3689c50ccb6966aa.1638117878.git.christophe.jaillet@wanadoo.fr>
+References: <f12820f6c5fca9b10ac8f82b3689c50ccb6966aa.1638117878.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'kfd->gtt_sa_bitmap' is a bitmap. So use 'bitmap_zalloc()' to simplify
-code, improve the semantic and avoid some open-coded arithmetic in
-allocator arguments.
+All uses of the 'kfd->gtt_sa_bitmap' bitmap are protected with the
+'kfd->gtt_sa_lock' mutex.
 
-Also change the corresponding 'kfree()' into 'bitmap_free()' to keep
-consistency.
+So:
+   - prefer the non-atomic '__set_bit()' function
+   - use the non-atomic 'bitmap_[set|clear]()' functions instead of
+     equivalent 'for' loops. These functions can work on several bits at a
+     time
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- drivers/gpu/drm/amd/amdkfd/kfd_device.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/amd/amdkfd/kfd_device.c | 16 +++++-----------
+ 1 file changed, 5 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device.c b/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-index e1294fba0c26..c5a0ce44a295 100644
+index c5a0ce44a295..c4d868a5dd97 100644
 --- a/drivers/gpu/drm/amd/amdkfd/kfd_device.c
 +++ b/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-@@ -1252,8 +1252,6 @@ int kgd2kfd_schedule_evict_and_restore_process(struct mm_struct *mm,
- static int kfd_gtt_sa_init(struct kfd_dev *kfd, unsigned int buf_size,
- 				unsigned int chunk_size)
+@@ -1346,7 +1346,7 @@ int kfd_gtt_sa_allocate(struct kfd_dev *kfd, unsigned int size,
+ 	/* If we need only one chunk, mark it as allocated and get out */
+ 	if (size <= kfd->gtt_sa_chunk_size) {
+ 		pr_debug("Single bit\n");
+-		set_bit(found, kfd->gtt_sa_bitmap);
++		__set_bit(found, kfd->gtt_sa_bitmap);
+ 		goto kfd_gtt_out;
+ 	}
+ 
+@@ -1384,10 +1384,8 @@ int kfd_gtt_sa_allocate(struct kfd_dev *kfd, unsigned int size,
+ 		(*mem_obj)->range_start, (*mem_obj)->range_end);
+ 
+ 	/* Mark the chunks as allocated */
+-	for (found = (*mem_obj)->range_start;
+-		found <= (*mem_obj)->range_end;
+-		found++)
+-		set_bit(found, kfd->gtt_sa_bitmap);
++	bitmap_set(kfd->gtt_sa_bitmap, (*mem_obj)->range_start,
++		   (*mem_obj)->range_end - (*mem_obj)->range_start + 1);
+ 
+ kfd_gtt_out:
+ 	mutex_unlock(&kfd->gtt_sa_lock);
+@@ -1402,8 +1400,6 @@ int kfd_gtt_sa_allocate(struct kfd_dev *kfd, unsigned int size,
+ 
+ int kfd_gtt_sa_free(struct kfd_dev *kfd, struct kfd_mem_obj *mem_obj)
  {
--	unsigned int num_of_longs;
+-	unsigned int bit;
 -
- 	if (WARN_ON(buf_size < chunk_size))
- 		return -EINVAL;
- 	if (WARN_ON(buf_size == 0))
-@@ -1264,11 +1262,8 @@ static int kfd_gtt_sa_init(struct kfd_dev *kfd, unsigned int buf_size,
- 	kfd->gtt_sa_chunk_size = chunk_size;
- 	kfd->gtt_sa_num_of_chunks = buf_size / chunk_size;
+ 	/* Act like kfree when trying to free a NULL object */
+ 	if (!mem_obj)
+ 		return 0;
+@@ -1414,10 +1410,8 @@ int kfd_gtt_sa_free(struct kfd_dev *kfd, struct kfd_mem_obj *mem_obj)
+ 	mutex_lock(&kfd->gtt_sa_lock);
  
--	num_of_longs = (kfd->gtt_sa_num_of_chunks + BITS_PER_LONG - 1) /
--		BITS_PER_LONG;
--
--	kfd->gtt_sa_bitmap = kcalloc(num_of_longs, sizeof(long), GFP_KERNEL);
--
-+	kfd->gtt_sa_bitmap = bitmap_zalloc(kfd->gtt_sa_num_of_chunks,
-+					   GFP_KERNEL);
- 	if (!kfd->gtt_sa_bitmap)
- 		return -ENOMEM;
+ 	/* Mark the chunks as free */
+-	for (bit = mem_obj->range_start;
+-		bit <= mem_obj->range_end;
+-		bit++)
+-		clear_bit(bit, kfd->gtt_sa_bitmap);
++	bitmap_clear(kfd->gtt_sa_bitmap, mem_obj->range_start,
++		     mem_obj->range_end - mem_obj->range_start + 1);
  
-@@ -1278,13 +1273,12 @@ static int kfd_gtt_sa_init(struct kfd_dev *kfd, unsigned int buf_size,
- 	mutex_init(&kfd->gtt_sa_lock);
+ 	mutex_unlock(&kfd->gtt_sa_lock);
  
- 	return 0;
--
- }
- 
- static void kfd_gtt_sa_fini(struct kfd_dev *kfd)
- {
- 	mutex_destroy(&kfd->gtt_sa_lock);
--	kfree(kfd->gtt_sa_bitmap);
-+	bitmap_free(kfd->gtt_sa_bitmap);
- }
- 
- static inline uint64_t kfd_gtt_sa_calc_gpu_addr(uint64_t start_addr,
 -- 
 2.30.2
 
