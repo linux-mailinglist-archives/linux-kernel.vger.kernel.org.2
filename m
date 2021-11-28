@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC624607E7
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 18:12:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 312F34607E9
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 18:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358910AbhK1RPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 12:15:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43524 "EHLO
+        id S1358815AbhK1RPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 12:15:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358587AbhK1RNM (ORCPT
+        with ESMTP id S1358599AbhK1RNP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 12:13:12 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0DE7C06175E
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 09:09:55 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id p3-20020a05600c1d8300b003334fab53afso14922949wms.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 09:09:55 -0800 (PST)
+        Sun, 28 Nov 2021 12:13:15 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C04BBC06175F
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 09:09:58 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id p27-20020a05600c1d9b00b0033bf8532855so10673525wms.3
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 09:09:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=3Ytho17AJ4uMgaRdXauPbFbIjw+Tbhbf5MABHEUnEio=;
-        b=S2n9rH5XqMeOZSojmjg1+nvP40ECA1wvMIB0cXhsDFTkNWXDNHM0HfEJ/x1/wynatv
-         CbNHwJMbITWfrfEB0+heUp6b8unN/7HS6Jmz+7lJLvZ0nqTzFFCPLhEE7brWK+/4lCnf
-         eSEO15CGmld83lZIhEkxiUbqgjIlvmW8MBFuBSDh6+x/o7ecc/cAJoL0AKWi0ry0r7VK
-         PCCEn44viBYhZaOKoVvaPaNCErWhcKfoAwlDdqa+F8cDqSyHQOvXWMTuu08HL2tRE7nn
-         CadPhDpauL5/6/bjL7RP2LHcxQthPQp64T+BS3ycgIqHQ/SA7SB9IJNCRE/XIRoxmDD/
-         Adbw==
+        bh=VDR+IVxxeeTY3pueMAGZ7jxJmYafV0PT+lGE6gPzU/g=;
+        b=S5upfRz9lN77QH3G8CFZjUiEavx1EituaAIIS0ZVDRdzwB7zjfd2vl6ZO+Jj6uXKd5
+         wGtfpVXYru01kEk/OC8uYWcTifWWRVffUV61HVY4J+voUE+543QU1xrtcTwpTGX1Nak0
+         RvNN4ltyJysLXL/m1QXNqY0WG7yMqvneFcMWheKYFmZ8YaVVJBsYA7mBvYtWXptX3C71
+         U2emytwQQoTmzr4/JB1x2e/i0BZ3+svXvTXHxsH7Wl+mKibWo2p4EqO3dPjlw0iqT382
+         n5wn+xtQ2eB3BaP2M/g4mfzRh5hpXXUFphBZ5L9gq9ikiBwyf00Df5P903/zY/ZDQSU5
+         KhMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=3Ytho17AJ4uMgaRdXauPbFbIjw+Tbhbf5MABHEUnEio=;
-        b=a27MNP7TOQNy/346eieBOIL9bXUpXI92Q9PxU61y4imceP2eSgUAW8gTTr6TpddCIg
-         unU5O5hMMr5K29ZDtc84RG2CJA6Abab2V4BMwgRocFj5J2YXFfgy19/6S4qcRuATKYLE
-         g6Tov8Q9r7boqBSSWBG1tfhs6Hz9MIP9hYkKa+UuA/QaboOE1Hmf6VDQemhGwcCQpktV
-         EG8ScZQvUAdVHdoM9nKyrYRrExQDrG5sblQO1dPsNBffhdLbZpLGmYfhrWnnF8ljK4VU
-         1LRT6f54ynj4JFHJGrzW2384DBxl8hlnulxvxbF2co7XDXv/fR8Gjn0msMcSM53U4/Yb
-         2KKw==
-X-Gm-Message-State: AOAM533rM5SSU2wUXpGv76AHFd0fEl56aMszQA8g1yNVHff7XMrhQ3kN
-        vVGoeLlz2FUrbCcnhI+YFWW94oowX7s=
-X-Google-Smtp-Source: ABdhPJzus2gUg/hBhfM+ogKF/EBfuXDSOjaJUGaYCnxO6hZHgqildW1ALIsObSUgUEDFN5rcURPmJg==
-X-Received: by 2002:a7b:c1cb:: with SMTP id a11mr31181690wmj.30.1638119394500;
-        Sun, 28 Nov 2021 09:09:54 -0800 (PST)
+        bh=VDR+IVxxeeTY3pueMAGZ7jxJmYafV0PT+lGE6gPzU/g=;
+        b=kUvAMzFnQBJQDfOhouJ9VcgI1ZxNBPrzmhBqpn02Uzgx59XDoe8TJJcVK/taHkJcDo
+         PmwPCbPFQxxEEIynB2c8AHfc2gMDkaQXFDM1O6InyfDQ9LA0HsJc7Toj4Sou7zgqZGHV
+         Uf7NvdKDugRhjy7dCILeoq3nGyMaV0N46M5fR5A94BALFVBkDVdg1VuoGrWsjJr75vZ/
+         JnZneHOw5oAenat7V+4SsgcLhmLW+M6hgrO0VOb0Z0h9AlhobFABE0MSrPy2Plhx4fZB
+         TwoiOtex0fDoO/NijCWHPoG3vgEEOu9FZbfdKhrdSdjqw07CqJP0moiKx1owYGRz9PHg
+         6uRQ==
+X-Gm-Message-State: AOAM532Gk4CbcMYAP5B9vL2aSr0yfFJ0VEK9g4ObsQSPn227fKY8hQFV
+        J1GhDPTp8HzXrGOlhTP9iK4=
+X-Google-Smtp-Source: ABdhPJymkgns9D9qgHJXuC1+m/H1yB/tlovzTOzwy3lgONbZuLc8hCIfufDa5HYB5cY5wtyoCz9CSw==
+X-Received: by 2002:a7b:cf10:: with SMTP id l16mr30923511wmg.17.1638119397390;
+        Sun, 28 Nov 2021 09:09:57 -0800 (PST)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::ac86])
-        by smtp.gmail.com with ESMTPSA id n15sm18243845wmq.38.2021.11.28.09.09.53
+        by smtp.gmail.com with ESMTPSA id n15sm18243845wmq.38.2021.11.28.09.09.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 09:09:54 -0800 (PST)
+        Sun, 28 Nov 2021 09:09:57 -0800 (PST)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH v2 09/10] staging: r8188eu: remove rf_type from struct hal_data_8188e
-Date:   Sun, 28 Nov 2021 18:09:23 +0100
-Message-Id: <20211128170924.5874-10-straube.linux@gmail.com>
+Subject: [PATCH v2 10/10] staging: r8188eu: remove module parameter rtw_rf_config
+Date:   Sun, 28 Nov 2021 18:09:24 +0100
+Message-Id: <20211128170924.5874-11-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211128170924.5874-1-straube.linux@gmail.com>
 References: <20211128170924.5874-1-straube.linux@gmail.com>
@@ -65,47 +65,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The field rf_type of struct hal_data_8188e is set to RF_1T1R and
-never changed. Also it is used only in a call to netdev_dbg() which
-is not very useful since RTL8188EU chips are always 1T1R. Remove
-the netdev_dbg() and remove rf_type from the hal_data_8188e
-structure.
+The module parameter rtw_rf_config is not used in the driver.
+Remove it and remove the now unused enum rt_rf_type_def.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/hal/rtl8188e_hal_init.c | 4 ----
- drivers/staging/r8188eu/include/rtl8188e_hal.h  | 3 ---
- 2 files changed, 7 deletions(-)
+ drivers/staging/r8188eu/include/drv_types.h |  1 -
+ drivers/staging/r8188eu/include/rtw_rf.h    | 10 ----------
+ drivers/staging/r8188eu/os_dep/os_intfs.c   |  3 ---
+ 3 files changed, 14 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-index 001e4a198630..eeb5f46687e2 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-@@ -854,10 +854,6 @@ void rtl8188e_read_chip_version(struct adapter *padapter)
- 	dump_chip_info(ChipVersion);
+diff --git a/drivers/staging/r8188eu/include/drv_types.h b/drivers/staging/r8188eu/include/drv_types.h
+index 3e4928320f17..edcdbd646eaa 100644
+--- a/drivers/staging/r8188eu/include/drv_types.h
++++ b/drivers/staging/r8188eu/include/drv_types.h
+@@ -85,7 +85,6 @@ struct registry_priv {
+ 	u8	ampdu_amsdu;/* A-MPDU Supports A-MSDU is permitted */
+ 	u8	lowrate_two_xmit;
  
- 	pHalData->VersionID = ChipVersion;
+-	u8	rf_config;
+ 	u8	low_power;
+ 
+ 	u8	wifi_spec;/*  !turbo_mode */
+diff --git a/drivers/staging/r8188eu/include/rtw_rf.h b/drivers/staging/r8188eu/include/rtw_rf.h
+index 7ec252fec054..d0a408b903dc 100644
+--- a/drivers/staging/r8188eu/include/rtw_rf.h
++++ b/drivers/staging/r8188eu/include/rtw_rf.h
+@@ -99,16 +99,6 @@ enum ht_extchnl_offset {
+ 	HT_EXTCHNL_OFFSET_LOWER = 3,
+ };
+ 
+-/* 2007/11/15 MH Define different RF type. */
+-enum rt_rf_type_def {
+-	RF_1T2R = 0,
+-	RF_2T4R = 1,
+-	RF_2T2R = 2,
+-	RF_1T1R = 3,
+-	RF_2T2R_GREEN = 4,
+-	RF_819X_MAX_TYPE = 5,
+-};
 -
--	pHalData->rf_type = RF_1T1R;
--
--	netdev_dbg(padapter->pnetdev, "RF_Type is %x!!\n", pHalData->rf_type);
- }
+ u32 rtw_ch2freq(u32 ch);
  
- void rtl8188e_SetHalODMVar(struct adapter *Adapter, enum hal_odm_variable eVariable, void *pValue1, bool bSet)
-diff --git a/drivers/staging/r8188eu/include/rtl8188e_hal.h b/drivers/staging/r8188eu/include/rtl8188e_hal.h
-index 5848f1d4191a..be8af7497f4b 100644
---- a/drivers/staging/r8188eu/include/rtl8188e_hal.h
-+++ b/drivers/staging/r8188eu/include/rtl8188e_hal.h
-@@ -168,9 +168,6 @@ struct hal_data_8188e {
+ #endif /* _RTL8711_RF_H_ */
+diff --git a/drivers/staging/r8188eu/os_dep/os_intfs.c b/drivers/staging/r8188eu/os_dep/os_intfs.c
+index 5a5f182d30c9..0021ca578949 100644
+--- a/drivers/staging/r8188eu/os_dep/os_intfs.c
++++ b/drivers/staging/r8188eu/os_dep/os_intfs.c
+@@ -75,7 +75,6 @@ static int rtw_ampdu_amsdu;/*  0: disabled, 1:enabled, 2:auto */
  
- 	u16	BasicRateSet;
+ static int rtw_lowrate_two_xmit = 1;/* Use 2 path Tx to transmit MCS0~7 and legacy mode */
  
--	/* rf_ctrl */
--	u8	rf_type;
--
- 	/*  EEPROM setting. */
- 	u16	EEPROMSVID;
- 	u16	EEPROMSDID;
+-static int rtw_rf_config = RF_819X_MAX_TYPE;  /* auto */
+ static int rtw_low_power;
+ static int rtw_wifi_spec;
+ static int rtw_channel_plan = RT_CHANNEL_DOMAIN_MAX;
+@@ -123,7 +122,6 @@ module_param(rtw_ampdu_enable, int, 0644);
+ module_param(rtw_rx_stbc, int, 0644);
+ module_param(rtw_ampdu_amsdu, int, 0644);
+ module_param(rtw_lowrate_two_xmit, int, 0644);
+-module_param(rtw_rf_config, int, 0644);
+ module_param(rtw_power_mgnt, int, 0644);
+ module_param(rtw_smart_ps, int, 0644);
+ module_param(rtw_low_power, int, 0644);
+@@ -205,7 +203,6 @@ static uint loadparam(struct adapter *padapter,  struct  net_device *pnetdev)
+ 	registry_par->rx_stbc = (u8)rtw_rx_stbc;
+ 	registry_par->ampdu_amsdu = (u8)rtw_ampdu_amsdu;
+ 	registry_par->lowrate_two_xmit = (u8)rtw_lowrate_two_xmit;
+-	registry_par->rf_config = (u8)rtw_rf_config;
+ 	registry_par->low_power = (u8)rtw_low_power;
+ 	registry_par->wifi_spec = (u8)rtw_wifi_spec;
+ 	registry_par->channel_plan = (u8)rtw_channel_plan;
 -- 
 2.34.0
 
