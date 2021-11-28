@@ -2,106 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5A3460761
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 17:08:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90EBE460768
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 17:17:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358175AbhK1QLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 11:11:41 -0500
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:40798 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238569AbhK1QJk (ORCPT
+        id S1358323AbhK1QUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 11:20:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1358150AbhK1QSN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 11:09:40 -0500
-Received: by mail-oi1-f173.google.com with SMTP id bk14so29645066oib.7;
-        Sun, 28 Nov 2021 08:06:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6XcdVLR5T8aEqWDjXmGT4FtJ9lSL6Rm6Y96yhhLDME0=;
-        b=4taXed+QR7SrHztucROx6uelGYy2q0iUcqYS3LBQkVwPhpmVaYT9tAZEWL3R9cQeHt
-         aQdSP0/huV8hw0ihrik92vGsIMf2I14vEHl0KKW2QDwzZpHH2zFb4sD3bulkuspQ8e/K
-         k6pjsZp2eUsD8uZmI0GnG8Y5wpkZwd2THd9fMC5GturI+smrVD+NQrGut5cc5b+Bpi5V
-         k2V2qAqaOWhN9V3tKV3t0Q3hU8OWeOZDF7RXHNG/SL0bX2UUCHTzwdVvaBNaW4q7j70y
-         H//9rO4fb5qAOwuY0fpj6bLW+L3qJXMOydUUxjARYYzwctQzl+gILw754rVguoIMj/IS
-         wslQ==
-X-Gm-Message-State: AOAM530vxLSlS8AnM8U/HdrlODPsg0KLAMfGDTy1KAV/qDHzyFx8fiR9
-        KGCh4+KjnHgfy/NYkYQqTA==
-X-Google-Smtp-Source: ABdhPJwKIwsK+qKc3/WIO+9F/yWvFZR4TMP+v+GAwfhU3SlRfqN972FhHTZlzd0Etz2MduGDNYwiZg==
-X-Received: by 2002:aca:1708:: with SMTP id j8mr34441661oii.62.1638115583942;
-        Sun, 28 Nov 2021 08:06:23 -0800 (PST)
-Received: from robh.at.kernel.org ([2607:fb90:20d6:afc8:f6e9:d57a:3e26:ee41])
-        by smtp.gmail.com with ESMTPSA id y12sm2487710oiv.49.2021.11.28.08.06.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 08:06:23 -0800 (PST)
-Received: (nullmailer pid 2561004 invoked by uid 1000);
-        Sun, 28 Nov 2021 16:06:20 -0000
-Date:   Sun, 28 Nov 2021 10:06:20 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Akhil R <akhilrajeev@nvidia.com>
-Cc:     dan.j.williams@intel.com, devicetree@vger.kernel.org,
-        dmaengine@vger.kernel.org, jonathanh@nvidia.com,
-        kyarlagadda@nvidia.com, ldewangan@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        p.zabel@pengutronix.de, rgumasta@nvidia.com,
-        thierry.reding@gmail.com, vkoul@kernel.org
-Subject: Re: [PATCH v13 1/4] dt-bindings: dmaengine: Add doc for tegra gpcdma
-Message-ID: <YaOo/FHKQBAa93hd@robh.at.kernel.org>
-References: <1637573292-13214-1-git-send-email-akhilrajeev@nvidia.com>
- <1637573292-13214-2-git-send-email-akhilrajeev@nvidia.com>
+        Sun, 28 Nov 2021 11:18:13 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E6A4C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 08:14:57 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6A6D8B80D10
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 16:14:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AC91C004E1;
+        Sun, 28 Nov 2021 16:14:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638116094;
+        bh=vHDplKEDLCK/kpKCYkZg98w+XWHX6aiLaK0i/C/Hktg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Gpq7AS8WI+lWVCKh3ewefnBYpCMWnrfBjubh8AiL4nnzXPD5Dcrt7Ha3F8WVnvYc0
+         dAJ5ra6jNsGnMaWXQvOmehg6Vf/QRnFXwEVg7GG/Uu6G3DW2EJwSykdjHLs6Plg0w0
+         YoJ0bU5vsqpLF5gi4LtSb0pZa28gtuXtVpQBN+hkOdcvuX8CmpO/XAqq9EhMbzmdup
+         sS+ktGwp5qO86A3uR/eNyTDTm/6ko6fy6kCSv0c0SoG/Rv4dqvueuL1F2UP4apl3b5
+         +tJ7qLdP41CKoCukhosiZNApfNyHI7C0U+oxgmSdXZY1nmlnH8vCIC3yeFGntuuZ9r
+         2F+8M/UTvFnOQ==
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atishp@atishpatra.org>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm-riscv@lists.infradead.org
+Subject: [PATCH 0/5] riscv: misc clean up
+Date:   Mon, 29 Nov 2021 00:07:36 +0800
+Message-Id: <20211128160741.2122-1-jszhang@kernel.org>
+X-Mailer: git-send-email 2.34.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1637573292-13214-2-git-send-email-akhilrajeev@nvidia.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 02:58:09PM +0530, Akhil R wrote:
-> Add DT binding document for Nvidia Tegra GPCDMA controller.
-> 
-> Signed-off-by: Rajesh Gumasta <rgumasta@nvidia.com>
-> Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
-> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-> ---
->  .../bindings/dma/nvidia,tegra186-gpc-dma.yaml      | 111 +++++++++++++++++++++
->  1 file changed, 111 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml b/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
-> new file mode 100644
-> index 0000000..3a5a70d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
-> @@ -0,0 +1,111 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/dma/nvidia,tegra186-gpc-dma.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NVIDIA Tegra GPC DMA Controller Device Tree Bindings
-> +
-> +description: |
-> +  The Tegra General Purpose Central (GPC) DMA controller is used for faster
-> +  data transfers between memory to memory, memory to device and device to
-> +  memory.
-> +
-> +maintainers:
-> +  - Jon Hunter <jonathanh@nvidia.com>
-> +  - Rajesh Gumasta <rgumasta@nvidia.com>
-> +
-> +allOf:
-> +  - $ref: "dma-controller.yaml#"
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - const: nvidia,tegra186-gpcdma
-> +      - items:
-> +         - const: nvidia,tegra186-gpcdma
-> +         - const: nvidia,tegra194-gpcdma
+This series is a misc clean up: clean up useless LoCs, or make some
+functions static, or mark function pointer as __initdata, or remove
+one function().
 
-Still not how 'compatible' works nor what I wrote out for you.
+Jisheng Zhang (5):
+  riscv: remove cpu_stop()
+  riscv: head: make secondary_start_common() static
+  riscv: kvm: make kvm_riscv_vcpu_fp_clean() static
+  riscv: errata: alternative: mark vendor_patch_func __initdata
+  riscv: head: remove useless __PAGE_ALIGNED_BSS and .balign
 
-Rob
+ arch/riscv/errata/alternative.c | 3 ++-
+ arch/riscv/include/asm/smp.h    | 2 --
+ arch/riscv/kernel/cpu-hotplug.c | 8 +-------
+ arch/riscv/kernel/head.S        | 9 ++-------
+ arch/riscv/kvm/vcpu_fp.c        | 2 +-
+ 5 files changed, 6 insertions(+), 18 deletions(-)
+
+-- 
+2.34.0
+
