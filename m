@@ -2,73 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2112A460999
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 21:05:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8CB44609A5
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 21:22:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357822AbhK1UIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 15:08:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52870 "EHLO
+        id S1343821AbhK1UZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 15:25:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240202AbhK1UGl (ORCPT
+        with ESMTP id S231765AbhK1UXS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 15:06:41 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E8EC061748;
-        Sun, 28 Nov 2021 12:03:25 -0800 (PST)
-Received: from mail.kernel.org (unknown [198.145.29.99])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9E453B80D5F;
-        Sun, 28 Nov 2021 20:03:23 +0000 (UTC)
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8B6C160041;
-        Sun, 28 Nov 2021 20:03:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638129801;
-        bh=fYzzj/FusNSnStGNweaI1Lw8LCCnN3s3U2QDq7fynns=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=hnHAXLGBgmVZhy/VoZyzTYKSEtw0/KzamE2erN0j33Uuv8MypNvJrP7NOojYeW9er
-         9+qgvQ9dIWyDEssNjBom/Vr14xOlJ9cqElPhxDqJ7elngZgOZnpMXd691lIcgR3E/6
-         f/GnNYeoc9i99mRodn52mx6dsCrxOjsSWVXzo6OWMx3nEQ1pgcMx8Cz8zipm3j+zrn
-         ppXae04LUIO8/xL8647OU+Yn58lXux+mmitmW1sYg3b7vc7Fhs1JaNCV16roq86ipx
-         gOHV6UJ/gopotAUpJ81r0fp/LSNdFsx0TA+pUnDoteqUbNc9xlxwBn1rYbAe7tc2Yj
-         eBkj2UrkwZDuQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7A64E609DB;
-        Sun, 28 Nov 2021 20:03:21 +0000 (UTC)
-Subject: Re: [GIT PULL] vhost,virtio,vdpa: bugfixes
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211128125803-mutt-send-email-mst@kernel.org>
-References: <20211128125803-mutt-send-email-mst@kernel.org>
-X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211128125803-mutt-send-email-mst@kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
-X-PR-Tracked-Commit-Id: bb93ce4b150dde79f58e34103cbd1fe829796649
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d06c942efea40e1701ade200477a7449008d9f24
-Message-Id: <163812980144.10783.3903876021175664187.pr-tracker-bot@kernel.org>
-Date:   Sun, 28 Nov 2021 20:03:21 +0000
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jasowang@redhat.com, longpeng2@huawei.com, mst@redhat.com,
-        pasic@linux.ibm.com, sgarzare@redhat.com, stable@vger.kernel.org,
-        wuzongyong@linux.alibaba.com, ye.guojin@zte.com.cn,
-        zealci@zte.com.cn
+        Sun, 28 Nov 2021 15:23:18 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E74B0C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 12:20:01 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id 207so30393952ljf.10
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 12:20:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k4DCyz8+/Fxa9vXLn5RMQDYsGviUlWwuLm5KSdNmdZY=;
+        b=gEBN9h0rjiWtK6jttU/X32i65gXZsB9Rsw6WnTNHd6QQEECoU3oVb9Fzy+QKNq+M5b
+         ij4GEouoWUkj9ibEDrFkACwGhqmGsX0pfmp4KKb8WXYuqS1KIuLYMEf8JVWKUBlAOvEc
+         3DmhH8haP01CUUi+cI6ZdVIxdEa31t1e0pY0YnhQAkiJD1eMD7ILnkHEUEDhe/kuXj3p
+         FI3Sbf58ynZrNaPEuz1nEJUrpQNPL3rmCqJSFl1rW6iHjgaNB8zacW6xN9QXbZD75twJ
+         97G+ZAd9srSAWMgu4CgNHzGkzTOI/TisJ43wLaLrhYSq/drTtrcz0nipMGXek8KtPIeH
+         QGww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k4DCyz8+/Fxa9vXLn5RMQDYsGviUlWwuLm5KSdNmdZY=;
+        b=M0p5vTraQT6Ghyb7s9ZabpLmLoiBavCEoE8qqnEgjMgrAMfOGRPA/WgefJpXzE/hyf
+         rEmVinrV29Bv4BlDnch9kMqZ3fjF/YOkJ+66m6+mUZxeBNp/RtuKuVDImSbX68hUsvIy
+         Cg2zw0Yuc7XMgTTi0k+IbzPfnwDtNAcXwFrpZvSm+VCcMCH1pupGDKqa0gmSToIWJa1S
+         +qjrHTa3xIH8zVuDRRjpEeKVS3OcTGDuqi9GTtiGfPFMlXdGMcsHNKrLl4Lh7JDYCp/1
+         HELZCC/jml3ThwSg6DMjp+Tj7TPLMQ4TJDtC+KEheduRGA3ngeRv5jgI9CCIy8ZFoYAk
+         wkGQ==
+X-Gm-Message-State: AOAM533RYuqbQMhnbdWjY3ZV0TShdw2Sq75PDXLYgIjUB7cxhvBEUQhF
+        ASb9egznV4/7hgtq8JY8xilG2eK7zUg=
+X-Google-Smtp-Source: ABdhPJxvPPnZuZKkpyL/VlLduwLNeb1FS0N0nAcE5rtjGsySNwTDTVMqW7CA+Av+gYdeEUBcSgrhfA==
+X-Received: by 2002:a2e:a305:: with SMTP id l5mr45044119lje.73.1638130800165;
+        Sun, 28 Nov 2021 12:20:00 -0800 (PST)
+Received: from localhost.localdomain (h-155-4-221-129.NA.cust.bahnhof.se. [155.4.221.129])
+        by smtp.gmail.com with ESMTPSA id c25sm1136949lja.38.2021.11.28.12.19.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Nov 2021 12:19:59 -0800 (PST)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Lucas Stach <l.stach@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] drm/etnaviv: constify static struct cooling_ops
+Date:   Sun, 28 Nov 2021 21:19:16 +0100
+Message-Id: <20211128201916.10230-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 28 Nov 2021 12:58:03 -0500:
+The only usage of cooling_ops is to pass its address to
+thermal_of_cooling_device_register(), which takes a pointer to const
+struct thermal_cooling_device_ops as input. Make it const to allow the
+compiler to put it in read-only memory.
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+ drivers/gpu/drm/etnaviv/etnaviv_gpu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d06c942efea40e1701ade200477a7449008d9f24
-
-Thank you!
-
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+index 06bde46df451..37018bc55810 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+@@ -1658,7 +1658,7 @@ etnaviv_gpu_cooling_set_cur_state(struct thermal_cooling_device *cdev,
+ 	return 0;
+ }
+ 
+-static struct thermal_cooling_device_ops cooling_ops = {
++static const struct thermal_cooling_device_ops cooling_ops = {
+ 	.get_max_state = etnaviv_gpu_cooling_get_max_state,
+ 	.get_cur_state = etnaviv_gpu_cooling_get_cur_state,
+ 	.set_cur_state = etnaviv_gpu_cooling_set_cur_state,
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.34.1
+
