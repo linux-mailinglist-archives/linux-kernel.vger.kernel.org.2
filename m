@@ -2,109 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9E146057F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 10:48:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0053460585
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 10:51:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357049AbhK1Jve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 04:51:34 -0500
-Received: from vulcan.natalenko.name ([104.207.131.136]:52006 "EHLO
-        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240812AbhK1Jtc (ORCPT
+        id S1357083AbhK1Jy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 04:54:29 -0500
+Received: from mxout04.lancloud.ru ([45.84.86.114]:43826 "EHLO
+        mxout04.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1357155AbhK1Jw2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 04:49:32 -0500
-Received: from spock.localnet (unknown [83.148.33.151])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id D350ACC7EE1;
-        Sun, 28 Nov 2021 10:46:14 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1638092775;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iM+aL8jeAt4cg5fhsgrfFKN3ueURdDL5JvxMcrQsfmQ=;
-        b=jW8nNWmxjbxGsyrMrPfbo5WXu7Pz2LrNfdyOPJzgGYtsnFroZEarAeeKLWPUl+1NfjTjde
-        vRInDaFKIlDF4dbNKDgUR00C1J5z3tAVritryAYczzE/y3B3YHdAMmQ1MC9AHOmjf7A/hK
-        k0Yg7FPmhmX73zlO/vZbRNssUjvJYSE=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     linux-kernel@vger.kernel.org, Angelo Haller <lkml@szanni.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Will Deacon <will@kernel.org>, linux-rt-users@vger.kernel.org
-Subject: Re: sched: some non-GPL symbols becoming GPL-only with CONFIG_PREEMPT_RT enabled
-Date:   Sun, 28 Nov 2021 10:46:13 +0100
-Message-ID: <2606453.mvXUDI8C0e@natalenko.name>
-In-Reply-To: <5475c3ab-a53c-8728-98c5-98fd948ff556@szanni.org>
-References: <5475c3ab-a53c-8728-98c5-98fd948ff556@szanni.org>
+        Sun, 28 Nov 2021 04:52:28 -0500
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout04.lancloud.ru F25E320CB23A
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+Message-ID: <c3af6d99-7876-a704-b132-7c0d82b7fe8e@omp.ru>
+Date:   Sun, 28 Nov 2021 12:49:04 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH AUTOSEL 5.15 23/39] net: usb: r8152: Add MAC passthrough
+ support for more Lenovo Docks
+Content-Language: en-US
+To:     Sasha Levin <sashal@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>
+CC:     Aaron Ma <aaron.ma@canonical.com>,
+        "David S . Miller" <davem@davemloft.net>, <kuba@kernel.org>,
+        <hayeswang@realtek.com>, <tiwai@suse.de>,
+        <linux-usb@vger.kernel.org>, <netdev@vger.kernel.org>
+References: <20211126023156.441292-1-sashal@kernel.org>
+ <20211126023156.441292-23-sashal@kernel.org>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+In-Reply-To: <20211126023156.441292-23-sashal@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.11.198]
+X-ClientProxiedBy: LFEXT02.lancloud.ru (fd00:f066::142) To
+ LFEX1907.lancloud.ru (fd00:f066::207)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+Hello!
 
-On ned=C4=9Ble 28. listopadu 2021 1:07:49 CET Angelo Haller wrote:
-> Greetings. I hope I picked the right mailing list, as this issue might
-> be one that affects various subsystems and components:
->=20
-> When compiling kernel 5.15 (and 5.16-rc2) with `CONFIG_PREEMPT_RT`
-> enabled, some of the symbols being exported as `EXPORT_SYMBOL` suddenly
-> become `EXPORT_SYMBOL_GPL` through transitive effects.
->=20
-> In particular the symbols `migrate_enable` and `migrate_disable` are
-> currently marked as `EXPORT_SYMBOL_GPL` - yet are called from multiple
-> functions that are marked as `EXPORT_SYMBOL`.
->=20
-> Here an (incomplete?) listing of call sites I came across:
->=20
-> kernel/locking/spinlock_rt.c - rt_spin_unlock()
-> kernel/locking/spinlock_rt.c - rt_read_unlock()
-> kernel/locking/spinlock_rt.c - rt_write_unlock()
-> mm/highmem.c - kunmap_local_indexed()
->=20
-> The issue I'm facing in particular is kmap_atomic() calling
-> `migrate_disable` and therefore suddenly becoming GPL-only. This breaks
-> the out-of-tree CDDL licensed module ZFS and has been reported before
-> already [0]. The conversation seemingly going nowhere - or patches at
-> least not being applied upstream. Downstream issue for reference [1].
+On 26.11.2021 5:31, Sasha Levin wrote:
 
-What about going the other way around and let ZFS be re-licensed under GPL?
+> From: Aaron Ma <aaron.ma@canonical.com>
+> 
+> [ Upstream commit f77b83b5bbab53d2be339184838b19ed2c62c0a5 ]
+> 
+> Like ThinkaPad Thunderbolt 4 Dock, more Lenovo docks start to use the original
+> Realtek USB ethernet chip ID 0bda:8153.
+> 
+> Lenovo Docks always use their own IDs for usb hub, even for older Docks.
+> If parent hub is from Lenovo, then r8152 should try MAC passthrough.
+> Verified on Lenovo TBT3 dock too.
+> 
+> Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
+> Signed-off-by: David S. Miller <davem@davemloft.net>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>   drivers/net/usb/r8152.c | 9 +++------
+>   1 file changed, 3 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
+> index f329e39100a7d..d3da350777a4d 100644
+> --- a/drivers/net/usb/r8152.c
+> +++ b/drivers/net/usb/r8152.c
+> @@ -9603,12 +9603,9 @@ static int rtl8152_probe(struct usb_interface *intf,
+>   		netdev->hw_features &= ~NETIF_F_RXCSUM;
+>   	}
+>   
+> -	if (le16_to_cpu(udev->descriptor.idVendor) == VENDOR_ID_LENOVO) {
+> -		switch (le16_to_cpu(udev->descriptor.idProduct)) {
+> -		case DEVICE_ID_THINKPAD_THUNDERBOLT3_DOCK_GEN2:
+> -		case DEVICE_ID_THINKPAD_USB_C_DOCK_GEN2:
+> -			tp->lenovo_macpassthru = 1;
+> -		}
+> +	if (udev->parent &&
+> +			le16_to_cpu(udev->parent->descriptor.idVendor) == VENDOR_ID_LENOVO) {
+> +		tp->lenovo_macpassthru = 1;
+>   	}
 
-> As the original implementation of `migrate_enable` and `migrate_disable`
-> is apparently by Peter Zijlstra [2]. Peter would you be willing to
-> re-license both symbols `migrate_enable` and `migrate_disable` as
-> `EXPORT_SYMBOL`?
->=20
-> The bigger issue I'm seeing though is that there is currently no
-> automated test to uncover exported symbols changing their license
-> depending on build configuration? I am not intimately familiar with the
-> API guarantees the kernel gives, but this seems like a violation. There
-> might be other symbols with similar licensing problems.
->=20
-> I can open a bugzilla ticket too - if that is preferred.
->=20
-> Angelo
->=20
->=20
-> [0]
-> https://lore.kernel.org/linux-rt-users/20201208212841.694b3022@orivej.ori=
-vej
-> .org/T/ [1] https://github.com/openzfs/zfs/issues/11097
-> [2]
-> https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/dif=
-f/p
-> atches/0009-sched-Add-migrate_disable.patch?h=3Dv5.9-rc8-rt14-patches&id=
-=3D9a89b
-> fdb3bc77aecdd0ff8cc69b595541c7b50c4
+    {} not needed anymore, please remove 'em.
 
+[...]
 
-=2D-=20
-Oleksandr Natalenko (post-factum)
-
-
+MBR, Sergey
