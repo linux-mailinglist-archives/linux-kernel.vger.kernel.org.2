@@ -2,215 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF141460A8D
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 23:07:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FBD1460A91
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 23:18:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241644AbhK1WKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 17:10:32 -0500
-Received: from mail-pj1-f45.google.com ([209.85.216.45]:42782 "EHLO
-        mail-pj1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242160AbhK1WIa (ORCPT
+        id S242160AbhK1WVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 17:21:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40620 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230122AbhK1WTu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 17:08:30 -0500
-Received: by mail-pj1-f45.google.com with SMTP id fv9-20020a17090b0e8900b001a6a5ab1392so12253361pjb.1;
-        Sun, 28 Nov 2021 14:05:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x7jucNSakmgZsm4M1S+eDMC+FBfXf3TGq1DqIsIWLQc=;
-        b=TRdMWNzeTfMMWtAvwy7Ky6o+tN8UVshieKCugafXIf8267Gvgcfywis7g1709C7Gjz
-         3xIWExOtQkD3qndd9+V8wn4He/7RX4kWCgAJ+qfeca+A2+kcURTHkbHRD3zi1z0+RF/i
-         +g7IjZgabFqllWwogR9702LeV42tpmGfV3ePtYeAcNMFjnqshjjP8ZtyJqBkVdeo2Uyk
-         f8+yfreoTYgu7xjcVOwwkWloccH66q/PdbuhUPWHUqiuDyb2YILbHlYMgVAZdlCPiEJ8
-         +2Wzwh6AXWSHst5nE8zX6zkM1Ii01huxvXGgiWbT8GEPqno9Wfpe4IB+adwS90lHtAP7
-         +PNQ==
-X-Gm-Message-State: AOAM531cftFGPSynwD+rcvPJoFfTmF26uoN7gUqkbhcFfaUzC5hxeH/8
-        ek8ILm2y6qkOPe1n/Mtpdls=
-X-Google-Smtp-Source: ABdhPJypL4LN05PaBDSroGcRwtICEXWm02CxiMzcp+5Up/2fNkuZ8FJ2IiH80NryMnZR8Z7KATD2rQ==
-X-Received: by 2002:a17:903:2443:b0:142:1e92:1d19 with SMTP id l3-20020a170903244300b001421e921d19mr55608259pls.24.1638137113839;
-        Sun, 28 Nov 2021 14:05:13 -0800 (PST)
-Received: from localhost ([2601:647:5b00:6f71:57a:80e2:7a40:7032])
-        by smtp.gmail.com with ESMTPSA id q9sm15509906pfj.114.2021.11.28.14.05.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 14:05:13 -0800 (PST)
-Date:   Sun, 28 Nov 2021 14:05:12 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Russ Weight <russell.h.weight@intel.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
-        yilun.xu@intel.com, hao.wu@intel.com, matthew.gerlach@intel.com
-Subject: Re: [PATCH v14 0/3] fpga: Use standard class dev_release function
-Message-ID: <YaP9GAxDHk2qLVge@archbook>
-References: <20211119015553.62704-1-russell.h.weight@intel.com>
+        Sun, 28 Nov 2021 17:19:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1638137792;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4dDgSQ/8TweS/kg7WcZSSnDUpsnRjzcTHNmiNwKkyh0=;
+        b=hBzaokjeQgrg8fhwWn0/f7oLf+E0Q7B6ZQYVORMZO9MQukQ2WlBlt4OD9xParZ/XOh8TVv
+        g58zcdJ1vbyOtQw7J3X9qdLvWnM6XWBprWwnbc5s1XeYbkBM4xZK65Ms9q7qHNEXLg6pLO
+        PU6lrEZNUUmGA88PElCPdqsvFx7xQlI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-95-8nKb2QCzNQClj-d059dZtw-1; Sun, 28 Nov 2021 17:16:29 -0500
+X-MC-Unique: 8nKb2QCzNQClj-d059dZtw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 935911808322;
+        Sun, 28 Nov 2021 22:16:24 +0000 (UTC)
+Received: from starship (unknown [10.40.192.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0B8E810016F2;
+        Sun, 28 Nov 2021 22:16:02 +0000 (UTC)
+Message-ID: <4e883728e3e5201a94eb46b56315afca5e95ad9c.camel@redhat.com>
+Subject: Re: [PATCH v2 11/43] KVM: Don't block+unblock when halt-polling is
+ successful
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Date:   Mon, 29 Nov 2021 00:16:01 +0200
+In-Reply-To: <cceb33be9e2a6ac504bb95a7b2b8cf5fe0b1ff26.camel@redhat.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+         <20211009021236.4122790-12-seanjc@google.com>
+         <cceb33be9e2a6ac504bb95a7b2b8cf5fe0b1ff26.camel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211119015553.62704-1-russell.h.weight@intel.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 05:55:50PM -0800, Russ Weight wrote:
-> The FPGA framework has a convention of using managed resource functions
-> to allow parent drivers to manage the data structures allocated by the
-> class drivers. They use an empty *_dev_release() function to satisfy the
-> class driver.
+On Wed, 2021-10-27 at 16:40 +0300, Maxim Levitsky wrote:
+> On Fri, 2021-10-08 at 19:12 -0700, Sean Christopherson wrote:
+> > Invoke the arch hooks for block+unblock if and only if KVM actually
+> > attempts to block the vCPU.  The only non-nop implementation is on x86,
+> > specifically SVM's AVIC, and there is no need to put the AVIC prior to
+> > halt-polling as KVM x86's kvm_vcpu_has_events() will scour the full vIRR
+> > to find pending IRQs regardless of whether the AVIC is loaded/"running".
+> > 
+> > The primary motivation is to allow future cleanup to split out "block"
+> > from "halt", but this is also likely a small performance boost on x86 SVM
+> > when halt-polling is successful.
+> > 
+> > Adjust the post-block path to update "cur" after unblocking, i.e. include
+> > AVIC load time in halt_wait_ns and halt_wait_hist, so that the behavior
+> > is consistent.  Moving just the pre-block arch hook would result in only
+> > the AVIC put latency being included in the halt_wait stats.  There is no
+> > obvious evidence that one way or the other is correct, so just ensure KVM
+> > is consistent.
+> > 
+> > Note, x86 has two separate paths for handling APICv with respect to vCPU
+> > blocking.  VMX uses hooks in x86's vcpu_block(), while SVM uses the arch
+> > hooks in kvm_vcpu_block().  Prior to this path, the two paths were more
+> > or less functionally identical.  That is very much not the case after
+> > this patch, as the hooks used by VMX _must_ fire before halt-polling.
+> > x86's entire mess will be cleaned up in future patches.
+> > 
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >  virt/kvm/kvm_main.c | 7 ++++---
+> >  1 file changed, 4 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> > index f90b3ed05628..227f6bbe0716 100644
+> > --- a/virt/kvm/kvm_main.c
+> > +++ b/virt/kvm/kvm_main.c
+> > @@ -3235,8 +3235,6 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
+> >  	bool waited = false;
+> >  	u64 block_ns;
+> >  
+> > -	kvm_arch_vcpu_blocking(vcpu);
+> > -
+> >  	start = cur = poll_end = ktime_get();
+> >  	if (do_halt_poll) {
+> >  		ktime_t stop = ktime_add_ns(ktime_get(), vcpu->halt_poll_ns);
+> > @@ -3253,6 +3251,7 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
+> >  		} while (kvm_vcpu_can_poll(cur, stop));
+> >  	}
+> >  
+> > +	kvm_arch_vcpu_blocking(vcpu);
+> >  
+> >  	prepare_to_rcuwait(wait);
+> >  	for (;;) {
+> > @@ -3265,6 +3264,9 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
+> >  		schedule();
+> >  	}
+> >  	finish_rcuwait(wait);
+> > +
+> > +	kvm_arch_vcpu_unblocking(vcpu);
+> > +
+> >  	cur = ktime_get();
+> >  	if (waited) {
+> >  		vcpu->stat.generic.halt_wait_ns +=
+> > @@ -3273,7 +3275,6 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
+> >  				ktime_to_ns(cur) - ktime_to_ns(poll_end));
+> >  	}
+> >  out:
+> > -	kvm_arch_vcpu_unblocking(vcpu);
+> >  	block_ns = ktime_to_ns(cur) - ktime_to_ns(start);
+> >  
+> >  	/*
 > 
-> This is inconsistent with linux driver model.
+> Makes sense.
 > 
-> These changes remove the managed resource functions and populate the class
-> dev_release callback functions. They also merge the create() and register()
-> functions into a single register() or register_full() function for each of
-> the fpga-mgr, fpga-region, and fpga-bridge class drivers.
+> Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
 > 
-> The new *register_full() functions accept an info data structure to provide
-> flexibility in passing optional parameters. The *register() functions
-> support the legacy parameter list for users that don't require the use of
-> optional parameters.
-> 
-> For more context, refer to this email thread:
-> 
-> https://marc.info/?l=linux-fpga&m=162127412218557&w=2
-> 
-> I turned on the configs assocated with each of the modified files, but I
-> must have been missing some dependencies, because not all of them compiled.
-> I did a run-time test specifically with the dfl-fme infrastructure. This
-> would have exercised the region, bridge, and fpga-mgr frameworks.
-> 
-> Changelog v13 -> v14:
->   - Fixed typo/bug detected by kernel test robot <lkp@intel.com>: s/mgr/br/
-> 
-> Changelog v12 -> v13:
->   - Add Acked-by tag
-> 
-> Changelog v11 -> v12:
->   - Made the requisite changes to the new versal-fpga driver
-> 
-> Changelog v10 -> v11:
->   - Rebased to latest linux-next
->   - Resolved a single conflict in fpga-mgr.c with associated with  wrapper
->     function: fpga_mgr_state(mgr)
-> 
-> Changelog v9 -> v10:
->   - Fixed commit messages to reference register_full() instead of
->     register_simple().
->   - Removed the fpga_bridge_register_full() function, because there is
->     not need for it yet. Updated the documentation and commit message
->     accordingly.
->   - Updated documentation to reference the fpga_manager_info and
->     fpga_region_info structures.
-> 
-> Changelog v8 -> v9:
->   - Cleaned up documentation for the FPGA Manager, Bridge, and Region
->     register functions
->   - Renamed fpga_*_register() to fpga_*_register_full()
->   - Renamed fpga_*_register_simple() to fpga_*_register()
->   - Renamed devm_fpga_mgr_register() to devm_fpga_mgr_register_full()
->   - Renamed devm_fpga_mgr_register_simple() to devm_fpga_mgr_register()
-> 
-> Changelog v7 -> v8:
->   - Added reviewed-by tags.
->   - Updated Documentation/driver-api/fpga/ files: fpga-mgr.rst,
->     fpga-bridge.rst, and fpga-region.rst.
-> 
-> Changelog v6 -> v7:
->   - Update the commit messages to describe the new parameters for the
->     *register() functions and to mention the *register_simple() functions.
->   - Fix function prototypes in header file to rename dev to parent.
->   - Make use of the PTR_ERR_OR_ZERO() macro when possible.
->   - Some cleanup of comments.
->   - Update function definitions/prototypes to apply const to the new info
->     parameter.
->   - Verify that info->br_ops is non-null in the fpga_bridge_register()
->     function.
->   - Verify a non-null info pointer in the fpga_region_register() function.
-> 
-> Changelog v5 -> v6:
->   - Moved FPGA manager/bridge/region optional parameters out of the ops
->     structure and back into the FPGA class driver structure.
->   - Changed fpga_*_register() function parameters to accept an info data
->     structure to provide flexibility in passing optional parameters.
->   - Added fpga_*_register_simple() functions to support current parameters
->     for users that don't require use of optional parameters.
-> 
-> Changelog v4 -> v5:
->   - Rebased on top of recently accepted patches.
->   - Removed compat_id from the fpga_mgr_register() parameter list
->     and added it to the fpga_manager_ops structure. This also required
->     dynamically allocating the dfl-fme-ops structure in order to add
->     the appropriate compat_id.
->   - Created the fpga_region_ops data structure which is optionally passed
->     to fpga_region_register(). compat_id, the get_bridges() pointer, and
->     the priv pointer are included in the fpga_region_ops structure.
-> 
-> Changelog v3 -> v4:
->   - Added the compat_id parameter to fpga_mgr_register() and
->     devm_fpga_mgr_register() to ensure that the compat_id is set before
->     the device_register() call.
->   - Added the compat_id parameter to fpga_region_register() to ensure
->     that the compat_id is set before the device_register() call.
->   - Modified the dfl_fpga_feature_devs_enumerate() function to restore
->     the fpga_region_register() call to the correct location.
-> 
-> Changelog v2 -> v3:
->   - Cleaned up comment headers for fpga_mgr_register(), fpga_bridge_register(),
->     and fpga_region_register().
->   - Fixed error return on ida_simple_get() failure for fpga_mgr_register(),
->     fpga_bridge_register(), and fpga_region_register().
->   - Fixed error return value for fpga_bridge_register(): ERR_PTR(ret) instead
->     of NULL.
-> 
-> Changelog v1 -> v2:
->   - Restored devm_fpga_mgr_register() functionality to the fpga-mgr
->     class driver, adapted for the combined create/register functionality.
->   - All previous callers of devm_fpga_mgr_register() will continue to call
->     devm_fpga_mgr_register().
->   - replaced unnecessary ternary operators in return statements with
->     standard if conditions.
-> 
-> Russ Weight (3):
->   fpga: mgr: Use standard dev_release for class driver
->   fpga: bridge: Use standard dev_release for class driver
->   fpga: region: Use standard dev_release for class driver
-> 
->  Documentation/driver-api/fpga/fpga-bridge.rst |   6 +-
->  Documentation/driver-api/fpga/fpga-mgr.rst    |  38 +++-
->  Documentation/driver-api/fpga/fpga-region.rst |  12 +-
->  drivers/fpga/altera-cvp.c                     |  12 +-
->  drivers/fpga/altera-fpga2sdram.c              |  12 +-
->  drivers/fpga/altera-freeze-bridge.c           |  10 +-
->  drivers/fpga/altera-hps2fpga.c                |  12 +-
->  drivers/fpga/altera-pr-ip-core.c              |   7 +-
->  drivers/fpga/altera-ps-spi.c                  |   9 +-
->  drivers/fpga/dfl-fme-br.c                     |  10 +-
->  drivers/fpga/dfl-fme-mgr.c                    |  22 +-
->  drivers/fpga/dfl-fme-region.c                 |  17 +-
->  drivers/fpga/dfl.c                            |  12 +-
->  drivers/fpga/fpga-bridge.c                    | 122 +++-------
->  drivers/fpga/fpga-mgr.c                       | 215 ++++++++----------
->  drivers/fpga/fpga-region.c                    | 119 ++++------
->  drivers/fpga/ice40-spi.c                      |   9 +-
->  drivers/fpga/machxo2-spi.c                    |   9 +-
->  drivers/fpga/of-fpga-region.c                 |  10 +-
->  drivers/fpga/socfpga-a10.c                    |  16 +-
->  drivers/fpga/socfpga.c                        |   9 +-
->  drivers/fpga/stratix10-soc.c                  |  16 +-
->  drivers/fpga/ts73xx-fpga.c                    |   9 +-
->  drivers/fpga/versal-fpga.c                    |   9 +-
->  drivers/fpga/xilinx-pr-decoupler.c            |  17 +-
->  drivers/fpga/xilinx-spi.c                     |  11 +-
->  drivers/fpga/zynq-fpga.c                      |  16 +-
->  drivers/fpga/zynqmp-fpga.c                    |   9 +-
->  include/linux/fpga/fpga-bridge.h              |  30 ++-
->  include/linux/fpga/fpga-mgr.h                 |  62 +++--
->  include/linux/fpga/fpga-region.h              |  36 ++-
->  31 files changed, 386 insertions(+), 517 deletions(-)
-> 
-> -- 
-> 2.25.1
-> 
-Series applied to for-next,
+> Best regards,
+> 	Maxim Levitsky
 
-Thanks,
-Moritz
+
+So...
+
+Last week I decided to study a bit how AVIC behaves when vCPUs are not 100% running
+(aka no cpu_pm=on), to mostly understand their so-called 'GA log' thing.
+ 
+(This thing is that when you tell the IOMMU that a vCPU is not running,
+the IOMMU starts logging all incoming passed-through interrupts to a ring buffer,
+and raises its own interrupt, which’s handler is supposed to wake up the VM's vCPU.)
+ 
+That led to me discovering that AMD's IOMMU is totally busted after a suspend/resume cycle,
+fixing which took me few days (and most of the time I worried that it's some sort of a BIOS bug which nobody would fix,
+as the IOMMU interrupt delivery was totally busted after resume, sometimes even power cycle didn't help
+to revive it - phew...). 
+Luckily I did fix it, and patches are waiting for the review upstream.
+(https://www.spinics.net/lists/kernel/msg4153488.html)
+ 
+ 
+Another thing I discovered that this patch series totally breaks my VMs, without cpu_pm=on
+The whole series (I didn't yet bisect it) makes even my fedora32 VM be very laggy, almost unusable,
+and it only has one passed-through device, a nic).
+ 
+If I apply though only the patch series up to this patch, my fedora VM seems to work fine, but
+my windows VM still locks up hard when I run 'LatencyTop' in it, which doesn't happen without this patch.
+ 
+ 
+So far the symptoms I see is that on VCPU 0, ISR has quite high interrupt (0xe1 last time I seen it),
+TPR and PPR are 0xe0 (although I have seen TPR to have different values), and IRR has plenty of interrupts
+with lower priority. The VM seems to be stuck in this case. As if its EOI got lost or something is preventing
+the IRQ handler from issuing EOI.
+ 
+LatencyTop does install some form of a kernel driver which likely does meddle with interrupts (maybe it sends lots of self IPIs?).
+ 
+100% reproducible as soon as I start monitoring with LatencyTop.
+ 
+ 
+Without this patch it works (or if disabling halt polling),
+ 
+but I still did manage to lockup the VM few times still, after lot of random clicking/starting up various apps while LatencyTop was running,
+etc, but in this case when I dump local apic via qemu's hmp interface the VM instantly revives, which might be either same bug
+which got amplified by this patch or something else.
+That was tested on the pure 5.15.0 kernel without any patches.
+ 
+It is possible that this is a bug in LatencyTop that just got exposed by different timing.
+ 
+The windows VM does have GPU and few USB controllers passed to it, and without them, in pure VM mode, as I call it,
+the LatencyTop seems to work.
+ 
+
+Tomorrow I'll give it a more formal investigation.
+ 
+Best regards,
+	Maxim Levitsky
+
+
