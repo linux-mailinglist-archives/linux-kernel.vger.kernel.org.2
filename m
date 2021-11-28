@@ -2,62 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8034603EC
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 05:21:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1A04603E0
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 05:13:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351895AbhK1EY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 23:24:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243700AbhK1EW0 (ORCPT
+        id S1346876AbhK1EQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 23:16:22 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:36878 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231809AbhK1EOV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 23:22:26 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B08EC061757;
-        Sat, 27 Nov 2021 20:10:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ck+FaDnoeTtSYbJ567N4WEPz2AxsL6omNDpZ2NQqJFA=; b=afW5+8q9nlh1wdvcDjeYmoeAH1
-        fX4yvxNZFTCi02bJSjeI8oiW0vCFli14y/9NIQ+2/RhTLh0CH2X1bExtej3GWFeZJpcmwIB5xfNBs
-        IsZ40VmPSkz6EOQPodaMoj2zn7U1trQ9CtkM3NQ6GRUAtr2RXNAOdnoBy9B4Hp8QbAneLilW1Thfj
-        hPQShpvUYTvi0X5mIgooVxCccU5ujOUtAFtZ0Dv8NQYuCWY/2+W3vXVeWT4HPhvw6kcpgRHthenTl
-        GcuOi7GFHR0w9XuUISgaP5Rq0QXLCdYKFUZjEaipkMFQT4zAgUqsMvZjj3jZQjVFSJC0gm3fJIEzQ
-        gejxXqlQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mrBVp-000afT-2n; Sun, 28 Nov 2021 04:10:01 +0000
-Date:   Sun, 28 Nov 2021 04:10:01 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        David Hildenbrand <david@redhat.com>,
-        "Paul E . McKenney" <paulmckrcu@fb.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <florian.schmidt@nutanix.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v7] mm: Add PM_THP_MAPPED to /proc/pid/pagemap
-Message-ID: <YaMBGQGNLqPd6D6f@casper.infradead.org>
-References: <20211123000102.4052105-1-almasrymina@google.com>
+        Sat, 27 Nov 2021 23:14:21 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AS3lUgr020383;
+        Sun, 28 Nov 2021 04:10:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=CKBnb3MYe70rtX3nRjCGRYnZT+Pr+vtwmuUljcDB2Ts=;
+ b=WsNKl04CSEYHwC1drAoUHyOZa3TA9fSZ/SkhiOnwdWhEWL5aamXTqEoh8vGAs2dD1rRU
+ WIpej+Z/FxjGO0uCMmm+X55GrqCeiKTxsaZ7Tibxf2h5Le2buoKUZi/3Jm41VZbQWDMW
+ r1oB/DL0JlbcAP4sdgOTkip4loxNYHWuW0a3sVyLYs/poheJlrJP3j8OOItgmI2cz9Ek
+ OtDu+5hyYQWFFSSUivVbjHWMBNmf5wYdWd58BAkM4KrO8WI6A7Swa4au7qId03Bml8tC
+ F3p8SaH1fTQd7rJlxf8ZB1fhuFLRGd+aQFhqRtBdyX1+6GtGgK1iQW74oIbvXlvem+TX AQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3cm1btgsbn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 28 Nov 2021 04:10:56 +0000
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AS40hrx025803;
+        Sun, 28 Nov 2021 04:10:55 GMT
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3cm1btgsbg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 28 Nov 2021 04:10:55 +0000
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AS47ptj006771;
+        Sun, 28 Nov 2021 04:10:55 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma03wdc.us.ibm.com with ESMTP id 3ckca9kgja-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 28 Nov 2021 04:10:55 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AS4Asdn22938106
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 28 Nov 2021 04:10:54 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A6DD6AE071;
+        Sun, 28 Nov 2021 04:10:54 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 988BEAE063;
+        Sun, 28 Nov 2021 04:10:54 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Sun, 28 Nov 2021 04:10:54 +0000 (GMT)
+From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
+To:     jarkko@kernel.org, linux-integrity@vger.kernel.org
+Cc:     peterhuewe@gmx.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Stefan Berger <stefanb@linux.ibm.com>
+Subject: [PATCH v4 0/2] selftests: tpm2: Determine available PCR bank
+Date:   Sat, 27 Nov 2021 23:10:50 -0500
+Message-Id: <20211128041052.1395504-1-stefanb@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211123000102.4052105-1-almasrymina@google.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Fb1-HEzOGXurhCWsrD-Nwi-cMAY7AP1M
+X-Proofpoint-ORIG-GUID: cKlxzCW9jnx2OiHhAurr2uQ5zHHjVZbk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-27_06,2021-11-28_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ priorityscore=1501 impostorscore=0 malwarescore=0 bulkscore=0 mlxscore=0
+ spamscore=0 clxscore=1015 phishscore=0 lowpriorityscore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111280018
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 04:01:02PM -0800, Mina Almasry wrote:
-> Add PM_THP_MAPPED MAPPING to allow userspace to detect whether a given virt
-> address is currently mapped by a transparent huge page or not.  Example
-> use case is a process requesting THPs from the kernel (via a huge tmpfs
-> mount for example), for a performance critical region of memory.  The
-> userspace may want to query whether the kernel is actually backing this
-> memory by hugepages or not.
+From: Stefan Berger <stefanb@linux.ibm.com>
 
-But what is userspace going to _do_ differently if the kernel hasn't
-backed the memory with huge pages?
+This series of patches fixes two issues with TPM2 selftest.
+- Determines available PCR banks for use by test cases
+- Resets DA lock on TPM2 to avoid subsequent test failures
+
+  Stefan
+
+v4:
+ - Switch to query TPM2_GET_CAP to determine the available PCR banks
+ - Moved call to reset DA lock into finally branch at end of test
+ - Dropped patch 3
+
+v3:
+ - Mention SHA-256 PCR bank as alternative in patch 1 description
+
+v2:
+ - Clarified patch 1 description 
+ - Added patch 3 with support for SHA-384 and SHA-512
+
+
+
+Stefan Berger (2):
+  selftests: tpm2: Determine available PCR bank
+  selftests: tpm2: Reset the dictionary attack lock
+
+ tools/testing/selftests/tpm2/tpm2.py       | 31 ++++++++++++++++++++++
+ tools/testing/selftests/tpm2/tpm2_tests.py | 31 ++++++++++++++++------
+ 2 files changed, 54 insertions(+), 8 deletions(-)
+
+-- 
+2.31.1
+
