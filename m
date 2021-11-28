@@ -2,63 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352B4460471
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 06:37:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05638460437
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 06:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231921AbhK1FkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 00:40:24 -0500
-Received: from smtpbg587.qq.com ([113.96.223.105]:53610 "EHLO smtpbg587.qq.com"
+        id S229903AbhK1FPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 00:15:15 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:13421 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231644AbhK1FiU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 00:38:20 -0500
-X-QQ-mid: bizesmtp42t1638071331tlejl57q
-Received: from kali.lan (unknown [182.148.14.187])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Sun, 28 Nov 2021 11:48:50 +0800 (CST)
-X-QQ-SSF: 01000000002000C0G000B00A0000000
-X-QQ-FEAT: lzF2rc3yiXUKJqz69H5sGeB+vsB0ngWtnRweRIvOWr47fdSr12MLNKP0bgQ9x
-        hgsWnbJQV/Zle48c06ylLN19pORU99zUp1oUJHpm+vE7/iPafaTv6GiER7SckIVIt32wb28
-        JWb+g9ifs/QVBY1BFtooVQRzsbXbXcU/Zxiijo9hsIgSyzB4HIevE9JCqkEHlgzNmsi3g2f
-        FOD60PVx31Fm2gxHBB7bb3Sr4OVE8cntE9aBmsJiFb+laLW4OpUCPzaomcU7AI50n81RtGS
-        ajrzSBzY7ARFNOBWRq4GsBphFDXXwsFYqN+j0vAzecFK3kmdS+fxKrgXfLMlgU+e7qUVNdE
-        0/Ct1S8onpuiANaDlaocIbXEUEFnCHkIV5lgai0
-X-QQ-GoodBg: 0
-From:   Jason Wang <wangborong@cdjrlc.com>
-To:     monstr@monstr.eu
-Cc:     wangborong@cdjrlc.com, linux-kernel@vger.kernel.org
-Subject: [PATCH] microblaze: fix typo in a comment
-Date:   Sun, 28 Nov 2021 11:48:23 +0800
-Message-Id: <20211128034823.6930-1-wangborong@cdjrlc.com>
-X-Mailer: git-send-email 2.33.0
+        id S229653AbhK1FNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Nov 2021 00:13:13 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4J1xPH1FPPz4f;
+        Sun, 28 Nov 2021 06:09:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1638076195; bh=oUZYFQUmcrcLe+khMfxoyii9jHAFHFy8/qX4bg6ScHU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JnSDJhb2/wFE1+K5BEKj3l92hAUJYMSiQfvzp+ZlCATcD11ALuloHBV8agVwt/D5m
+         6xO5KVkS6ds9BhnvUIzgpE+GOAlwIHTeHWZUDQLRlCqXrEtKOnOW/XLCrUHjRtkpA+
+         s0Zgh/IC7vC3LAsHBRaM+HBKV7zFjzE+7UOTFGbokGiHbpHQX7rXsKsJST3S+JBeda
+         2sNRV1hDCglR6IzM+jk8O4GqGLON53RjQjMI9dzQcjIf9OmuQDCgevPa74eYKb6N8i
+         DO41zxtTZnaEDqhBVPy9rAwcuQc/n0JQGJK3acFZNX84ZqpVMLYjA4M2TxieYk4Vj5
+         b6s4KzCtg6yrQ==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.3 at mail
+Date:   Sun, 28 Nov 2021 06:09:53 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, kvm@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-crypto@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 7/9] lib/cpumask: add
+ num_{possible,present,active}_cpus_{eq,gt,le}
+Message-ID: <YaMPIXUYuP1Q5FrQ@qmqm.qmqm.pl>
+References: <20211128035704.270739-1-yury.norov@gmail.com>
+ <20211128035704.270739-8-yury.norov@gmail.com>
+ <YaMME60Jfiz5BeJF@qmqm.qmqm.pl>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam3
+In-Reply-To: <YaMME60Jfiz5BeJF@qmqm.qmqm.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The double `was' is repeated in a comment. Consequently, remove one
-`was' from the comment.
+On Sun, Nov 28, 2021 at 05:56:51AM +0100, Micha³ Miros³aw wrote:
+> On Sat, Nov 27, 2021 at 07:57:02PM -0800, Yury Norov wrote:
+> > Add num_{possible,present,active}_cpus_{eq,gt,le} and replace num_*_cpus()
+> > with one of new functions where appropriate. This allows num_*_cpus_*()
+> > to return earlier depending on the condition.
+> [...]
+> > @@ -3193,7 +3193,7 @@ int __init pcpu_page_first_chunk(size_t reserved_size,
+> >  
+> >  	/* allocate pages */
+> >  	j = 0;
+> > -	for (unit = 0; unit < num_possible_cpus(); unit++) {
+> > +	for (unit = 0; num_possible_cpus_gt(unit); unit++) {
+> 
+> This looks dubious. The old version I could hope the compiler would call
+> num_possible_cpus() only once if it's marked const or pure, but the
+> alternative is going to count the bits every time making this a guaranteed
+> O(n^2) even though the bitmap doesn't change.
 
-Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
----
- arch/microblaze/kernel/signal.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hmm. This code already unnecessarily calls num_possible_cpus() multiple
+times. Since it doesn't change after early init I would suggest just
+calling it once here.
 
-diff --git a/arch/microblaze/kernel/signal.c b/arch/microblaze/kernel/signal.c
-index fc61eb0eb8dd..59f0af5ee042 100644
---- a/arch/microblaze/kernel/signal.c
-+++ b/arch/microblaze/kernel/signal.c
-@@ -11,7 +11,7 @@
-  *
-  * 1997-11-28 Modified for POSIX.1b signals by Richard Henderson
-  *
-- * This file was was derived from the sh version, arch/sh/kernel/signal.c
-+ * This file was derived from the sh version, arch/sh/kernel/signal.c
-  *
-  * This file is subject to the terms and conditions of the GNU General
-  * Public License. See the file COPYING in the main directory of this
--- 
-2.33.0
-
+Best Regards
+Micha³ Miros³aw
