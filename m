@@ -2,102 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B234602A0
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 01:45:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F4574602A5
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 01:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356749AbhK1Asi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 19:48:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356690AbhK1Aqh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 19:46:37 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D597AC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 16:43:21 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id i9so13045689ilu.1
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 16:43:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=1SEnnhSDtFX7zCcC2R4UoBpLdS3gZaSbU/hF2We3+T4=;
-        b=oiJkbRrQaHKLTeb3XKhg12M7kQkruz2LtXDw5iUOHQfN9LbDBYUDmyPHgG8nYVEvjE
-         20L58M51mMDHrV+MzS9fLIsHeSCVtCtcjnavndPGiI/XmEWmIadJvXdnSANtIYYBBTdX
-         qOxQ0uK6r3gPt5oT1giecxQacuUcyfHalp/UrOB0CGemSq4uSb4XDp+FfnO7QZzccXqg
-         RuEN6YZQ+H4XsvppiH+EFTVlNUUluJrByr7We4JgJcuOFsKAMcai46NDASTrlfFnhWOv
-         tq/FxOm5gIBoWVd2fcTYW1h4b7vMFvO+YuMM0ptgtiUDyMQ5hit80nvCdfqFAY9XEC2p
-         s3kQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=1SEnnhSDtFX7zCcC2R4UoBpLdS3gZaSbU/hF2We3+T4=;
-        b=A/yffC9ORZOvLJzXCqFV0TYiTrLYkovZ8FsFMXQE4WhQPP2hRG/7HqLxvJhTgHBKiJ
-         uU78cgNlXnQ4Gr5OZTG5tFm3okc6mUGTrt7NmF/KMb0dmvaaBi9YEf6/+nYiyh2BPwuw
-         mxcW9PsnOzxVFydJaaEHvPDV1eho9PUsfcyD5kZNAsGiz1wHj/mUZ9GpMkvBLiwHLMau
-         Hm5nvYWDYN917ZeV4LxvMExeUSJsPFfC4BHnYlK8LW1QgdINO5CObBQsuwjla2R5QVTp
-         K5xAlndihHub5Q4QgWmWLrLHsvksbmKuAT/oE+/vSa11MfiXT0MHzQIAnwVGX9U6doIe
-         rFAg==
-X-Gm-Message-State: AOAM533NyulRLmbUk34kLPq2qtuv3QDnoDRi0dzVIoRHIZ4dKaGG01Yu
-        3/nKa0FzU7Kbzv0HSGV5D6FjK+jNjWqX69JNexc=
-X-Google-Smtp-Source: ABdhPJyxrN5rdjT/ej4awloInJwi98+D+OdXLG+Coy/pNeOcPTCgfrvZRVlolzg1Dqa9zV/nChTHdKIp10yENb8LK98=
-X-Received: by 2002:a92:da0f:: with SMTP id z15mr44768055ilm.151.1638060200327;
- Sat, 27 Nov 2021 16:43:20 -0800 (PST)
+        id S1356784AbhK1Ast (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 19:48:49 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:12892 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1356720AbhK1Aqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 19:46:46 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4J1qTm1DhtzNL;
+        Sun, 28 Nov 2021 01:43:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1638060207; bh=ymi2rjesYlmYsrxY12X8vblXPJWiCK3o6T/SGnAjDZo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C6SfBZOFpiANlfwmDvX4OuIMVOJSlYKPAQ7cePS7VCRqQvRDRXyoU4e1HDyFW5286
+         aMp77cXaWF2QuMJ//PO7Wx9adwPHxvzWlhsVptz1Bv8pKTYitnPzWsGYgxjQNrOvV7
+         Uk484prqIxJAORTEmmGB3fc8u4Kn87uEVHmrPcrNw+TikFuKmaRxmZpfI/D7x9DxOR
+         HEK/DHm3KCkqlnpSbmB87Uzzanvh59D/q1WHxqRBbTNokUG7ZgWXQQKaJ+DCHFVboG
+         CiQGnas3tcMmGH5URTeE0feIhbti0vtOii+M7lKOB+wnpM9RCc3cCyDZ3xGFva1jKa
+         oHCSKPMXxlqVw==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.3 at mail
+Date:   Sun, 28 Nov 2021 01:43:22 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee.jones@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
+        "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v4 08/25] kernel: Add combined power-off+restart handler
+ call chain API
+Message-ID: <YaLQqks8cB0vWp6Q@qmqm.qmqm.pl>
+References: <20211126180101.27818-1-digetx@gmail.com>
+ <20211126180101.27818-9-digetx@gmail.com>
 MIME-Version: 1.0
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Sun, 28 Nov 2021 01:43:09 +0100
-Message-ID: <CANiq72kGS0JzFkuUS9oN2_HU9f_stm1gA8v79o2pUCb7bNSe0A@mail.gmail.com>
-Subject: KASAN Arm: global-out-of-bounds in load_module
-To:     kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211126180101.27818-9-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi KASAN / Arm folks,
+On Fri, Nov 26, 2021 at 09:00:44PM +0300, Dmitry Osipenko wrote:
+> SoC platforms often have multiple ways of how to perform system's
+> power-off and restart operations. Meanwhile today's kernel is limited to
+> a single option. Add combined power-off+restart handler call chain API,
+> which is inspired by the restart API. The new API provides both power-off
+> and restart functionality.
+> 
+> The old pm_power_off method will be kept around till all users are
+> converted to the new API.
+> 
+> Current restart API will be replaced by the new unified API since
+> new API is its superset. The restart functionality of the sys-off handler
+> API is built upon the existing restart-notifier APIs.
+> 
+> In order to ease conversion to the new API, convenient helpers are added
+> for the common use-cases. They will reduce amount of boilerplate code and
+> remove global variables. These helpers preserve old behaviour for cases
+> where only one power-off handler is expected, this is what all existing
+> drivers want, and thus, they could be easily converted to the new API.
+> Users of the new API should explicitly enable power-off chaining by
+> setting corresponding flag of the power_handler structure.
+[...]
 
-I noticed in our CI that inserting and removing a module, and then
-inserting it again, e.g.:
+Hi,
 
-    insmod bcm2835_thermal.ko
-    rmmod bcm2835_thermal.ko
-    insmod bcm2835_thermal.ko
+A general question: do we really need three distinct chains for this?
+Can't there be only one that chain of callbacks that get a stage
+(RESTART_PREPARE, RESTART, POWER_OFF_PREPARE, POWER_OFF) and can ignore
+them at will? Calling through POWER_OFF_PREPARE would also return
+whether that POWER_OFF is possible (for kernel_can_power_off()).
 
-deterministically triggers the report below in v5.16-rc2. I also tried
-it on v5.12 to see if it was a recent thing, but same story.
+I would also split this patch into preparation cleanups (like wrapping
+pm_power_off call with a function) and adding the notifier-based
+implementation.
 
-I could find this other report from May, which may be related:
-https://lore.kernel.org/lkml/20210510202653.gjvqsxacw3hcxfvr@pengutronix.de/
-
-Cheers,
-Miguel
-
-BUG: KASAN: global-out-of-bounds in load_module+0x1b98/0x33b0
-Write of size 16384 at addr bf000000 by task busybox/17
-
-CPU: 0 PID: 17 Comm: busybox Not tainted 5.15.0 #7
-Hardware name: Generic DT based system
-[<c010f968>] (unwind_backtrace) from [<c010c6f8>] (show_stack+0x10/0x14)
-[<c010c6f8>] (show_stack) from [<c0210734>]
-(print_address_description+0x58/0x384)
-[<c0210734>] (print_address_description) from [<c0210cc8>]
-(kasan_report+0x168/0x1fc)
-[<c0210cc8>] (kasan_report) from [<c0211230>] (kasan_check_range+0x260/0x2a8)
-[<c0211230>] (kasan_check_range) from [<c0211c68>] (memset+0x20/0x44)
-[<c0211c68>] (memset) from [<c019d21c>] (load_module+0x1b98/0x33b0)
-[<c019d21c>] (load_module) from [<c0199f88>] (sys_init_module+0x198/0x1ac)
-[<c0199f88>] (sys_init_module) from [<c0100060>] (ret_fast_syscall+0x0/0x48)
-Exception stack(0xc113ffa8 to 0xc113fff0)
-ffa0:                   00000000 00002a98 00098038 00002a98 00081483 00093f88
-ffc0: 00000000 00002a98 00000000 00000080 00000001 b66ffef0 00081483 000815c7
-ffe0: b66ffbd8 b66ffbc8 000207f5 00011cc2
-
-
-Memory state around the buggy address:
- bf001200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- bf001280: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->bf001300: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9
-                                                     ^
- bf001380: 00 00 07 f9 f9 f9 f9 f9 00 00 00 00 00 00 00 00
- bf001400: 00 00 f9 f9 f9 f9 f9 f9 00 00 04 f9 f9 f9 f9 f9
+Best Regards
+Micha³ Miros³aw
