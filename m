@@ -2,204 +2,446 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD0A460B0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 00:17:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBEA2460B12
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 00:19:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359549AbhK1XUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 18:20:33 -0500
-Received: from mail-bn8nam12on2066.outbound.protection.outlook.com ([40.107.237.66]:24001
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1359569AbhK1XS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 18:18:29 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T790aj4vQI51GLcDLz7ZkoVc55E9hxbPqzFf4ZgLOGNo2Fu6XXbIqNW5wLGOqHNwaDtkgMX/VDNdqYh92qQXJCbXySqHE78d9OnODc38n2L+4lI+X3uynAOT+LU77ZsbKFiQ34Wa71Ikt8+HggZc0rUiOi/Mr9sIP7OAW+jd7mucgyVBRc4XGpLZDc/EXjXd7pA4KRVc5Ym7G16i6OtJ/4wjODQBEB4CUdQKpSKxF5RWWj5LzB3F6YLE6c/iG71hatDMnNIRCConWoDKSMF3eF2iBgvXKQEZK7wEs7EiKoLaiIdaJOLQYd0op4TiayuF7P/+5I5r4pdVmw9ulmq7Uw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KkejUlGblP/Hs4k11891feUqJxy8urZzuXTlYQ0EIwQ=;
- b=YSqPSeODahV5iT/VQtNnp7J3T1PQRv1ZvV80jhJLQPgG5rYOYlMaWokfC1Z8agrhwxWKIFty39RTO/ujqmc0X8WyTq5mTrWjNFCXir+gcO7H9t0cmXKhX5g8QWRkqRyuT8+mab1umrYY01Uoib65B//EwB077DbKX/wruUhmT6frL4dXxPHu76FsIO2/wctaVbXCOY8PEEa3Vd7MWCzp9MZyZprfYhe62pbJmTknHRDRtsU7KuQdrXq3vrZNXLGB5S4VBTq3MuaXFGu8s+LPM5IGOpYr01rG1ScXe5cmzjy9Z8kO4AuDRow2PwMUXtCVQ8nzFEmEO9VfuQIHyWM89A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KkejUlGblP/Hs4k11891feUqJxy8urZzuXTlYQ0EIwQ=;
- b=eJG7ulktoEcYABUxsJqa5nUR4Vxzjyt6cdKuX0ywKIR08hHny9stV8UUqiyjb0nmcSYAdn8XjS/KXmO4frOzM9fZnsbT/rKBmN7uU/CI3wJ1uxTD+nWnOsy0++0b6j5igH/mU1+XTy/OOh5rGjhTxuQKUiS+ct5JPy4MxHsDRP+1Ws1ZuCtoO44mrAEoihrdxCuhZjuj7GwfB1EvA4ubPOYc5q1XWSAv7iZw2y8C6XjEU15bfeqWQKoY9W0S8oK8ixF9XcjrfVVDbAf1purQSUqS7CKpoBWZVHix3zzlAADf/HAC37OOGvcuWyfCLrlmnHFKbEHPJ4muCLf1yHpxqA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB5520.namprd12.prod.outlook.com (2603:10b6:5:208::9) by
- DM4PR12MB5184.namprd12.prod.outlook.com (2603:10b6:5:397::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4734.24; Sun, 28 Nov 2021 23:15:11 +0000
-Received: from DM6PR12MB5520.namprd12.prod.outlook.com
- ([fe80::1569:38dd:26fb:bf87]) by DM6PR12MB5520.namprd12.prod.outlook.com
- ([fe80::1569:38dd:26fb:bf87%8]) with mapi id 15.20.4734.024; Sun, 28 Nov 2021
- 23:15:11 +0000
-Date:   Sun, 28 Nov 2021 19:15:09 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Dan Williams <dan.j.williams@intel.com>, rafael@kernel.org,
-        Diana Craciun <diana.craciun@oss.nxp.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Liu Yi L <yi.l.liu@intel.com>,
-        Jacob jun Pan <jacob.jun.pan@intel.com>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Stuart Yoder <stuyoder@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Li Yang <leoyang.li@nxp.com>, iommu@lists.linux-foundation.org,
-        linux-pci@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 04/17] driver core: platform: Add driver dma ownership
- management
-Message-ID: <20211128231509.GA966332@nvidia.com>
-References: <20211128025051.355578-1-baolu.lu@linux.intel.com>
- <20211128025051.355578-5-baolu.lu@linux.intel.com>
- <YaM5Zv1RrdidycKe@kroah.com>
+        id S1359684AbhK1XWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 18:22:24 -0500
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:42655 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236269AbhK1XUX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Nov 2021 18:20:23 -0500
+Received: by mail-ot1-f51.google.com with SMTP id 47-20020a9d0332000000b005798ac20d72so22929894otv.9;
+        Sun, 28 Nov 2021 15:17:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mIAVRqEHmYgNmjNuMJOG9P8bjoS5VCmATkZXi7QQy04=;
+        b=juSlMjgfuBd6lvpxUski5o/6Xon38QfjmKImGiS9aAxmjQ9KFBc5l1vSf0R3Mdd1Ho
+         BC+tXcbGmF7gusoLTAtDD9ceAoHML5Ro/V6BNao5aS5nuFN5ZKuMPEmCei56dgnoVhJq
+         s2TxfhNCqZ7/07Dvb2+SyRRhr3N7ghdPb9CoKYPe5bg828NSk6M6WtN432QXlExTuy2w
+         9+uCizirUgLsDi1oy302HTZZ0uEm/Sz7eKmGCpUDN7Xzi0O8BYl2H8uVi/GfuJlnLVQ/
+         Vh+yN5uEUYbxayNhXSkWgdlhltQeJiTQiiQfzHBca4hlzVGKeoaLWxwRBLw42QtLmq52
+         N62g==
+X-Gm-Message-State: AOAM530R86/IjGN5/rBbYnmHTTYBSkgRlbfj7kV5pUyDsIUSPplsTXcR
+        OqkiXmQGj27TmpYPEERmn2OIilQFZA==
+X-Google-Smtp-Source: ABdhPJzoc/PXbJNnZah8kkGRrmj1PpPh9CJzVunhDqkYGgK7Lpe/mhESMglQyweY118H9t2tX87z+w==
+X-Received: by 2002:a9d:709a:: with SMTP id l26mr41140933otj.287.1638141426414;
+        Sun, 28 Nov 2021 15:17:06 -0800 (PST)
+Received: from robh.at.kernel.org ([2607:fb90:5fe7:4487:4f99:dbc0:75d1:3e27])
+        by smtp.gmail.com with ESMTPSA id o26sm2353134otj.14.2021.11.28.15.17.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Nov 2021 15:17:05 -0800 (PST)
+Received: (nullmailer pid 2799642 invoked by uid 1000);
+        Sun, 28 Nov 2021 23:16:56 -0000
+Date:   Sun, 28 Nov 2021 17:16:56 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, aford@beaconembedded.com,
+        shawnguo@kernel.org
+Subject: Re: [RESEND PATCH V5] dt-bindings: soc: imx: Add binding doc for
+ spba bus
+Message-ID: <YaQN6EFpmYxvLJwo@robh.at.kernel.org>
+References: <20211120122022.1052768-1-aford173@gmail.com>
+ <1637685269.730771.3442927.nullmailer@robh.at.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YaM5Zv1RrdidycKe@kroah.com>
-X-ClientProxiedBy: BL0PR0102CA0004.prod.exchangelabs.com
- (2603:10b6:207:18::17) To DM6PR12MB5520.namprd12.prod.outlook.com
- (2603:10b6:5:208::9)
-MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL0PR0102CA0004.prod.exchangelabs.com (2603:10b6:207:18::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.20 via Frontend Transport; Sun, 28 Nov 2021 23:15:11 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mrTO1-0043dU-PF; Sun, 28 Nov 2021 19:15:09 -0400
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 991b8fec-218f-4c14-8a29-08d9b2c4ed15
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5184:
-X-Microsoft-Antispam-PRVS: <DM4PR12MB5184BC54C36A511056C9CB53C2659@DM4PR12MB5184.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jUrHJFKGpj9DFCO8yWnv2C/0sLBlbGIeTntuBpR/NnsBgHmyoNFACTpz2itM54dKN7+2OrlC9O00amTCI+ViRjSJtVbW8VkWD5A96YCn9a3uPFzvWDNvfXxwISVEE8ldU+nhGoW2eDqTpDoN/exnv/Y1oCg4Eqim0+KXFBLwf93+sILJkPwzmCYa9uUBhCiM17asmg02PIDlRUcdO6zKwrulVJAK3cRMdK2BYbA4q/m1ZFOaTZGy3C01AWJb0DWab27NW/qlgBgE+xySRjrUugE9qkCRV1Oq1HvNDsCAfmp0ln5OIRfRh8/4kIxo+LuDXv7lJQpXp+RzyCaM7lgYldkeBwjVJcUSNt8uWeOyNvpLBdKDAiCur+jREV8snlGrp1UB0rxFggsHUoFfw6zbqwrOzF1px17pVz0h5zqdTmoxyNKs5/JlrUxHbsp2Ei97tzGa5UCZ3dSQuO7gUPvin5fKy+GsdQOh34LPqNjm43ErmfaK1JqWlhfhj0qAiVIWPy1To5IB5cersa2HvzU0GuNfqcBsrnpZfDAc476teerJzuVy9A887TSiNrV8dFZfMa7nItifEMIsjw6N2UJ1NGMP0cGzUg8CQAjsug9qDlv+3VjCcTkf0HnzskdwtE+5V6i1DEaOlObeL9CtEresJx02jvG2Aiivov8KVQB1G/TkBLwROzvP4+9FQ1ISZc6KFCrG8BR2xurOSzb3Mfp+QQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB5520.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2616005)(426003)(36756003)(8676002)(1076003)(26005)(508600001)(86362001)(4326008)(316002)(66946007)(83380400001)(66556008)(66476007)(2906002)(38100700002)(54906003)(33656002)(9786002)(5660300002)(186003)(7416002)(9746002)(6916009)(8936002)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WKYfsd0upuURuda1GH0txehgS04iJpAZbL8qam9bKa/jGScvrKmWvNXAiDS9?=
- =?us-ascii?Q?uA1RVcrkvgImNisNr0Uo6k9MyEcJSOdPYSpjduVgsEx4hLpwn4CVyWwm+cWa?=
- =?us-ascii?Q?hyPGkazcuxt75gFBL0Ry3LwtFNXiJnsYqCnVarqS0yEzwOhGGsbjuplCnOgv?=
- =?us-ascii?Q?BG/eV4R4yrWOV6oT6PojOtZD/Hd/TjTxPFDPIDEUqEN0dMrZH5VbB1byyHVP?=
- =?us-ascii?Q?XuqFeKq9fwKvajwTPxaU7GNQkF1XgUkYTLIO/xz64pmsuoxSgndRWE67gt2w?=
- =?us-ascii?Q?QBpIlRXGkXwD9WP/kfF2zR2l0GpLGVaEvQB6e2FVu+1z584Gir0gR9vJRvuL?=
- =?us-ascii?Q?CMBZ1HlANET1L1ZSLy3vl7HCXIR2FgC7E4QGaegNyEGg2jXtGyYcSdLwD/x1?=
- =?us-ascii?Q?2y0M8LugmrvQiVwtARPGGeurWQS5RdQmU2y1tAsctOa1XBsR8rKVen8Kvhs9?=
- =?us-ascii?Q?6bU3TbZnCLR9C93XbAyEpXJ2OUw4CToRDtmffQeXlN/pNBplHuyZDSWg3+2A?=
- =?us-ascii?Q?xxQwQSAf+QGM6uTMsKM/tcIzxv7SibogUbpKOyFUTSdK1Ezpb0eKJnyzSaN0?=
- =?us-ascii?Q?FR95OVJ5C1ASl+iMQznRWM4H7ubRZxPounpeSMbDXAjRqknYwvLCHdyxLbxG?=
- =?us-ascii?Q?NQBkfRDlc3loY/58DixC4eYG+OoeQQMUHInulbT7mzIgGawHwk8HMqMtJdMq?=
- =?us-ascii?Q?ZYxt7/ZKWzzBanhLVjA9NnRpjfihx6rkpVN0tGonQcSKGTpJrUqMdxUuyfWp?=
- =?us-ascii?Q?widbmZSM1xC5RX7rCJBi1gILGY7Lr6+UP8CM/uE27KxMCY4K2RSK5Qmiekh1?=
- =?us-ascii?Q?Kb5xBQpxnB0qx8TOB+meUYtO+zbC0XERetzzXKnDmX2ep35R7UMiE767rTg0?=
- =?us-ascii?Q?lRFIA1FGahYhINnisf4LVsh48OwSs/YLrkMuMyXd14MWVjHNxOHTep4zunR0?=
- =?us-ascii?Q?ziVHBJlCdLDx7JcpQCSWIIYWzakWTRZTgtsJRWH9vh16C8AwHWgMHelgyH5y?=
- =?us-ascii?Q?apWh32xS2no/fP/mnTBCorv6fjL6V/NBxMAleeJD7KhjcXOR8r53JOvwSm9w?=
- =?us-ascii?Q?vxE6mj2h9Q452lYMUCVdVwwvJAEJdWlhpk0RrbY6LOt6j/9y0dxVP1tKHtpW?=
- =?us-ascii?Q?vrnRqtC6/M4qv0RNYjS7BkQJPm9ZM0DeTmd64vbrG7Rh0X/vtKQbr8QJd8JY?=
- =?us-ascii?Q?kh5aPhpRKiuGwVIl80ibXFjOWm8eAt9sXHlz1XBNLko8Q0i7oIQ7tkUX4qDx?=
- =?us-ascii?Q?TWWqdgnj3yrnpyieh9x+8etJ3B1v224FHaWB0d7j9IvGSSfyIkZOnqB6jZX+?=
- =?us-ascii?Q?/TO7Lnv2RyYZ4Yf1b8AIC+4yQWff1fF7BoMzAzo05cNqiFkdQWnHga076zGt?=
- =?us-ascii?Q?n3nfeSJs1q6yH+oL1RlDfS6IQ/I/NgQT5LfPBwiaONWrUEb5TxcZiLvdTSuQ?=
- =?us-ascii?Q?NLBKllJfLEHDBq5V3ic57uOXeSwE8F4evVYfJVcRZhwrb1dYKnTGpmgO4PrP?=
- =?us-ascii?Q?iMuoxd9EB74ZbmAW8iYml9mrWDvVTsidzWWSt2uMD0eFCN5YPyQUQ6ooGRXY?=
- =?us-ascii?Q?fNQm/e1MO77dAVTKUS8=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 991b8fec-218f-4c14-8a29-08d9b2c4ed15
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB5520.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2021 23:15:11.3080
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: C0bZ7M2nxC5HgZMAlBwlT8u6SjfxyZibfi0M8LQhOPGivBaz0LabhdLF4p9NTj6H
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5184
+In-Reply-To: <1637685269.730771.3442927.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 28, 2021 at 09:10:14AM +0100, Greg Kroah-Hartman wrote:
-> On Sun, Nov 28, 2021 at 10:50:38AM +0800, Lu Baolu wrote:
-> > Multiple platform devices may be placed in the same IOMMU group because
-> > they cannot be isolated from each other. These devices must either be
-> > entirely under kernel control or userspace control, never a mixture. This
-> > checks and sets DMA ownership during driver binding, and release the
-> > ownership during driver unbinding.
+On Tue, Nov 23, 2021 at 09:34:29AM -0700, Rob Herring wrote:
+> On Sat, 20 Nov 2021 06:20:22 -0600, Adam Ford wrote:
+> > Add binding doc for fsl,spba-bus.
 > > 
-> > Driver may set a new flag (suppress_auto_claim_dma_owner) to disable auto
-> > claiming DMA_OWNER_DMA_API ownership in the binding process. For instance,
-> > the userspace framework drivers (vfio etc.) which need to manually claim
-> > DMA_OWNER_PRIVATE_DOMAIN_USER when assigning a device to userspace.
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
+> > 
 > 
-> Why would any vfio driver be a platform driver?  
+> Running 'make dtbs_check' with the schema in this patch gives the
+> following warnings. Consider if they are expected or the schema is
+> incorrect. These may not be new warnings.
 
-Why not? VFIO implements drivers for most physical device types
-these days. Why wouldn't platform be included?
+Do you intend to fix all the node names or perhaps also allow for 
+'spba-bus' at least.
 
-> That should never be the case as they obviously are not platform
-> drivers, they are virtual ones.
-
-Huh?
-
-> > diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
-> > index 7c96f169d274..779bcf2a851c 100644
-> > +++ b/include/linux/platform_device.h
-> > @@ -210,6 +210,7 @@ struct platform_driver {
-> >  	struct device_driver driver;
-> >  	const struct platform_device_id *id_table;
-> >  	bool prevent_deferred_probe;
-> > +	bool suppress_auto_claim_dma_owner;
 > 
-> What platform driver needs this change?
-
-It is in patch 12:
-
---- a/drivers/vfio/platform/vfio_platform.c
-+++ b/drivers/vfio/platform/vfio_platform.c
-@@ -76,6 +76,7 @@ static struct platform_driver vfio_platform_driver = {
-        .driver = {
-                .name   = "vfio-platform",
-        },
-+       .suppress_auto_claim_dma_owner = true,
- };
-
-Which is how VFIO provides support to DPDK for some Ethernet
-controllers embedded in a few ARM SOCs.
-
-It is also used in patch 17 in five tegra platform_drivers to make
-their sharing of an iommu group between possibly related
-platform_driver's safer.
-
-> >  	USE_PLATFORM_PM_SLEEP_OPS
-> > @@ -1478,7 +1505,8 @@ struct bus_type platform_bus_type = {
-> >  	.probe		= platform_probe,
-> >  	.remove		= platform_remove,
-> >  	.shutdown	= platform_shutdown,
-> > -	.dma_configure	= platform_dma_configure,
-> > +	.dma_configure	= _platform_dma_configure,
+> Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+> This will change in the future.
 > 
-> What happened to the original platform_dma_configure() function?
-
-It is still called. The issue here is that platform_dma_configure has
-nothing to do with platform and is being re-used by AMBA.
-
-Probably the resolution to both remarks is to rename
-platform_dma_configure to something sensible (firwmare dma configure
-maybe?) and use it in all places that do the of & acpi stuff -
-pci/amba/platform at least.
-
-Jason
+> Full log is available here: https://patchwork.ozlabs.org/patch/1557604
+> 
+> 
+> spba@50000000: $nodename:0: 'spba@50000000' does not match '^bus(@[0-9a-f]+)?$'
+> 	arch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard-cmo-qvga.dt.yaml
+> 	arch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard.dt.yaml
+> 	arch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard-dvi-svga.dt.yaml
+> 	arch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard-dvi-vga.dt.yaml
+> 	arch/arm/boot/dts/imx25-karo-tx25.dt.yaml
+> 	arch/arm/boot/dts/imx25-pdk.dt.yaml
+> 	arch/arm/boot/dts/imx31-bug.dt.yaml
+> 	arch/arm/boot/dts/imx31-lite.dt.yaml
+> 	arch/arm/boot/dts/imx50-evk.dt.yaml
+> 	arch/arm/boot/dts/imx50-kobo-aura.dt.yaml
+> 	arch/arm/boot/dts/imx53-ard.dt.yaml
+> 	arch/arm/boot/dts/imx53-cx9020.dt.yaml
+> 	arch/arm/boot/dts/imx53-kp-ddc.dt.yaml
+> 	arch/arm/boot/dts/imx53-kp-hsc.dt.yaml
+> 	arch/arm/boot/dts/imx53-m53evk.dt.yaml
+> 	arch/arm/boot/dts/imx53-m53menlo.dt.yaml
+> 	arch/arm/boot/dts/imx53-mba53.dt.yaml
+> 	arch/arm/boot/dts/imx53-ppd.dt.yaml
+> 	arch/arm/boot/dts/imx53-qsb.dt.yaml
+> 	arch/arm/boot/dts/imx53-qsrb.dt.yaml
+> 	arch/arm/boot/dts/imx53-smd.dt.yaml
+> 	arch/arm/boot/dts/imx53-tx53-x03x.dt.yaml
+> 	arch/arm/boot/dts/imx53-tx53-x13x.dt.yaml
+> 	arch/arm/boot/dts/imx53-usbarmory.dt.yaml
+> 	arch/arm/boot/dts/imx53-voipac-bsb.dt.yaml
+> 
+> spba@70000000: $nodename:0: 'spba@70000000' does not match '^bus(@[0-9a-f]+)?$'
+> 	arch/arm/boot/dts/imx51-apf51dev.dt.yaml
+> 	arch/arm/boot/dts/imx51-apf51.dt.yaml
+> 	arch/arm/boot/dts/imx51-babbage.dt.yaml
+> 	arch/arm/boot/dts/imx51-digi-connectcore-jsk.dt.yaml
+> 	arch/arm/boot/dts/imx51-eukrea-mbimxsd51-baseboard.dt.yaml
+> 	arch/arm/boot/dts/imx51-ts4800.dt.yaml
+> 	arch/arm/boot/dts/imx51-zii-rdu1.dt.yaml
+> 	arch/arm/boot/dts/imx51-zii-scu2-mezz.dt.yaml
+> 	arch/arm/boot/dts/imx51-zii-scu3-esb.dt.yaml
+> 
+> spba-bus@2000000: $nodename:0: 'spba-bus@2000000' does not match '^bus(@[0-9a-f]+)?$'
+> 	arch/arm/boot/dts/imx6dl-alti6p.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-apf6dev.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-aristainetos2_4.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-aristainetos2_7.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-aristainetos_4.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-aristainetos_7.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-b105pv2.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-b105v2.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-b125pv2.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-b125v2.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-b155v2.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-colibri-eval-v3.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-colibri-v1_1-eval-v3.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-cubox-i.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-cubox-i-emmc-som-v15.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-cubox-i-som-v15.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-dfi-fs700-m60.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-dhcom-picoitx.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-eckelmann-ci4x10.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-emcon-avari.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-gw51xx.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-gw52xx.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-gw53xx.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-gw54xx.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-gw551x.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-gw552x.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-gw553x.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-gw560x.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-gw5903.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-gw5904.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-gw5907.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-gw5910.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-gw5912.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-gw5913.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-hummingboard2.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-hummingboard2-emmc-som-v15.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-hummingboard2-som-v15.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-hummingboard.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-hummingboard-emmc-som-v15.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-hummingboard-som-v15.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-icore.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-icore-mipi.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-icore-rqs.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-lanmcu.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-mamoj.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-nit6xlite.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-nitrogen6x.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-phytec-mira-rdk-nand.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-phytec-pbab01.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-pico-dwarf.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-pico-hobbit.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-pico-nymph.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-pico-pi.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-plybas.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-plym2m.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-prtmvt.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-prtrvt.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-prtvt7.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-rex-basic.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-riotboard.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-sabreauto.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-sabrelite.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-sabresd.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-savageboard.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-skov-revc-lt2.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-skov-revc-lt6.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-solidsense.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-ts4900.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-ts7970.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-tx6dl-comtft.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-tx6s-8034.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-tx6s-8034-mb7.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-tx6s-8035.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-tx6s-8035-mb7.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-tx6u-801x.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-tx6u-8033.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-tx6u-8033-mb7.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-tx6u-80xx-mb7.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-tx6u-811x.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-tx6u-81xx-mb7.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-udoo.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-victgo.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-vicut1.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-wandboard.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-wandboard-revb1.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-wandboard-revd1.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-yapp4-draco.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-yapp4-hydra.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-yapp4-orion.dt.yaml
+> 	arch/arm/boot/dts/imx6dl-yapp4-ursa.dt.yaml
+> 	arch/arm/boot/dts/imx6q-apalis-eval.dt.yaml
+> 	arch/arm/boot/dts/imx6q-apalis-ixora.dt.yaml
+> 	arch/arm/boot/dts/imx6q-apalis-ixora-v1.1.dt.yaml
+> 	arch/arm/boot/dts/imx6q-apf6dev.dt.yaml
+> 	arch/arm/boot/dts/imx6q-arm2.dt.yaml
+> 	arch/arm/boot/dts/imx6q-b450v3.dt.yaml
+> 	arch/arm/boot/dts/imx6q-b650v3.dt.yaml
+> 	arch/arm/boot/dts/imx6q-b850v3.dt.yaml
+> 	arch/arm/boot/dts/imx6q-cm-fx6.dt.yaml
+> 	arch/arm/boot/dts/imx6q-cubox-i.dt.yaml
+> 	arch/arm/boot/dts/imx6q-cubox-i-emmc-som-v15.dt.yaml
+> 	arch/arm/boot/dts/imx6q-cubox-i-som-v15.dt.yaml
+> 	arch/arm/boot/dts/imx6q-dfi-fs700-m60.dt.yaml
+> 	arch/arm/boot/dts/imx6q-dhcom-pdk2.dt.yaml
+> 	arch/arm/boot/dts/imx6q-display5-tianma-tm070-1280x768.dt.yaml
+> 	arch/arm/boot/dts/imx6q-dmo-edmqmx6.dt.yaml
+> 	arch/arm/boot/dts/imx6q-dms-ba16.dt.yaml
+> 	arch/arm/boot/dts/imx6q-ds.dt.yaml
+> 	arch/arm/boot/dts/imx6q-emcon-avari.dt.yaml
+> 	arch/arm/boot/dts/imx6q-evi.dt.yaml
+> 	arch/arm/boot/dts/imx6q-gk802.dt.yaml
+> 	arch/arm/boot/dts/imx6q-gw51xx.dt.yaml
+> 	arch/arm/boot/dts/imx6q-gw52xx.dt.yaml
+> 	arch/arm/boot/dts/imx6q-gw53xx.dt.yaml
+> 	arch/arm/boot/dts/imx6q-gw5400-a.dt.yaml
+> 	arch/arm/boot/dts/imx6q-gw54xx.dt.yaml
+> 	arch/arm/boot/dts/imx6q-gw551x.dt.yaml
+> 	arch/arm/boot/dts/imx6q-gw552x.dt.yaml
+> 	arch/arm/boot/dts/imx6q-gw553x.dt.yaml
+> 	arch/arm/boot/dts/imx6q-gw560x.dt.yaml
+> 	arch/arm/boot/dts/imx6q-gw5903.dt.yaml
+> 	arch/arm/boot/dts/imx6q-gw5904.dt.yaml
+> 	arch/arm/boot/dts/imx6q-gw5907.dt.yaml
+> 	arch/arm/boot/dts/imx6q-gw5910.dt.yaml
+> 	arch/arm/boot/dts/imx6q-gw5912.dt.yaml
+> 	arch/arm/boot/dts/imx6q-gw5913.dt.yaml
+> 	arch/arm/boot/dts/imx6q-h100.dt.yaml
+> 	arch/arm/boot/dts/imx6q-hummingboard2.dt.yaml
+> 	arch/arm/boot/dts/imx6q-hummingboard2-emmc-som-v15.dt.yaml
+> 	arch/arm/boot/dts/imx6q-hummingboard2-som-v15.dt.yaml
+> 	arch/arm/boot/dts/imx6q-hummingboard.dt.yaml
+> 	arch/arm/boot/dts/imx6q-hummingboard-emmc-som-v15.dt.yaml
+> 	arch/arm/boot/dts/imx6q-hummingboard-som-v15.dt.yaml
+> 	arch/arm/boot/dts/imx6q-icore.dt.yaml
+> 	arch/arm/boot/dts/imx6q-icore-mipi.dt.yaml
+> 	arch/arm/boot/dts/imx6q-icore-ofcap10.dt.yaml
+> 	arch/arm/boot/dts/imx6q-icore-ofcap12.dt.yaml
+> 	arch/arm/boot/dts/imx6q-icore-rqs.dt.yaml
+> 	arch/arm/boot/dts/imx6q-kp-tpc.dt.yaml
+> 	arch/arm/boot/dts/imx6q-logicpd.dt.yaml
+> 	arch/arm/boot/dts/imx6q-marsboard.dt.yaml
+> 	arch/arm/boot/dts/imx6q-mccmon6.dt.yaml
+> 	arch/arm/boot/dts/imx6q-nitrogen6_max.dt.yaml
+> 	arch/arm/boot/dts/imx6q-nitrogen6_som2.dt.yaml
+> 	arch/arm/boot/dts/imx6q-nitrogen6x.dt.yaml
+> 	arch/arm/boot/dts/imx6q-novena.dt.yaml
+> 	arch/arm/boot/dts/imx6q-phytec-mira-rdk-emmc.dt.yaml
+> 	arch/arm/boot/dts/imx6q-phytec-mira-rdk-nand.dt.yaml
+> 	arch/arm/boot/dts/imx6q-phytec-pbab01.dt.yaml
+> 	arch/arm/boot/dts/imx6q-pico-dwarf.dt.yaml
+> 	arch/arm/boot/dts/imx6q-pico-hobbit.dt.yaml
+> 	arch/arm/boot/dts/imx6q-pico-nymph.dt.yaml
+> 	arch/arm/boot/dts/imx6q-pico-pi.dt.yaml
+> 	arch/arm/boot/dts/imx6q-pistachio.dt.yaml
+> 	arch/arm/boot/dts/imx6qp-nitrogen6_max.dt.yaml
+> 	arch/arm/boot/dts/imx6qp-nitrogen6_som2.dt.yaml
+> 	arch/arm/boot/dts/imx6qp-phytec-mira-rdk-nand.dt.yaml
+> 	arch/arm/boot/dts/imx6qp-prtwd3.dt.yaml
+> 	arch/arm/boot/dts/imx6q-prti6q.dt.yaml
+> 	arch/arm/boot/dts/imx6q-prtwd2.dt.yaml
+> 	arch/arm/boot/dts/imx6qp-sabreauto.dt.yaml
+> 	arch/arm/boot/dts/imx6qp-sabresd.dt.yaml
+> 	arch/arm/boot/dts/imx6qp-tx6qp-8037.dt.yaml
+> 	arch/arm/boot/dts/imx6qp-tx6qp-8037-mb7.dt.yaml
+> 	arch/arm/boot/dts/imx6qp-tx6qp-8137.dt.yaml
+> 	arch/arm/boot/dts/imx6qp-tx6qp-8137-mb7.dt.yaml
+> 	arch/arm/boot/dts/imx6qp-vicutp.dt.yaml
+> 	arch/arm/boot/dts/imx6qp-wandboard-revd1.dt.yaml
+> 	arch/arm/boot/dts/imx6qp-zii-rdu2.dt.yaml
+> 	arch/arm/boot/dts/imx6q-rex-pro.dt.yaml
+> 	arch/arm/boot/dts/imx6q-sabreauto.dt.yaml
+> 	arch/arm/boot/dts/imx6q-sabrelite.dt.yaml
+> 	arch/arm/boot/dts/imx6q-sabresd.dt.yaml
+> 	arch/arm/boot/dts/imx6q-savageboard.dt.yaml
+> 	arch/arm/boot/dts/imx6q-sbc6x.dt.yaml
+> 	arch/arm/boot/dts/imx6q-skov-revc-lt2.dt.yaml
+> 	arch/arm/boot/dts/imx6q-skov-revc-lt6.dt.yaml
+> 	arch/arm/boot/dts/imx6q-skov-reve-mi1010ait-1cp1.dt.yaml
+> 	arch/arm/boot/dts/imx6q-solidsense.dt.yaml
+> 	arch/arm/boot/dts/imx6q-tbs2910.dt.yaml
+> 	arch/arm/boot/dts/imx6q-ts4900.dt.yaml
+> 	arch/arm/boot/dts/imx6q-ts7970.dt.yaml
+> 	arch/arm/boot/dts/imx6q-tx6q-1010-comtft.dt.yaml
+> 	arch/arm/boot/dts/imx6q-tx6q-1010.dt.yaml
+> 	arch/arm/boot/dts/imx6q-tx6q-1020-comtft.dt.yaml
+> 	arch/arm/boot/dts/imx6q-tx6q-1020.dt.yaml
+> 	arch/arm/boot/dts/imx6q-tx6q-1036.dt.yaml
+> 	arch/arm/boot/dts/imx6q-tx6q-1036-mb7.dt.yaml
+> 	arch/arm/boot/dts/imx6q-tx6q-10x0-mb7.dt.yaml
+> 	arch/arm/boot/dts/imx6q-tx6q-1110.dt.yaml
+> 	arch/arm/boot/dts/imx6q-tx6q-11x0-mb7.dt.yaml
+> 	arch/arm/boot/dts/imx6q-udoo.dt.yaml
+> 	arch/arm/boot/dts/imx6q-utilite-pro.dt.yaml
+> 	arch/arm/boot/dts/imx6q-var-dt6customboard.dt.yaml
+> 	arch/arm/boot/dts/imx6q-vicut1.dt.yaml
+> 	arch/arm/boot/dts/imx6q-wandboard.dt.yaml
+> 	arch/arm/boot/dts/imx6q-wandboard-revb1.dt.yaml
+> 	arch/arm/boot/dts/imx6q-wandboard-revd1.dt.yaml
+> 	arch/arm/boot/dts/imx6q-zii-rdu2.dt.yaml
+> 	arch/arm/boot/dts/imx6s-dhcom-drc02.dt.yaml
+> 	arch/arm/boot/dts/imx6sl-evk.dt.yaml
+> 	arch/arm/boot/dts/imx6sll-evk.dt.yaml
+> 	arch/arm/boot/dts/imx6sll-kobo-clarahd.dt.yaml
+> 	arch/arm/boot/dts/imx6sll-kobo-librah2o.dt.yaml
+> 	arch/arm/boot/dts/imx6sl-tolino-shine2hd.dt.yaml
+> 	arch/arm/boot/dts/imx6sl-tolino-shine3.dt.yaml
+> 	arch/arm/boot/dts/imx6sl-tolino-vision5.dt.yaml
+> 	arch/arm/boot/dts/imx6sl-warp.dt.yaml
+> 	arch/arm/boot/dts/imx6sx-nitrogen6sx.dt.yaml
+> 	arch/arm/boot/dts/imx6sx-sabreauto.dt.yaml
+> 	arch/arm/boot/dts/imx6sx-sdb.dt.yaml
+> 	arch/arm/boot/dts/imx6sx-sdb-mqs.dt.yaml
+> 	arch/arm/boot/dts/imx6sx-sdb-reva.dt.yaml
+> 	arch/arm/boot/dts/imx6sx-sdb-sai.dt.yaml
+> 	arch/arm/boot/dts/imx6sx-softing-vining-2000.dt.yaml
+> 	arch/arm/boot/dts/imx6sx-udoo-neo-basic.dt.yaml
+> 	arch/arm/boot/dts/imx6sx-udoo-neo-extended.dt.yaml
+> 	arch/arm/boot/dts/imx6sx-udoo-neo-full.dt.yaml
+> 	arch/arm/boot/dts/imx6ul-14x14-evk.dt.yaml
+> 	arch/arm/boot/dts/imx6ul-ccimx6ulsbcexpress.dt.yaml
+> 	arch/arm/boot/dts/imx6ul-ccimx6ulsbcpro.dt.yaml
+> 	arch/arm/boot/dts/imx6ul-geam.dt.yaml
+> 	arch/arm/boot/dts/imx6ul-isiot-emmc.dt.yaml
+> 	arch/arm/boot/dts/imx6ul-isiot-nand.dt.yaml
+> 	arch/arm/boot/dts/imx6ul-kontron-n6310-s-43.dt.yaml
+> 	arch/arm/boot/dts/imx6ul-kontron-n6310-s.dt.yaml
+> 	arch/arm/boot/dts/imx6ull-14x14-evk.dt.yaml
+> 	arch/arm/boot/dts/imx6ull-colibri-emmc-eval-v3.dt.yaml
+> 	arch/arm/boot/dts/imx6ull-colibri-eval-v3.dt.yaml
+> 	arch/arm/boot/dts/imx6ull-colibri-wifi-eval-v3.dt.yaml
+> 	arch/arm/boot/dts/imx6ul-liteboard.dt.yaml
+> 	arch/arm/boot/dts/imx6ull-myir-mys-6ulx-eval.dt.yaml
+> 	arch/arm/boot/dts/imx6ull-opos6uldev.dt.yaml
+> 	arch/arm/boot/dts/imx6ull-phytec-segin-ff-rdk-emmc.dt.yaml
+> 	arch/arm/boot/dts/imx6ull-phytec-segin-ff-rdk-nand.dt.yaml
+> 	arch/arm/boot/dts/imx6ull-phytec-segin-lc-rdk-nand.dt.yaml
+> 	arch/arm/boot/dts/imx6ul-opos6uldev.dt.yaml
+> 	arch/arm/boot/dts/imx6ul-phytec-segin-ff-rdk-emmc.dt.yaml
+> 	arch/arm/boot/dts/imx6ul-phytec-segin-ff-rdk-nand.dt.yaml
+> 	arch/arm/boot/dts/imx6ul-pico-dwarf.dt.yaml
+> 	arch/arm/boot/dts/imx6ul-pico-hobbit.dt.yaml
+> 	arch/arm/boot/dts/imx6ul-pico-pi.dt.yaml
+> 	arch/arm/boot/dts/imx6ul-prti6g.dt.yaml
+> 	arch/arm/boot/dts/imx6ul-tx6ul-0010.dt.yaml
+> 	arch/arm/boot/dts/imx6ul-tx6ul-0011.dt.yaml
+> 	arch/arm/boot/dts/imx6ul-tx6ul-mainboard.dt.yaml
+> 	arch/arm/boot/dts/imx6ulz-14x14-evk.dt.yaml
+> 
+> spba-bus@2240000: $nodename:0: 'spba-bus@2240000' does not match '^bus(@[0-9a-f]+)?$'
+> 	arch/arm/boot/dts/imx6sx-nitrogen6sx.dt.yaml
+> 	arch/arm/boot/dts/imx6sx-sabreauto.dt.yaml
+> 	arch/arm/boot/dts/imx6sx-sdb.dt.yaml
+> 	arch/arm/boot/dts/imx6sx-sdb-mqs.dt.yaml
+> 	arch/arm/boot/dts/imx6sx-sdb-reva.dt.yaml
+> 	arch/arm/boot/dts/imx6sx-sdb-sai.dt.yaml
+> 	arch/arm/boot/dts/imx6sx-softing-vining-2000.dt.yaml
+> 	arch/arm/boot/dts/imx6sx-udoo-neo-basic.dt.yaml
+> 	arch/arm/boot/dts/imx6sx-udoo-neo-extended.dt.yaml
+> 	arch/arm/boot/dts/imx6sx-udoo-neo-full.dt.yaml
+> 
+> spba-bus@30000000: $nodename:0: 'spba-bus@30000000' does not match '^bus(@[0-9a-f]+)?$'
+> 	arch/arm64/boot/dts/freescale/imx8mm-beacon-kit.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-ddr4-evk.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-ctouch2.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-edimm2.2.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx-0x.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-venice-gw72xx-0x.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-venice-gw73xx-0x.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mn-beacon-kit.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dt.yaml
+> 
+> spba-bus@30800000: $nodename:0: 'spba-bus@30800000' does not match '^bus(@[0-9a-f]+)?$'
+> 	arch/arm64/boot/dts/freescale/imx8mm-beacon-kit.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-ddr4-evk.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-ctouch2.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-edimm2.2.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx-0x.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-venice-gw72xx-0x.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-venice-gw73xx-0x.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mn-beacon-kit.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dt.yaml
+> 	arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dt.yaml
+> 	arch/arm/boot/dts/imx7d-cl-som-imx7.dt.yaml
+> 	arch/arm/boot/dts/imx7d-colibri-aster.dt.yaml
+> 	arch/arm/boot/dts/imx7d-colibri-emmc-aster.dt.yaml
+> 	arch/arm/boot/dts/imx7d-colibri-emmc-eval-v3.dt.yaml
+> 	arch/arm/boot/dts/imx7d-colibri-eval-v3.dt.yaml
+> 	arch/arm/boot/dts/imx7d-flex-concentrator.dt.yaml
+> 	arch/arm/boot/dts/imx7d-flex-concentrator-mfg.dt.yaml
+> 	arch/arm/boot/dts/imx7d-mba7.dt.yaml
+> 	arch/arm/boot/dts/imx7d-meerkat96.dt.yaml
+> 	arch/arm/boot/dts/imx7d-nitrogen7.dt.yaml
+> 	arch/arm/boot/dts/imx7d-pico-dwarf.dt.yaml
+> 	arch/arm/boot/dts/imx7d-pico-hobbit.dt.yaml
+> 	arch/arm/boot/dts/imx7d-pico-nymph.dt.yaml
+> 	arch/arm/boot/dts/imx7d-pico-pi.dt.yaml
+> 	arch/arm/boot/dts/imx7d-remarkable2.dt.yaml
+> 	arch/arm/boot/dts/imx7d-sbc-imx7.dt.yaml
+> 	arch/arm/boot/dts/imx7d-sdb.dt.yaml
+> 	arch/arm/boot/dts/imx7d-sdb-reva.dt.yaml
+> 	arch/arm/boot/dts/imx7d-sdb-sht11.dt.yaml
+> 	arch/arm/boot/dts/imx7d-zii-rmu2.dt.yaml
+> 	arch/arm/boot/dts/imx7d-zii-rpu2.dt.yaml
+> 	arch/arm/boot/dts/imx7s-colibri-aster.dt.yaml
+> 	arch/arm/boot/dts/imx7s-colibri-eval-v3.dt.yaml
+> 	arch/arm/boot/dts/imx7s-mba7.dt.yaml
+> 	arch/arm/boot/dts/imx7s-warp.dt.yaml
+> 
+> spba-bus@50000000: $nodename:0: 'spba-bus@50000000' does not match '^bus(@[0-9a-f]+)?$'
+> 	arch/arm/boot/dts/imx35-eukrea-mbimxsd35-baseboard.dt.yaml
+> 	arch/arm/boot/dts/imx35-pdk.dt.yaml
+> 
+> 
