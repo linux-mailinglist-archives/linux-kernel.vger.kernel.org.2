@@ -2,208 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A74460508
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 07:45:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A603A460538
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 09:08:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343611AbhK1Gre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 01:47:34 -0500
-Received: from mga02.intel.com ([134.134.136.20]:35914 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244853AbhK1Gpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 01:45:33 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10181"; a="223040330"
-X-IronPort-AV: E=Sophos;i="5.87,270,1631602800"; 
-   d="scan'208";a="223040330"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 22:42:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,270,1631602800"; 
-   d="scan'208";a="476345189"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 27 Nov 2021 22:42:16 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mrDtA-000AQU-2I; Sun, 28 Nov 2021 06:42:16 +0000
-Date:   Sun, 28 Nov 2021 14:41:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars:for-next/kspp-misc-fixes] BUILD SUCCESS
- 5c9a39a1ff78d32e645774c7eb213c831b51b1ee
-Message-ID: <61a3249a.c7K27mr7Jb/svHab%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1356913AbhK1IMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 03:12:08 -0500
+Received: from sender4-op-o15.zoho.com ([136.143.188.15]:17578 "EHLO
+        sender4-op-o15.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1356945AbhK1IKG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Nov 2021 03:10:06 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1638057926; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=k+N01kzcipbexhHQsG88X2M0FQGUx7o/+bnRg1X6P6lyVOiD8+BbReMlTn0+Oi3d1c7w9m6u7kcgTCTv6d+BOpVO36r0mVQQy1L/o97VJEK3ohLVz927iOckGst0cFmLQti4Chc/9y20bMbd+0kgLRNjeZ1TGdTUALgolDYT0dw=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1638057926; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=k/axBYgs8ePu82NKai1qn+cHK8gQhlozWwXZnDXD8yk=; 
+        b=OexewUidtTGMEGSPfuJVLpIck/dTD52CYt8S+WPys75HdmGs49nYiKODg5XEu699gIqo6TlVR7iU2GAApuAuR+8azPDH0YknNLHpDhsT7vOPmhaChYD8tKyUKjTb8/hx7tx2psFIBtsXZa3dxJz8poIP0FMO7ke5CSZtFmK+xno=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=szanni.org;
+        spf=pass  smtp.mailfrom=angelo@szanni.org;
+        dmarc=pass header.from=<lkml@szanni.org>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1638057926;
+        s=zoho; d=szanni.org; i=lkml@szanni.org;
+        h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type:Content-Transfer-Encoding;
+        bh=k/axBYgs8ePu82NKai1qn+cHK8gQhlozWwXZnDXD8yk=;
+        b=Kn37IrDoVNidrb6X54m7LkCfk4fXsdTOh1vVjU4K3AaFUzv40tFX+7/y6FOyJiit
+        +2Ds4yqz4mGD6AhFB16H8bryGG1OuVI2zQkSqpJ6kprfETH+K8YPj+CPxc0WBKJ6/hL
+        FeasMNHSlJ8BPf4AO798O5gnGRu/2f/mEroY59iI=
+Received: from [192.168.0.128] (200.60.135.218 [200.60.135.218]) by mx.zohomail.com
+        with SMTPS id 1638057923743427.7880943683017; Sat, 27 Nov 2021 16:05:23 -0800 (PST)
+Message-ID: <5475c3ab-a53c-8728-98c5-98fd948ff556@szanni.org>
+Date:   Sat, 27 Nov 2021 19:07:49 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Content-Language: en-US
+To:     linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Will Deacon <will@kernel.org>, linux-rt-users@vger.kernel.org
+From:   Angelo Haller <lkml@szanni.org>
+Subject: sched: some non-GPL symbols becoming GPL-only with CONFIG_PREEMPT_RT
+ enabled
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/kspp-misc-fixes
-branch HEAD: 5c9a39a1ff78d32e645774c7eb213c831b51b1ee  ASoC: SOF: topology: Replace zero-length array with flexible-array member
+Greetings. I hope I picked the right mailing list, as this issue might 
+be one that affects various subsystems and components:
 
-elapsed time: 723m
+When compiling kernel 5.15 (and 5.16-rc2) with `CONFIG_PREEMPT_RT` 
+enabled, some of the symbols being exported as `EXPORT_SYMBOL` suddenly 
+become `EXPORT_SYMBOL_GPL` through transitive effects.
 
-configs tested: 149
-configs skipped: 3
+In particular the symbols `migrate_enable` and `migrate_disable` are 
+currently marked as `EXPORT_SYMBOL_GPL` - yet are called from multiple 
+functions that are marked as `EXPORT_SYMBOL`.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Here an (incomplete?) listing of call sites I came across:
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                      tqm8xx_defconfig
-powerpc                      pcm030_defconfig
-mips                         cobalt_defconfig
-arm                        spear6xx_defconfig
-mips                         tb0226_defconfig
-sh                         ecovec24_defconfig
-arm                        oxnas_v6_defconfig
-sh                           se7722_defconfig
-mips                        jmr3927_defconfig
-arc                           tb10x_defconfig
-m68k                          multi_defconfig
-mips                  cavium_octeon_defconfig
-sh                           se7206_defconfig
-sh                          rsk7203_defconfig
-x86_64                           alldefconfig
-arm                        spear3xx_defconfig
-mips                     decstation_defconfig
-powerpc                     pseries_defconfig
-sh                            hp6xx_defconfig
-mips                         tb0287_defconfig
-powerpc                 mpc834x_itx_defconfig
-powerpc                      ep88xc_defconfig
-sh                ecovec24-romimage_defconfig
-powerpc                      ppc64e_defconfig
-powerpc                 mpc8272_ads_defconfig
-powerpc                     skiroot_defconfig
-powerpc                 mpc85xx_cds_defconfig
-arc                          axs103_defconfig
-powerpc                      mgcoge_defconfig
-arm                            mmp2_defconfig
-mips                            gpr_defconfig
-ia64                             alldefconfig
-um                                  defconfig
-xtensa                  cadence_csp_defconfig
-xtensa                generic_kc705_defconfig
-sh                         ap325rxa_defconfig
-mips                           ip27_defconfig
-h8300                               defconfig
-m68k                                defconfig
-riscv                    nommu_k210_defconfig
-mips                         db1xxx_defconfig
-powerpc                     taishan_defconfig
-riscv             nommu_k210_sdcard_defconfig
-sh                        edosk7705_defconfig
-powerpc                    adder875_defconfig
-xtensa                    xip_kc705_defconfig
-powerpc               mpc834x_itxgp_defconfig
-sh                          sdk7786_defconfig
-arm                        cerfcube_defconfig
-nds32                            alldefconfig
-powerpc                 mpc8540_ads_defconfig
-powerpc                     mpc512x_defconfig
-openrisc                 simple_smp_defconfig
-i386                             allyesconfig
-arm                         socfpga_defconfig
-arm                          gemini_defconfig
-powerpc                mpc7448_hpc2_defconfig
-arm                       spear13xx_defconfig
-arm                  randconfig-c002-20211128
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nds32                             allnoconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allmodconfig
-s390                                defconfig
-parisc                           allyesconfig
-s390                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a011-20211128
-x86_64               randconfig-a014-20211128
-x86_64               randconfig-a012-20211128
-x86_64               randconfig-a016-20211128
-x86_64               randconfig-a013-20211128
-x86_64               randconfig-a015-20211128
-i386                 randconfig-a015-20211128
-i386                 randconfig-a016-20211128
-i386                 randconfig-a013-20211128
-i386                 randconfig-a012-20211128
-i386                 randconfig-a014-20211128
-i386                 randconfig-a011-20211128
-i386                 randconfig-a016-20211126
-i386                 randconfig-a015-20211126
-i386                 randconfig-a012-20211126
-i386                 randconfig-a013-20211126
-i386                 randconfig-a014-20211126
-i386                 randconfig-a011-20211126
-arc                  randconfig-r043-20211128
-s390                 randconfig-r044-20211128
-riscv                randconfig-r042-20211128
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
+kernel/locking/spinlock_rt.c - rt_spin_unlock()
+kernel/locking/spinlock_rt.c - rt_read_unlock()
+kernel/locking/spinlock_rt.c - rt_write_unlock()
+mm/highmem.c - kunmap_local_indexed()
 
-clang tested configs:
-s390                 randconfig-c005-20211128
-i386                 randconfig-c001-20211128
-riscv                randconfig-c006-20211128
-arm                  randconfig-c002-20211128
-powerpc              randconfig-c003-20211128
-x86_64               randconfig-c007-20211128
-mips                 randconfig-c004-20211128
-i386                 randconfig-a001-20211128
-i386                 randconfig-a002-20211128
-i386                 randconfig-a006-20211128
-i386                 randconfig-a005-20211128
-i386                 randconfig-a004-20211128
-i386                 randconfig-a003-20211128
-x86_64               randconfig-a001-20211128
-x86_64               randconfig-a006-20211128
-x86_64               randconfig-a003-20211128
-x86_64               randconfig-a005-20211128
-x86_64               randconfig-a004-20211128
-x86_64               randconfig-a002-20211128
+The issue I'm facing in particular is kmap_atomic() calling 
+`migrate_disable` and therefore suddenly becoming GPL-only. This breaks 
+the out-of-tree CDDL licensed module ZFS and has been reported before 
+already [0]. The conversation seemingly going nowhere - or patches at 
+least not being applied upstream. Downstream issue for reference [1].
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+As the original implementation of `migrate_enable` and `migrate_disable` 
+is apparently by Peter Zijlstra [2]. Peter would you be willing to 
+re-license both symbols `migrate_enable` and `migrate_disable` as 
+`EXPORT_SYMBOL`?
+
+The bigger issue I'm seeing though is that there is currently no 
+automated test to uncover exported symbols changing their license 
+depending on build configuration? I am not intimately familiar with the 
+API guarantees the kernel gives, but this seems like a violation. There 
+might be other symbols with similar licensing problems.
+
+I can open a bugzilla ticket too - if that is preferred.
+
+Angelo
+
+
+[0] 
+https://lore.kernel.org/linux-rt-users/20201208212841.694b3022@orivej.orivej.org/T/
+[1] https://github.com/openzfs/zfs/issues/11097
+[2] 
+https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/diff/patches/0009-sched-Add-migrate_disable.patch?h=v5.9-rc8-rt14-patches&id=9a89bfdb3bc77aecdd0ff8cc69b595541c7b50c4
+
