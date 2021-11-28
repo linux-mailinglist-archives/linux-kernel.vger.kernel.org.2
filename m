@@ -2,90 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2894607C4
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 17:59:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCB914607C6
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 18:00:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345117AbhK1RDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 12:03:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230078AbhK1RBD (ORCPT
+        id S1358551AbhK1RDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 12:03:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35862 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1353742AbhK1RBS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 12:01:03 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F73BC06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 08:57:47 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id y13so61584872edd.13
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 08:57:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hygTGueH+TpsmNvqO/xI0PfLf0AbmwXxiFK2b43VdDA=;
-        b=UC3FsnutK3c+2D72zzm1AYYxj1fsYRNidiiWn1BPas2Z8CsWVcGovs77qZ9RDeb3Bo
-         2pQU4sSsZuuinuAf+whfjK1op1tkF6DMX8/zuxLHxZNTsdQMMqe7+K1wUvZe5a4NacSr
-         fpWT4KQcyi1PoXODnom+kdKZPxvyP3XIGcOIsQ29lhNNfjJ2FLNZBOwzkWtVAKzVQfAZ
-         QMCJNaUHKmiN8Hh4X57gnsXaJaeqB5qfP2y+DwRYvxt2BsDgpcBBq+5oIiX02OMjK2HD
-         h/6XigX4xY/Z/BvXhIdMnPfss2JewLXq1xd0Oke9X8byYPEogcLuibZzjXx2HRsJxyvp
-         5byg==
+        Sun, 28 Nov 2021 12:01:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1638118681;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tpGHUKYpaVNMq1Y1Pd0vJp6cIrA5ck5KtEzHZ7z/FWA=;
+        b=P8mePlWWEXaQlSemS+fCDHX1I6HZsgq35W9gVdmU6N0MMaAGIO8HEJszCiG9nX+pJPbfU7
+        OyUXiAo4TGV1fwXULa60SJnmynaYvmZIdHfcoMBo7pLxjS119lYOTOXjPfag+P8WKPHu0/
+        JWpueewJDyhdwUBvyZM9/ZinhR7uO4Q=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-588-LPh8gTRSPE6FTawHBb8HZA-1; Sun, 28 Nov 2021 11:58:00 -0500
+X-MC-Unique: LPh8gTRSPE6FTawHBb8HZA-1
+Received: by mail-wm1-f71.google.com with SMTP id r129-20020a1c4487000000b00333629ed22dso10531579wma.6
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 08:57:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hygTGueH+TpsmNvqO/xI0PfLf0AbmwXxiFK2b43VdDA=;
-        b=LjLKV5vRoiAjTEqMHkNW3EtQa1wseAFBtTlZC+Rwt7K3Bm8mbbEudDNLj/tOk9M/lx
-         j8JLesWWpKyQKwe1n50So+DG7rlBv1hORzW+3TVnb35pzcvolgvzMSf2dH/NTHkNbURg
-         mN67xX1UYSN+1knU/hyEGvwfX7hdnzY8sztPdC5Ogk4H4MD0z4ANFEciFOJ//e5XP0yO
-         XhK1q09nTx/N7FnEgOq/cqWnDHduHO3vyp3RGHzedxRsYwIT3sfhww3H5CDWjKn5MWfY
-         N6+i/h9aXhrIgdN+R2qC4upiXQs0e3pP8Ig8yckyn/Zx+TyuDGWwiTpIOKWu/qQziq5Y
-         Pluw==
-X-Gm-Message-State: AOAM532PNqWiTyzO2M93qnPMYVP/OObjzbElANIMy0/5tNS13sSrIfnw
-        iAMMwi71SBo2XBiGd/Mggph8UScZydl3GA3LOzBhnA==
-X-Google-Smtp-Source: ABdhPJy270/OctF0embo/utcMpyGS+idrT99w1PP6Ttlhkvr7f8h2YIfCLyWiPBA/vd/opxEtFmZQxdXlVTeBMWcfFs=
-X-Received: by 2002:a17:907:94c7:: with SMTP id dn7mr9396435ejc.470.1638118666062;
- Sun, 28 Nov 2021 08:57:46 -0800 (PST)
-MIME-Version: 1.0
-References: <20211123214814.3756047-1-pasha.tatashin@soleen.com>
- <20211123214814.3756047-3-pasha.tatashin@soleen.com> <6d82e674-76dc-f3b0-2e53-a92eeb249eff@gmail.com>
- <CA+CK2bAX2XmMrt9RBGiUV7LG_sbpB7ov6bxMVjr5FSBVirE1CA@mail.gmail.com>
- <7d339956-27fb-4eb6-bd73-791807ddef56@gmail.com> <9e0014e8-e251-360c-ad82-334ad0f28303@gmail.com>
-In-Reply-To: <9e0014e8-e251-360c-ad82-334ad0f28303@gmail.com>
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-Date:   Sun, 28 Nov 2021 11:57:10 -0500
-Message-ID: <CA+CK2bDiWc2y=CW6d=6raaf9Haq2vuWQDTQZ-aAyLDdpq5aQPQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mm: page table check
-To:     Fusion Future <qydwhotmail@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Paul Turner <pjt@google.com>, weixugc@google.com,
-        Greg Thelen <gthelen@google.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tpGHUKYpaVNMq1Y1Pd0vJp6cIrA5ck5KtEzHZ7z/FWA=;
+        b=qmYIu3gznjcYmuWkmIdwyHV5Yipk1u0qD99L7ZNUciLCKfzfmZRJpHAw6rIBEul7Fz
+         UyB/5LVTLvTdX9CNXvEZ1xHo4oYV7pc0zpU7V/+WADmxJEszhcnx7rahQwj8LGPgvDmR
+         LC3Do+y1A1BZx+LPti6Z0LZC+q2CwrrQNYSL1c78Ux1TiRDg1XoiM/5ij26o2cFIYhET
+         eLYb5NLBApD6fehjXOql+rTyc9nnm0M6bXtMBA5iTmXmHeAdbJ2a0ea8//jKe6sxsP3k
+         ON8TcQKKXs1UM7RYgxwy+eINKzrF3WHIDw5N7TOJvTvE6YgP8pXiL8ruihZq07S4Blcg
+         XPuQ==
+X-Gm-Message-State: AOAM533xdZLoPyYZmOVtrpFeyT33rehdVt1REAJXsOqR2aKQvWAmLOlC
+        Bv+67KDZmKEvbSS1TMIc6RUsrWDeh6uUHaefhDBegVpeOSVJB6x+3ItKs9fBLDTa/pwITVZvkbT
+        kIo3WzSVL3geJz2OIH1EWY3GT
+X-Received: by 2002:a5d:6da2:: with SMTP id u2mr27679712wrs.273.1638118678999;
+        Sun, 28 Nov 2021 08:57:58 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzO+Uv4zcLBq6km16KM6CRY+H9R0szixLWE7fiDK/EVPKzwCJ9aJCnO1p7uvI44PAyiOCGEjA==
+X-Received: by 2002:a5d:6da2:: with SMTP id u2mr27679699wrs.273.1638118678861;
+        Sun, 28 Nov 2021 08:57:58 -0800 (PST)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id g18sm20503404wmq.4.2021.11.28.08.57.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Nov 2021 08:57:58 -0800 (PST)
+Date:   Sun, 28 Nov 2021 17:57:56 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Will Deacon <will@kernel.org>, Mike Rapoport <rppt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>, masahiroy@kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "maintainer:X86 ARCHITECTURE" <x86@kernel.org>,
-        frederic@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        eranian@google.com
+Subject: Re: [PATCH 2/2] perf evsel: Improve error message for uncore events
+Message-ID: <YaO1FIOYpF/Y5BDK@krava>
+References: <20211123020341.3073673-1-irogers@google.com>
+ <20211123020341.3073673-2-irogers@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211123020341.3073673-2-irogers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 28, 2021 at 11:54 AM Fusion Future <qydwhotmail@gmail.com> wrote:
->
-> > So it could be when memory consumption is over a certain percent, the bug will be triggered.
->
-> Bisected and at the commit "[04ce8955fbe4d84376b92b875c42942489fcf3c5]
-> mm: page table check", the system still doesn't encounter any freezes.
-> So it's not this commit that introduces the bug. Sorry for bothering.
+On Mon, Nov 22, 2021 at 06:03:41PM -0800, Ian Rogers wrote:
+> When a group has multiple events and the leader fails it can yield
+> errors like:
+> 
+> $ perf stat -e '{uncore_imc/cas_count_read/},instructions' /bin/true
+> Error:
+> The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (uncore_imc/cas_count_read/).
+> /bin/dmesg | grep -i perf may provide additional information.
+> 
+> However, when not the group leader <not supported> is given:
+> 
+> $ perf stat -e '{instructions,uncore_imc/cas_count_read/}' /bin/true
+> ...
+>          1,619,057      instructions
+>    <not supported> MiB  uncore_imc/cas_count_read/
+> 
+> This is necessary because get_group_fd will fail if the leader fails and
+> is the direct result of the check on line 750 of builtin-stat.c in
+> stat_handle_error that returns COUNTER_SKIP for the latter case.
+> 
+> This patch improves the error message to:
+> 
+> $ perf stat -e '{uncore_imc/cas_count_read/},instructions' /bin/true
+> Error:
+> Invalid event (uncore_imc/cas_count_read/) in per-thread mode, enable system wide with '-a'.
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/evsel.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> index a59fb2ecb84e..48696ff4bddb 100644
+> --- a/tools/perf/util/evsel.c
+> +++ b/tools/perf/util/evsel.c
+> @@ -2950,6 +2950,11 @@ int evsel__open_strerror(struct evsel *evsel, struct target *target,
+>  			return scnprintf(msg, size, "wrong clockid (%d).", clockid);
+>  		if (perf_missing_features.aux_output)
+>  			return scnprintf(msg, size, "The 'aux_output' feature is not supported, update the kernel.");
+> +		if ((evsel__leader(evsel) == evsel) &&
+> +		    (evsel->core.leader->nr_members > 1))
+> +			return scnprintf(msg, size,
+> +	"Invalid event (%s) in per-thread mode, enable system wide with '-a'.",
+> +					evsel__name(evsel));
 
-This commit by itself would not cause the freeze or BUG_ON(), but the
-next commit which enables it on x86 arch might.
+should we rather check 'target' pointer for the per-thread mode?
+I'm not sure that per-thread mode will always be the case for the failure
 
-Pasha
+jirka
+
+>  		break;
+>  	case ENODATA:
+>  		return scnprintf(msg, size, "Cannot collect data source with the load latency event alone. "
+> -- 
+> 2.34.0.rc2.393.gf8c9666880-goog
+> 
+
