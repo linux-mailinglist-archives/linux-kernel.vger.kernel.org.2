@@ -2,76 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05638460437
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 06:12:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD5246046E
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 06:34:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbhK1FPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 00:15:15 -0500
-Received: from rere.qmqm.pl ([91.227.64.183]:13421 "EHLO rere.qmqm.pl"
+        id S231162AbhK1Fhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 00:37:41 -0500
+Received: from mga07.intel.com ([134.134.136.100]:36791 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229653AbhK1FNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 00:13:13 -0500
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4J1xPH1FPPz4f;
-        Sun, 28 Nov 2021 06:09:55 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1638076195; bh=oUZYFQUmcrcLe+khMfxoyii9jHAFHFy8/qX4bg6ScHU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JnSDJhb2/wFE1+K5BEKj3l92hAUJYMSiQfvzp+ZlCATcD11ALuloHBV8agVwt/D5m
-         6xO5KVkS6ds9BhnvUIzgpE+GOAlwIHTeHWZUDQLRlCqXrEtKOnOW/XLCrUHjRtkpA+
-         s0Zgh/IC7vC3LAsHBRaM+HBKV7zFjzE+7UOTFGbokGiHbpHQX7rXsKsJST3S+JBeda
-         2sNRV1hDCglR6IzM+jk8O4GqGLON53RjQjMI9dzQcjIf9OmuQDCgevPa74eYKb6N8i
-         DO41zxtTZnaEDqhBVPy9rAwcuQc/n0JQGJK3acFZNX84ZqpVMLYjA4M2TxieYk4Vj5
-         b6s4KzCtg6yrQ==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.3 at mail
-Date:   Sun, 28 Nov 2021 06:09:53 +0100
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, kvm@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-crypto@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 7/9] lib/cpumask: add
- num_{possible,present,active}_cpus_{eq,gt,le}
-Message-ID: <YaMPIXUYuP1Q5FrQ@qmqm.qmqm.pl>
-References: <20211128035704.270739-1-yury.norov@gmail.com>
- <20211128035704.270739-8-yury.norov@gmail.com>
- <YaMME60Jfiz5BeJF@qmqm.qmqm.pl>
+        id S229682AbhK1Ffk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Nov 2021 00:35:40 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10181"; a="299208807"
+X-IronPort-AV: E=Sophos;i="5.87,270,1631602800"; 
+   d="scan'208";a="299208807"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 21:32:25 -0800
+X-IronPort-AV: E=Sophos;i="5.87,270,1631602800"; 
+   d="scan'208";a="458707260"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 21:32:25 -0800
+Date:   Sat, 27 Nov 2021 21:32:24 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, Dave Jiang <dave.jiang@intel.com>,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2] Documentation/auxiliary_bus: Clarify auxiliary_device
+ creation
+Message-ID: <20211128053224.GU3538886@iweiny-DESK2.sc.intel.com>
+References: <87k0hq2oxc.fsf@meer.lwn.net>
+ <20211102225310.3677785-1-ira.weiny@intel.com>
+ <YaEIdmRV2A1yclub@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YaMME60Jfiz5BeJF@qmqm.qmqm.pl>
+In-Reply-To: <YaEIdmRV2A1yclub@kroah.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 28, 2021 at 05:56:51AM +0100, Micha³ Miros³aw wrote:
-> On Sat, Nov 27, 2021 at 07:57:02PM -0800, Yury Norov wrote:
-> > Add num_{possible,present,active}_cpus_{eq,gt,le} and replace num_*_cpus()
-> > with one of new functions where appropriate. This allows num_*_cpus_*()
-> > to return earlier depending on the condition.
-> [...]
-> > @@ -3193,7 +3193,7 @@ int __init pcpu_page_first_chunk(size_t reserved_size,
-> >  
-> >  	/* allocate pages */
-> >  	j = 0;
-> > -	for (unit = 0; unit < num_possible_cpus(); unit++) {
-> > +	for (unit = 0; num_possible_cpus_gt(unit); unit++) {
+On Fri, Nov 26, 2021 at 05:16:54PM +0100, Greg Kroah-Hartman wrote:
+> On Tue, Nov 02, 2021 at 03:53:10PM -0700, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > The documentation for creating an auxiliary device is a 3 step not a 2
+> > step process.  Specifically the requirements of setting the name, id,
+> > dev.release, and dev.parent fields was not clear as a precursor to the '2
+> > step' process documented.
+> > 
+> > Clarify by declaring this a 3 step process starting with setting the
+> > fields of struct auxiliary_device correctly.
+> > 
+> > Also add some sample code and tie the change into the rest of the
+> > documentation.
+> > 
+> > Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > ---
+> > Changes from V1:
+> > 	From Jonathan
+> > 		Fix auxiliary spelling
+> > ---
+> >  Documentation/driver-api/auxiliary_bus.rst | 77 +++++++++++++++++-----
+> >  1 file changed, 59 insertions(+), 18 deletions(-)
 > 
-> This looks dubious. The old version I could hope the compiler would call
-> num_possible_cpus() only once if it's marked const or pure, but the
-> alternative is going to count the bits every time making this a guaranteed
-> O(n^2) even though the bitmap doesn't change.
+> Can you please resend the whole series, trying to just resend one patch
+> in the middle is horrible for our tools and to try to figure this out.
 
-Hmm. This code already unnecessarily calls num_possible_cpus() multiple
-times. Since it doesn't change after early init I would suggest just
-calling it once here.
+Sorry I did not realize this was an issue.  Other maintainers have been ok with
+this because I think B4 works fine with this?
 
-Best Regards
-Micha³ Miros³aw
+> 
+> Would you like to have to unwind this?  Please make it simple for
+> maintainers to review and if ok, apply your changes.
+
+Regardless, I was planning on resending this as part of the c files as you
+requested before.  Did you still want me to make that conversion?
+
+Or I can resend this and make the c conversion as a follow on patch?
+
+Ira
+
+> 
+> thanks,
+> 
+> greg k-h
