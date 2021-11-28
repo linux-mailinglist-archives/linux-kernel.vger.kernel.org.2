@@ -2,102 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E164D46028B
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 01:23:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA3A46027D
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 01:10:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356704AbhK1AZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 19:25:58 -0500
-Received: from sender4-op-o15.zoho.com ([136.143.188.15]:17512 "EHLO
-        sender4-op-o15.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232401AbhK1AX5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 19:23:57 -0500
-X-Greylist: delayed 903 seconds by postgrey-1.27 at vger.kernel.org; Sat, 27 Nov 2021 19:23:57 EST
-ARC-Seal: i=1; a=rsa-sha256; t=1638057926; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=k+N01kzcipbexhHQsG88X2M0FQGUx7o/+bnRg1X6P6lyVOiD8+BbReMlTn0+Oi3d1c7w9m6u7kcgTCTv6d+BOpVO36r0mVQQy1L/o97VJEK3ohLVz927iOckGst0cFmLQti4Chc/9y20bMbd+0kgLRNjeZ1TGdTUALgolDYT0dw=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1638057926; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
-        bh=k/axBYgs8ePu82NKai1qn+cHK8gQhlozWwXZnDXD8yk=; 
-        b=OexewUidtTGMEGSPfuJVLpIck/dTD52CYt8S+WPys75HdmGs49nYiKODg5XEu699gIqo6TlVR7iU2GAApuAuR+8azPDH0YknNLHpDhsT7vOPmhaChYD8tKyUKjTb8/hx7tx2psFIBtsXZa3dxJz8poIP0FMO7ke5CSZtFmK+xno=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=szanni.org;
-        spf=pass  smtp.mailfrom=angelo@szanni.org;
-        dmarc=pass header.from=<lkml@szanni.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1638057926;
-        s=zoho; d=szanni.org; i=lkml@szanni.org;
-        h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type:Content-Transfer-Encoding;
-        bh=k/axBYgs8ePu82NKai1qn+cHK8gQhlozWwXZnDXD8yk=;
-        b=Kn37IrDoVNidrb6X54m7LkCfk4fXsdTOh1vVjU4K3AaFUzv40tFX+7/y6FOyJiit
-        +2Ds4yqz4mGD6AhFB16H8bryGG1OuVI2zQkSqpJ6kprfETH+K8YPj+CPxc0WBKJ6/hL
-        FeasMNHSlJ8BPf4AO798O5gnGRu/2f/mEroY59iI=
-Received: from [192.168.0.128] (200.60.135.218 [200.60.135.218]) by mx.zohomail.com
-        with SMTPS id 1638057923743427.7880943683017; Sat, 27 Nov 2021 16:05:23 -0800 (PST)
-Message-ID: <5475c3ab-a53c-8728-98c5-98fd948ff556@szanni.org>
-Date:   Sat, 27 Nov 2021 19:07:49 -0500
+        id S1356681AbhK1ANh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 19:13:37 -0500
+Received: from mail-dm6nam10on2075.outbound.protection.outlook.com ([40.107.93.75]:10854
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231622AbhK1ALe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 19:11:34 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OwWXat6A8f77a1be4zN8r/W7UCTCFCivHEsJTo2KzaMI43ALhEoG9APFH+uJenG7WRkOUCKy5rGKKgl4B6owou6LoukxjO+IAnq5x3V6C6oz34LjeUY6MClO689f00Jh03HajKPXQ3Tb+cQcpL7eDEZyU/1Ao9O1rb69YRvwY5wYn4kIGOP+kvobg5Zgkqry9ND3RVWKsb9t0RoNb9qBFMeu763nkTU1CcCrB7QG+9EM0g9oDidPHKgiUFD5/jYxfPdTdA/6v8Q8aHcZ/LQZ2DdBk73CkJ68PawicBBFZWkvAf1vmKFSX/VVM5rOwO1zsZwBQIJApHredUcfyrnOdA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/pVvssknBhQqmkjfnAH5n58/RZ+BO9TWp89tWLupnzQ=;
+ b=P/hkSjwfJGBTpTJXufoHTH7AtR2UVP7ItmyXw5kSPTC0iTP4VwSGnKtS4bvo4LhSHGdFfoaMhTgqZTh3+ZISzPc+XtsTuetK6jp5XpLAXfUIE/hYPQXcPYroK2ysamuO6nliyy0g40MGQSzu6AmnU2KZkSHwHnxfbmFWfKbn/twMd13edddm14tDnxgEfwYbIum275bEiO7gtU/bsa+it2LvS9h00GNaRNP4kvBHQVRBVxYvHKqQdRqpXo2MYVFL0fPCy+w2c6U0SyYhb8BgC3d95nFiqdMU6v3zEBzTsfGoemvTHaZNC+2WzCIM79db8vDmvTIF2e/U7yWj4kBtjQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/pVvssknBhQqmkjfnAH5n58/RZ+BO9TWp89tWLupnzQ=;
+ b=RVDBhQIJLpb/y3N2LbOgQo7eiW0h6ojygnfnOpizZ2NyZmxrVovkV7yJuJbE/Ahsq7bTG4Peu/BfoSgEq9A5WvGqFT0yJNzeEEEfDqHn6dPUAPfSOu7Bnq5DtAllCXDidCMPESU2Vo+stMR8f6yqnz3tk8QF08xSRLRCyA43RdvGT0BhxgjiipAkme3i+qCDmfFOQxZa344PBHduNACryrSAkB9tX1+zwtFiF3dUo94flyVCe67w8nvAQ53oCx0yMs6h1E6qzvBSTZtqr4bayHTJFWAIraIAhv/PVP5/JYlWMU69JAhm71rIy4ECQJGE6VyT4VJ6UNG0tyB1XsYXjA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5080.namprd12.prod.outlook.com (2603:10b6:208:30a::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.23; Sun, 28 Nov
+ 2021 00:08:15 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::5897:83b2:a704:7909]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::5897:83b2:a704:7909%8]) with mapi id 15.20.4734.023; Sun, 28 Nov 2021
+ 00:08:15 +0000
+Date:   Sat, 27 Nov 2021 20:08:13 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Marc Zygnier <maz@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Megha Dey <megha.dey@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, linux-pci@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        sparclinux@vger.kernel.org, x86@kernel.org,
+        xen-devel@lists.xenproject.org, ath11k@lists.infradead.org,
+        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
+        Juergen Gross <jgross@suse.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: Re: [patch 00/22] genirq/msi, PCI/MSI: Spring cleaning - Part 1
+Message-ID: <20211128000813.GS4670@nvidia.com>
+References: <20211126222700.862407977@linutronix.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211126222700.862407977@linutronix.de>
+X-ClientProxiedBy: MN2PR11CA0016.namprd11.prod.outlook.com
+ (2603:10b6:208:23b::21) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Content-Language: en-US
-To:     linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Will Deacon <will@kernel.org>, linux-rt-users@vger.kernel.org
-From:   Angelo Haller <lkml@szanni.org>
-Subject: sched: some non-GPL symbols becoming GPL-only with CONFIG_PREEMPT_RT
- enabled
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ZohoMailClient: External
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR11CA0016.namprd11.prod.outlook.com (2603:10b6:208:23b::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.22 via Frontend Transport; Sun, 28 Nov 2021 00:08:14 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mr7jp-003n9O-MC; Sat, 27 Nov 2021 20:08:13 -0400
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 50ccafd9-0d25-48b3-c9df-08d9b2032c60
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5080:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5080742C64AE7A468452A1C9C2659@BL1PR12MB5080.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MCH67MnKWwoeJ0tJBUuCQtLpOse7q2gKhtHcZ9w4HVT9WLdyV6PDyjjzhRxGHcn1YhsXHnEm38E01Izt9ff6llf8Q3/ZVS3SHbOy1QUg7ZXp5IHSr6m4OiE7Iip6xKIF6BP6fLwGT9b3DbdiSv+JPtjKP6GknFIZP09Cf3qirh9eRARcpKThk4zj8bU7FcG1z6rxPoaNvLiuFGXUyJBSjB9D3VvsAk9gFNDRatiB2lsUu5XrFAFQwKDCXI3ZDPsyncKCILtridE0wmFzwksd59bDSy2IiZfO13XX82Tr/Bygxfl41gHHEEaweudYBMPx9VBvhRRjShfP9I4AlxYrDm1qpl2p3w9lPaZq/aMhJxX4uHcr5PR3La/0TsecikyEZvlAjXHGRt8sraUonrazIKOp1dVQ9omcSvL+gowlW2l37OX+aVgrR9jn5fw3svsbtQ7yZysn1CX9wvmC0Fm0XvfITmM3GrceITHiuXzzRIRnVIV1c/+0ntPNBh20S9GU0spzIBkpgEItTX1eiWgGIF501zcTvDigMeEAYaj1376VEzgzcvICDse+mpfI2wggPhiVYJ8Rg9eZYr/KjN2YRajKKOAKPCStk7LtAKEWfaIB+0+xz2hCmzan8KIWw46Hm6gSJN04AFB19Uvnv0RMHQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(316002)(6916009)(1076003)(36756003)(8676002)(2616005)(2906002)(426003)(9746002)(5660300002)(508600001)(7416002)(83380400001)(9786002)(8936002)(4326008)(33656002)(86362001)(186003)(38100700002)(66556008)(66476007)(26005)(54906003)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vUZwGTckNFwtDHLpp8y68okFCMHSSqDEP2vmNjrr6VWsoONo5iK+BFLRuK/+?=
+ =?us-ascii?Q?zc+UsCbFZfwgHkdDYCBbzdLpod8RhooTjzyuiPFGIU/B9JAx42nsQOURYYF0?=
+ =?us-ascii?Q?/7H+3j0qC6XIzfP+CTH8rYFge05Tm9GZKaP2bYd9A+MnFRZCHkzwkxhcen76?=
+ =?us-ascii?Q?0rdbS8rmAOzS0NbkdtifZdRszQCFPAwxhyRGrPFUKnfdOzvwHj8j9LxDCXrg?=
+ =?us-ascii?Q?6pVWQFZNjb2bLR8DAd0JJK0HQEdDpLBkeGTplFqYpdHV10rFQiSNOMZ1iOa/?=
+ =?us-ascii?Q?oPjSlchM4dbFODya1Lb8TwYrpfsE5nr9rqY8CfGPn5YULdvG9iM8EnMZ1obq?=
+ =?us-ascii?Q?dk5+6YBl2wcudgAi49Dx4m+1lL1rnHewAxGLL3G0vu1bKBqFCubFDN12yQg8?=
+ =?us-ascii?Q?FNvVaueuWrA+qSYKx8edbOuIzsRcNDET0yQHWs/SywnR3iRvOf690ukf8qP/?=
+ =?us-ascii?Q?Mm+NUCHkpN9CM4wJX0wgpKbfKbsQzNrf8IfDZ7rIv0MGEg+VtBfAaKPR95KJ?=
+ =?us-ascii?Q?lEhk3decDeRZB5Bjs1a2IFq/IhrmSpd/Anf6Q4+UDpJvFCZE4vRQ7QNOZIcw?=
+ =?us-ascii?Q?9PqPupphnqEVTXzDRuR+MScsy66X6qDHLUM0omg2xVSWGlyq/JCRKBw6rgyu?=
+ =?us-ascii?Q?8sMSL5L4VyHW4P6yZ/iTeb+5FmtEQBaOH3tMaUZz0zbdcLodmfyJ/LYBokmk?=
+ =?us-ascii?Q?K2dHFvr19g1Lvpvc4mHrjcUJxzDCdbJNmuk25u/EN2648vfc5IHmkRNOu0/0?=
+ =?us-ascii?Q?Fo6yRikSczn+NlItKqDK2aLoY3AysUZ8sG0P4J92yV1g4KRPs8WxulK6htDP?=
+ =?us-ascii?Q?zgcQEn+AA8XIe1JGGPTcZSNrcePOPEorVEDIvv1YzY55RvFVzjQUYxId+T0o?=
+ =?us-ascii?Q?KAuTccqXq6prZYKFp/7P/ncx9XRAKwchMBu8iux+Goe8mKn742tkuItafklG?=
+ =?us-ascii?Q?Z7pyi4d8uvY8Whq4O4L+gdYYd22QxMMSggA+fgiSIVwnmvrCnbCkygYwZBPJ?=
+ =?us-ascii?Q?QaqDZjdm9j/me2mASEp7tPHNkasRfGJ0Uf7VEb8C2ixA01TZB2RdeGQwbxnM?=
+ =?us-ascii?Q?CaA66SHSrILKwav0Spi2AzIxDo3aul4UKSnTL3K/twUV6S7NsNCTvu/Qko8Y?=
+ =?us-ascii?Q?VXgMe6mV82/WeHoKS0S+ssocDdytgZ8G4ZwySJxpKuFtY/IJCql0PKSw3KAG?=
+ =?us-ascii?Q?PAmC+eS4YH+lvSiPOdChM+w5ICxWz+in6BGZnGO0JzUrBEBhcH4ufQm3pLkC?=
+ =?us-ascii?Q?vkZkobKtuHhO5owViup90DzMJC6jFx+dZMLzivhW7XgkLkpk7Kt+k8csozzv?=
+ =?us-ascii?Q?TtB4dlRwnelTePkLTn1AAJ3Lkk5DCtuq+bHwjZ5gfU84NAQvxkhUMNUGnXXC?=
+ =?us-ascii?Q?0XgYbp7gPW8MwZvXEWYWYUbanV6lYCrtKD+8gIK4lqt3JUrJJSQCHw8VzZ79?=
+ =?us-ascii?Q?Dfp0nf+Qvn24AqVjh/ZC/t0yQ3e0jzoW/BrGYETnMjfp6B0sbVDBwbRasjXw?=
+ =?us-ascii?Q?sYmd9E32yVQ5+xW//CLD7cYgUEyPwH5Zukdhk8ZNYyDWrFTftgPmgtyIfcgK?=
+ =?us-ascii?Q?/3Z6HeQPURCRkqBr+Rw=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 50ccafd9-0d25-48b3-c9df-08d9b2032c60
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2021 00:08:15.0505
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /J4TPudRgMIfuhU0HwQ/2RR9GYPr9SHY8H5kT0rLiX1UHTG8TZiZUz4yF4x9T+FI
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5080
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings. I hope I picked the right mailing list, as this issue might 
-be one that affects various subsystems and components:
+On Sat, Nov 27, 2021 at 02:18:34AM +0100, Thomas Gleixner wrote:
+> The [PCI] MSI code has gained quite some warts over time. A recent
+> discussion unearthed a shortcoming: the lack of support for expanding
+> PCI/MSI-X vectors after initialization of MSI-X.
+> 
+> PCI/MSI-X has no requirement to setup all vectors when MSI-X is enabled in
+> the device. The non-used vectors have just to be masked in the vector
+> table. For PCI/MSI this is not possible because the number of vectors
+> cannot be changed after initialization.
+> 
+> The PCI/MSI code, but also the core MSI irq domain code are built around
+> the assumption that all required vectors are installed at initialization
+> time and freed when the device is shut down by the driver.
+> 
+> Supporting dynamic expansion at least for MSI-X is important for VFIO so
+> that the host side interrupts for passthrough devices can be installed on
+> demand.
+> 
+> This is the first part of a large (total 101 patches) series which
+> refactors the [PCI]MSI infrastructure to make runtime expansion of MSI-X
+> vectors possible. The last part (10 patches) provide this functionality.
+> 
+> The first part is mostly a cleanup which consolidates code, moves the PCI
+> MSI code into a separate directory and splits it up into several parts.
+> 
+> No functional change intended except for patch 2/N which changes the
+> behaviour of pci_get_vector()/affinity() to get rid of the assumption that
+> the provided index is the "index" into the descriptor list instead of using
+> it as the actual MSI[X] index as seen by the hardware. This would break
+> users of sparse allocated MSI-X entries, but non of them use these
+> functions.
 
-When compiling kernel 5.15 (and 5.16-rc2) with `CONFIG_PREEMPT_RT` 
-enabled, some of the symbols being exported as `EXPORT_SYMBOL` suddenly 
-become `EXPORT_SYMBOL_GPL` through transitive effects.
+I don't know all the irqdomain stuff all that well anymore, but I read
+through all the patches and only noticed a small spello
 
-In particular the symbols `migrate_enable` and `migrate_disable` are 
-currently marked as `EXPORT_SYMBOL_GPL` - yet are called from multiple 
-functions that are marked as `EXPORT_SYMBOL`.
+[patch 02/22] PCI/MSI: Fix pci_irq_vector()/pci_irq_get_attinity()
+                                                         ^^^^ ff
 
-Here an (incomplete?) listing of call sites I came across:
+It all seems good, I especially like the splitting of msi.c and
+removal of ops..
 
-kernel/locking/spinlock_rt.c - rt_spin_unlock()
-kernel/locking/spinlock_rt.c - rt_read_unlock()
-kernel/locking/spinlock_rt.c - rt_write_unlock()
-mm/highmem.c - kunmap_local_indexed()
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-The issue I'm facing in particular is kmap_atomic() calling 
-`migrate_disable` and therefore suddenly becoming GPL-only. This breaks 
-the out-of-tree CDDL licensed module ZFS and has been reported before 
-already [0]. The conversation seemingly going nowhere - or patches at 
-least not being applied upstream. Downstream issue for reference [1].
-
-As the original implementation of `migrate_enable` and `migrate_disable` 
-is apparently by Peter Zijlstra [2]. Peter would you be willing to 
-re-license both symbols `migrate_enable` and `migrate_disable` as 
-`EXPORT_SYMBOL`?
-
-The bigger issue I'm seeing though is that there is currently no 
-automated test to uncover exported symbols changing their license 
-depending on build configuration? I am not intimately familiar with the 
-API guarantees the kernel gives, but this seems like a violation. There 
-might be other symbols with similar licensing problems.
-
-I can open a bugzilla ticket too - if that is preferred.
-
-Angelo
-
-
-[0] 
-https://lore.kernel.org/linux-rt-users/20201208212841.694b3022@orivej.orivej.org/T/
-[1] https://github.com/openzfs/zfs/issues/11097
-[2] 
-https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/diff/patches/0009-sched-Add-migrate_disable.patch?h=v5.9-rc8-rt14-patches&id=9a89bfdb3bc77aecdd0ff8cc69b595541c7b50c4
-
+Thanks,
+Jason
