@@ -2,104 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 510D04607B4
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 17:48:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7A6F4607BD
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 17:55:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358510AbhK1Qvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 11:51:37 -0500
-Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:53782 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352946AbhK1Qte (ORCPT
+        id S1358506AbhK1Q7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 11:59:00 -0500
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:42850 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230078AbhK1Q47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 11:49:34 -0500
-Received: from pop-os.home ([86.243.171.122])
-        by smtp.orange.fr with ESMTPA
-        id rNJgmflov2lVYrNJhmrSfR; Sun, 28 Nov 2021 17:46:17 +0100
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Sun, 28 Nov 2021 17:46:17 +0100
-X-ME-IP: 86.243.171.122
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Felix.Kuehling@amd.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@linux.ie,
-        daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 2/2] drm/amdkfd: Use non-atomic bitmap functions when possible
-Date:   Sun, 28 Nov 2021 17:46:15 +0100
-Message-Id: <d18382516544c0a8c0b8e563087cb6a8b2893078.1638117878.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <f12820f6c5fca9b10ac8f82b3689c50ccb6966aa.1638117878.git.christophe.jaillet@wanadoo.fr>
-References: <f12820f6c5fca9b10ac8f82b3689c50ccb6966aa.1638117878.git.christophe.jaillet@wanadoo.fr>
+        Sun, 28 Nov 2021 11:56:59 -0500
+Received: by mail-oi1-f181.google.com with SMTP id n66so29765201oia.9;
+        Sun, 28 Nov 2021 08:53:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=45c1gacm72RX4cF7zNnpU51xQn+kJSWSAn4Mo9Q7trc=;
+        b=FW+5dkPJBRq1whp5F9dHlh1DC+ac7EF0rsKqRl3K4KXsJWZsXusLm1V71Sr6ZhxAf/
+         xAm9NwxcbLJUeqoL052CZeOPqwhOHQBEFrjsjqLQCWoroBY+VbZ9R89+AXismgyGgFRG
+         CZeUOQ7adnbltxz8tvtaTCx0eGFxzM9jL+3BnqAZwy1/BXRKJFa6huhcKkguO+VEBCrt
+         P4dbCXSW2DPZA49h4JfzJRs3lAwwCvt1KHfy7kXwN3CU7Fgk1HsUK4HzjhuJrE50Dovl
+         pcJS7CvdZGYacm5B9wVs4hwISFZIkebjNZuA5hOGk6igmduWv/AgzvcQ/S5brD2xTL+u
+         Yp0Q==
+X-Gm-Message-State: AOAM530JUHH4lvzS5s8VP8B7i47IT2ElkPaxAEqeemNYmO/1h6MPOA17
+        UkQDCArXnDn8rKpIyEwKPA==
+X-Google-Smtp-Source: ABdhPJy7pyUbgpVnYnG9saZFi8PYobUToY1xZuAG64h436uSkvorpWBdVmBhJPtgTE5wStLGhyx8Cw==
+X-Received: by 2002:a05:6808:120b:: with SMTP id a11mr36930823oil.128.1638118422790;
+        Sun, 28 Nov 2021 08:53:42 -0800 (PST)
+Received: from robh.at.kernel.org ([2607:fb90:20d6:afc8:f6e9:d57a:3e26:ee41])
+        by smtp.gmail.com with ESMTPSA id a17sm2437469oiw.43.2021.11.28.08.53.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Nov 2021 08:53:42 -0800 (PST)
+Received: (nullmailer pid 2708024 invoked by uid 1000);
+        Sun, 28 Nov 2021 16:53:37 -0000
+Date:   Sun, 28 Nov 2021 10:53:37 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
+        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, swboyd@chromium.org,
+        judyhsiao@chromium.org,
+        Venkata Prasad Potturu <potturu@codeaurora.org>
+Subject: Re: [PATCH v6 08/10] ASoC: dt-bindings: Add SC7280 lpass cpu bindings
+Message-ID: <YaO0ER2pNIQrvlxM@robh.at.kernel.org>
+References: <1637928282-2819-1-git-send-email-srivasam@codeaurora.org>
+ <1637928282-2819-9-git-send-email-srivasam@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1637928282-2819-9-git-send-email-srivasam@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All uses of the 'kfd->gtt_sa_bitmap' bitmap are protected with the
-'kfd->gtt_sa_lock' mutex.
+On Fri, Nov 26, 2021 at 05:34:40PM +0530, Srinivasa Rao Mandadapu wrote:
+> Add bindings for sc7280 lpass cpu driver which supports
+> audio over i2s based speaker, soundwire based headset, msm dmics
+> and HDMI Port.
+> 
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+> ---
+>  .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 69 +++++++++++++++++++---
+>  1 file changed, 61 insertions(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+> index 1e23c0e..0f5a57c 100644
+> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+> @@ -22,35 +22,36 @@ properties:
+>        - qcom,lpass-cpu
+>        - qcom,apq8016-lpass-cpu
+>        - qcom,sc7180-lpass-cpu
+> +      - qcom,sc7280-lpass-cpu
+>  
+>    reg:
+> -    maxItems: 2
+> +    maxItems: 5
+>      description: LPAIF core registers
+>  
+>    reg-names:
+> -    maxItems: 2
+> +    maxItems: 5
+>  
+>    clocks:
+>      minItems: 3
+> -    maxItems: 6
+> +    maxItems: 7
+>  
+>    clock-names:
+>      minItems: 3
+> -    maxItems: 6
+> +    maxItems: 7
+>  
+>    interrupts:
+> -    maxItems: 2
+> +    maxItems: 4
+>      description: LPAIF DMA buffer interrupt
+>  
+>    interrupt-names:
+> -    maxItems: 2
+> +    maxItems: 4
+>  
+>    qcom,adsp:
+>      $ref: /schemas/types.yaml#/definitions/phandle
+>      description: Phandle for the audio DSP node
+>  
+>    iommus:
+> -    maxItems: 2
+> +    maxItems: 3
+>      description: Phandle to apps_smmu node with sid mask
+>  
+>    power-domains:
+> @@ -69,7 +70,7 @@ patternProperties:
+>    "^dai-link@[0-9a-f]$":
+>      type: object
+>      description: |
+> -      LPASS CPU dai node for each I2S device. Bindings of each node
+> +      LPASS CPU dai node for each I2S device or Soundwire device. Bindings of each node
+>        depends on the specific driver providing the functionality and
+>        properties.
+>      properties:
+> @@ -174,6 +175,58 @@ allOf:
+>          - iommus
+>          - power-domains
+>  
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: qcom,sc7280-lpass-cpu
+> +
+> +    then:
+> +      properties:
+> +        clock-names:
+> +          oneOf:
+> +            - items:   #for I2S
+> +                - const: lpass_aon_cc_audio_hm_h_clk
+> +                - const: lpass_core_cc_sysnoc_mport_core_clk
+> +                - const: lpass_core_cc_ext_if1_ibit_clk
+> +            - items:   #for Soundwire
+> +                - const: lpass_aon_cc_audio_hm_h_clk
+> +                - const: lpass_audio_cc_codec_mem0_clk
+> +                - const: lpass_audio_cc_codec_mem1_clk
+> +                - const: lpass_audio_cc_codec_mem2_clk
+> +            - items:   #for HDMI
+> +                - const: lpass_aon_cc_audio_hm_h_clk
 
-So:
-   - prefer the non-atomic '__set_bit()' function
-   - use the non-atomic 'bitmap_[set|clear]()' functions instead of
-     equivalent 'for' loops. These functions can work on several bits at a
-     time
+'lpass_' and '_clk' are redundant.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/gpu/drm/amd/amdkfd/kfd_device.c | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+> +
+> +        reg-names:
+> +          anyOf:
+> +            - items:   #for I2S
+> +                - const: lpass-lpaif
+> +            - items:   #for I2S and HDMI
+> +                - const: lpass-hdmiif
+> +                - const: lpass-lpaif
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device.c b/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-index c5a0ce44a295..c4d868a5dd97 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-@@ -1346,7 +1346,7 @@ int kfd_gtt_sa_allocate(struct kfd_dev *kfd, unsigned int size,
- 	/* If we need only one chunk, mark it as allocated and get out */
- 	if (size <= kfd->gtt_sa_chunk_size) {
- 		pr_debug("Single bit\n");
--		set_bit(found, kfd->gtt_sa_bitmap);
-+		__set_bit(found, kfd->gtt_sa_bitmap);
- 		goto kfd_gtt_out;
- 	}
- 
-@@ -1384,10 +1384,8 @@ int kfd_gtt_sa_allocate(struct kfd_dev *kfd, unsigned int size,
- 		(*mem_obj)->range_start, (*mem_obj)->range_end);
- 
- 	/* Mark the chunks as allocated */
--	for (found = (*mem_obj)->range_start;
--		found <= (*mem_obj)->range_end;
--		found++)
--		set_bit(found, kfd->gtt_sa_bitmap);
-+	bitmap_set(kfd->gtt_sa_bitmap, (*mem_obj)->range_start,
-+		   (*mem_obj)->range_end - (*mem_obj)->range_start + 1);
- 
- kfd_gtt_out:
- 	mutex_unlock(&kfd->gtt_sa_lock);
-@@ -1402,8 +1400,6 @@ int kfd_gtt_sa_allocate(struct kfd_dev *kfd, unsigned int size,
- 
- int kfd_gtt_sa_free(struct kfd_dev *kfd, struct kfd_mem_obj *mem_obj)
- {
--	unsigned int bit;
--
- 	/* Act like kfree when trying to free a NULL object */
- 	if (!mem_obj)
- 		return 0;
-@@ -1414,10 +1410,8 @@ int kfd_gtt_sa_free(struct kfd_dev *kfd, struct kfd_mem_obj *mem_obj)
- 	mutex_lock(&kfd->gtt_sa_lock);
- 
- 	/* Mark the chunks as free */
--	for (bit = mem_obj->range_start;
--		bit <= mem_obj->range_end;
--		bit++)
--		clear_bit(bit, kfd->gtt_sa_bitmap);
-+	bitmap_clear(kfd->gtt_sa_bitmap, mem_obj->range_start,
-+		     mem_obj->range_end - mem_obj->range_start + 1);
- 
- 	mutex_unlock(&kfd->gtt_sa_lock);
- 
--- 
-2.30.2
+Doesn't this apply to other SoCs?
 
+> +            - items:   #for I2S, soundwire and HDMI
+> +                - const: lpass-cdc-lpm
+> +                - const: lpass-rxtx-lpaif
+> +                - const: lpass-va-lpaif
+> +                - const: lpass-hdmiif
+> +                - const: lpass-lpaif
+
+'lpass-' is redundant too, but consistency across SoCs is better.
+
+hdmiif and lpaif should be first. (Add new resources on the end.)
+
+> +        interrupt-names:
+> +          anyOf:
+> +            - items:   #for I2S
+> +                - const: lpass-irq-lpaif
+> +            - items:   #for I2S and HDMI
+> +                - const: lpass-irq-lpaif
+> +                - const: lpass-irq-hdmi
+> +            - items:   #for I2S, soundwire and HDMI
+> +                - const: lpass-irq-lpaif
+> +                - const: lpass-irq-vaif
+> +                - const: lpass-irq-rxtxif
+> +                - const: lpass-irq-hdmi
+
+Again, add new entries to the end.
+
+> +
+> +      required:
+> +        - iommus
+> +        - power-domains
+> +
+>  examples:
+>    - |
+>      #include <dt-bindings/sound/sc7180-lpass.h>
+> -- 
+> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+> is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+> 
+> 
