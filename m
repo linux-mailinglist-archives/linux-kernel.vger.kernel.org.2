@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD203460606
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 13:02:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FFBC46060F
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 13:13:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357344AbhK1MGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 07:06:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33018 "EHLO
+        id S1357353AbhK1MQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 07:16:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357409AbhK1MEG (ORCPT
+        with ESMTP id S231346AbhK1MOb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 07:04:06 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB2F8C0613F2;
-        Sun, 28 Nov 2021 03:59:25 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id r9-20020a7bc089000000b00332f4abf43fso9596157wmh.0;
-        Sun, 28 Nov 2021 03:59:25 -0800 (PST)
+        Sun, 28 Nov 2021 07:14:31 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E34C061574;
+        Sun, 28 Nov 2021 04:11:15 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id d24so30220797wra.0;
+        Sun, 28 Nov 2021 04:11:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=jSRe68zCmLJFEKWuQop4ZXT5Q3aCGxd7+ZWrFhjTSEs=;
-        b=WLt7e/oirf0p5qBv5wjnLNLm1hHuHs6tyELo44EP4q5CbHk7OuDJKT4SJhwPXBE0+z
-         roksEPaSgaF0fLpFEKEVNEIkspQ2NdLs5+NR/bz5tZvF/xbuvevOb+Br7qdSIpRb/t5U
-         NSsQ9UtHGkdcXZeH2a4zKDA4ng+CCzzYsvchPUudjxN5pkWGjRvpr/nCPRU9nMcXgjdn
-         2mQ6FJAz8H1RYKtnAkl304xDL1uwrTbDWYY9cZaiWTeCH1iaVDqjdJ2O7qcq0HzBg+DH
-         e5uZUrLlK0vDLw5mgZ59ko4llHre+u1WtAmiuKaXhKeHRGLqGs177W/8nZmokhnowNEO
-         k4/Q==
+        bh=b+qlKKuEsHts24i+/7eZuleQ70aiJH5vp8R5fKl9lyU=;
+        b=e/qh+FehCQyTfJrFyHnKg0rHCAftIUuCpGwRYUdETlTJ6/rIRCx3QeSJaPdH09hTPC
+         yG0k6JVzM+HvFxYTgcutCFvM/3bMs/uKjyjG7iyd4g9wVjsSrEZcLqZhGzT7/2xRXuFB
+         iUyWWIgCJ5apcEqYrqCx7FhkiyBOBsYAcGlMyx4wD9QdhacxBNuw9WDdysapH9DVhSvZ
+         +UeMO1GYMPgxUgLt53QIZh20Kn0l22242kO+SFvjPdCDWtI1QhipzXK1obPx/LCPc+sD
+         TEf8nmBAlmFhtJhiXf4GzPcn5rWa7h10qC2k0PBQUI+Hnx7Xf5APsjvsH7FnjjSPxIZL
+         bSRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition
          :content-transfer-encoding:in-reply-to;
-        bh=jSRe68zCmLJFEKWuQop4ZXT5Q3aCGxd7+ZWrFhjTSEs=;
-        b=d2FtcM62Oz5Db8b2U+16/Tpss0820GPbt650puSV3U8DaY5LVIgPu+V8c0YLM6zKbU
-         0fFT/vWev9mE2uFOY3YyfmST+qsEtUAc3Q9gVrp3QHHg2lFCnPjaqjbCwRKG3gRdwjMK
-         BOL7c7KeG64fX67f0JgHlo4MHjcy8bMxY1vRgHKMhhIMjZTC+uhK3quuBMSNrQhaChBC
-         3vtmXwbB3HM7T6AfoyXMkEVT0gTDzNVmJCvx0NwKa2pccwt6DNo2cGT6QqUygushvvWP
-         GFuHImxRJuTJ0hvN3J+XDvMYCMImPv58lrIiEQ1HoQPe8CWH3A2o4MzHO6XSqVwdb4Jq
-         7ZzA==
-X-Gm-Message-State: AOAM530FKt6+RSJlSpNhCmdcNOB3GPlxA63pjwLghH3Mxb4ZYI2p4YAi
-        qA8B8pkbwtNJnp3YEERPQgI=
-X-Google-Smtp-Source: ABdhPJwKhqiNTTlcYj9nXVK0fCYywehODfMO7zP82hxSVQQ3gKEcXjD0EpiWUvQnXwDyc1t1Jg/0vQ==
-X-Received: by 2002:a7b:c85a:: with SMTP id c26mr28858014wml.23.1638100764238;
-        Sun, 28 Nov 2021 03:59:24 -0800 (PST)
+        bh=b+qlKKuEsHts24i+/7eZuleQ70aiJH5vp8R5fKl9lyU=;
+        b=xsz658a50ASP61SUxIcIHTDMRxE6BQ+1QrCKCMl4FmJhqvzp3lvzVX8J2Iwl60qE4m
+         HVXx5N0Rd+5TAzJsW57AP7PaiH6/VWIy4Rayt4Ol/RT8EWCQgfI4oCzSY6l6+9/SAgHG
+         MPRZA8Mjk55WNeuVtkaTdgK9rFpOz4/xetvsKPuW8R1QWk7duYMZFMeSGEFcq8uP9rHs
+         cL0ZvRIrZDSn7JAz+M3Cfk9WmkGupNQV+sRIRw9KlyyuciWC8YbSo+t4SWJ6Gf98dQJy
+         2SuxuAVWrP1O70lr8z0mebsw8kG87m+6AZzZDAVSzg1zPm3LC+2/ff5oZUzAD9/pymZb
+         UFAw==
+X-Gm-Message-State: AOAM532HCymG19SdGT67nhEcM9r/Fme6a/hi3knwVQ8vJmwnbCScqpni
+        I7f7R3BeJmhnDn5t+7hHXCw=
+X-Google-Smtp-Source: ABdhPJwCXPyNeLXj0THnZ0DQFmO84BSfkwsyG4JZNZSZupMD76OEHHqtcQxI370gEl/eD63IQNLuwg==
+X-Received: by 2002:adf:f80f:: with SMTP id s15mr26587988wrp.542.1638101473066;
+        Sun, 28 Nov 2021 04:11:13 -0800 (PST)
 Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
-        by smtp.gmail.com with ESMTPSA id h18sm11938521wre.46.2021.11.28.03.59.23
+        by smtp.gmail.com with ESMTPSA id b11sm16381248wmj.35.2021.11.28.04.11.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 03:59:23 -0800 (PST)
+        Sun, 28 Nov 2021 04:11:12 -0800 (PST)
 Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
-Date:   Sun, 28 Nov 2021 12:59:22 +0100
+Date:   Sun, 28 Nov 2021 13:11:11 +0100
 From:   Salvatore Bonaccorso <carnil@debian.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
@@ -58,68 +58,115 @@ Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
         Sasha Levin <sashal@kernel.org>
 Subject: Re: [PATCH 4.19 088/323] locking/lockdep: Avoid RCU-induced noinstr
  fail
-Message-ID: <YaNvGtWfuCRkmWwi@eldamar.lan>
+Message-ID: <YaNx31QvvjHy2IGh@eldamar.lan>
 References: <20211124115718.822024889@linuxfoundation.org>
  <20211124115721.937655496@linuxfoundation.org>
  <YaNP46ypf6xcTcJH@eldamar.lan>
+ <YaNvGtWfuCRkmWwi@eldamar.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YaNP46ypf6xcTcJH@eldamar.lan>
+In-Reply-To: <YaNvGtWfuCRkmWwi@eldamar.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On Sun, Nov 28, 2021 at 10:46:13AM +0100, Salvatore Bonaccorso wrote:
+On Sun, Nov 28, 2021 at 12:59:24PM +0100, Salvatore Bonaccorso wrote:
 > Hi,
 > 
-> On Wed, Nov 24, 2021 at 12:54:38PM +0100, Greg Kroah-Hartman wrote:
-> > From: Peter Zijlstra <peterz@infradead.org>
+> On Sun, Nov 28, 2021 at 10:46:13AM +0100, Salvatore Bonaccorso wrote:
+> > Hi,
 > > 
-> > [ Upstream commit ce0b9c805dd66d5e49fd53ec5415ae398f4c56e6 ]
+> > On Wed, Nov 24, 2021 at 12:54:38PM +0100, Greg Kroah-Hartman wrote:
+> > > From: Peter Zijlstra <peterz@infradead.org>
+> > > 
+> > > [ Upstream commit ce0b9c805dd66d5e49fd53ec5415ae398f4c56e6 ]
+> > > 
+> > > vmlinux.o: warning: objtool: look_up_lock_class()+0xc7: call to rcu_read_lock_any_held() leaves .noinstr.text section
 > > 
-> > vmlinux.o: warning: objtool: look_up_lock_class()+0xc7: call to rcu_read_lock_any_held() leaves .noinstr.text section
+> > For 4.19.218 at least this commit seems to cause a build failure for
+> > cpupower, if warnings are treated as errors, I have not seen the same
+> > for the 5.10.80 build:
+> > 
+> > gcc -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -DVERSION=\"4.19\" -DPACKAGE=\"cpupower\" -DPACKAGE_BUGREPORT=\"Debian\ \(reportbug\ linux-cpupower\)\" -D_GNU_SOURCE -pipe -DNLS -Wall -Wchar-subscripts -Wpointer-arith
+> >  -Wsign-compare -Wno-pointer-sign -Wdeclaration-after-statement -Wshadow -Os -fomit-frame-pointer -fPIC -o /home/build/linux-4.19.218/debian/build/build-tools/tools/power/cpupower/lib/cpupower.o -c lib/cpupower.c
+> > In file included from lockdep.c:28:
+> > ../../../kernel/locking/lockdep.c: In function ‘look_up_lock_class’:
+> > ../../../kernel/locking/lockdep.c:694:2: error: implicit declaration of function ‘hlist_for_each_entry_rcu_notrace’; did you mean ‘hlist_for_each_entry_continue’? [-Werror=implicit-function-declaration]
+> >   hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
+> >   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >   hlist_for_each_entry_continue
+> > ../../../kernel/locking/lockdep.c:694:53: error: ‘hash_entry’ undeclared (first use in this function); did you mean ‘hash_ptr’?
+> >   hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
+> >                                                      ^~~~~~~~~~
+> >                                                      hash_ptr
+> > ../../../kernel/locking/lockdep.c:694:53: note: each undeclared identifier is reported only once for each function it appears in
+> > ../../../kernel/locking/lockdep.c:694:64: error: expected ‘;’ before ‘{’ token
+> >   hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
+> >                                                                 ^~
+> >                                                                 ;
+> > ../../../kernel/locking/lockdep.c:706:1: warning: control reaches end of non-void function [-Wreturn-type]
+> >  }
+> >  ^
+> > cc1: some warnings being treated as errors
+> > make[5]: *** [/home/build/linux-4.19.218/tools/build/Makefile.build:97: /home/build/linux-4.19.218/debian/build/build-tools/tools/lib/lockdep/lockdep.o] Error 1
+> > make[4]: *** [Makefile:121: /home/build/linux-4.19.218/debian/build/build-tools/tools/lib/lockdep/liblockdep-in.o] Error 2
+> > make[4]: Leaving directory '/home/build/linux-4.19.218/tools/lib/lockdep'
+> > make[3]: *** [/home/build/linux-4.19.218/debian/rules.d/tools/lib/lockdep/Makefile:16: all] Error 2
+> > make[3]: Leaving directory '/home/build/linux-4.19.218/debian/build/build-tools/tools/lib/lockdep'
+> > make[2]: *** [debian/rules.real:795: build-liblockdep] Error 2
+> > make[2]: *** Waiting for unfinished jobs....
+> > 
+> > I was not yet able to look further on it.
 > 
-> For 4.19.218 at least this commit seems to cause a build failure for
-> cpupower, if warnings are treated as errors, I have not seen the same
-> for the 5.10.80 build:
-> 
-> gcc -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -DVERSION=\"4.19\" -DPACKAGE=\"cpupower\" -DPACKAGE_BUGREPORT=\"Debian\ \(reportbug\ linux-cpupower\)\" -D_GNU_SOURCE -pipe -DNLS -Wall -Wchar-subscripts -Wpointer-arith
->  -Wsign-compare -Wno-pointer-sign -Wdeclaration-after-statement -Wshadow -Os -fomit-frame-pointer -fPIC -o /home/build/linux-4.19.218/debian/build/build-tools/tools/power/cpupower/lib/cpupower.o -c lib/cpupower.c
-> In file included from lockdep.c:28:
-> ../../../kernel/locking/lockdep.c: In function ‘look_up_lock_class’:
-> ../../../kernel/locking/lockdep.c:694:2: error: implicit declaration of function ‘hlist_for_each_entry_rcu_notrace’; did you mean ‘hlist_for_each_entry_continue’? [-Werror=implicit-function-declaration]
->   hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
->   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   hlist_for_each_entry_continue
-> ../../../kernel/locking/lockdep.c:694:53: error: ‘hash_entry’ undeclared (first use in this function); did you mean ‘hash_ptr’?
->   hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
->                                                      ^~~~~~~~~~
->                                                      hash_ptr
-> ../../../kernel/locking/lockdep.c:694:53: note: each undeclared identifier is reported only once for each function it appears in
-> ../../../kernel/locking/lockdep.c:694:64: error: expected ‘;’ before ‘{’ token
->   hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
->                                                                 ^~
->                                                                 ;
-> ../../../kernel/locking/lockdep.c:706:1: warning: control reaches end of non-void function [-Wreturn-type]
->  }
->  ^
-> cc1: some warnings being treated as errors
-> make[5]: *** [/home/build/linux-4.19.218/tools/build/Makefile.build:97: /home/build/linux-4.19.218/debian/build/build-tools/tools/lib/lockdep/lockdep.o] Error 1
-> make[4]: *** [Makefile:121: /home/build/linux-4.19.218/debian/build/build-tools/tools/lib/lockdep/liblockdep-in.o] Error 2
-> make[4]: Leaving directory '/home/build/linux-4.19.218/tools/lib/lockdep'
-> make[3]: *** [/home/build/linux-4.19.218/debian/rules.d/tools/lib/lockdep/Makefile:16: all] Error 2
-> make[3]: Leaving directory '/home/build/linux-4.19.218/debian/build/build-tools/tools/lib/lockdep'
-> make[2]: *** [debian/rules.real:795: build-liblockdep] Error 2
-> make[2]: *** Waiting for unfinished jobs....
-> 
-> I was not yet able to look further on it.
+> Might actually be a distro specific issue, needs some further
+> investigation.
 
-Might actually be a distro specific issue, needs some further
-investigation.
+I'm really sorry about the doubled noice, so here is the stance. I can
+reproduce distro indpeendent, but the initial claim was wrong. It can
+be reproduced for 4.19.218:
+
+$ LC_ALL=C.UTF-8 V=1 ARCH=x86 make -C tools liblockdep
+make: Entering directory '/home/build/linux-stable/tools'
+mkdir -p lib/lockdep && make  subdir=lib/lockdep  -C lib/lockdep 
+make[1]: Entering directory '/home/build/linux-stable/tools/lib/lockdep'
+make -f /home/build/linux-stable/tools/build/Makefile.build dir=. obj=fixdep
+  gcc -Wp,-MD,./.fixdep.o.d -Wp,-MT,fixdep.o  -D"BUILD_STR(s)=#s"   -c -o fixdep.o fixdep.c
+   ld -r -o fixdep-in.o  fixdep.o
+gcc  -o fixdep fixdep-in.o
+  gcc -Wp,-MD,./.common.o.d -Wp,-MT,common.o -g -DCONFIG_LOCKDEP -DCONFIG_STACKTRACE -DCONFIG_PROVE_LOCKING -DBITS_PER_LONG=__WORDSIZE -DLIBLOCKDEP_VERSION='"4.19.218"' -rdynamic -O0 -g -fPIC -Wall -I. -I./uinclude -I./include -I../../include -D"BUILD_STR(s)=#s" -c -o common.o common.c
+  gcc -Wp,-MD,./.lockdep.o.d -Wp,-MT,lockdep.o -g -DCONFIG_LOCKDEP -DCONFIG_STACKTRACE -DCONFIG_PROVE_LOCKING -DBITS_PER_LONG=__WORDSIZE -DLIBLOCKDEP_VERSION='"4.19.218"' -rdynamic -O0 -g -fPIC -Wall -I. -I./uinclude -I./include -I../../include -D"BUILD_STR(s)=#s" -c -o lockdep.o lockdep.c
+In file included from lockdep.c:28:
+../../../kernel/locking/lockdep.c: In function ‘look_up_lock_class’:
+../../../kernel/locking/lockdep.c:692:2: warning: implicit declaration of function ‘hlist_for_each_entry_rcu_notrace’; did you mean ‘hlist_for_each_entry_continue’? [-Wimplicit-function-declaration]
+  hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
+  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  hlist_for_each_entry_continue
+../../../kernel/locking/lockdep.c:692:53: error: ‘hash_entry’ undeclared (first use in this function); did you mean ‘hash_ptr’?
+  hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
+                                                     ^~~~~~~~~~
+                                                     hash_ptr
+../../../kernel/locking/lockdep.c:692:53: note: each undeclared identifier is reported only once for each function it appears in
+../../../kernel/locking/lockdep.c:692:64: error: expected ‘;’ before ‘{’ token
+  hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
+                                                                ^~
+                                                                ;
+../../../kernel/locking/lockdep.c:704:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+make[2]: *** [/home/build/linux-stable/tools/build/Makefile.build:97: lockdep.o] Error 1
+make[1]: *** [Makefile:121: liblockdep-in.o] Error 2
+make[1]: Leaving directory '/home/build/linux-stable/tools/lib/lockdep'
+make: *** [Makefile:66: liblockdep] Error 2
+make: Leaving directory '/home/build/linux-stable/tools'
+
+Reverting upstream ce0b9c805dd6 ("locking/lockdep: Avoid RCU-induced
+noinstr fail") on top of 4.19.218 fixes the issue.
+
+So back to square one, and again apologies for the intermediate noise!
 
 Regards,
 Salvatore
