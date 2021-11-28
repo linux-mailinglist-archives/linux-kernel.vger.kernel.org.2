@@ -2,158 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F8314606E1
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 15:28:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C8B4606E7
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 15:29:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357906AbhK1Obv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 09:31:51 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:34686 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236781AbhK1O3s (ORCPT
+        id S1357996AbhK1OcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 09:32:24 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:48888 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1357847AbhK1OaX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 09:29:48 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5F8F2F1;
-        Sun, 28 Nov 2021 15:26:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1638109589;
-        bh=aDo+KpfazdLA9WVSgQWdRL/jZ1a/ht778m7IQb3iUms=;
+        Sun, 28 Nov 2021 09:30:23 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9E001B80D19;
+        Sun, 28 Nov 2021 14:27:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E181C004E1;
+        Sun, 28 Nov 2021 14:27:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1638109624;
+        bh=BXX6BNWkUI1KY/vvEKSAwHk13IY+j6MOE4LeLMJnjpI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ABBb2xbKQkX4MJw5ayTonQvxjkTJK8JzYWAjtcJB7RWI8VtV2tqUvhVA/Su0P00YJ
-         AIEs2YdC6n+bnrz425hqpHCy2zMVr/Q5sIOJv8fVpdKi44DaayWl0U8pAut0yqorqI
-         owPF+GcJaVhjEDYkhh82+Q/SG5ucUX6DL6BvTK5s=
-Date:   Sun, 28 Nov 2021 16:26:05 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org, tharvey@gateworks.com,
-        aford@beaconembedded.com, Fabio Estevam <festevam@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
+        b=SbFUtvH2fnRzwNeHqBPIF4eKlsML0n4Q8wq04aVRR+2S3uu2Uy2jXupJwkNso/KcF
+         8n7SCeokUayzMLi/0673bPe8Tk5N0BIHqMCwjmlgBa3NXdmOHWQUyZG7LU52dxlEbx
+         SC6JXZDKPDLD2jkAPURUv2YdAf0QKlDiU2zgr0EY=
+Date:   Sun, 28 Nov 2021 15:27:00 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peng Fan <peng.fan@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 1/5] soc: imx: imx8m-blk-ctrl: Fix imx8mm mipi reset
-Message-ID: <YaORfba924MN9vL+@pendragon.ideasonboard.com>
-References: <20211128125011.12817-1-aford173@gmail.com>
+        Mark Brown <broonie@kernel.org>,
+        Jaewon Kim <jaewon02.kim@samsung.com>,
+        Chanho Park <chanho61.park@samsung.com>,
+        David Virag <virag.david003@gmail.com>,
+        Youngmin Nam <youngmin.nam@samsung.com>,
+        devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+Subject: Re: [PATCH 6/8] tty: serial: Make SERIAL_SAMSUNG=y impossible when
+ EXYNOS_USI_V2=m
+Message-ID: <YaORtBO4b9AyFYyd@kroah.com>
+References: <20211127223253.19098-1-semen.protsenko@linaro.org>
+ <20211127223253.19098-7-semen.protsenko@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211128125011.12817-1-aford173@gmail.com>
+In-Reply-To: <20211127223253.19098-7-semen.protsenko@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
-
-Thank you for the patch.
-
-On Sun, Nov 28, 2021 at 06:50:07AM -0600, Adam Ford wrote:
-> Most of the blk-ctrl reset bits are found in one register, however
-> there are two bits in offset 8 for pulling the MIPI DPHY out of reset
-> and one of them needs to be set when IMX8MM_DISPBLK_PD_MIPI_CSI is brought
-> out of reset or the MIPI_CSI hangs.
+On Sun, Nov 28, 2021 at 12:32:51AM +0200, Sam Protsenko wrote:
+> When UART is encapsulated in USIv2 block (e.g. in Exynos850), USIv2
+> driver must be loaded first, as it's preparing USI hardware for
+> particular protocol use. Make it impossible for Samsung serial driver to
+> be built-in when USIv2 driver is built as a module, to prevent incorrect
+> booting order for those drivers.
 > 
-> Since MIPI_DSI is impacted, add the additional one for MIPI_DSI too.
-
-The patch looks good to me. I however wonder if we should clear those
-two bits at probe time, in order to start in a known state.
-
-With or without that,
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> Fixes: 926e57c065df ("soc: imx: imx8m-blk-ctrl: add DISP blk-ctrl")
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-> Reviewed-by: Fabio Estevam <festevam@gmail.com>
-> Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
 > ---
-> V3:  Split the  mipi_phy_rst_mask for CSI and DSI into their respective domains.
+>  drivers/tty/serial/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> V2:  Make a note that the extra register is only for Mini/Nano DISPLAY_BLK_CTRL
->      Rename the new register to mipi_phy_rst_mask
->      Encapsulate the edits to this register with an if-statement
->      
->  drivers/soc/imx/imx8m-blk-ctrl.c | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
-> 
-> diff --git a/drivers/soc/imx/imx8m-blk-ctrl.c b/drivers/soc/imx/imx8m-blk-ctrl.c
-> index 519b3651d1d9..c2f076b56e24 100644
-> --- a/drivers/soc/imx/imx8m-blk-ctrl.c
-> +++ b/drivers/soc/imx/imx8m-blk-ctrl.c
-> @@ -17,6 +17,7 @@
->  
->  #define BLK_SFT_RSTN	0x0
->  #define BLK_CLK_EN	0x4
-> +#define BLK_MIPI_RESET_DIV	0x8 /* Mini/Nano DISPLAY_BLK_CTRL only */
->  
->  struct imx8m_blk_ctrl_domain;
->  
-> @@ -36,6 +37,15 @@ struct imx8m_blk_ctrl_domain_data {
->  	const char *gpc_name;
->  	u32 rst_mask;
->  	u32 clk_mask;
-> +
-> +	/*
-> +	 * i.MX8M Mini and Nano have a third DISPLAY_BLK_CTRL register
-> +	 * which is used to control the reset for the MIPI Phy.
-> +	 * Since it's only present in certain circumstances,
-> +	 * an if-statement should be used before setting and clearing this
-> +	 * register.
-> +	 */
-> +	u32 mipi_phy_rst_mask;
->  };
->  
->  #define DOMAIN_MAX_CLKS 3
-> @@ -78,6 +88,8 @@ static int imx8m_blk_ctrl_power_on(struct generic_pm_domain *genpd)
->  
->  	/* put devices into reset */
->  	regmap_clear_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
-> +	if (data->mipi_phy_rst_mask)
-> +		regmap_clear_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
->  
->  	/* enable upstream and blk-ctrl clocks to allow reset to propagate */
->  	ret = clk_bulk_prepare_enable(data->num_clks, domain->clks);
-> @@ -99,6 +111,8 @@ static int imx8m_blk_ctrl_power_on(struct generic_pm_domain *genpd)
->  
->  	/* release reset */
->  	regmap_set_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
-> +	if (data->mipi_phy_rst_mask)
-> +		regmap_set_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
->  
->  	/* disable upstream clocks */
->  	clk_bulk_disable_unprepare(data->num_clks, domain->clks);
-> @@ -120,6 +134,9 @@ static int imx8m_blk_ctrl_power_off(struct generic_pm_domain *genpd)
->  	struct imx8m_blk_ctrl *bc = domain->bc;
->  
->  	/* put devices into reset and disable clocks */
-> +	if (data->mipi_phy_rst_mask)
-> +		regmap_clear_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
-> +
->  	regmap_clear_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
->  	regmap_clear_bits(bc->regmap, BLK_CLK_EN, data->clk_mask);
->  
-> @@ -480,6 +497,7 @@ static const struct imx8m_blk_ctrl_domain_data imx8mm_disp_blk_ctl_domain_data[]
->  		.gpc_name = "mipi-dsi",
->  		.rst_mask = BIT(5),
->  		.clk_mask = BIT(8) | BIT(9),
-> +		.mipi_phy_rst_mask = BIT(17),
->  	},
->  	[IMX8MM_DISPBLK_PD_MIPI_CSI] = {
->  		.name = "dispblk-mipi-csi",
-> @@ -488,6 +506,7 @@ static const struct imx8m_blk_ctrl_domain_data imx8mm_disp_blk_ctl_domain_data[]
->  		.gpc_name = "mipi-csi",
->  		.rst_mask = BIT(3) | BIT(4),
->  		.clk_mask = BIT(10) | BIT(11),
-> +		.mipi_phy_rst_mask = BIT(16),
->  	},
->  };
->  
+> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+> index 0e5ccb25bdb1..47bc24e74041 100644
+> --- a/drivers/tty/serial/Kconfig
+> +++ b/drivers/tty/serial/Kconfig
+> @@ -237,6 +237,7 @@ config SERIAL_CLPS711X_CONSOLE
+>  config SERIAL_SAMSUNG
+>  	tristate "Samsung SoC serial support"
+>  	depends on PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS || ARCH_APPLE || COMPILE_TEST
+> +	depends on EXYNOS_USI_V2 || !EXYNOS_USI_V2
 
--- 
-Regards,
+That's odd, and is not going to help if everything is built as a module
+and loaded that way.
 
-Laurent Pinchart
+This needs to be done properly in code to handle the issues if the
+"wrong" code is loaded first.  Please trigger off of the hardware type
+correctly so you don't have to worry about this at all.
+
+thanks,
+
+greg k-h
