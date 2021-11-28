@@ -2,156 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582414606D5
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 15:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4ABF460655
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 14:05:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357954AbhK1OYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 09:24:21 -0500
-Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17287 "EHLO
-        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1357834AbhK1OWU (ORCPT
+        id S236881AbhK1NIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 08:08:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236203AbhK1NGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 09:22:20 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1638005196; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=n3tN4S2pUQeHcaidBskaxPvMtDHKVAxGlzpV4gGhKRw0ZRPexTpe+9491ASfmg0HTmlzpcGklxp+HMRiNT0nz7WB3yRDEgMXIVlbk6nppF5tsd9+xwYvYa+sqjKuO3IG1VFKI2d/3UUUTEAStZqRuO2G7fPvidPxfb9wuISL+GM=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1638005196; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
-        bh=Gx78nwaiX6IcgNHFjD7iZoX/9w5JdvaOCjUYq7EIGF8=; 
-        b=L+x/I3014bH31MUiJjwlMUIA0OFhsckS6h6hv6axN+6zUKZ3hEWIrtJxc9FBqQ6Qibg6YP4JsjtX6NX4JOTcEAN2havNabHJChd8GNBZB0Un8LvTEUsJdciVm1vdlMiA5HCTyeHhT3WETZ5Uv7oleWAWjCIqSZgTHB0xWTty7g8=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1638005196;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=Gx78nwaiX6IcgNHFjD7iZoX/9w5JdvaOCjUYq7EIGF8=;
-        b=AOUteeEka8coVmSi4zQzORqE5JY1MaV08/LAMtbTc27DCvaprB+pMimMaBupCWxB
-        O+FA0+jbAUUvYwibbnxdThAmY5Ue8tUKtJFxMKJfWYfyRApCoywzOrqMRC2+ZkgXx95
-        aD4148NrPXGMaIDIGuyGKpO95c4vIFvh8io47D5E=
-Received: from mail.baihui.com by mx.zoho.com.cn
-        with SMTP id 1638005193699274.15327156530714; Sat, 27 Nov 2021 17:26:33 +0800 (CST)
-Date:   Sat, 27 Nov 2021 17:26:33 +0800
-From:   Chengguang Xu <cgxu519@mykernel.net>
-Reply-To: cgxu519@mykernel.net
-To:     "miklos" <miklos@szeredi.hu>
-Cc:     "linux-unionfs" <linux-unionfs@vger.kernel.org>,
-        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "Chengguang Xu" <charliecgxu@tencent.com>,
-        "ronyjin" <ronyjin@tencent.com>, "amir73il" <amir73il@gmail.com>,
-        "jack" <jack@suse.cz>
-Message-ID: <17d60b7bbc2.caee608a13298.8366222634423039066@mykernel.net>
-In-Reply-To: <20211122030038.1938875-1-cgxu519@mykernel.net>
-References: <20211122030038.1938875-1-cgxu519@mykernel.net>
-Subject: =?UTF-8?Q?=E5=9B=9E=E5=A4=8D:[RFC_PATCH_V6_0/7]_implement_c?=
- =?UTF-8?Q?ontainerized_syncfs_for_overlayfs?=
+        Sun, 28 Nov 2021 08:06:34 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD0FC061748
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 05:03:18 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5B4F560FD7
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 13:03:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25823C53FC7;
+        Sun, 28 Nov 2021 13:03:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1638104597;
+        bh=aYwVpeLfIXH6Mu/pJPAwzKqF8YSklMByMuPefZ9hCTI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LO475MLZnrrRDWzGsNhlXj4MV41Mg5+FAY0Yi9ZaCuU0mu5sHw2zMHKX/SOkZMj6S
+         Hi4OWu04vvdCtjzjdHwBjgQCS/K7neFt+9ScTConwhvMb7sduqtcCmXKQqlij487kZ
+         NOGKp4ojy2llM/Em96YzTX/RoWCatm8EycfFukMo=
+Date:   Sun, 28 Nov 2021 14:03:15 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Max Filippov <jcmvbkbc@gmail.com>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [linux-stable-rc:linux-4.19.y 565/981]
+ arch/xtensa/platforms/xtfpga/include/platform/hardware.h:50:33: error:
+ initializer element is not constant
+Message-ID: <YaN+E5fuvU2VO+W5@kroah.com>
+References: <202111271017.dLo8jJ8p-lkp@intel.com>
+ <CAMo8BfL88Qc6o=WheT6+n4pOpXQbnw220UQa_GCQb98F=S9ffA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Importance: Medium
-User-Agent: ZohoCN Mail
-X-Mailer: ZohoCN Mail
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMo8BfL88Qc6o=WheT6+n4pOpXQbnw220UQa_GCQb98F=S9ffA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=80, 2021-11-22 11:00:31 Chengguang=
- Xu <cgxu519@mykernel.net> =E6=92=B0=E5=86=99 ----
- > From: Chengguang Xu <charliecgxu@tencent.com>
- >=20
- > Current syncfs(2) syscall on overlayfs just calls sync_filesystem()
- > on upper_sb to synchronize whole dirty inodes in upper filesystem
- > regardless of the overlay ownership of the inode. In the use case of
- > container, when multiple containers using the same underlying upper
- > filesystem, it has some shortcomings as below.
- >=20
- > (1) Performance
- > Synchronization is probably heavy because it actually syncs unnecessary
- > inodes for target overlayfs.
- >=20
- > (2) Interference
- > Unplanned synchronization will probably impact IO performance of
- > unrelated container processes on the other overlayfs.
- >=20
- > This series try to implement containerized syncfs for overlayfs so that
- > only sync target dirty upper inodes which are belong to specific overlay=
-fs
- > instance. By doing this, it is able to reduce cost of synchronization an=
-d=20
- > will not seriously impact IO performance of unrelated processes.
- >=20
- > v1->v2:
- > - Mark overlayfs' inode dirty itself instead of adding notification
- > mechanism to vfs inode.
- >=20
- > v2->v3:
- > - Introduce overlayfs' extra syncfs wait list to wait target upper inode=
-s
- > in ->sync_fs.
- >=20
- > v3->v4:
- > - Using wait_sb_inodes() to wait syncing upper inodes.
- > - Mark overlay inode dirty only when having upper inode and VM_SHARED
- > flag in ovl_mmap().
- > - Check upper i_state after checking upper mmap state
- > in ovl_write_inode.
- >=20
- > v4->v5:
- > - Add underlying inode dirtiness check after mnt_drop_write().
- > - Handle both wait/no-wait mode of syncfs(2) in overlayfs' ->sync_fs().
- >=20
- > v5->v6:
- > - Rebase to latest overlayfs-next tree.
- > - Mark oerlay inode dirty when it has upper instead of marking dirty on
- >   modification.
- > - Trigger dirty page writeback in overlayfs' ->write_inode().
- > - Mark overlay inode 'DONTCACHE' flag.
- > - Delete overlayfs' ->writepages() and ->evict_inode() operations.
+On Sat, Nov 27, 2021 at 07:10:56AM -0800, Max Filippov wrote:
+> On Fri, Nov 26, 2021 at 6:33 PM kernel test robot <lkp@intel.com> wrote:
+> >
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> > head:   1f244a54b39dd02c69f79001b38e2650e96f1ea8
+> > commit: 1c21a8df144f1edb3b6f5f24559825780c227a7d [565/981] xtensa: xtfpga: use CONFIG_USE_OF instead of CONFIG_OF
+> > config: xtensa-randconfig-r001-20211126 (https://download.01.org/0day-ci/archive/20211127/202111271017.dLo8jJ8p-lkp@intel.com/config)
+> > compiler: xtensa-linux-gcc (GCC) 11.2.0
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=1c21a8df144f1edb3b6f5f24559825780c227a7d
+> >         git remote add linux-stable-rc https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+> >         git fetch --no-tags linux-stable-rc linux-4.19.y
+> >         git checkout 1c21a8df144f1edb3b6f5f24559825780c227a7d
+> >         # save the config file to linux build tree
+> >         mkdir build_dir
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=xtensa SHELL=/bin/bash
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> >
+> > All errors (new ones prefixed by >>):
+> >
+> >    In file included from include/linux/kernel.h:10,
+> >                     from arch/xtensa/platforms/xtfpga/setup.c:19:
+> >    include/linux/dma-mapping.h: In function 'dma_map_resource':
+> >    arch/xtensa/include/asm/page.h:182:16: warning: comparison of unsigned expression in '>= 0' is always true [-Wtype-limits]
+> >      182 |         ((pfn) >= ARCH_PFN_OFFSET && ((pfn) - ARCH_PFN_OFFSET) < max_mapnr)
+> >          |                ^~
+> >    include/linux/compiler.h:77:45: note: in definition of macro 'unlikely'
+> >       77 | # define unlikely(x)    __builtin_expect(!!(x), 0)
+> >          |                                             ^
+> >    include/linux/dma-mapping.h:329:9: note: in expansion of macro 'BUG_ON'
+> >      329 |         BUG_ON(pfn_valid(PHYS_PFN(phys_addr)));
+> >          |         ^~~~~~
+> >    include/linux/dma-mapping.h:329:16: note: in expansion of macro 'pfn_valid'
+> >      329 |         BUG_ON(pfn_valid(PHYS_PFN(phys_addr)));
+> >          |                ^~~~~~~~~
+> >    In file included from arch/xtensa/platforms/xtfpga/setup.c:37:
+> >    arch/xtensa/platforms/xtfpga/setup.c: At top level:
+> > >> arch/xtensa/platforms/xtfpga/include/platform/hardware.h:50:33: error: initializer element is not constant
+> >       50 | #define OETH_REGS_PADDR         (XCHAL_KIO_PADDR + 0x0D030000)
+> >          |                                 ^
+> 
+> This happens because the backported change
+> 1c21a8df144f1edb3b6f5f24559825780c227a7d depends on the change
+> d67ed2510d28 ("xtensa: use CONFIG_USE_OF instead of CONFIG_OF")
+> which is not in that stable tree.
+> 
+> Should I send the backported version of the d67ed2510d28 or should
+> the change 1c21a8df144f1edb3b6f5f24559825780c227a7d be reverted
+> from the stable? (IMO they are not the stable material).
 
+I have queued up d67ed2510d28 ("xtensa: use CONFIG_USE_OF instead of
+CONFIG_OF") to hopefully resolve this.
 
-Hi Miklos,
+thanks,
 
-Have you got time to have a look at this V6 series? I think this version ha=
-s already fixed
-the issues in previous feedbacks of you guys and passed fstests (generic/ov=
-erlay cases).
-
-I did some stress long time tests (tar & syncfs & diff on w/wo copy-up) and=
- found no obvious problem.
-For syncfs time with 1M clean upper inodes, there was extra 1.3s wasted on =
-waiting scheduling.
-I guess this 1.3s will not bring significant impact to container instance i=
-n most cases, I also
-agree with Jack that we can start with this approach and do some improvemen=
-ts afterwards if there is
-complain from any real users.
-
-
-
-Thanks,
-Chengguang
-
-
- >=20
- > Chengguang Xu (7):
- >   ovl: setup overlayfs' private bdi
- >   ovl: mark overlayfs inode dirty when it has upper
- >   ovl: implement overlayfs' own ->write_inode operation
- >   ovl: set 'DONTCACHE' flag for overlayfs inode
- >   fs: export wait_sb_inodes()
- >   ovl: introduce ovl_sync_upper_blockdev()
- >   ovl: implement containerized syncfs for overlayfs
- >=20
- >  fs/fs-writeback.c         |  3 ++-
- >  fs/overlayfs/inode.c      |  5 +++-
- >  fs/overlayfs/super.c      | 49 ++++++++++++++++++++++++++++++++-------
- >  fs/overlayfs/util.c       |  1 +
- >  include/linux/writeback.h |  1 +
- >  5 files changed, 48 insertions(+), 11 deletions(-)
- >=20
- > --=20
- > 2.27.0
- >=20
- >=20
+greg k-h
