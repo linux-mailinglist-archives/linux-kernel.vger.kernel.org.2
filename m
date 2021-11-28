@@ -2,128 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 680A1460756
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 17:00:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF8846075B
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 17:04:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358258AbhK1QD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 11:03:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50714 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1353562AbhK1QB0 (ORCPT
+        id S1353562AbhK1QH5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 28 Nov 2021 11:07:57 -0500
+Received: from mailgw01.mediatek.com ([60.244.123.138]:35056 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S245397AbhK1QFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 11:01:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1638115089;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oUkv4nUiQ3mkbfdCluK09ueedbskIKmpMx99orQD+k0=;
-        b=CqnAig/WSfM5Pr5QKr2EyNa58HcXV5x/EFcY/pHq9UwxnzxHRZb0FSlymQ4jEj6MUuF7He
-        XwgEGXA/oc88DsiJjMXJtzKGjE/wWT2+sO1pr9d9VeV+84a7T2UNI5tK9EgkP02pIcQtKO
-        27KNs8psWSeLu1LU7Kfm1nMepvzK0tI=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-580-uX7eOci1OJOGRLRVS3knNw-1; Sun, 28 Nov 2021 10:58:08 -0500
-X-MC-Unique: uX7eOci1OJOGRLRVS3knNw-1
-Received: by mail-wm1-f70.google.com with SMTP id a85-20020a1c7f58000000b0033ddc0eacc8so8581444wmd.9
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 07:58:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oUkv4nUiQ3mkbfdCluK09ueedbskIKmpMx99orQD+k0=;
-        b=HS1K1k1EX7W/McxJOaZHNfMnx/9NkvaBZabiMm2aVai+l1zepiGGIMI4S2uLwLRstW
-         K3l6YGU6JnnLOIkosr3FZIgn1rTtgR5QpJ4Ogs00GIceX42USBV2mKUeTXJFflVzqNnL
-         mYFOJ7BdNGRdMU01ftGc76sbmpc7XTTnl5LfF6Vr3ZLqohvzlOutDTllwh+JqdlTdft7
-         NMLWYu4/S/JKbqXUCmq4h5jpVWjr9jt7+U8u+M8riYfAMQvvYmbXaxlDQCgKFbdbSsIs
-         +lRNTGUkj/abHz5t5aiydxu1K5goo1K1HF8BjdRRz2gQim3AoXBWxpFX8SQn0UdNqEdI
-         n0ng==
-X-Gm-Message-State: AOAM533uzKPD6X4JU5xGHh42GSlS90zii03rnVe2V3G5ilpaZR+gciW8
-        GbRnvPkqEq66Vzr9uMXnnpDhkSvgSsz5vNq7PQvX5pwLRvPJJXMJ9EJMO43YrK5JoEavnhBVKqk
-        AkopbJpjkjc2yK/u8XIVyS1DG
-X-Received: by 2002:adf:f352:: with SMTP id e18mr28448058wrp.39.1638115087237;
-        Sun, 28 Nov 2021 07:58:07 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxkxnCSub6fUdntBZoh1lxeWIT1SoiIYoj3yADzcyG0D5WPoPX50FTR+Dg4LDbksCWZf//MKg==
-X-Received: by 2002:adf:f352:: with SMTP id e18mr28448033wrp.39.1638115087047;
-        Sun, 28 Nov 2021 07:58:07 -0800 (PST)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id o4sm19983401wmq.31.2021.11.28.07.58.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 07:58:06 -0800 (PST)
-Date:   Sun, 28 Nov 2021 16:58:04 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Sohaib Mohamed <sohaib.amhmd@gmail.com>
-Cc:     irogers@google.com, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf machine: Free machine__findnew_dso
-Message-ID: <YaOnDKwNuk/quLBJ@krava>
-References: <20211119042607.48924-1-sohaib.amhmd@gmail.com>
+        Sun, 28 Nov 2021 11:05:55 -0500
+X-UUID: 81bda1ccb0b4480cb9210040dba67a6d-20211129
+X-UUID: 81bda1ccb0b4480cb9210040dba67a6d-20211129
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <jason-jh.lin@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1868573853; Mon, 29 Nov 2021 00:02:34 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 29 Nov 2021 00:02:33 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 29 Nov 2021 00:02:33 +0800
+Message-ID: <ae29424d8121f8951cfb5fece114b6fcba90d351.camel@mediatek.com>
+From:   Jason-JH Lin <jason-jh.lin@mediatek.com>
+To:     Tzung-Bi Shih <tzungbi@google.com>
+CC:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        "; Philipp Zabel" <p.zabel@pengutronix.de>,
+        "; Matthias Brugger" <matthias.bgg@gmail.com>,
+        "; Jassi Brar" <jassisinghbrar@gmail.com>,
+        "; David Airlie" <airlied@linux.ie>,
+        "; Daniel Vetter" <daniel@ffwll.ch>,
+        "; dri-devel@lists.freedesktop.org; linux-mediatek@lists.infradead.org; 
+        linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org; 
+        hsinyi@chromium.org; fshao@chromium.org; Nancy Lin
+        =?UTF-8?Q?=28=E6=9E=97=E6=AC=A3=E8=9E=A2=29?=" 
+        <Nancy.Lin@mediatek.com>,
+        "; Singo Chang =?UTF-8?Q?=28=E5=BC=B5=E8=88=88=E5=9C=8B=29?=" 
+        <Singo.Chang@mediatek.com>
+In-Reply-To: <PU1PR03MB306252A252139515F7EA9ABCB8659@PU1PR03MB3062.apcprd03.prod.outlook.com>
+References: <20211117064158.27451-1-jason-jh.lin@mediatek.com>
+         <20211117064158.27451-4-jason-jh.lin@mediatek.com>
+         <YZXqz6XDChwscDC0@google.com>
+         <PU1PR03MB306252A252139515F7EA9ABCB8659@PU1PR03MB3062.apcprd03.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211119042607.48924-1-sohaib.amhmd@gmail.com>
+Subject: Re: FW: [PATCH 3/3] drm/mediatek: add devlink to cmdq dev
+Date:   Mon, 29 Nov 2021 00:02:33 +0800
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Content-Transfer-Encoding: 8BIT
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 06:26:04AM +0200, Sohaib Mohamed wrote:
-> ASan reports memory leaks while running:
-> 
-> $ rm perf.data*
-> $ perf report
-> 
-> This patch adds the missing dso__put.
-> 
-> Fixes: 8c7f1bb37b29 ("perf machine: Move kernel mmap name into struct
-> machine")
-> 
-> Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
-> ---
->  tools/perf/util/machine.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-> index fb8496df8432..826be7a12da1 100644
-> --- a/tools/perf/util/machine.c
-> +++ b/tools/perf/util/machine.c
-> @@ -1742,6 +1742,8 @@ static int machine__process_kernel_mmap_event(struct machine *machine,
->  			 */
->  			dso__load(kernel, machine__kernel_map(machine));
->  		}
-> +
-> +		dso__put(kernel);
+Hi Tzung-Bi,
 
-nice catch, after machine__findnew_dso we need to do that
+Thanks for the reviews.
 
-but there's also dso search before we call machine__findnew_dso,
-that can find dso, so I wonder we need to add change below as well
+> From: Linux-mediatek <linux-mediatek-bounces@lists.infradead.org> On
+> Behalf Of Tzung-Bi Shih
+> Sent: Thursday, November 18, 2021 1:55 PM
+> To: Jason-JH Lin (林睿祥) <Jason-JH.Lin@mediatek.com>
+> Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>; Philipp Zabel <
+> p.zabel@pengutronix.de>; Matthias Brugger <matthias.bgg@gmail.com>;
+> Jassi Brar <jassisinghbrar@gmail.com>; David Airlie <airlied@linux.ie
+> >; Daniel Vetter <daniel@ffwll.ch>; dri-devel@lists.freedesktop.org; 
+> linux-mediatek@lists.infradead.org; 
+> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org; 
+> hsinyi@chromium.org; fshao@chromium.org; Nancy Lin (林欣螢) <
+> Nancy.Lin@mediatek.com>; Singo Chang (張興國) <Singo.Chang@mediatek.com>
+> Subject: Re: [PATCH 3/3] drm/mediatek: add devlink to cmdq dev
+> 
+> On Wed, Nov 17, 2021 at 02:41:58PM +0800, jason-jh.lin wrote:
+> > @@ -158,6 +159,7 @@ static void mtk_drm_crtc_destroy(struct
+> > drm_crtc *crtc)
+> >  	mtk_drm_cmdq_pkt_destroy(&mtk_crtc->cmdq_handle);
+> >  
+> >  	if (mtk_crtc->cmdq_client.chan) {
+> > +		device_link_remove(mtk_crtc->drm_dev, mtk_crtc-
+> > >cmdq_client.chan->mbox->dev);
+> >  		mbox_free_channel(mtk_crtc->cmdq_client.chan);
+> >  		mtk_crtc->cmdq_client.chan = NULL;
+> >  	}
+> 
+> [...]
+> > @@ -956,6 +959,16 @@ int mtk_drm_crtc_create(struct drm_device
+> > *drm_dev,
+> >  	}
+> >  
+> >  	if (mtk_crtc->cmdq_client.chan) {
+> > +		struct device_link *link;
+> > +
+> > +		/* add devlink to cmdq dev to make sure suspend/resume
+> > order is correct */
+> > +		link = device_link_add(dev, mtk_crtc->cmdq_client.chan-
+> > >mbox->dev,
+> > +				       DL_FLAG_PM_RUNTIME |
+> > DL_FLAG_STATELESS);
+> > +		if (!link) {
+> > +			dev_err(dev, "Unable to link dev=%s\n",
+> > +				dev_name(mtk_crtc->cmdq_client.chan-
+> > >mbox->dev));
+> > +		}
+> > +
+> 
+> If device_link_add() failed, doesn't mtk_drm_crtc_create() need to
+> return an error and exit?
 
-thanks,
-jirka
+OK, I'll add the return error at the next verion.
+> 
+> OTOH, if device_link_add() failed, won't it bring any side effects to
+> call device_link_remove()?
+> 
 
+Because device_link_remove() will find the device_link of supplier and
+consumer, then delete the device_link between them.
+If device_link_add() failed, supplier and consumer won't create the
+device_link.
+So calling device_link_remove() won't do anything without deive_link
+and won't bring any side effects.
 
----
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index 826be7a12da1..cd9bdf723aba 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -1700,7 +1700,7 @@ static int machine__process_kernel_mmap_event(struct machine *machine,
- 				continue;
- 
- 
--			kernel = dso;
-+			kernel = dso__get(dso);
- 			break;
- 		}
- 
+Regards,
+Jason-JH.Lin
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> 
+https://urldefense.com/v3/__http://lists.infradead.org/mailman/listinfo/linux-mediatek__;!!CTRNKA9wMg0ARbw!125dmOZ7xCLkwbIrzZf1VqVLQBbdT4RFHoMjR38U1GeCxaTM6xvvB-mSr7sTc6BuY5IH$
+>  
+-- 
+Jason-JH Lin <jason-jh.lin@mediatek.com>
 
