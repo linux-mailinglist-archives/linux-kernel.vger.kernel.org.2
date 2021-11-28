@@ -2,115 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 275A3460AA7
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 23:24:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6B5460AB3
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 23:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238029AbhK1W17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 17:27:59 -0500
-Received: from mga12.intel.com ([192.55.52.136]:22833 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346536AbhK1WZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 17:25:58 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10182"; a="215881820"
-X-IronPort-AV: E=Sophos;i="5.87,271,1631602800"; 
-   d="scan'208";a="215881820"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2021 14:22:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,271,1631602800"; 
-   d="scan'208";a="511408926"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 28 Nov 2021 14:22:40 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mrSZE-000BCT-5Q; Sun, 28 Nov 2021 22:22:40 +0000
-Date:   Mon, 29 Nov 2021 06:22:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: [norov:bitmap_fast2 3/9] drivers/iio/adc/mxs-lradc-adc.c:563:2:
- error: unterminated function-like macro invocation
-Message-ID: <202111290655.xr3sMLhM-lkp@intel.com>
+        id S1359483AbhK1W3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 17:29:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1359430AbhK1W1w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Nov 2021 17:27:52 -0500
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F4DAC061763;
+        Sun, 28 Nov 2021 14:23:53 -0800 (PST)
+Received: by mail-oi1-x22d.google.com with SMTP id bj13so30910962oib.4;
+        Sun, 28 Nov 2021 14:23:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=M5rtFSgsWKzafi8Cs4A/snez2F9siOW7EyMGKMlf5GI=;
+        b=hq9071HUdLZ2TaOnDWMrUmkEjmGHPPdTYkA47Un8OgZrB6yRF/DDW8F2TRjD1Te19u
+         iwz7IofjNHmeoxPcYl7UCdDln5AfF+oBejaZnHIFQwTg+gm1U9+1Rb0P0GWb/NR69e4e
+         HeUhV/KFKLd9XUXKFJVmgeC4J0r5TQnv1NJ+2Bx+oe5ZCTpFo0EJ7t29VyUgLvsKBoqI
+         /u1OO+yD8J5oRDDhs/6UAFhdL1gR7NeF9utMME7xbGZnk7Dwf0OIocm2klvolQJMDSs2
+         1QegL3fy+FKj/LJwCCf6vQ7+wg9TQOQVwwqfaZxdwTR7sSWQu8DzfoZ1VoZlEQJGdoFg
+         yLaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=M5rtFSgsWKzafi8Cs4A/snez2F9siOW7EyMGKMlf5GI=;
+        b=BHMNg+OBT2fBeuD/ovlMpqWsxOQNR4hFGdeZh9pM7EFgXY69dipXA016diHw1dG2x5
+         lOyhSiJaDqPI6/DOrzN06rad97jRizdNRGK7ndG4wZ/3JDcLRHADL72LtdYVV8sJYSBf
+         Wa4865mBuqDV9KqEsCVOuLZI891ulPOzJRyzUwlGyWORtLFuQtfi8oMd93cDQn+ouIan
+         pcivrbf2Q/uJojQH1MLX6oWCBqMVrq0OC73RepFWX9+WRHfToKP6OCKINPqFsUGu66Vq
+         nizVSYldwQFNQMVQhqPfnxQJZIEuRs6caihngz+HKf+BUqGOpM3pREZqsEhJ4+Teu0BR
+         +XVQ==
+X-Gm-Message-State: AOAM531EBglsM8L1fEWMGLYYoVAFUPL9817Q3pfJePARhrsKMtQUIeQG
+        JYtmvWQp+7AaUN1MVbPs6PE=
+X-Google-Smtp-Source: ABdhPJzDpxaefKBU6oCHFFQgwoEO9P28FUz/LwlZRp8iIlHj4Qp+gFDBjfKDrMFg6OvgX+VjCyPvHw==
+X-Received: by 2002:a54:4614:: with SMTP id p20mr38321110oip.39.1638138232614;
+        Sun, 28 Nov 2021 14:23:52 -0800 (PST)
+Received: from [172.16.0.2] ([8.48.134.30])
+        by smtp.googlemail.com with ESMTPSA id l9sm2021123oom.4.2021.11.28.14.23.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Nov 2021 14:23:52 -0800 (PST)
+Message-ID: <2b9c3c1f-159f-f7c0-d4cb-1159e17e0dd4@gmail.com>
+Date:   Sun, 28 Nov 2021 15:23:41 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.1
+Subject: Re: [PATCH v2 net-next 00/26] net: introduce and use generic XDP
+ stats
+Content-Language: en-US
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        Noam Dagan <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yajun Deng <yajun.deng@linux.dev>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Andrei Vagin <avagin@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
+From:   David Ahern <dsahern@gmail.com>
+In-Reply-To: <20211123163955.154512-1-alexandr.lobakin@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://github.com/norov/linux bitmap_fast2
-head:   2ba93e639da00fa6374a9942dc507f64d5cb6659
-commit: 46f86267bdcb14f620d5905e64cbe68dc712e028 [3/9] all: replace bitmap_weigth() with bitmap_{empty,full,eq,gt,le}
-config: hexagon-randconfig-r033-20211128 (https://download.01.org/0day-ci/archive/20211129/202111290655.xr3sMLhM-lkp@intel.com/config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 5c64d8ef8cc0c0ed3e0f2ae693d99e7f70f20a84)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/norov/linux/commit/46f86267bdcb14f620d5905e64cbe68dc712e028
-        git remote add norov https://github.com/norov/linux
-        git fetch --no-tags norov bitmap_fast2
-        git checkout 46f86267bdcb14f620d5905e64cbe68dc712e028
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash drivers/iio/adc/
+On 11/23/21 9:39 AM, Alexander Lobakin wrote:
+> This is an almost complete rework of [0].
+> 
+> This series introduces generic XDP statistics infra based on rtnl
+> xstats (Ethtool standard stats previously), and wires up the drivers
+> which collect appropriate statistics to this new interface. Finally,
+> it introduces XDP/XSK statistics to all XDP-capable Intel drivers.
+> 
+> Those counters are:
+> * packets: number of frames passed to bpf_prog_run_xdp().
+> * bytes: number of bytes went through bpf_prog_run_xdp().
+> * errors: number of general XDP errors, if driver has one unified
+>   counter.
+> * aborted: number of XDP_ABORTED returns.
+> * drop: number of XDP_DROP returns.
+> * invalid: number of returns of unallowed values (i.e. not XDP_*).
+> * pass: number of XDP_PASS returns.
+> * redirect: number of successfully performed XDP_REDIRECT requests.
+> * redirect_errors: number of failed XDP_REDIRECT requests.
+> * tx: number of successfully performed XDP_TX requests.
+> * tx_errors: number of failed XDP_TX requests.
+> * xmit_packets: number of successfully transmitted XDP/XSK frames.
+> * xmit_bytes: number of successfully transmitted XDP/XSK frames.
+> * xmit_errors: of XDP/XSK frames failed to transmit.
+> * xmit_full: number of XDP/XSK queue being full at the moment of
+>   transmission.
+> 
+> To provide them, developers need to implement .ndo_get_xdp_stats()
+> and, if they want to expose stats on a per-channel basis,
+> .ndo_get_xdp_stats_nch(). include/net/xdp.h contains some helper
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Why the tie to a channel? There are Rx queues and Tx queues and no
+requirement to link them into a channel. It would be better (more
+flexible) to allow them to be independent. Rather than ask the driver
+"how many channels", ask 'how many Rx queues' and 'how many Tx queues'
+for which xdp stats are reported.
 
-All errors (new ones prefixed by >>):
+From there, allow queue numbers or queue id's to be non-consecutive and
+add a queue id or number as an attribute. e.g.,
 
->> drivers/iio/adc/mxs-lradc-adc.c:563:2: error: unterminated function-like macro invocation
-           if (bitmap_weight_gt(mask, LRADC_MAX_TOTAL_CHANS, LRADC_MAX_MAPPED_CHAN - rsvd_chans)
-           ^
-   include/linux/compiler.h:56:9: note: macro 'if' defined here
-   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
-           ^
->> drivers/iio/adc/mxs-lradc-adc.c:834:40: error: expected '}'
-   MODULE_ALIAS("platform:mxs-lradc-adc");
-                                          ^
-   drivers/iio/adc/mxs-lradc-adc.c:540:1: note: to match this '{'
-   {
-   ^
-   2 errors generated.
+[XDP stats]
+	[ Rx queue N]
+		counters
 
 
-vim +563 drivers/iio/adc/mxs-lradc-adc.c
+	[ Tx queue N]
+		counters
 
-   537	
-   538	static bool mxs_lradc_adc_validate_scan_mask(struct iio_dev *iio,
-   539						     const unsigned long *mask)
-   540	{
-   541		struct mxs_lradc_adc *adc = iio_priv(iio);
-   542		struct mxs_lradc *lradc = adc->lradc;
-   543		int rsvd_chans = 0;
-   544		unsigned long rsvd_mask = 0;
-   545	
-   546		if (lradc->use_touchbutton)
-   547			rsvd_mask |= CHAN_MASK_TOUCHBUTTON;
-   548		if (lradc->touchscreen_wire == MXS_LRADC_TOUCHSCREEN_4WIRE)
-   549			rsvd_mask |= CHAN_MASK_TOUCHSCREEN_4WIRE;
-   550		if (lradc->touchscreen_wire == MXS_LRADC_TOUCHSCREEN_5WIRE)
-   551			rsvd_mask |= CHAN_MASK_TOUCHSCREEN_5WIRE;
-   552	
-   553		if (lradc->use_touchbutton)
-   554			rsvd_chans++;
-   555		if (lradc->touchscreen_wire)
-   556			rsvd_chans += 2;
-   557	
-   558		/* Test for attempts to map channels with special mode of operation. */
-   559		if (bitmap_intersects(mask, &rsvd_mask, LRADC_MAX_TOTAL_CHANS))
-   560			return false;
-   561	
-   562		/* Test for attempts to map more channels then available slots. */
- > 563		if (bitmap_weight_gt(mask, LRADC_MAX_TOTAL_CHANS, LRADC_MAX_MAPPED_CHAN - rsvd_chans)
-   564			return false;
-   565	
-   566		return true;
-   567	}
-   568	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+This would allow a follow on patch set to do something like "Give me XDP
+stats for Rx queue N" instead of doing a full dump.
