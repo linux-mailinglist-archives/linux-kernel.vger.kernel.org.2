@@ -2,16 +2,15 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CEF14603FD
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 05:34:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2FB4603D5
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 05:10:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236706AbhK1EiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 23:38:02 -0500
-Received: from smtpbg511.qq.com ([203.205.250.109]:40641 "EHLO
-        smtpbg515.qq.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1344373AbhK1EgA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 23:36:00 -0500
+        id S1350571AbhK1ENp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 23:13:45 -0500
+Received: from smtpbg506.qq.com ([203.205.250.33]:43275 "EHLO smtpbg510.qq.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1349168AbhK1ELn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 23:11:43 -0500
 X-QQ-mid: bizesmtp42t1638071331tlejl57q
 Received: from kali.lan (unknown [182.148.14.187])
         by esmtp6.qq.com (ESMTP) with 
