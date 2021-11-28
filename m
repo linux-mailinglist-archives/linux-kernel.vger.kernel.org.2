@@ -2,155 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB83D460990
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 21:01:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18AA9460993
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 21:03:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236229AbhK1UEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 15:04:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51924 "EHLO
+        id S240139AbhK1UGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 15:06:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233617AbhK1UCX (ORCPT
+        with ESMTP id S243743AbhK1UEh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 15:02:23 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE83FC061746
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 11:59:06 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id gx15-20020a17090b124f00b001a695f3734aso12113507pjb.0
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 11:59:06 -0800 (PST)
+        Sun, 28 Nov 2021 15:04:37 -0500
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84FF7C061758
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 12:01:21 -0800 (PST)
+Received: by mail-ot1-x335.google.com with SMTP id w6-20020a9d77c6000000b0055e804fa524so22471783otl.3
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 12:01:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to
          :content-transfer-encoding;
-        bh=zoPy0bNc75d6cHcoNsEU6L+DTZgg21PWLJZBbcTFrXs=;
-        b=K+ZeLQZrUNVKHW7QCeETPl5kF2FjN9C6tMyt/GHbYE2/yqTIrwJROeG4Zz5HlxXrkJ
-         971eCRHgYQzol8mOgsQhwYlRmzq/PNRUjKY/h1ieN69sE550oszS/s3qf6TLXdgNpJbr
-         V5Dywtwdyy5BCOGGRD3TO5uuaLrtRToFrcKAUxeCTuskr230zhW0MA3qLCtvWy0RA6BT
-         ma5lM78w/QctKOgHPRP+cptW08y5UebjXrtuaOh9qqnbqFKFhMdEz2E9/6kDa0veoBfJ
-         WFYctabzk3OS6pOAEEHl4EHb3YE43ZE/DbYJjm6cenq5XKkQ7ggsnRpDdTKzWlnqZ5o/
-         NUyQ==
+        bh=eH82G/6/Xbwh2F3c68R1pc/8/9b0lkxK9tlkIv7L7is=;
+        b=Sx+1xFKIytjYNKgDgmbzsO5s3FXT/Ptn36exWPDSB1yraC3M+Y4F2tIy/QXFf35T6s
+         biFBMIrxfg4tbHqmhqboAZ05SbXmDx8P/ylSX+F2tiM9ZONHL6IshFSHALkSIZZRUFYk
+         D+tEYJtXMjHsFPJlIDqkkqND4sL3c2l25Py7QCtSVWq/QCJorYzqSeZvYvoNU3yLZWOh
+         vCjhtlXNocT0Kk9shhGvU+MnQfaWD3FtY7cgVbo1hu6+OUl2wQjnolWW7AN9FFEMNZ6M
+         ExRG8ToBdE61ZVsQYaab3PKihWjKshTzVuYvEqIXkvMSm0Za/hHIo/X/cpHzBfzbWhJz
+         clUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zoPy0bNc75d6cHcoNsEU6L+DTZgg21PWLJZBbcTFrXs=;
-        b=IhjV1KYBTbpmLcuOZnhHkuh3B2VXC6SPQJ+hf/4cd6BxGBk+v4WEACxykF6Y6eufh+
-         Ix/zOZOFEEHzLJARWqbz9CYXl+EhJwFuwml5ZKfyldrrOemLnPedSvMGf5uRQj0rlmnw
-         eD9Ca3qXwrrw/I1T0cONetaI+srGd/BJZqMrT0kDHTq3Bm8VqaylsczlkQChZRtaRACq
-         yFRPg6aak9A6vUHsxHsn6T6EdVOtAQpzTgOAErUzdg07j1I7NK8FKyhUx4VyNxo0ZfA0
-         MOGHj8ZygeYSo4PEf5vkvIi0jjqINlDhfEMkGzjPl/MhEOTc/tUSaQjmgub0TqT0lV/c
-         CZUw==
-X-Gm-Message-State: AOAM533jUt2qK7lGSDF0RTF8l0Snf7tT65beLTj40/rVJmy0xg/V7AU2
-        6svavWTsA8cBA09zHoHIy6OWwQ==
-X-Google-Smtp-Source: ABdhPJxxPMppxXwAq/Z17R2UIrKv6pz+yw3oxworu/K1NuQZb7XcqX5ffnf9zM/mmswA7P0pZ11bFg==
-X-Received: by 2002:a17:903:2445:b0:142:830:ea8e with SMTP id l5-20020a170903244500b001420830ea8emr53674813pls.54.1638129546237;
-        Sun, 28 Nov 2021 11:59:06 -0800 (PST)
-Received: from localhost.localdomain ([2402:3a80:1bee:ad81:ba28:2980:118c:834f])
-        by smtp.gmail.com with ESMTPSA id q9sm15359995pfj.114.2021.11.28.11.59.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 11:59:05 -0800 (PST)
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-To:     netdev@vger.kernel.org
-Cc:     vkoul@kernel.org, bhupesh.sharma@linaro.org,
-        bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH net-next] net: stmmac: Add platform level debug register dump feature
-Date:   Mon, 29 Nov 2021 01:28:54 +0530
-Message-Id: <20211128195854.257486-1-bhupesh.sharma@linaro.org>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=eH82G/6/Xbwh2F3c68R1pc/8/9b0lkxK9tlkIv7L7is=;
+        b=DGpcq+enguxAYWUaN+BOze9+H/Lxa3sbVC61XfwqEMLkdmEItO/cR2i12OKBSKmYDs
+         XSJ3bSUacmRFdHQWtI9I9QsPtKtelxfhmPPf+tzkgZ8K3H2M2QvjaMJoi0ENFKNv6pUd
+         YxqGc0ouBH6Ckp2h8SJq48MsigqzSStKn8mdD9+keGWrGGtQGPHlcfSml89aUoQjEcgZ
+         Ms0hI3Vk9GSEYYP3n+FO6/Ph7Nk194BMXEu/TIWYW1PSKTmSnR92/vPoG6a1rRN0mtUq
+         +N88krgkIgtOwvyvqp17PSo+YLHmi0GDdwHKl2GGBjI981STcPo0dZhE6y5W3vO8Jkis
+         DINA==
+X-Gm-Message-State: AOAM530AtPw/hIbjhZZ03P3KDhsLk+/D/VpfPqC6cKBV1jPmykPOvnnv
+        nRlMwNkV6oCtGJGm5jGBPtye7ANQ+JYUP3ghuYo=
+X-Google-Smtp-Source: ABdhPJzaF5QJWjNaaz0OfbINi7pzFw8H0rmmdkxhxbxznJmJX2MdQM2FLVCO1X18c8P2bYoApKYyim//x85k2V/MiZ0=
+X-Received: by 2002:a9d:d68:: with SMTP id 95mr21996675oti.188.1638129680296;
+ Sun, 28 Nov 2021 12:01:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Sender: tinufelixcheelo@gmail.com
+Received: by 2002:a8a:c46:0:0:0:0:0 with HTTP; Sun, 28 Nov 2021 12:01:19 -0800 (PST)
+From:   agnesgeorge <agnesmrsgeorge@gmail.com>
+Date:   Sun, 28 Nov 2021 20:01:19 +0000
+X-Google-Sender-Auth: YlL-5OlE6jH3UhSLLaKFMld_7Zo
+Message-ID: <CAOmXUHpx3-r+TcbMfv9hTYkNVvQL894HbAAiG4f7pYNB9eMO-w@mail.gmail.com>
+Subject: Dearest beloved in the Lord,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dwmac-qcom-ethqos currently exposes a mechanism to dump rgmii registers
-after the 'stmmac_dvr_probe()' returns. However with commit
-5ec55823438e ("net: stmmac: add clocks management for gmac driver"),
-we now let 'pm_runtime_put()' disable the clocks before returning from
-'stmmac_dvr_probe()'.
+Dearest beloved in the Lord,
 
-This causes a crash when 'rgmii_dump()' register dumps are enabled,
-as the clocks are already off.
+I am Ms. Agnes George,  a 75 year old British woman. I was born an
+orphan and GOD blessed me abundantly with riches but no children nor
+husband which makes me an unhappy woman. Now I am affected with cancer
+of the lung and breast with a partial stroke which has affected my
+speech. I can no longer talk well and half of my body is paralyzed, I
+sent this email to you with the help of my private female nurse.
 
-Since other dwmac drivers (possible future users as well) might
-require a similar register dump feature, introduce a platform level
-callback to allow the same.
+My condition is really deteriorating day by day and it is really
+giving me lots to think about.  This has prompted my decision to
+donate all I have for charity; I have made numerous donations all over
+the world. After going through your profile, I decided to make my last
+donation of Ten Million Five Hundred Thousand United Kingdom Pounds
+(UK=C2=A310.500, 000, 00) to you as my investment manager. I want you to
+build an Orphanage home with my name ( Agnes George  ) in your
+country.
 
-This fixes the crash noticed while enabling rgmii_dump() dumps in
-dwmac-qcom-ethqos driver as well. It also allows future changes
-to keep a invoking the register dump callback from the correct
-place inside 'stmmac_dvr_probe()'.
+If you are willing and able to do this task for the sake of humanity
+then send me below information for more details to receive the funds.
 
-Fixes: 5ec55823438e ("net: stmmac: add clocks management for gmac driver")
-Cc: Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc: David S. Miller <davem@davemloft.net>
-Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
----
- drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c | 7 ++++---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c       | 3 +++
- include/linux/stmmac.h                                  | 1 +
- 3 files changed, 8 insertions(+), 3 deletions(-)
+1. Name...................................................
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-index 8fea48e477e6..2ffa0a11eea5 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-@@ -113,8 +113,10 @@ static void rgmii_updatel(struct qcom_ethqos *ethqos,
- 	rgmii_writel(ethqos, temp, offset);
- }
- 
--static void rgmii_dump(struct qcom_ethqos *ethqos)
-+static void rgmii_dump(void *priv)
- {
-+	struct qcom_ethqos *ethqos = priv;
-+
- 	dev_dbg(&ethqos->pdev->dev, "Rgmii register dump\n");
- 	dev_dbg(&ethqos->pdev->dev, "RGMII_IO_MACRO_CONFIG: %x\n",
- 		rgmii_readl(ethqos, RGMII_IO_MACRO_CONFIG));
-@@ -519,6 +521,7 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
- 
- 	plat_dat->bsp_priv = ethqos;
- 	plat_dat->fix_mac_speed = ethqos_fix_mac_speed;
-+	plat_dat->dump_debug_regs = rgmii_dump;
- 	plat_dat->has_gmac4 = 1;
- 	plat_dat->pmt = 1;
- 	plat_dat->tso_en = of_property_read_bool(np, "snps,tso");
-@@ -527,8 +530,6 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_clk;
- 
--	rgmii_dump(ethqos);
--
- 	return ret;
- 
- err_clk:
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 89a6c35e2546..cc1075c08996 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -7211,6 +7211,9 @@ int stmmac_dvr_probe(struct device *device,
- 	stmmac_init_fs(ndev);
- #endif
- 
-+	if (priv->plat->dump_debug_regs)
-+		priv->plat->dump_debug_regs(priv->plat->bsp_priv);
-+
- 	/* Let pm_runtime_put() disable the clocks.
- 	 * If CONFIG_PM is not enabled, the clocks will stay powered.
- 	 */
-diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-index 89b8e208cd7b..24eea1b05ca2 100644
---- a/include/linux/stmmac.h
-+++ b/include/linux/stmmac.h
-@@ -233,6 +233,7 @@ struct plat_stmmacenet_data {
- 	int (*clks_config)(void *priv, bool enabled);
- 	int (*crosststamp)(ktime_t *device, struct system_counterval_t *system,
- 			   void *ctx);
-+	void (*dump_debug_regs)(void *priv);
- 	void *bsp_priv;
- 	struct clk *stmmac_clk;
- 	struct clk *pclk;
--- 
-2.31.1
+2. Phone number...............................
 
+3. Address.............................................
+
+4. Country of Origin and residence
+
+Ms. Agnes George.
