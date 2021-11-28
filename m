@@ -2,114 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75DFA460293
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 01:31:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C33C2460297
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 01:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356715AbhK1AeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 19:34:19 -0500
-Received: from rere.qmqm.pl ([91.227.64.183]:24740 "EHLO rere.qmqm.pl"
+        id S1356736AbhK1Aj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 19:39:27 -0500
+Received: from mga05.intel.com ([192.55.52.43]:9092 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356618AbhK1AcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 19:32:18 -0500
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4J1q8r4xRGz9Y;
-        Sun, 28 Nov 2021 01:28:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1638059340; bh=BpCUv6sc6+ijt8bP2X1dBPBQztb08CMPEjcmSI4mWHs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E2pJXVdwpF7xa7NgJpuaA7I4sUgCSxdIM51ma240k1OvyN0BqmbHCll/qibc7LmRW
-         l2lYyRdiOG0LzZZRcQGCbOEp7l5l7FW2EF13o78tAxh2BlfQLPIqSf2RtHjwNL3AHE
-         ag5QLlLhW95Kp8fH9dCV3j4Imx5XQ5T4nV1vyleMAzKz1Soq6c6OnKpJ5TdzfdwJ2G
-         LnQoKtgUWmpQEblg3IMnaxzgslueaP8apjKdZ9y96JJ35QjeXKQSawNEPmoxjBztTd
-         XADr6Ffb3r0e7Kv67f/UCkeky+8m4GCPkGRqXkdYh2BWzTit8bUIHp4dPNUh/LgLHY
-         SH/yCd1X39o+Q==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.3 at mail
-Date:   Sun, 28 Nov 2021 01:28:40 +0100
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
-        "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v4 05/25] reboot: Warn if restart handler has duplicated
- priority
-Message-ID: <YaLNOJTM+lVq+YNS@qmqm.qmqm.pl>
-References: <20211126180101.27818-1-digetx@gmail.com>
- <20211126180101.27818-6-digetx@gmail.com>
+        id S245259AbhK1Ah0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 19:37:26 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10181"; a="322029301"
+X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
+   d="scan'208";a="322029301"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 16:34:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
+   d="scan'208";a="608270973"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 27 Nov 2021 16:34:10 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mr88v-000AAs-Ne; Sun, 28 Nov 2021 00:34:09 +0000
+Date:   Sun, 28 Nov 2021 08:33:26 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Nikolay Aleksandrov <nikolay@nvidia.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: net/bridge/br_private.h:901 br_multicast_rport_from_node_skb() warn:
+ inconsistent indenting
+Message-ID: <202111280833.ZMtzx8zW-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211126180101.27818-6-digetx@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 09:00:41PM +0300, Dmitry Osipenko wrote:
-> Add sanity check which ensures that there are no two restart handlers
-> registered with the same priority. Normally it's a direct sign of a
-> problem if two handlers use the same priority.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   4f0dda359c4563cbb1b0f97b0dbbcdc553156541
+commit: 9632233e7de8da43711bb7cd3e054af32fedcc38 net: bridge: multicast: factor out port multicast context
+date:   4 months ago
+config: x86_64-randconfig-m031-20211124 (https://download.01.org/0day-ci/archive/20211128/202111280833.ZMtzx8zW-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
 
-The patch doesn't ensure the property that there are no duplicated-priority
-entries on the chain.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-I'd rather see a atomic_notifier_chain_register_unique() that returns
--EBUSY or something istead of adding an entry with duplicate priority.
-That way it would need only one list traversal unless you want to
-register the duplicate anyway (then you would call the older
-atomic_notifier_chain_register() after reporting the error).
+New smatch warnings:
+net/bridge/br_private.h:901 br_multicast_rport_from_node_skb() warn: inconsistent indenting
 
-(Or you could return > 0 when a duplicate is registered in
-atomic_notifier_chain_register() if the callers are prepared
-for that. I don't really like this way, though.)
+Old smatch warnings:
+net/bridge/br_forward.c:317 br_multicast_flood() error: we previously assumed 'p' could be null (see line 293)
 
-Best Regards
-Micha³ Miros³aw
+vim +901 net/bridge/br_private.h
+
+   890	
+   891	static inline struct net_bridge_port *
+   892	br_multicast_rport_from_node_skb(struct hlist_node *rp, struct sk_buff *skb) {
+   893		struct net_bridge_mcast_port *mctx;
+   894	
+   895	#if IS_ENABLED(CONFIG_IPV6)
+   896		if (skb->protocol == htons(ETH_P_IPV6))
+   897			mctx = hlist_entry_safe(rp, struct net_bridge_mcast_port,
+   898						ip6_rlist);
+   899		else
+   900	#endif
+ > 901			mctx = hlist_entry_safe(rp, struct net_bridge_mcast_port,
+   902						ip4_rlist);
+   903	
+   904		if (mctx)
+   905			return mctx->port;
+   906		else
+   907			return NULL;
+   908	}
+   909	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
