@@ -2,68 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEBB9460277
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 01:09:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45FB04602AC
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 01:57:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356612AbhK1AMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 19:12:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230131AbhK1AKi (ORCPT
+        id S1356692AbhK1BAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 20:00:00 -0500
+Received: from sender4-op-o15.zoho.com ([136.143.188.15]:17571 "EHLO
+        sender4-op-o15.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245259AbhK1A57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 19:10:38 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959C1C061574;
-        Sat, 27 Nov 2021 16:07:23 -0800 (PST)
-Received: from mail.kernel.org (unknown [198.145.29.99])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4E512B80B23;
-        Sun, 28 Nov 2021 00:07:22 +0000 (UTC)
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5952F60524;
-        Sun, 28 Nov 2021 00:07:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1638058040;
-        bh=qezTYQseI9DxNpOdmT5kuzbuG73JbvoENi5WMIb3UJY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=wqJban2R9O7yF/wfcwEI4K4ewdbM6sKnUWWUVW47r212gOjNx18PFLesOFaVBDsq3
-         23UqWBAtQRubS7Ips1ydm9qOT7CzelMqDvbO+0iE5DvCC4nrU8DDJJHNZx4pfYqvT5
-         G90iNCll6YneKYh+AF64jnxHQVZ12GpU+v+KUAqM=
-Date:   Sat, 27 Nov 2021 16:07:18 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Calvin Zhang <calvinzhang.cool@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org
-Subject: Re: [PATCH] mm: kmemleak: Ignore kmemleak scanning on CMA regions
-Message-Id: <20211127160718.54e82aa93c977a367404a9e3@linux-foundation.org>
-In-Reply-To: <20211126024711.54937-1-calvinzhang.cool@gmail.com>
-References: <20211126024711.54937-1-calvinzhang.cool@gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Sat, 27 Nov 2021 19:57:59 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1638057926; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=k+N01kzcipbexhHQsG88X2M0FQGUx7o/+bnRg1X6P6lyVOiD8+BbReMlTn0+Oi3d1c7w9m6u7kcgTCTv6d+BOpVO36r0mVQQy1L/o97VJEK3ohLVz927iOckGst0cFmLQti4Chc/9y20bMbd+0kgLRNjeZ1TGdTUALgolDYT0dw=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1638057926; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=k/axBYgs8ePu82NKai1qn+cHK8gQhlozWwXZnDXD8yk=; 
+        b=OexewUidtTGMEGSPfuJVLpIck/dTD52CYt8S+WPys75HdmGs49nYiKODg5XEu699gIqo6TlVR7iU2GAApuAuR+8azPDH0YknNLHpDhsT7vOPmhaChYD8tKyUKjTb8/hx7tx2psFIBtsXZa3dxJz8poIP0FMO7ke5CSZtFmK+xno=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=szanni.org;
+        spf=pass  smtp.mailfrom=angelo@szanni.org;
+        dmarc=pass header.from=<lkml@szanni.org>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1638057926;
+        s=zoho; d=szanni.org; i=lkml@szanni.org;
+        h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type:Content-Transfer-Encoding;
+        bh=k/axBYgs8ePu82NKai1qn+cHK8gQhlozWwXZnDXD8yk=;
+        b=Kn37IrDoVNidrb6X54m7LkCfk4fXsdTOh1vVjU4K3AaFUzv40tFX+7/y6FOyJiit
+        +2Ds4yqz4mGD6AhFB16H8bryGG1OuVI2zQkSqpJ6kprfETH+K8YPj+CPxc0WBKJ6/hL
+        FeasMNHSlJ8BPf4AO798O5gnGRu/2f/mEroY59iI=
+Received: from [192.168.0.128] (200.60.135.218 [200.60.135.218]) by mx.zohomail.com
+        with SMTPS id 1638057923743427.7880943683017; Sat, 27 Nov 2021 16:05:23 -0800 (PST)
+Message-ID: <5475c3ab-a53c-8728-98c5-98fd948ff556@szanni.org>
+Date:   Sat, 27 Nov 2021 19:07:49 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Content-Language: en-US
+To:     linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Will Deacon <will@kernel.org>, linux-rt-users@vger.kernel.org
+From:   Angelo Haller <lkml@szanni.org>
+Subject: sched: some non-GPL symbols becoming GPL-only with CONFIG_PREEMPT_RT
+ enabled
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Nov 2021 10:47:11 +0800 Calvin Zhang <calvinzhang.cool@gmail.com> wrote:
+Greetings. I hope I picked the right mailing list, as this issue might 
+be one that affects various subsystems and components:
 
-> Just like this:
-> commit 620951e27457 ("mm/cma: make kmemleak ignore CMA regions").
-> 
-> Add kmemleak_ignore_phys() for CMA created from of reserved node.
+When compiling kernel 5.15 (and 5.16-rc2) with `CONFIG_PREEMPT_RT` 
+enabled, some of the symbols being exported as `EXPORT_SYMBOL` suddenly 
+become `EXPORT_SYMBOL_GPL` through transitive effects.
 
-Could we please have a full, standalone changelog for this patch?
+In particular the symbols `migrate_enable` and `migrate_disable` are 
+currently marked as `EXPORT_SYMBOL_GPL` - yet are called from multiple 
+functions that are marked as `EXPORT_SYMBOL`.
 
-The 620951e27457 changelog says "Without this, the kernel crashes...". 
-Does your patch also fix a crash?  If so under what circumstances and
-should we backport this fix into -stable kernels?
+Here an (incomplete?) listing of call sites I came across:
 
-Etcetera.
+kernel/locking/spinlock_rt.c - rt_spin_unlock()
+kernel/locking/spinlock_rt.c - rt_read_unlock()
+kernel/locking/spinlock_rt.c - rt_write_unlock()
+mm/highmem.c - kunmap_local_indexed()
+
+The issue I'm facing in particular is kmap_atomic() calling 
+`migrate_disable` and therefore suddenly becoming GPL-only. This breaks 
+the out-of-tree CDDL licensed module ZFS and has been reported before 
+already [0]. The conversation seemingly going nowhere - or patches at 
+least not being applied upstream. Downstream issue for reference [1].
+
+As the original implementation of `migrate_enable` and `migrate_disable` 
+is apparently by Peter Zijlstra [2]. Peter would you be willing to 
+re-license both symbols `migrate_enable` and `migrate_disable` as 
+`EXPORT_SYMBOL`?
+
+The bigger issue I'm seeing though is that there is currently no 
+automated test to uncover exported symbols changing their license 
+depending on build configuration? I am not intimately familiar with the 
+API guarantees the kernel gives, but this seems like a violation. There 
+might be other symbols with similar licensing problems.
+
+I can open a bugzilla ticket too - if that is preferred.
+
+Angelo
+
+
+[0] 
+https://lore.kernel.org/linux-rt-users/20201208212841.694b3022@orivej.orivej.org/T/
+[1] https://github.com/openzfs/zfs/issues/11097
+[2] 
+https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/diff/patches/0009-sched-Add-migrate_disable.patch?h=v5.9-rc8-rt14-patches&id=9a89bfdb3bc77aecdd0ff8cc69b595541c7b50c4
 
