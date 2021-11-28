@@ -2,136 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6603C460520
+	by mail.lfdr.de (Postfix) with ESMTP id B3704460521
 	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 08:34:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345266AbhK1H3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 02:29:35 -0500
-Received: from mga02.intel.com ([134.134.136.20]:29108 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229907AbhK1H1e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 02:27:34 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10181"; a="223042400"
-X-IronPort-AV: E=Sophos;i="5.87,270,1631602800"; 
-   d="scan'208";a="223042400"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 23:24:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,270,1631602800"; 
-   d="scan'208";a="458722887"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 27 Nov 2021 23:24:17 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mrEXo-000AT6-Tz; Sun, 28 Nov 2021 07:24:16 +0000
-Date:   Sun, 28 Nov 2021 15:23:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: [tglx-devel:msi 46/100]
- arch/powerpc/platforms/cell/axon_msi.c:212:44: error: passing argument 1 of
- 'msi_device_has_property' from incompatible pointer type
-Message-ID: <202111281517.uhxzSCMA-lkp@intel.com>
+        id S1355844AbhK1HhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 02:37:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352188AbhK1HfX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Nov 2021 02:35:23 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4278BC061746
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 23:32:06 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id y16so16904824ioc.8
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Nov 2021 23:32:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=GIGQ9ePzkxCUcjbi9/rdD1tSRBwMDaYNVGxOzijf0a0=;
+        b=RfVYy1FvWCZfTjpMCxSIPB74QugAn8bN6NIYxKxWNapIIfIqUK2J7HuVUk4dWM7sqV
+         sl5wFWjCo2h9A26BHpe6JRZ6AsUsCAax0DaRCgruRsc5RB1vFzNtF2VRrzP2q3oGpzR8
+         TJ4FsRlyr6UTtr8xjKfkjpyaK7bU7TpvWUXL1Q+OO6RQIZ1a5wWT3CbEpfeTOo/TJkjx
+         eIgtVBO6G/9nXGFkueDBwn1nhzdTbemM1fOVMOwEz6MSYwtDTp6oGU1X8lYPNUd9tnm8
+         eDXQckjwZN501xtCguyZ5QyrSODkvP3rsOLd594AjHdeKqtL1FwcDIy9lBDl99+y/KOG
+         iWbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=GIGQ9ePzkxCUcjbi9/rdD1tSRBwMDaYNVGxOzijf0a0=;
+        b=kt8mOnmXwk0MFAOx8yoCVutR79Y2HYvdun3+mPyYEt2NvCKbXf/OiB3yUGE6nfPdGA
+         qH/U/EFtUaky12uhpPpxfNq9Bt96HUe1/Mkme++vy/huGa2vFTC4y+w2wlRrgguWwTu0
+         HNiS+JDgITh94DhY+Dw75H+miqz41JcNw+LWku/OySqM/w9wjohU6npyOlhaXHOlCncw
+         Dt91Q+MLBr7uyLdzo4PGyTLdYYe7twrSXNZGKiU/a6aM57oZx5Ekvcd6Z306mpcT0s+4
+         qOj4CGkRR69ri7qCwdYw6TTikEe1VngY+7z608jiDaYuDFB+HzZEQGViiE+bOlaYP7hm
+         42wQ==
+X-Gm-Message-State: AOAM530nik2yJM/lW9fPgtHDITXCRmBBZEEw7N2a+fBYNe5tzPZ1uHO1
+        4QWxkHM3YrU3TcjIH16q3IB7LRqRiUWOFnu7EA4=
+X-Google-Smtp-Source: ABdhPJxw7S6Sd8dHjege9ZNK3cTnUqBUwg86MOBJ8Om6GoZJdI549zxMBOyM/sTJXgVHdrXAovE2fUmRzszo7Oksn4U=
+X-Received: by 2002:a05:6602:2d8c:: with SMTP id k12mr50698662iow.49.1638084725711;
+ Sat, 27 Nov 2021 23:32:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:a05:6602:2b87:0:0:0:0 with HTTP; Sat, 27 Nov 2021 23:32:05
+ -0800 (PST)
+Reply-To: abahgeorge75@gmail.com
+From:   George Abah <konkongounima@gmail.com>
+Date:   Sun, 28 Nov 2021 07:32:05 +0000
+Message-ID: <CAEUcWUfMLLrBP7Zhz2adDp_JOZ45mzGU0PBwRj=GvY3_XM0Cmg@mail.gmail.com>
+Subject: hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git msi
-head:   76af424949030bcbbe874fc272e3cd7e388a6c7f
-commit: fce5ea72265d4fc76cfc10c819c3482d20b12fef [46/100] powerpc/cell/axon_msi: Use MSI device properties
-config: powerpc64-randconfig-r021-20211128 (https://download.01.org/0day-ci/archive/20211128/202111281517.uhxzSCMA-lkp@intel.com/config)
-compiler: powerpc64-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git/commit/?id=fce5ea72265d4fc76cfc10c819c3482d20b12fef
-        git remote add tglx-devel https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git
-        git fetch --no-tags tglx-devel msi
-        git checkout fce5ea72265d4fc76cfc10c819c3482d20b12fef
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=powerpc SHELL=/bin/bash arch/powerpc/platforms/cell/
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   arch/powerpc/platforms/cell/axon_msi.c: In function 'setup_msi_msg_address':
->> arch/powerpc/platforms/cell/axon_msi.c:212:44: error: passing argument 1 of 'msi_device_has_property' from incompatible pointer type [-Werror=incompatible-pointer-types]
-     212 |         is_64bit = msi_device_has_property(dev, MSI_PROP_64BIT);
-         |                                            ^~~
-         |                                            |
-         |                                            struct pci_dev *
-   In file included from arch/powerpc/platforms/cell/axon_msi.c:11:
-   include/linux/msi.h:164:45: note: expected 'struct device *' but argument is of type 'struct pci_dev *'
-     164 | bool msi_device_has_property(struct device *dev, unsigned long prop);
-         |                              ~~~~~~~~~~~~~~~^~~
-   cc1: some warnings being treated as errors
-
-
-vim +/msi_device_has_property +212 arch/powerpc/platforms/cell/axon_msi.c
-
-   198	
-   199	static int setup_msi_msg_address(struct pci_dev *dev, struct msi_msg *msg)
-   200	{
-   201		struct device_node *dn;
-   202		bool is_64bit;
-   203		int len;
-   204		const u32 *prop;
-   205	
-   206		dn = of_node_get(pci_device_to_OF_node(dev));
-   207		if (!dn) {
-   208			dev_dbg(&dev->dev, "axon_msi: no pci_dn found\n");
-   209			return -ENODEV;
-   210		}
-   211	
- > 212		is_64bit = msi_device_has_property(dev, MSI_PROP_64BIT);
-   213	
-   214		for (; dn; dn = of_get_next_parent(dn)) {
-   215			if (is_64bit) {
-   216				prop = of_get_property(dn, "msi-address-64", &len);
-   217				if (prop)
-   218					break;
-   219			}
-   220	
-   221			prop = of_get_property(dn, "msi-address-32", &len);
-   222			if (prop)
-   223				break;
-   224		}
-   225	
-   226		if (!prop) {
-   227			dev_dbg(&dev->dev,
-   228				"axon_msi: no msi-address-(32|64) properties found\n");
-   229			return -ENOENT;
-   230		}
-   231	
-   232		switch (len) {
-   233		case 8:
-   234			msg->address_hi = prop[0];
-   235			msg->address_lo = prop[1];
-   236			break;
-   237		case 4:
-   238			msg->address_hi = 0;
-   239			msg->address_lo = prop[0];
-   240			break;
-   241		default:
-   242			dev_dbg(&dev->dev,
-   243				"axon_msi: malformed msi-address-(32|64) property\n");
-   244			of_node_put(dn);
-   245			return -EINVAL;
-   246		}
-   247	
-   248		of_node_put(dn);
-   249	
-   250		return 0;
-   251	}
-   252	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+Hello,
+I am George Abah. There is an important issue I need to discuss with
+you concerning our   Late client (Usd$9.2 Million) unclaimed fund left
+in the  bank before it gets confiscated by the bank officials, kindly
+get back to me asap for more details .
+Regards.
+George Abah
