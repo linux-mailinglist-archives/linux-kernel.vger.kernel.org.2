@@ -2,93 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC6F4609B7
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 21:44:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15FAB4609BA
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 21:48:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242614AbhK1UrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 15:47:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32946 "EHLO
+        id S1345971AbhK1Uv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 15:51:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237186AbhK1UpW (ORCPT
+        with ESMTP id S231693AbhK1UtZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 15:45:22 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA27C061746;
-        Sun, 28 Nov 2021 12:42:05 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id bi37so39133414lfb.5;
-        Sun, 28 Nov 2021 12:42:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fI+O6/++Z4nOnCnJNHlZT8xBEfNIQq67hRSGfUTNSOw=;
-        b=dcjUc/A6G0ntDrZjSz7wX3e3/r7F7SrY+3uMF8E+A93I5xKqW037IMdtOhnlf9vWoZ
-         saLvk5YgLOVEO9xWpN+d+F0Fb4FQ4rmT3lgSvDOU0UR8qPhwiB2FwkgtRjoEWbOb2POd
-         oePoutMq8Pt4nRoYyx9XLnADX1y04Al60pNPuSGg8ihHOj7T67Mh/hEhqF8XeDlPHjM8
-         rs89N70TCQPiCqoZpi/kbrhuMr01fje5vISmI+uxWC04tYRYGxyI3aoMSQ1h0OJKrucN
-         ReXDBiMO3ptQQSL8YnxnyJkxUL1NCXmr/u99R7b0PhOuOiX7M8PS+76eVgz24wIpIwTu
-         eSXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fI+O6/++Z4nOnCnJNHlZT8xBEfNIQq67hRSGfUTNSOw=;
-        b=e4mCdl9V1H7x/5thB8jAE1Dr7Ypb+XBkt5EaKwhU+MxPECbubHqCXo+XrCYmQ23UAp
-         yEHc8Vo4xLhVaTy8qepmu7/4EAQfsikX4XyeuDFjPNEoZSQEx8HiGpPLLs5B5CxPRvkZ
-         2Tx2+69r9JsGHWXHrWPgUZyewGqCJwQoNHZv9Fqn9wgwoobIxWLsb9J5RFDDm6b1Y9Vc
-         dhJVgzWxAfcaFDD5+TuckixptSxQLkmpUYG8IeFjwNFm2UUQuJjGZuVoh/y6N0eYroZH
-         dxxPRbhhY0VwKvSX16kJWgHieuPATAnMpHOnWvfB7Z6em3pUyPzgkWVnZM7briqc4cjv
-         +BcA==
-X-Gm-Message-State: AOAM5303lz0up+ENa6TEHz11JMBxsNPmxuXS7D1Uwlh/XFWBkw4cuSbl
-        HaRzc+6AgowERtLlggjFn10=
-X-Google-Smtp-Source: ABdhPJyAIKXpJ3E6Ag9FzskqRGg6NgpC0ebPL1cvyWfMcBpDV8H2Awtpv2g6p7Ee05DUaxxKA/D/DA==
-X-Received: by 2002:a05:6512:3e14:: with SMTP id i20mr43647553lfv.592.1638132123400;
-        Sun, 28 Nov 2021 12:42:03 -0800 (PST)
-Received: from localhost.localdomain (h-155-4-221-129.NA.cust.bahnhof.se. [155.4.221.129])
-        by smtp.gmail.com with ESMTPSA id o15sm1103048lfd.164.2021.11.28.12.42.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 12:42:02 -0800 (PST)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        Kai Song <songkai01@inspur.com>,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] memory: tegra: Constify struct thermal_cooling_device_ops
-Date:   Sun, 28 Nov 2021 21:41:58 +0100
-Message-Id: <20211128204158.19544-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Sun, 28 Nov 2021 15:49:25 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44851C061574;
+        Sun, 28 Nov 2021 12:46:04 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4J2L9M5cVRz4xQt;
+        Mon, 29 Nov 2021 07:45:59 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1638132359;
+        bh=0vW6Y/+NF7V92m+XlIxTGFlGwtQ+RjC+SvrzKeT5XTI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=NExpTWdh6oZ2CuFjCzJuUIrY+klXO1+U9O5TAulS+uTsiYEEHW2W9kF1Wdxv3f+Wg
+         GXW8JAwZPphql2niSOsB3fFuM9nN2ICjleLUVp7HNIoyIHhq9qJHyF8+/XpeajNTKX
+         /1LaYR4Y9v28XixgXci4GJ6IhmyvNYf/7aiEkxkZBE3IhbW+E9VRTMz8GrFeePpZ5f
+         Um77ZJ9dW6D7ZMfWaCzIGDJVeyF/pkkj52CuoIBjI2PJTmPrTTN9NjbkEKxuawX1qa
+         Odr00wgz3r84eHTqpmz8bdsEU6KUCrv9h5ve4CYN/N7osPInoNfIkyRqLXSGeXjNAp
+         T45wHpWMWKybg==
+Date:   Mon, 29 Nov 2021 07:45:57 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christian Brauner <christian@brauner.io>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the pidfd tree
+Message-ID: <20211129074557.6133cb3b@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/Vj4j3B82LTnSRKNR4XrpNMb";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of tegra210_emc_cd_ops is to pass its address to
-devm_thermal_of_cooling_device_register() which is a pointer to const
-struct thermal_cooling_device_ops. Make it const to allow the compiler
-to put it in read-only memory.
+--Sig_/Vj4j3B82LTnSRKNR4XrpNMb
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/memory/tegra/tegra210-emc-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi all,
 
-diff --git a/drivers/memory/tegra/tegra210-emc-core.c b/drivers/memory/tegra/tegra210-emc-core.c
-index 13584f9317a4..cbe1a7723514 100644
---- a/drivers/memory/tegra/tegra210-emc-core.c
-+++ b/drivers/memory/tegra/tegra210-emc-core.c
-@@ -711,7 +711,7 @@ static int tegra210_emc_cd_set_state(struct thermal_cooling_device *cd,
- 	return 0;
- }
- 
--static struct thermal_cooling_device_ops tegra210_emc_cd_ops = {
-+static const struct thermal_cooling_device_ops tegra210_emc_cd_ops = {
- 	.get_max_state = tegra210_emc_cd_max_state,
- 	.get_cur_state = tegra210_emc_cd_get_state,
- 	.set_cur_state = tegra210_emc_cd_set_state,
--- 
-2.34.1
+Commit
 
+  0f8821da4845 ("fs/namespace: Boost the mount_lock.lock owner instead of s=
+pinning on PREEMPT_RT.")
+
+is missing a Signed-off-by from its committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Vj4j3B82LTnSRKNR4XrpNMb
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGj6oYACgkQAVBC80lX
+0Gx35gf7B8sJlGtnCCv5wYbo62Ss4onX+tOTcdlLcv13BEXS5icXjOd/Lo7+nt37
+2zwp7BHYkT5twpdB/kZB/e0O43Ze/ahGa8+hmQuyiB8nMXNtE7LdQxjXprssf3v6
+A+F7y9twGL0I+Ju4kofWzudvj8kfvG3HyRBA4Yy3pMx6GBsJweiCqdZjYPPIQhew
+pT3GmwK6nYpGO41W1tmVFuys/L1WG0fD/bxT5HW3rs2q0OgMKpBy09hzIzJByi78
+6Zzpt5EVEkKNZG6yzAWuXIHYIi1tn87jy57nE1IAsxtY/DPUU5liCnmAZF4N0lil
+Bm21OUb8pXz0VfpyPduRGUEpWz2LLQ==
+=1GOw
+-----END PGP SIGNATURE-----
+
+--Sig_/Vj4j3B82LTnSRKNR4XrpNMb--
