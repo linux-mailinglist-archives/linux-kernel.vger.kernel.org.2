@@ -2,64 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75BCC4606ED
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 15:30:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39DB04606F1
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 15:31:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358048AbhK1Odd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 09:33:33 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:49482 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352701AbhK1Obc (ORCPT
+        id S1357936AbhK1Oeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 09:34:44 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:45732 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1358035AbhK1Ocn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 09:31:32 -0500
+        Sun, 28 Nov 2021 09:32:43 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7CA5EB80B63;
-        Sun, 28 Nov 2021 14:28:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 509EBC004E1;
-        Sun, 28 Nov 2021 14:28:12 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D962161012;
+        Sun, 28 Nov 2021 14:29:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 673A1C004E1;
+        Sun, 28 Nov 2021 14:29:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1638109693;
-        bh=oW5W4Qn4gkvmMPuApEJopX32RKgMPMB6E1QpTUiASBc=;
+        s=korg; t=1638109766;
+        bh=5CIWnX4jEum1UXPdmPD036y813Y+usP22f2Ah132sPA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kUN7McQXCi42L42eU2vaet8RVyJZILTENrYATmD130pqqNTAsSvyviKzudfBq7xbE
-         Ny1/XBL8REpx0FY4vlYXfuWexnZeqi91i7cAI5VfsiVqFdGlOzGLUcZegOgPTmSVk+
-         CB3f9QCumKToA1C56EDcLpfFuXY1RKCmFCqyaEi4=
-Date:   Sun, 28 Nov 2021 15:28:09 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sam Protsenko <semen.protsenko@linaro.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Jaewon Kim <jaewon02.kim@samsung.com>,
-        Chanho Park <chanho61.park@samsung.com>,
-        David Virag <virag.david003@gmail.com>,
-        Youngmin Nam <youngmin.nam@samsung.com>,
-        devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-Subject: Re: [PATCH 4/8] tty: serial: samsung: Remove USI initialization
-Message-ID: <YaOR+TbcR1V4ovf/@kroah.com>
-References: <20211127223253.19098-1-semen.protsenko@linaro.org>
- <20211127223253.19098-5-semen.protsenko@linaro.org>
+        b=rlIdML7W1m/jo/cdz79UYbWa58tgd07DOfUgcE3tXd2kr8pggyxRkNTInwVo/O2m1
+         SQE463wvwCjhvXpNMGmH5b0mf7pDunK4SM48+wFEobLW7iQKknQ/aSHGHoaoyRceGT
+         aBEzvK6Gb+OVilSBzwoFaetmQJSVDGBGP7l/7sDk=
+Date:   Sun, 28 Nov 2021 15:29:22 +0100
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     "Winkler, Tomas" <tomas.winkler@intel.com>
+Cc:     Haakon Bugge <haakon.bugge@oracle.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: Re: [PATCH] mei: Remove some dead code
+Message-ID: <YaOSQrGqogbFGAqJ@kroah.com>
+References: <3f904c291f3eed06223dd8d494028e0d49df6f10.1636711522.git.christophe.jaillet@wanadoo.fr>
+ <80B25490-FE92-420E-A506-C92A996EF174@oracle.com>
+ <17d6896a6abf49138556e34cb426d575@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211127223253.19098-5-semen.protsenko@linaro.org>
+In-Reply-To: <17d6896a6abf49138556e34cb426d575@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 28, 2021 at 12:32:49AM +0200, Sam Protsenko wrote:
-> USI control is now extracted to dedicated USIv2 driver. Remove USI
-> related code from serial driver to avoid conflicts and code duplication.
+On Sun, Nov 28, 2021 at 11:12:33AM +0000, Winkler, Tomas wrote:
+> 
+> > 
+> > 
+> > > On 12 Nov 2021, at 11:06, Christophe JAILLET
+> > <christophe.jaillet@wanadoo.fr> wrote:
+> > >
+> > > 'generated' is known to be true here, so "true || whatever" will still
+> > > be true.
+> > >
+> > > So, remove some dead code.
+> > >
+> > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> > > ---
+> > > This is also likely that a bug is lurking here.
+> > >
+> > > Maybe, the following was expected:
+> > > -	generated = generated ||
+> > > +	generated =
+> > > 		(hisr & HISR_INT_STS_MSK) ||
+> > > 		(ipc_isr & SEC_IPC_HOST_INT_STATUS_PENDING);
+> > >
+> > > ?
+> > 
+> > I concur about your analysis, but I do not know the intent here.
+> Your fix  is okay, I can ack that patch. 
 
-What conflicts?
+Is that an ack of this patch?  If so, please provide that...
 
-What duplication?  All you did here was delete code.
-
-confused,
+thanks,
 
 greg k-h
