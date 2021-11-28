@@ -2,69 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7EBE4602B9
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 02:18:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC6C4602C0
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 02:18:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356756AbhK1BUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 20:20:30 -0500
-Received: from mga03.intel.com ([134.134.136.65]:54021 "EHLO mga03.intel.com"
+        id S1356855AbhK1BVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 20:21:23 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:16610 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230295AbhK1BS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 20:18:28 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10181"; a="235734933"
-X-IronPort-AV: E=Sophos;i="5.87,270,1631602800"; 
-   d="scan'208";a="235734933"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 17:15:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,270,1631602800"; 
-   d="scan'208";a="458653709"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 27 Nov 2021 17:15:11 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mr8md-000ADi-6f; Sun, 28 Nov 2021 01:15:11 +0000
-Date:   Sun, 28 Nov 2021 09:15:02 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     kbuild-all@lists.01.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-kernel@vger.kernel.org
-Subject: [djwong-xfs:vectorized-scrub 291/339] {standard input}:950: Error:
- pcrel offset for branch to .LS0009 too far (0x3e)
-Message-ID: <202111280930.yVc6qMna-lkp@intel.com>
+        id S244409AbhK1BTO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 20:19:14 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4J1rCD4tJRz9Y;
+        Sun, 28 Nov 2021 02:15:52 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1638062155; bh=/7+VGRKxSD8xhQyHeA7wxZc9qtdjiI1iETTVe9pYPLI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oXqLZE7x4BBzR6RgITz19akH85JDkj2nuDH72AAzGlf1Y19/zRhLT/EYzkjxSquZY
+         lQDmdeOlt8p2X8CEQglQKE82HPyr+MOsLSpQnGJ3s5n+8hbJIsMdPOKL4fZcMf0jgO
+         CJ7+TE23XroAl9jtGHsf4Kws8DhnEqHir6C7zTLETfSX3VrDeoLBt5clA/cf/ZoC7B
+         31pS0P4z0OUxVHiLECVTcCPYSnqvN5IbEtxNoArldRfYbOgq5wGXjBIkaa3TdqpC0q
+         PWCaSN/jTI85sRsru7LR0d1SZHbfWHN7MsxouM8JlzJ+q5vzkEduCAsbuKP/U7sT2N
+         iLQXxOKkkTf7g==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.3 at mail
+Date:   Sun, 28 Nov 2021 02:15:51 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee.jones@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
+        "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v4 18/25] x86: Use do_kernel_power_off()
+Message-ID: <YaLYR24XRijSmBq3@qmqm.qmqm.pl>
+References: <20211126180101.27818-1-digetx@gmail.com>
+ <20211126180101.27818-19-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-2
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211126180101.27818-19-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git vectorized-scrub
-head:   6ae796646175258770822ebb4b83b6657f88bc55
-commit: a5d5c45b0b00e377803675eaaecd9a735047ca55 [291/339] xfs: add realtime refcount btree block detection to log recovery
-config: csky-randconfig-r005-20211126 (https://download.01.org/0day-ci/archive/20211128/202111280930.yVc6qMna-lkp@intel.com/config)
-compiler: csky-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git/commit/?id=a5d5c45b0b00e377803675eaaecd9a735047ca55
-        git remote add djwong-xfs https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git
-        git fetch --no-tags djwong-xfs vectorized-scrub
-        git checkout a5d5c45b0b00e377803675eaaecd9a735047ca55
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=csky SHELL=/bin/bash
+On Fri, Nov 26, 2021 at 09:00:54PM +0300, Dmitry Osipenko wrote:
+> Kernel now supports chained power-off handlers. Use do_kernel_power_off()
+> that invokes chained power-off handlers. It also invokes legacy
+> pm_power_off() for now, which will be removed once all drivers will
+> be converted to the new power-off API.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  arch/x86/kernel/reboot.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
+> index 0a40df66a40d..cd7d9416d81a 100644
+> --- a/arch/x86/kernel/reboot.c
+> +++ b/arch/x86/kernel/reboot.c
+> @@ -747,10 +747,10 @@ static void native_machine_halt(void)
+>  
+>  static void native_machine_power_off(void)
+>  {
+> -	if (pm_power_off) {
+> +	if (kernel_can_power_off()) {
+>  		if (!reboot_force)
+>  			machine_shutdown();
+> -		pm_power_off();
+> +		do_kernel_power_off();
+>  	}
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Judging from an old commit from 2006 [1], this can be rewritten as:
 
-All errors (new ones prefixed by >>):
+if (!reboot_force && kernel_can_power_off())
+	machine_shutdown();
+do_kernel_power_off();
 
-   {standard input}: Assembler messages:
->> {standard input}:950: Error: pcrel offset for branch to .LS0009 too far (0x3e)
+And maybe later reworked so it doesn't need kernel_can_power_off().
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+[1] http://lkml.iu.edu/hypermail//linux/kernel/0511.3/0681.html
+
+Best Regards
+Micha³ Miros³aw
