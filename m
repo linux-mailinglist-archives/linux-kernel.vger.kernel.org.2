@@ -2,90 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD5246046E
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 06:34:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2B646047B
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 06:43:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbhK1Fhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 00:37:41 -0500
-Received: from mga07.intel.com ([134.134.136.100]:36791 "EHLO mga07.intel.com"
+        id S233365AbhK1FqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 00:46:18 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:49674 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229682AbhK1Ffk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 00:35:40 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10181"; a="299208807"
-X-IronPort-AV: E=Sophos;i="5.87,270,1631602800"; 
-   d="scan'208";a="299208807"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 21:32:25 -0800
-X-IronPort-AV: E=Sophos;i="5.87,270,1631602800"; 
-   d="scan'208";a="458707260"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 21:32:25 -0800
-Date:   Sat, 27 Nov 2021 21:32:24 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-kernel@vger.kernel.org, Dave Jiang <dave.jiang@intel.com>,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2] Documentation/auxiliary_bus: Clarify auxiliary_device
- creation
-Message-ID: <20211128053224.GU3538886@iweiny-DESK2.sc.intel.com>
-References: <87k0hq2oxc.fsf@meer.lwn.net>
- <20211102225310.3677785-1-ira.weiny@intel.com>
- <YaEIdmRV2A1yclub@kroah.com>
+        id S230230AbhK1FoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Nov 2021 00:44:17 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4J1y561xCxzGX;
+        Sun, 28 Nov 2021 06:40:58 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1638078060; bh=euRkxERs/Vo+Ncwnc6oh+QQPM82cBPQuQuUB2BgzLnk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LY3ChcHhLpC97uysDR/7nppfcxComB2E48G/CSr/GJWMZpY0nUf2Ozt/QdF3bO27D
+         KVVscNOrPrvjDeFDDvD8xGhXTpYyqBgTMYDKLE9wEICL5bDVx6hBtk8ejpU6BrId79
+         vbWsoB/iTmCLm+bLT0tuvFrL4/nVF7nyYWv4tALAyWWX2iU7ISeiyJa/5FSEeoDtm6
+         egb154gg0fV3kqNymh1/NYzbwJKJ0ezYVFUVXr4cbByKt/7l8pm0u2iIP/DReChzc2
+         cj5XNAxcI2vANrMDBXNTTKYQJcaUTS+V2hD4R7+BDKXqWKOMu+D+3chFvhgLVLi9p7
+         Ujd618hPUSMCQ==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.3 at mail
+Date:   Sun, 28 Nov 2021 06:40:56 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?iso-8859-2?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-mmc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-clk@vger.kernel.org, David Heidelberg <david@ixit.cz>
+Subject: Re: [PATCH v15 00/39] NVIDIA Tegra power management patches for 5.17
+Message-ID: <YaMWaKqQ+c8G08mJ@qmqm.qmqm.pl>
+References: <20211114193435.7705-1-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-2
 Content-Disposition: inline
-In-Reply-To: <YaEIdmRV2A1yclub@kroah.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211114193435.7705-1-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 05:16:54PM +0100, Greg Kroah-Hartman wrote:
-> On Tue, Nov 02, 2021 at 03:53:10PM -0700, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > The documentation for creating an auxiliary device is a 3 step not a 2
-> > step process.  Specifically the requirements of setting the name, id,
-> > dev.release, and dev.parent fields was not clear as a precursor to the '2
-> > step' process documented.
-> > 
-> > Clarify by declaring this a 3 step process starting with setting the
-> > fields of struct auxiliary_device correctly.
-> > 
-> > Also add some sample code and tie the change into the rest of the
-> > documentation.
-> > 
-> > Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > ---
-> > Changes from V1:
-> > 	From Jonathan
-> > 		Fix auxiliary spelling
-> > ---
-> >  Documentation/driver-api/auxiliary_bus.rst | 77 +++++++++++++++++-----
-> >  1 file changed, 59 insertions(+), 18 deletions(-)
+On Sun, Nov 14, 2021 at 10:33:56PM +0300, Dmitry Osipenko wrote:
+> This series adds runtime PM support to Tegra drivers and enables core
+> voltage scaling for Tegra20/30 SoCs, resolving overheating troubles.
 > 
-> Can you please resend the whole series, trying to just resend one patch
-> in the middle is horrible for our tools and to try to figure this out.
+> All patches in this series are interdependent and should go via Tegra tree
+> for simplicity.
+[...]
 
-Sorry I did not realize this was an issue.  Other maintainers have been ok with
-this because I think B4 works fine with this?
+I would suggest pushing all the fixes to the front of the series (those are
+at least patches 1, 3, 17, 27-31 and 39).
 
-> 
-> Would you like to have to unwind this?  Please make it simple for
-> maintainers to review and if ok, apply your changes.
-
-Regardless, I was planning on resending this as part of the c files as you
-requested before.  Did you still want me to make that conversion?
-
-Or I can resend this and make the c conversion as a follow on patch?
-
-Ira
-
-> 
-> thanks,
-> 
-> greg k-h
+Best Regards
+Micha³ Miros³aw
