@@ -2,109 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4ABF460655
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 14:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3429946065B
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 14:08:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236881AbhK1NIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 08:08:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46536 "EHLO
+        id S1352384AbhK1NLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 08:11:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236203AbhK1NGe (ORCPT
+        with ESMTP id S237080AbhK1NJu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 08:06:34 -0500
+        Sun, 28 Nov 2021 08:09:50 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD0FC061748
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 05:03:18 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54610C061759;
+        Sun, 28 Nov 2021 05:06:34 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5B4F560FD7
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 13:03:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25823C53FC7;
-        Sun, 28 Nov 2021 13:03:16 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DE6DC60FE4;
+        Sun, 28 Nov 2021 13:06:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2EB6C004E1;
+        Sun, 28 Nov 2021 13:06:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1638104597;
-        bh=aYwVpeLfIXH6Mu/pJPAwzKqF8YSklMByMuPefZ9hCTI=;
+        s=korg; t=1638104793;
+        bh=RYtupz3HPLjtezKDRqyDnZahFRkCuYlX94YfaJiIgBQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LO475MLZnrrRDWzGsNhlXj4MV41Mg5+FAY0Yi9ZaCuU0mu5sHw2zMHKX/SOkZMj6S
-         Hi4OWu04vvdCtjzjdHwBjgQCS/K7neFt+9ScTConwhvMb7sduqtcCmXKQqlij487kZ
-         NOGKp4ojy2llM/Em96YzTX/RoWCatm8EycfFukMo=
-Date:   Sun, 28 Nov 2021 14:03:15 +0100
+        b=RfKWuls2uh2tPrl4OVrsjojSL0je3w9G98sMABWdiz1FZRyhbY4jBVh+gWPt1AZF2
+         krUEO4C+dkSk+o/VI+2yD5AbtJV6vSnpWABgaOPOm424pRn2a3K7OeWmdlvJu/53sQ
+         lXz88H+r7CducdMcEQlMAltBmRMqaEUQfwoYzlAw=
+Date:   Sun, 28 Nov 2021 14:06:30 +0100
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Max Filippov <jcmvbkbc@gmail.com>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        LKML <linux-kernel@vger.kernel.org>,
+To:     Salvatore Bonaccorso <carnil@debian.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: Re: [linux-stable-rc:linux-4.19.y 565/981]
- arch/xtensa/platforms/xtfpga/include/platform/hardware.h:50:33: error:
- initializer element is not constant
-Message-ID: <YaN+E5fuvU2VO+W5@kroah.com>
-References: <202111271017.dLo8jJ8p-lkp@intel.com>
- <CAMo8BfL88Qc6o=WheT6+n4pOpXQbnw220UQa_GCQb98F=S9ffA@mail.gmail.com>
+Subject: Re: [PATCH 4.19 088/323] locking/lockdep: Avoid RCU-induced noinstr
+ fail
+Message-ID: <YaN+1gwQwt0aGKte@kroah.com>
+References: <20211124115718.822024889@linuxfoundation.org>
+ <20211124115721.937655496@linuxfoundation.org>
+ <YaNP46ypf6xcTcJH@eldamar.lan>
+ <YaNvGtWfuCRkmWwi@eldamar.lan>
+ <YaNx31QvvjHy2IGh@eldamar.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAMo8BfL88Qc6o=WheT6+n4pOpXQbnw220UQa_GCQb98F=S9ffA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YaNx31QvvjHy2IGh@eldamar.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 27, 2021 at 07:10:56AM -0800, Max Filippov wrote:
-> On Fri, Nov 26, 2021 at 6:33 PM kernel test robot <lkp@intel.com> wrote:
-> >
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> > head:   1f244a54b39dd02c69f79001b38e2650e96f1ea8
-> > commit: 1c21a8df144f1edb3b6f5f24559825780c227a7d [565/981] xtensa: xtfpga: use CONFIG_USE_OF instead of CONFIG_OF
-> > config: xtensa-randconfig-r001-20211126 (https://download.01.org/0day-ci/archive/20211127/202111271017.dLo8jJ8p-lkp@intel.com/config)
-> > compiler: xtensa-linux-gcc (GCC) 11.2.0
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=1c21a8df144f1edb3b6f5f24559825780c227a7d
-> >         git remote add linux-stable-rc https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> >         git fetch --no-tags linux-stable-rc linux-4.19.y
-> >         git checkout 1c21a8df144f1edb3b6f5f24559825780c227a7d
-> >         # save the config file to linux build tree
-> >         mkdir build_dir
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=xtensa SHELL=/bin/bash
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > All errors (new ones prefixed by >>):
-> >
-> >    In file included from include/linux/kernel.h:10,
-> >                     from arch/xtensa/platforms/xtfpga/setup.c:19:
-> >    include/linux/dma-mapping.h: In function 'dma_map_resource':
-> >    arch/xtensa/include/asm/page.h:182:16: warning: comparison of unsigned expression in '>= 0' is always true [-Wtype-limits]
-> >      182 |         ((pfn) >= ARCH_PFN_OFFSET && ((pfn) - ARCH_PFN_OFFSET) < max_mapnr)
-> >          |                ^~
-> >    include/linux/compiler.h:77:45: note: in definition of macro 'unlikely'
-> >       77 | # define unlikely(x)    __builtin_expect(!!(x), 0)
-> >          |                                             ^
-> >    include/linux/dma-mapping.h:329:9: note: in expansion of macro 'BUG_ON'
-> >      329 |         BUG_ON(pfn_valid(PHYS_PFN(phys_addr)));
-> >          |         ^~~~~~
-> >    include/linux/dma-mapping.h:329:16: note: in expansion of macro 'pfn_valid'
-> >      329 |         BUG_ON(pfn_valid(PHYS_PFN(phys_addr)));
-> >          |                ^~~~~~~~~
-> >    In file included from arch/xtensa/platforms/xtfpga/setup.c:37:
-> >    arch/xtensa/platforms/xtfpga/setup.c: At top level:
-> > >> arch/xtensa/platforms/xtfpga/include/platform/hardware.h:50:33: error: initializer element is not constant
-> >       50 | #define OETH_REGS_PADDR         (XCHAL_KIO_PADDR + 0x0D030000)
-> >          |                                 ^
+On Sun, Nov 28, 2021 at 01:11:11PM +0100, Salvatore Bonaccorso wrote:
+> Hi,
 > 
-> This happens because the backported change
-> 1c21a8df144f1edb3b6f5f24559825780c227a7d depends on the change
-> d67ed2510d28 ("xtensa: use CONFIG_USE_OF instead of CONFIG_OF")
-> which is not in that stable tree.
+> On Sun, Nov 28, 2021 at 12:59:24PM +0100, Salvatore Bonaccorso wrote:
+> > Hi,
+> > 
+> > On Sun, Nov 28, 2021 at 10:46:13AM +0100, Salvatore Bonaccorso wrote:
+> > > Hi,
+> > > 
+> > > On Wed, Nov 24, 2021 at 12:54:38PM +0100, Greg Kroah-Hartman wrote:
+> > > > From: Peter Zijlstra <peterz@infradead.org>
+> > > > 
+> > > > [ Upstream commit ce0b9c805dd66d5e49fd53ec5415ae398f4c56e6 ]
+> > > > 
+> > > > vmlinux.o: warning: objtool: look_up_lock_class()+0xc7: call to rcu_read_lock_any_held() leaves .noinstr.text section
+> > > 
+> > > For 4.19.218 at least this commit seems to cause a build failure for
+> > > cpupower, if warnings are treated as errors, I have not seen the same
+> > > for the 5.10.80 build:
+> > > 
+> > > gcc -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -DVERSION=\"4.19\" -DPACKAGE=\"cpupower\" -DPACKAGE_BUGREPORT=\"Debian\ \(reportbug\ linux-cpupower\)\" -D_GNU_SOURCE -pipe -DNLS -Wall -Wchar-subscripts -Wpointer-arith
+> > >  -Wsign-compare -Wno-pointer-sign -Wdeclaration-after-statement -Wshadow -Os -fomit-frame-pointer -fPIC -o /home/build/linux-4.19.218/debian/build/build-tools/tools/power/cpupower/lib/cpupower.o -c lib/cpupower.c
+> > > In file included from lockdep.c:28:
+> > > ../../../kernel/locking/lockdep.c: In function ‘look_up_lock_class’:
+> > > ../../../kernel/locking/lockdep.c:694:2: error: implicit declaration of function ‘hlist_for_each_entry_rcu_notrace’; did you mean ‘hlist_for_each_entry_continue’? [-Werror=implicit-function-declaration]
+> > >   hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
+> > >   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > >   hlist_for_each_entry_continue
+> > > ../../../kernel/locking/lockdep.c:694:53: error: ‘hash_entry’ undeclared (first use in this function); did you mean ‘hash_ptr’?
+> > >   hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
+> > >                                                      ^~~~~~~~~~
+> > >                                                      hash_ptr
+> > > ../../../kernel/locking/lockdep.c:694:53: note: each undeclared identifier is reported only once for each function it appears in
+> > > ../../../kernel/locking/lockdep.c:694:64: error: expected ‘;’ before ‘{’ token
+> > >   hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
+> > >                                                                 ^~
+> > >                                                                 ;
+> > > ../../../kernel/locking/lockdep.c:706:1: warning: control reaches end of non-void function [-Wreturn-type]
+> > >  }
+> > >  ^
+> > > cc1: some warnings being treated as errors
+> > > make[5]: *** [/home/build/linux-4.19.218/tools/build/Makefile.build:97: /home/build/linux-4.19.218/debian/build/build-tools/tools/lib/lockdep/lockdep.o] Error 1
+> > > make[4]: *** [Makefile:121: /home/build/linux-4.19.218/debian/build/build-tools/tools/lib/lockdep/liblockdep-in.o] Error 2
+> > > make[4]: Leaving directory '/home/build/linux-4.19.218/tools/lib/lockdep'
+> > > make[3]: *** [/home/build/linux-4.19.218/debian/rules.d/tools/lib/lockdep/Makefile:16: all] Error 2
+> > > make[3]: Leaving directory '/home/build/linux-4.19.218/debian/build/build-tools/tools/lib/lockdep'
+> > > make[2]: *** [debian/rules.real:795: build-liblockdep] Error 2
+> > > make[2]: *** Waiting for unfinished jobs....
+> > > 
+> > > I was not yet able to look further on it.
+> > 
+> > Might actually be a distro specific issue, needs some further
+> > investigation.
 > 
-> Should I send the backported version of the d67ed2510d28 or should
-> the change 1c21a8df144f1edb3b6f5f24559825780c227a7d be reverted
-> from the stable? (IMO they are not the stable material).
+> I'm really sorry about the doubled noice, so here is the stance. I can
+> reproduce distro indpeendent, but the initial claim was wrong. It can
+> be reproduced for 4.19.218:
+> 
+> $ LC_ALL=C.UTF-8 V=1 ARCH=x86 make -C tools liblockdep
+> make: Entering directory '/home/build/linux-stable/tools'
+> mkdir -p lib/lockdep && make  subdir=lib/lockdep  -C lib/lockdep 
+> make[1]: Entering directory '/home/build/linux-stable/tools/lib/lockdep'
+> make -f /home/build/linux-stable/tools/build/Makefile.build dir=. obj=fixdep
+>   gcc -Wp,-MD,./.fixdep.o.d -Wp,-MT,fixdep.o  -D"BUILD_STR(s)=#s"   -c -o fixdep.o fixdep.c
+>    ld -r -o fixdep-in.o  fixdep.o
+> gcc  -o fixdep fixdep-in.o
+>   gcc -Wp,-MD,./.common.o.d -Wp,-MT,common.o -g -DCONFIG_LOCKDEP -DCONFIG_STACKTRACE -DCONFIG_PROVE_LOCKING -DBITS_PER_LONG=__WORDSIZE -DLIBLOCKDEP_VERSION='"4.19.218"' -rdynamic -O0 -g -fPIC -Wall -I. -I./uinclude -I./include -I../../include -D"BUILD_STR(s)=#s" -c -o common.o common.c
+>   gcc -Wp,-MD,./.lockdep.o.d -Wp,-MT,lockdep.o -g -DCONFIG_LOCKDEP -DCONFIG_STACKTRACE -DCONFIG_PROVE_LOCKING -DBITS_PER_LONG=__WORDSIZE -DLIBLOCKDEP_VERSION='"4.19.218"' -rdynamic -O0 -g -fPIC -Wall -I. -I./uinclude -I./include -I../../include -D"BUILD_STR(s)=#s" -c -o lockdep.o lockdep.c
+> In file included from lockdep.c:28:
+> ../../../kernel/locking/lockdep.c: In function ‘look_up_lock_class’:
+> ../../../kernel/locking/lockdep.c:692:2: warning: implicit declaration of function ‘hlist_for_each_entry_rcu_notrace’; did you mean ‘hlist_for_each_entry_continue’? [-Wimplicit-function-declaration]
+>   hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
+>   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   hlist_for_each_entry_continue
+> ../../../kernel/locking/lockdep.c:692:53: error: ‘hash_entry’ undeclared (first use in this function); did you mean ‘hash_ptr’?
+>   hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
+>                                                      ^~~~~~~~~~
+>                                                      hash_ptr
+> ../../../kernel/locking/lockdep.c:692:53: note: each undeclared identifier is reported only once for each function it appears in
+> ../../../kernel/locking/lockdep.c:692:64: error: expected ‘;’ before ‘{’ token
+>   hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
+>                                                                 ^~
+>                                                                 ;
+> ../../../kernel/locking/lockdep.c:704:1: warning: control reaches end of non-void function [-Wreturn-type]
+>  }
+>  ^
+> make[2]: *** [/home/build/linux-stable/tools/build/Makefile.build:97: lockdep.o] Error 1
+> make[1]: *** [Makefile:121: liblockdep-in.o] Error 2
+> make[1]: Leaving directory '/home/build/linux-stable/tools/lib/lockdep'
+> make: *** [Makefile:66: liblockdep] Error 2
+> make: Leaving directory '/home/build/linux-stable/tools'
+> 
+> Reverting upstream ce0b9c805dd6 ("locking/lockdep: Avoid RCU-induced
+> noinstr fail") on top of 4.19.218 fixes the issue.
+> 
+> So back to square one, and again apologies for the intermediate noise!
 
-I have queued up d67ed2510d28 ("xtensa: use CONFIG_USE_OF instead of
-CONFIG_OF") to hopefully resolve this.
+What config/arch is causing this to break?  And if you add rchlist.h to
+the include files for lockdep.c, does that resolve the issue?  I haven't
+seen any other reports of this yet.
 
 thanks,
 
