@@ -2,76 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00894460966
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 20:27:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 367EE46092C
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 20:02:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343973AbhK1Tan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 14:30:43 -0500
-Received: from 49-237-179-185.static.tentacle.fi ([185.179.237.49]:59370 "EHLO
-        bitmer.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1357211AbhK1T2m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 14:28:42 -0500
-X-Greylist: delayed 2513 seconds by postgrey-1.27 at vger.kernel.org; Sun, 28 Nov 2021 14:28:40 EST
-Received: from 88-114-184-140.elisa-laajakaista.fi ([88.114.184.140] helo=[192.168.1.48])
-        by bitmer.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <jarkko.nikula@bitmer.com>)
-        id 1mrP8t-0003BD-LO; Sun, 28 Nov 2021 20:43:15 +0200
-Subject: Re: [PATCH] ARM: dts: Fix timer regression for beagleboard revision c
-To:     Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org
-Cc:     =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>
-References: <20211125144834.52457-1-tony@atomide.com>
-From:   Jarkko Nikula <jarkko.nikula@bitmer.com>
-Message-ID: <18772611-59f8-57ad-581d-40ea71d3d706@bitmer.com>
-Date:   Sun, 28 Nov 2021 20:43:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S245660AbhK1TFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 14:05:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234495AbhK1TDs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Nov 2021 14:03:48 -0500
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12FCFC061746
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 11:00:32 -0800 (PST)
+Received: by mail-ua1-x933.google.com with SMTP id ay21so29386250uab.12
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 11:00:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=EyXzzW/LXdhcWFSvAAt1tFl3N3ws4ToYWR1fe/RXuhc=;
+        b=piEYmlR3acZLUgyY3cajhqi4pSqGK4aZSDNbrZ3LWk4e7DPYkCxBp+3z1iFBety0G5
+         Dhv8K9BxjfsQhEU23hS0mtLjkNbRR1ZgrI2aClk4ZQTX3mI/rTMJX2qPrxlzRebMF5Og
+         sdfeXZ2anMt0tojuvCuxtatnCvPClKoq4BkOQbA501AqsjRkDVFqfUA9k6YsIOqxEgPW
+         JaZfwoqB0jM5wfHJQbidXDoux5nNhumLkLgOHxWb4pzrBMtKVinF+n7UTKW5Hh6rOwtc
+         oHpH+jCEe7TzhfExSssmDYSAEMbXwMeR40QQPrri0K4lT8+89D/rHhLG8GV5tN3gf0sI
+         Fv1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=EyXzzW/LXdhcWFSvAAt1tFl3N3ws4ToYWR1fe/RXuhc=;
+        b=gJtNqFmd5ONSM1ofj54JXt/6i2GqnDTYm8yljTIHXfRb/HPHsNCKceb1anHe86oAmE
+         zp7Jfc06EeQXZGpsDeIhmO/HZQZobAjXSHt8zrYwZWVicWn5/HxPCBfJmm2JweSDwYtd
+         8X2XS3O3TP4MlSiWIjdrJIvjelVsY3nBbEDluTYWqkV9DbGETptNqY3/rurM1XlO3rXO
+         rVnh+kgiV6TZyCFfmtX4gKKe9pPUBeu1UzY6DNsESCwkOkdHyRG2fmGA7GII+X7EfcHn
+         dG6K7WiEDmXwgo+0+zLqEZdtwKzWFJOfnGj5IjeWbAcibIqPJJAZHm+S38myVE9EnmRR
+         E6GQ==
+X-Gm-Message-State: AOAM5316BaQw1iwnsgNQjgkcmVx3PgZGiN4JxVmxwLJtbc92ugZiPogt
+        7AbaOZHn1M/wRUURHX5ccB2qFoLvCYLfYb+/7bA=
+X-Google-Smtp-Source: ABdhPJxa0GuUIJMKuuakfIwcsWkdHBmRPf0ED9qPcDG1UEZK9nVERXeFhgpzwt1kJJiPhk+aUsFDdFTsS2LLB3LfhfI=
+X-Received: by 2002:a67:e003:: with SMTP id c3mr28255945vsl.51.1638126031274;
+ Sun, 28 Nov 2021 11:00:31 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211125144834.52457-1-tony@atomide.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:ab0:3792:0:0:0:0:0 with HTTP; Sun, 28 Nov 2021 11:00:30
+ -0800 (PST)
+Reply-To: clay.tousey@yandex.com
+From:   CLAY TOUSEY <omoyenilaura2002@gmail.com>
+Date:   Sun, 28 Nov 2021 20:00:30 +0100
+Message-ID: <CAD-f5zStyPBOUFJZGhai6+PQYuc-6MWPnA6tSmzpbawW513YVQ@mail.gmail.com>
+Subject: =?UTF-8?Q?CHARITABLE_GESTURE=21=2F_Wohlt=C3=A4tigkeitsgeste=21?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.11.2021 16.48, Tony Lindgren wrote:
-> Commit e428e250fde6 ("ARM: dts: Configure system timers for omap3")
-> caused a timer regression for beagleboard revision c where the system
-> clockevent stops working if omap3isp module is unloaded.
-> 
-> Turns out we still have beagleboard revisions a-b4 capacitor c70 quirks
-> applied that limit the usable timers for no good reason. This also affects
-> the power management as we use the system clock instead of the 32k clock
-> source.
-> 
-> Let's fix the issue by adding a new omap3-beagle-ab4.dts for the old timer
-> quirks. This allows us to remove the timer quirks for later beagleboard
-> revisions. We also need to update the related timer quirk check for the
-> correct compatible property.
-> 
-> Fixes: e428e250fde6 ("ARM: dts: Configure system timers for omap3")
-> Cc: linux-kernel@vger.kernel.org
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Reported-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-> ---
->  .../devicetree/bindings/arm/omap/omap.txt     |  3 ++
->  arch/arm/boot/dts/Makefile                    |  1 +
->  arch/arm/boot/dts/omap3-beagle-ab4.dts        | 47 +++++++++++++++++++
->  arch/arm/boot/dts/omap3-beagle.dts            | 33 -------------
->  drivers/clocksource/timer-ti-dm-systimer.c    |  2 +-
->  5 files changed, 52 insertions(+), 34 deletions(-)
->  create mode 100644 arch/arm/boot/dts/omap3-beagle-ab4.dts
-> 
-I trust Tony got this working since I lent the board for him to look at
-this regression since our earlier remote attempts didn't find a working fix.
+--=20
+Hallo
 
-Jarkko
+Sie wurden f=C3=BCr meine private Spende von nur 1.000.000,00 Euro
+ausgew=C3=A4hlt. Wenn Sie zustimmen m=C3=B6chten, senden Sie bitte Ihre
+Annahmenachricht als Antwort auf diese E-Mail f=C3=BCr weitere
+Informationen.
 
+Gr=C3=BC=C3=9Fe.
+Clay Tousey
+
+Kontaktieren Sie mich einfach unter:
+E-Mail; claytousey@yandex.com
+WhatsApp:+1 (310) 347-0320
+Mehr =C3=BCber mich erfahren Sie auch unter folgendem Link
+https://www.powerball.com/index.php/winner-story/love-you-more-trust-become=
+s-floridas-16th-powerball-jackpot-winner
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D++++++=
++++++++++++++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+Hello,
+
+You have been selected for my private donation of 1,000,000.00 Euro
+Only. Should you wish to accept, please forward your message of
+acceptance in response to this email for more information.
+
+Regards.
+Clay Tousey
+
+Just contact me at:
+Email; claytousey@yandex.com
+whatsapp:+1 (310) 347-0320
+You can also find out more about me under the following link
+https://www.powerball.com/index.php/winner-story/love-you-more-trust-become=
+s-floridas-16th-powerball-jackpot-winner
