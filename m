@@ -2,169 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93415460620
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 13:39:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E698E460625
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 13:39:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357435AbhK1Mmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 07:42:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236474AbhK1Mkl (ORCPT
+        id S1357481AbhK1MnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 07:43:03 -0500
+Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:65200 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1357352AbhK1MlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 07:40:41 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F97C061758
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 04:37:22 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id 133so12341597wme.0
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 04:37:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kryo-se.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LcBtqbRPkEcsZfTVxey43CZc666mGtsTaMbpCcH3s5g=;
-        b=EFGSv3vr1jlJ/3OMklxcssKtiEGwrXuZR4CYy49g2ILzX8LCZv42cKGCrlgF94UaAR
-         fJzYXAAHNBb0rJsfAuc0DYrr3AM7KMyuGTeCUEapqAzfvCQ6ub2bS4bq1NMHwZQRAo3c
-         UYOzndMo+SQ7jD+XM6MMtVyJo1UfH2XO+jcqAakyvfrbmErRkhvy2cuqXiZynZeIHnUd
-         K6M8trgx348nfu/shp7EacR2qsTamZx2vMKL0BwmAaUnlU0Zw5qwwBF6ZVSt1ARptJAI
-         30gCfj+PQkYRad5Jt+lKq9suUS5kV9dAnrEkmt3DsBUkIcf5DK8EHepZYdOhdSKn2+Wy
-         7idw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LcBtqbRPkEcsZfTVxey43CZc666mGtsTaMbpCcH3s5g=;
-        b=1OrWKY2nb2kkOwyuJvunkTY8K2hrJBzdtmi5QeRSmNJUCC3CkMTdyat1BNAa2u4RfB
-         BF3GyuL2qrp/Qln1pEcp7sDxYDCmYYkPYLJrxlYF0DGMbX+lacb/rV93q0mcx0xBkWgG
-         7INmpRFHbjvBphimlm3RgCg09QDK6CVN+m2x4EIsJ0gDXfCXpDjwXjZSKhSz9QFY0Tad
-         wMxFmCmaGf83VYhc+NT6+wQ+i5MrkTtbCoZYTmdEysWAmDzxXvwBpdy2q3bdGkCSNzB5
-         D5Q4HcPFHGL02rHcP+TTcfkQ4PONtFA60FGfgiWmsAikY6WV6JTENlZ78va74IXCPSbq
-         NNPw==
-X-Gm-Message-State: AOAM53109qQmBalDoAVeZbs53dntud8n40FZZxUL8ZzoX2I1rMQx4VNM
-        0+Y/SEdMclGuoitXyTVbImkOHw==
-X-Google-Smtp-Source: ABdhPJzoYvlmfuiKv+WzJ+bzTDTdJ/1Ukqz8IBwpUamRawGyGPn7UwPf0/m9fhSyxaXJfWgNsb3osA==
-X-Received: by 2002:a05:600c:3505:: with SMTP id h5mr28916296wmq.22.1638103041103;
-        Sun, 28 Nov 2021 04:37:21 -0800 (PST)
-Received: from kerfuffle.. ([2a02:168:9619:0:5497:3715:36d:f557])
-        by smtp.gmail.com with ESMTPSA id y6sm16242178wma.37.2021.11.28.04.37.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 04:37:20 -0800 (PST)
-From:   Erik Ekman <erik@kryo.se>
-To:     Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Erik Ekman <erik@kryo.se>,
-        Michael Stapelberg <michael@stapelberg.ch>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net/mlx4_en: Update reported link modes for 1/10G
-Date:   Sun, 28 Nov 2021 13:37:11 +0100
-Message-Id: <20211128123712.82096-1-erik@kryo.se>
-X-Mailer: git-send-email 2.33.1
+        Sun, 28 Nov 2021 07:41:02 -0500
+Received: from tomoyo.flets-east.jp ([114.149.34.46])
+        by smtp.orange.fr with ESMTPA
+        id rJR2meSen2lVYrJR7mr5Na; Sun, 28 Nov 2021 13:37:45 +0100
+X-ME-Helo: tomoyo.flets-east.jp
+X-ME-Auth: MDU0YmViZGZmMDIzYiBlMiM2NTczNTRjNWZkZTMwOGRiOGQ4ODf3NWI1ZTMyMzdiODlhOQ==
+X-ME-Date: Sun, 28 Nov 2021 13:37:45 +0100
+X-ME-IP: 114.149.34.46
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc:     Oliver Hartkopp <socketcan@hartkopp.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v3 0/5] fix statistics and payload issues for error
+Date:   Sun, 28 Nov 2021 21:37:29 +0900
+Message-Id: <20211128123734.1049786-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When link modes were initially added in commit 2c762679435dc
-("net/mlx4_en: Use PTYS register to query ethtool settings") and
-later updated for the new ethtool API in commit 3d8f7cc78d0eb
-("net: mlx4: use new ETHTOOL_G/SSETTINGS API") the only 1/10G non-baseT
-link modes configured were 1000baseKX, 10000baseKX4 and 10000baseKR.
-It looks like these got picked to represent other modes since nothing
-better was available.
+Important: this patch series depends on below patch:
+https://lore.kernel.org/linux-can/20211123111654.621610-1-mailhol.vincent@wanadoo.fr/T/#u
 
-Switch to using more specific link modes added in commit 5711a98221443
-("net: ethtool: add support for 1000BaseX and missing 10G link modes").
+There are some common errors which are made when updating the network
+statistics or processing the CAN payload:
 
-Tested with MCX311A-XCAT connected via DAC.
-Before:
+  1. Incrementing the "normal" stats when generating or sending a CAN
+  error message frame. Error message frames are an abstraction of
+  Socket CAN and do not exist on the wire. The first patch of this
+  series fixes the RX stats for 22 different drivers, the second one
+  fixes the TX stasts for the kvaser driver (N.B. only this driver is
+  capable of sending error on the bus).
 
-% sudo ethtool enp3s0
-Settings for enp3s0:
-	Supported ports: [ FIBRE ]
-	Supported link modes:   1000baseKX/Full
-	                        10000baseKR/Full
-	Supported pause frame use: Symmetric Receive-only
-	Supports auto-negotiation: No
-	Supported FEC modes: Not reported
-	Advertised link modes:  1000baseKX/Full
-	                        10000baseKR/Full
-	Advertised pause frame use: Symmetric
-	Advertised auto-negotiation: No
-	Advertised FEC modes: Not reported
-	Speed: 10000Mb/s
-	Duplex: Full
-	Auto-negotiation: off
-	Port: Direct Attach Copper
-	PHYAD: 0
-	Transceiver: internal
-	Supports Wake-on: d
-	Wake-on: d
-        Current message level: 0x00000014 (20)
-                               link ifdown
-	Link detected: yes
+  2. Copying the payload of RTR frames: RTR frames have no payload and
+  the data buffer only contains garbage. The DLC/length should not be
+  used to do a memory copy. The third patch of this series address
+  this issue for 3 different drivers.
 
-With this change:
+  3. Counting the length of the Remote Transmission Frames (RTR). The
+  length of an RTR frame is the length of the requested frame not the
+  actual payload. In reality the payload of an RTR frame is always 0
+  bytes long. The fourth patch of this series fixes the RX stats for
+  27 different drivers and the fifth one fixes the TX stats for 25
+  different ones.
 
-% sudo ethtool enp3s0
-	Settings for enp3s0:
-	Supported ports: [ FIBRE ]
-	Supported link modes:   1000baseX/Full
-	                        10000baseCR/Full
- 	                        10000baseSR/Full
-	Supported pause frame use: Symmetric Receive-only
-	Supports auto-negotiation: No
-	Supported FEC modes: Not reported
-	Advertised link modes:  1000baseX/Full
- 	                        10000baseCR/Full
- 	                        10000baseSR/Full
-	Advertised pause frame use: Symmetric
-	Advertised auto-negotiation: No
-	Advertised FEC modes: Not reported
-	Speed: 10000Mb/s
-	Duplex: Full
-	Auto-negotiation: off
-	Port: Direct Attach Copper
-	PHYAD: 0
-	Transceiver: internal
-	Supports Wake-on: d
-	Wake-on: d
-        Current message level: 0x00000014 (20)
-                               link ifdown
-	Link detected: yes
 
-Tested-by: Michael Stapelberg <michael@stapelberg.ch>
-Signed-off-by: Erik Ekman <erik@kryo.se>
----
- drivers/net/ethernet/mellanox/mlx4/en_ethtool.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+* Changelog *
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-index 066d79e4ecfc..10238bedd694 100644
---- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-@@ -670,7 +670,7 @@ void __init mlx4_en_init_ptys2ethtool_map(void)
- 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_1000BASE_T, SPEED_1000,
- 				       ETHTOOL_LINK_MODE_1000baseT_Full_BIT);
- 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_1000BASE_CX_SGMII, SPEED_1000,
--				       ETHTOOL_LINK_MODE_1000baseKX_Full_BIT);
-+				       ETHTOOL_LINK_MODE_1000baseX_Full_BIT);
- 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_1000BASE_KX, SPEED_1000,
- 				       ETHTOOL_LINK_MODE_1000baseKX_Full_BIT);
- 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_10GBASE_T, SPEED_10000,
-@@ -682,9 +682,9 @@ void __init mlx4_en_init_ptys2ethtool_map(void)
- 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_10GBASE_KR, SPEED_10000,
- 				       ETHTOOL_LINK_MODE_10000baseKR_Full_BIT);
- 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_10GBASE_CR, SPEED_10000,
--				       ETHTOOL_LINK_MODE_10000baseKR_Full_BIT);
-+				       ETHTOOL_LINK_MODE_10000baseCR_Full_BIT);
- 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_10GBASE_SR, SPEED_10000,
--				       ETHTOOL_LINK_MODE_10000baseKR_Full_BIT);
-+				       ETHTOOL_LINK_MODE_10000baseSR_Full_BIT);
- 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_20GBASE_KR2, SPEED_20000,
- 				       ETHTOOL_LINK_MODE_20000baseMLD2_Full_BIT,
- 				       ETHTOOL_LINK_MODE_20000baseKR2_Full_BIT);
+v2 -> v3:
+
+  * Fix an issue in the fourth patch ("do not increase rx_bytes
+    statistics for RTR frames"). In ucan_rx_can_msg() of the ucan
+    driver, the changes in v2 made no sense. Reverted it to v1.
+
+
+v1 -> v2:
+
+  * can_rx_offload_napi_poll: v1 used CAN_ERR_MASK instead of
+    CAN_ERR_FLAG. Fixed the issue.
+
+  * use correct vocabulary. The correct term to designate the Socket
+    CAN specific error skb is "error message frames" not "error
+    frames". "error frames" is used in the standard and has a
+    different meaning.
+
+  * better factorize code for the rx RTR frames. Most of the driver
+    already has a switch to check if the frame is a RTR. Moved the
+    instruction to increase net_device_stats:rx_bytes inside the else
+    branch of those switches whenever possible (for some drivers with
+    some complex logic, putting and additional RTR check was easier).
+
+  * add a patch which prevent drivers to copy the payload of RTR
+    frames.
+
+  * add a patch to cover the tx RTR frames (the fifth patch of
+    v2). The tx RTR frames issue was supposedly covered by the
+    can_get_echo_skb() function which returns the correct length for
+    drivers to increase their stats. However, the reality is that most
+    of the drivers do not check this value and instead use a local
+    copy of the length/dlc.
+
+
+Vincent Mailhol (5):
+  can: do not increase rx statistics when generating a CAN rx error
+    message frame
+  can: kvaser_usb: do not increase tx statistics when sending error
+    message frames
+  can: do not copy the payload of RTR frames
+  can: do not increase rx_bytes statistics for RTR frames
+  can: do not increase tx_bytes statistics for RTR frames
+
+ drivers/net/can/at91_can.c                    | 18 ++---
+ drivers/net/can/c_can/c_can.h                 |  1 -
+ drivers/net/can/c_can/c_can_main.c            | 16 +---
+ drivers/net/can/cc770/cc770.c                 | 16 ++--
+ drivers/net/can/dev/dev.c                     |  4 -
+ drivers/net/can/dev/rx-offload.c              |  7 +-
+ drivers/net/can/grcan.c                       |  6 +-
+ drivers/net/can/ifi_canfd/ifi_canfd.c         | 11 +--
+ drivers/net/can/janz-ican3.c                  |  6 +-
+ drivers/net/can/kvaser_pciefd.c               | 16 ++--
+ drivers/net/can/m_can/m_can.c                 | 13 +---
+ drivers/net/can/mscan/mscan.c                 | 14 ++--
+ drivers/net/can/pch_can.c                     | 33 ++++----
+ drivers/net/can/peak_canfd/peak_canfd.c       | 14 ++--
+ drivers/net/can/rcar/rcar_can.c               | 22 +++---
+ drivers/net/can/rcar/rcar_canfd.c             | 13 +---
+ drivers/net/can/sja1000/sja1000.c             | 11 +--
+ drivers/net/can/slcan.c                       |  7 +-
+ drivers/net/can/softing/softing_main.c        |  8 +-
+ drivers/net/can/spi/hi311x.c                  | 31 ++++----
+ drivers/net/can/spi/mcp251x.c                 | 31 ++++----
+ drivers/net/can/sun4i_can.c                   | 22 +++---
+ drivers/net/can/usb/ems_usb.c                 | 14 ++--
+ drivers/net/can/usb/esd_usb2.c                | 13 ++--
+ drivers/net/can/usb/etas_es58x/es58x_core.c   |  7 --
+ drivers/net/can/usb/gs_usb.c                  |  7 +-
+ drivers/net/can/usb/kvaser_usb/kvaser_usb.h   |  5 +-
+ .../net/can/usb/kvaser_usb/kvaser_usb_core.c  |  4 +-
+ .../net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 78 +++++++++----------
+ .../net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 20 ++---
+ drivers/net/can/usb/mcba_usb.c                | 23 +++---
+ drivers/net/can/usb/peak_usb/pcan_usb.c       |  9 +--
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c  | 20 +++--
+ drivers/net/can/usb/peak_usb/pcan_usb_core.h  |  1 -
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c    | 11 +--
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.c   | 12 +--
+ drivers/net/can/usb/ucan.c                    | 17 ++--
+ drivers/net/can/usb/usb_8dev.c                | 17 ++--
+ drivers/net/can/vcan.c                        |  7 +-
+ drivers/net/can/vxcan.c                       |  2 +-
+ drivers/net/can/xilinx_can.c                  | 19 ++---
+ include/linux/can/skb.h                       |  5 +-
+ 42 files changed, 258 insertions(+), 353 deletions(-)
+
+
+base-commit: 4cc19cc269921210f3da65e4b038ad987835b342
 -- 
-2.33.1
+2.32.0
 
