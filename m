@@ -2,191 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC54460F23
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 08:01:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43760461035
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 09:33:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233188AbhK2HEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Nov 2021 02:04:42 -0500
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:24142 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234755AbhK2HCl (ORCPT
+        id S1343628AbhK2Ig5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Nov 2021 03:36:57 -0500
+Received: from sender4-op-o15.zoho.com ([136.143.188.15]:17588 "EHLO
+        sender4-op-o15.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229677AbhK2Ie5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Nov 2021 02:02:41 -0500
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AT6PYcK021664;
-        Mon, 29 Nov 2021 06:59:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=G+8b1VJG8/eJsf8Oi6kSJhNJacdmLYI+yy+owMTzm1M=;
- b=ulptHFZnxrGevYN84y3xaUHlNbmmeuM6vOZldmAz004W3YwYRqHBdNwb4x+LzXWp3vJS
- wvuTY8p5Fw0kpcTh2RkN0eN32Z0XnwwTo3LrTcnpdl6NKpR9RWy+vzIqsHe8p0iixNy0
- tPxmSF1JyXm2PhKCXgxLRa1avT3y5D0qZtoGSLDfr8t2+NUEEufmCtpy5eJ3iy3fb2Aw
- 0FWzW0a/sqQWFffmVl2uigArUBrJEwgLdD17px67ZoAwAHuAbIzoEQjab5v+0roRo4cS
- QtHj5wcyqdQG3YMl4zx5b/svLqnrCgKeTB98l7bg+70egDvQEtP/kYMG51eXvNrA6Nqm VQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3ckb3d4jmj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 29 Nov 2021 06:59:14 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AT6tx3B151137;
-        Mon, 29 Nov 2021 06:59:13 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
-        by userp3020.oracle.com with ESMTP id 3cke4kq6st-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 29 Nov 2021 06:59:12 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lafEuSiOjVC4zZPsguB4M/9DxkuJl0iS+RaME3O+iTefMXd5RWNF4+ib80Gth5kKCaw4r2gkQy8fLNP+tvVgf6xuGfssW2ZWRTBJIJAOKZ0pWMVDWrlHJN5+qesTZsFu/kCghyypBdYkToBQMydBRfJfqLtQeW4WCRsAhR8MzrdHlUW7udpQpoTb5fwZ0XNAdVbBFnd3Ff8PKwvfQWs8rzylMj7v1K/XBdI9AOe7PK1Sg5D7Jk4BEKqWREqEUgfUcMS+9fwdA2nthfJdUXeiMxFeZjRQC7xnMERf0I8Jyih8R/CTyrVzMNL0cN/t7grS+Ocmzb4Ynl8MQryuZxRh2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=G+8b1VJG8/eJsf8Oi6kSJhNJacdmLYI+yy+owMTzm1M=;
- b=LKuhDosgjWWTo+T7hWSGUgZjn1hrIVKgPtsEzodtZsnXy92w/ZJQCx1TTSBxJXcwlSGfGWa+bKtV0Bs3QP3fR8HVlZJ4gSH3FMnCEQ+E0jNINjNN0QX39VrHqWpSYN+EKqX53Rva8JmFaTtwM5m4z9rIqU19eJQeyoZc5kQCe0WLp10hF/+fmQT0kATg8pUq7irX/EK3MS1fWtft/Fxi4cx8eHKuNY0lluyJXcYwSBpxrerg1EbZ0lfjtesY24UI0pPnLSijAXN0CJer+edlApozmtBkfwFmWpxqVHc7USiDhgufNvT2LRpo4c8cP6j5oJQyzAM5vruHZ/3yYcZYHA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G+8b1VJG8/eJsf8Oi6kSJhNJacdmLYI+yy+owMTzm1M=;
- b=G329sfFwcSpycJPb2OmGsj5FHN8kIWy04ocOaMS1cPdaZTIaa2oK09tMyuhnPwP/oG6RRP9p0qtgGIP8aa0HcVhW1JXgtwM30b/vGq0PFrNZTakaCWJXBOVKWwLJ7ztN+Q0jNivsLOyQ3Lk6LVeHMF6isB3mCARkIfJf14lCSZQ=
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by MWHPR10MB1294.namprd10.prod.outlook.com
- (2603:10b6:300:20::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.23; Mon, 29 Nov
- 2021 06:59:10 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::7194:c377:36cc:d9f0]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::7194:c377:36cc:d9f0%6]) with mapi id 15.20.4734.024; Mon, 29 Nov 2021
- 06:59:10 +0000
-Date:   Mon, 29 Nov 2021 09:58:46 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     Jason Wang <jasowang@redhat.com>, Parav Pandit <parav@nvidia.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        mst <mst@redhat.com>, Eric Dumazet <edumazet@google.com>,
-        kbuild-all@lists.01.org, kernel test robot <lkp@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, kbuild@lists.01.org
-Subject: Re: [PATCH] vdpa: Consider device id larger than 31
-Message-ID: <20211129065846.GN18178@kadam>
-References: <20211125180915.649652-1-parav@nvidia.com>
- <CACGkMEtF+kjj_vryxXAo6PqeX3Puk-XxaaQMcu4mhB1WZRXEpw@mail.gmail.com>
- <20211128071435.GB99190@mtl-vdi-166.wap.labs.mlnx>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211128071435.GB99190@mtl-vdi-166.wap.labs.mlnx>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JN2P275CA0047.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::35)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        Mon, 29 Nov 2021 03:34:57 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1638057926; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=k+N01kzcipbexhHQsG88X2M0FQGUx7o/+bnRg1X6P6lyVOiD8+BbReMlTn0+Oi3d1c7w9m6u7kcgTCTv6d+BOpVO36r0mVQQy1L/o97VJEK3ohLVz927iOckGst0cFmLQti4Chc/9y20bMbd+0kgLRNjeZ1TGdTUALgolDYT0dw=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1638057926; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=k/axBYgs8ePu82NKai1qn+cHK8gQhlozWwXZnDXD8yk=; 
+        b=OexewUidtTGMEGSPfuJVLpIck/dTD52CYt8S+WPys75HdmGs49nYiKODg5XEu699gIqo6TlVR7iU2GAApuAuR+8azPDH0YknNLHpDhsT7vOPmhaChYD8tKyUKjTb8/hx7tx2psFIBtsXZa3dxJz8poIP0FMO7ke5CSZtFmK+xno=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=szanni.org;
+        spf=pass  smtp.mailfrom=angelo@szanni.org;
+        dmarc=pass header.from=<lkml@szanni.org>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1638057926;
+        s=zoho; d=szanni.org; i=lkml@szanni.org;
+        h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type:Content-Transfer-Encoding;
+        bh=k/axBYgs8ePu82NKai1qn+cHK8gQhlozWwXZnDXD8yk=;
+        b=Kn37IrDoVNidrb6X54m7LkCfk4fXsdTOh1vVjU4K3AaFUzv40tFX+7/y6FOyJiit
+        +2Ds4yqz4mGD6AhFB16H8bryGG1OuVI2zQkSqpJ6kprfETH+K8YPj+CPxc0WBKJ6/hL
+        FeasMNHSlJ8BPf4AO798O5gnGRu/2f/mEroY59iI=
+Received: from [192.168.0.128] (200.60.135.218 [200.60.135.218]) by mx.zohomail.com
+        with SMTPS id 1638057923743427.7880943683017; Sat, 27 Nov 2021 16:05:23 -0800 (PST)
+Message-ID: <5475c3ab-a53c-8728-98c5-98fd948ff556@szanni.org>
+Date:   Sat, 27 Nov 2021 19:07:49 -0500
 MIME-Version: 1.0
-Received: from kadam (102.222.70.114) by JN2P275CA0047.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.21 via Frontend Transport; Mon, 29 Nov 2021 06:59:02 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 465115b3-883f-4a9b-95bc-08d9b305be9a
-X-MS-TrafficTypeDiagnostic: MWHPR10MB1294:
-X-Microsoft-Antispam-PRVS: <MWHPR10MB1294BB72325AFC864EC2541A8E669@MWHPR10MB1294.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:843;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: O0likCoHL4RVCM3jF0Kf03jIi+qjyeEBPng33Wg9ItbjfJycO0uPh2xO38vwYBLOxgktWRhk6XnBEEsWqo6KodcI6OuXKYc7USV4ANb++hCGuW60H47VM9qFLVSTluua3rOCkWJXxvBtttBWDeUao2Hh16gG4U6rRpmlMdjfEsM9t9duUqwS9nFKOznm2wMsPwTwTfy6jRah7PeBg4ua/i9ba3YAJseEAvgq/lQ/4eHhfRjuW34tYfH6Aeq5gNERrpcK2Bw85J9SC7gyioBbNPxPL7twCDuKNwt+W8r0S3onTDq+J5bT/ctFc5LFcdmxAqjt0Pte1pzQ7ag77yn1a/IG/z7uxNO4iBqCoABBNIQeskK7xN1JOi5oiGgYKVYM0KCjvOeQux/NXmcr5lzWZFl/zMGhfoFwYayJqOwHsqCKDQozWBxQfuQzsUsxLILvI/811f+yoQ2iFv6Hr0Aau58TfhzpDDuB9gn94ze44XS0j7cE4uwtl7Qbvrh0xJQ0HWKbbID3YCmIqyOyu7kXGybD/ns5LM4V1n2AyY0/45lFBDQBb8YEoghIEbWnm3pyfonFIjVC8cPBz547rBygfdtHUzQvkHMtuFi27XFCI9I1tCDMdRRYcjx71yODUg1hZUjkmNQwENDPRfVVuXS0E7/6HsdT9sgycfyJIQcmxAxDH+QWhFTjwp751P7BcgFBsxST7a/Hsi+3SlncfHKFLA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(956004)(4326008)(44832011)(1076003)(6666004)(508600001)(66476007)(52116002)(26005)(66946007)(38350700002)(66556008)(55016003)(38100700002)(33656002)(9686003)(86362001)(6916009)(8936002)(8676002)(33716001)(9576002)(53546011)(6496006)(186003)(5660300002)(2906002)(7416002)(316002)(54906003)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SZtJnhXB/YIJBiGZAZiqpXL24gWi9qz3OrEwsY2XInYZc/HX6LUQ1qFhMHrc?=
- =?us-ascii?Q?15yEW0WsS/0hXZhwqbn4CvZ63PSIe7tUqkt/39yU24UAV5X//j84Kdqh8/ar?=
- =?us-ascii?Q?HJEPmo2d7bUyNxmXeJxgyphO08XpL21MtNqXlPaJgxGTyDAC5iql1cbpXobQ?=
- =?us-ascii?Q?9Z7vZaT+a/FBQTIwHPSRVX3/qQvukY185tcQcHTDS3Qzm3+PGcRiaInn8rXJ?=
- =?us-ascii?Q?BkGvzax0i3bbDvG6/RfhJ1JXuW+JgThR4SDEr/ZKPLzbW6TkQdgonUosuyc4?=
- =?us-ascii?Q?fqzUgXw0UqGIq899O8kN8AnHbe7gFyNZpp8VhtrUDiHqarUTLNrFsKLL5IWX?=
- =?us-ascii?Q?kSEsklmcYj5CbMSowSq5zxuwhgApZwIkVs4lRdncDYGeRRm2cSnJh7zXLowr?=
- =?us-ascii?Q?O+dzMQXwyoe+Pgd0V2DuhsQ+7cWC0ieB9EQYu8A1ySLzgC7a1W0E/kusWqM1?=
- =?us-ascii?Q?GEt9Y6Zy4kd/wyrcs7g1Kjg0ZyhxuyIvlNhrOCaP2xg0TQ5EFsZ+p/culenB?=
- =?us-ascii?Q?nKscMXXHpaicVzNhXuvE0JXRdUu5thPh7Q2Q57qGEiA9YGPFlg8mRDSMZIfZ?=
- =?us-ascii?Q?rr6kJTITpJlIbxTozNmF0Bfu6JWQxnSgf8YepZVWCGc2JFJ2dy5rQVZx/Vwj?=
- =?us-ascii?Q?HHn2QNv7iagmNGjA+E0XYM5rr8DJBTqYELa0p3wJ3jj0ecYWaOHu836/Wbs8?=
- =?us-ascii?Q?k7NLhN0meDYAe2/pLW2vdREfs3SW5FkefTZ6cuz8ZOGU7W2plgOwGc+2YZ2R?=
- =?us-ascii?Q?8G9joz/U0YLZE0mUDh/TYds/KM42hyvI1FnjAAoEBNxQANWZdrp6yddueh2y?=
- =?us-ascii?Q?CrMHyHL3r3rRpieKgUJ/ssMTc4lvwanokjOau8R8L6l6yeqkOipUYV6H20Zw?=
- =?us-ascii?Q?piM1FGn7Ehul7YlTFn1yU1CauPLQ4tBit0mYuWK9dzHVIJZty0+MayHEXosd?=
- =?us-ascii?Q?osmsgZ2KmGHAYKAgCgrg7Z6M5Tqk8dHbwlB5X0RWGD6dtpyst3KY9ZDCBMCH?=
- =?us-ascii?Q?doD6bIkc1yYWWojXWrhmoG11Tn6BfWHmRSHmTep1ndhkVNW0vt235cO+A/uh?=
- =?us-ascii?Q?mVdqXjmMhyq7aXiZamVKrwid8/9qR7kyL3upzI/2TBR1o5UofI3jRt6ryTqV?=
- =?us-ascii?Q?Hj6jP4LSfxmAv//jol+eDBgcd8MiBUNcN/stDgLt8RfcqIdS0PRh7TtAtBwr?=
- =?us-ascii?Q?d9Xy1rCaWnqt/q7CkBsmrFbIXS0HoJaxWnQ4JwMe0sRakQOjj+joWWZsk0s4?=
- =?us-ascii?Q?AY66nCS+n/JTKkhoWHre6z/4iOFCKhjeSIVSHW4X+6f0s7tvo65OJet2clG5?=
- =?us-ascii?Q?B7UpFYcCDthfUjWKEVNB5d+4jzUxQr7XVKpwInnhJSBBL7dZ6bZGNNB9LinH?=
- =?us-ascii?Q?re7zBonXInGQ3DIuu8OF7rtZHCiWvec8zxDBtlmyw3mgbQ2/Ep0BUP9gBBcd?=
- =?us-ascii?Q?H/yg0oRbilz8bR077Mtx3p5x2WA/e4sfNB9RCFzHVB13SnzNT8QedGZepgvI?=
- =?us-ascii?Q?is+LYYmROfStwPzBpGii7Al3LgT2DUE7H2e/8LVJydHH4TJi/1CBMPYNy9OM?=
- =?us-ascii?Q?dbBAQd9spHRTS8aj7Pd6+pLqx02v7PxReyF6GVC+Gjt0R/96e1OdGE0Pv+F2?=
- =?us-ascii?Q?yrq/au6IB1Tw6Pf1RQy4AwDV4RhbZIDPum8QRZeTrDXm3gM5j6nsAlxYi4Ao?=
- =?us-ascii?Q?vEMT5Q=3D=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 465115b3-883f-4a9b-95bc-08d9b305be9a
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2021 06:59:10.6514
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HFxfHtDpG5ZdSzz2xunvTddbIvw78t3IKFj3K3Ckknu4C0LqESny7bub/AEOGYRfLNIXqvfDlnz1ObGFvyJiBcoh53IbIkLF/QzMsurOw2o=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1294
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10182 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- phishscore=0 suspectscore=0 spamscore=0 adultscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111290032
-X-Proofpoint-GUID: FVSuACK8SLya2F1l7IE-aUqxL_hHKQL6
-X-Proofpoint-ORIG-GUID: FVSuACK8SLya2F1l7IE-aUqxL_hHKQL6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Content-Language: en-US
+To:     linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Will Deacon <will@kernel.org>, linux-rt-users@vger.kernel.org
+From:   Angelo Haller <lkml@szanni.org>
+Subject: sched: some non-GPL symbols becoming GPL-only with CONFIG_PREEMPT_RT
+ enabled
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 28, 2021 at 09:14:35AM +0200, Eli Cohen wrote:
-> On Fri, Nov 26, 2021 at 10:48:12AM +0800, Jason Wang wrote:
-> > On Fri, Nov 26, 2021 at 2:09 AM Parav Pandit <parav@nvidia.com> wrote:
-> > >
-> > > virtio device id value can be more than 31. Hence, use BIT_ULL in
-> > > assignment.
-> > >
-> > > Fixes: 33b347503f01 ("vdpa: Define vdpa mgmt device, ops and a netlink interface")
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > > Signed-off-by: Parav Pandit <parav@nvidia.com>
-> > 
-> > Acked-by: Jason Wang <jasowang@redhat.com>
-> > 
-> > > ---
-> > >  drivers/vdpa/vdpa.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
-> > > index 7332a74a4b00..e91c71aeeddf 100644
-> > > --- a/drivers/vdpa/vdpa.c
-> > > +++ b/drivers/vdpa/vdpa.c
-> > > @@ -404,7 +404,7 @@ static int vdpa_mgmtdev_fill(const struct vdpa_mgmt_dev *mdev, struct sk_buff *m
-> > >                 goto msg_err;
-> > >
-> > >         while (mdev->id_table[i].device) {
-> > > -               supported_classes |= BIT(mdev->id_table[i].device);
-> > > +               supported_classes |= BIT_ULL(mdev->id_table[i].device);
-> > >                 i++;
-> > >         }
-> > >
-> 
-> type of mdev->id_table[i].device is __u32 so in theory you're limited
-> to device ID's up to 63.
+Greetings. I hope I picked the right mailing list, as this issue might 
+be one that affects various subsystems and components:
 
-A u32 can fit numbers up to 4 million?  These .device numbers are
-normally hardcoded defines listed in usr/include/linux/virtio_ids.h
+When compiling kernel 5.15 (and 5.16-rc2) with `CONFIG_PREEMPT_RT` 
+enabled, some of the symbols being exported as `EXPORT_SYMBOL` suddenly 
+become `EXPORT_SYMBOL_GPL` through transitive effects.
 
-But sometimes they're not like in vp_modern_probe() which does:
+In particular the symbols `migrate_enable` and `migrate_disable` are 
+currently marked as `EXPORT_SYMBOL_GPL` - yet are called from multiple 
+functions that are marked as `EXPORT_SYMBOL`.
 
-	mdev->id.device = pci_dev->device - 0x1040;
+Here an (incomplete?) listing of call sites I came across:
 
-I don't know if an assert is really worth it, considering how almost all
-of them are hardcoded.  Also if we do want an assert maybe there is a
-better place to put it?
+kernel/locking/spinlock_rt.c - rt_spin_unlock()
+kernel/locking/spinlock_rt.c - rt_read_unlock()
+kernel/locking/spinlock_rt.c - rt_write_unlock()
+mm/highmem.c - kunmap_local_indexed()
 
-regards,
-dan carpenter
+The issue I'm facing in particular is kmap_atomic() calling 
+`migrate_disable` and therefore suddenly becoming GPL-only. This breaks 
+the out-of-tree CDDL licensed module ZFS and has been reported before 
+already [0]. The conversation seemingly going nowhere - or patches at 
+least not being applied upstream. Downstream issue for reference [1].
+
+As the original implementation of `migrate_enable` and `migrate_disable` 
+is apparently by Peter Zijlstra [2]. Peter would you be willing to 
+re-license both symbols `migrate_enable` and `migrate_disable` as 
+`EXPORT_SYMBOL`?
+
+The bigger issue I'm seeing though is that there is currently no 
+automated test to uncover exported symbols changing their license 
+depending on build configuration? I am not intimately familiar with the 
+API guarantees the kernel gives, but this seems like a violation. There 
+might be other symbols with similar licensing problems.
+
+I can open a bugzilla ticket too - if that is preferred.
+
+Angelo
+
+
+[0] 
+https://lore.kernel.org/linux-rt-users/20201208212841.694b3022@orivej.orivej.org/T/
+[1] https://github.com/openzfs/zfs/issues/11097
+[2] 
+https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/diff/patches/0009-sched-Add-migrate_disable.patch?h=v5.9-rc8-rt14-patches&id=9a89bfdb3bc77aecdd0ff8cc69b595541c7b50c4
+
