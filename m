@@ -2,494 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A29CA460AC7
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 23:36:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E07460ADB
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 23:43:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359300AbhK1Wjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 17:39:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41288 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1345056AbhK1Whf (ORCPT
+        id S1359361AbhK1Wqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 17:46:49 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:51614 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235189AbhK1Wos (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 17:37:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1638138858;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SiBeCQgxXQAu5ozvORDzA8+7QhkHumTeqXoN8dJ0Bwc=;
-        b=TLsXO0UwwsDR6nTRK1Wi+ha28i/9BYDarkpP4LB5mlrri0whxubfWBSCTppBuO6ISS1rqa
-        i4pcSSCZAvtXt/HMQNK37IH+fbw/+jIaOm6ahoJntr7QeQNiRNvUCIFAsbPiz0/zQ4KYTP
-        KvceBPqq9681Uw1F+jTuDs9p4xA1Mq8=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-220-TOk5chz5NdeLHsYFA1acnQ-1; Sun, 28 Nov 2021 17:34:17 -0500
-X-MC-Unique: TOk5chz5NdeLHsYFA1acnQ-1
-Received: by mail-wm1-f71.google.com with SMTP id o18-20020a05600c511200b00332fa17a02eso9518052wms.5
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 14:34:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SiBeCQgxXQAu5ozvORDzA8+7QhkHumTeqXoN8dJ0Bwc=;
-        b=jhKbInq2n8BJiClBN26pHkuRW77VMQaQsrnYzEL5Dc8yIe/mt43HZeMtE7LlB279jY
-         xtTTLIqw94DQ6pSmDvFgLhmdXNZrOWWnclRDfwQeRs9QPJNQTKyHk3XCroQvCuC7e2eQ
-         kfLu+mEVjVfvRoUo1X6gtxEmCQrRSTYI2lp+0mHdv5SFewmHSIzRnlovpgYXTgpQsMQh
-         bsqsySM9e4yjlQlMj4VAcbb5OWi5mH1403WUhrQnmh+eI5FJAhhSDGZg9r92sFF5/BP1
-         LibJGoFAYpTUAipBy+mL2kwy+igvlXIP4VTCMdlNlAgzGNeomYoxPnEeqv/hp09e/gVp
-         jF0w==
-X-Gm-Message-State: AOAM530wrp31hUhZ+nhOIFGJ9nBaHQty7qdUQCDDqFdTEnfakl9b+aBR
-        +xkoe6SoRwmRs2UpbR0H22oZGStHaRTXo+x09Wk8mzP+XTUWjspy2itxP0BYSbi7aWlR+g+q54y
-        cuOJBQnIuwQrxQF1J8ySSVI14
-X-Received: by 2002:adf:ce08:: with SMTP id p8mr29736677wrn.154.1638138855679;
-        Sun, 28 Nov 2021 14:34:15 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwTuGqXCmuhYDtqiUT/gAE5vGSE9GEnS4LQiBLJpXljgc6TTlRnQJbc6Mw7zsMMJRIp8Kk1zg==
-X-Received: by 2002:adf:ce08:: with SMTP id p8mr29736648wrn.154.1638138855371;
-        Sun, 28 Nov 2021 14:34:15 -0800 (PST)
-Received: from krava ([83.240.60.218])
-        by smtp.gmail.com with ESMTPSA id n7sm11674471wro.68.2021.11.28.14.34.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 14:34:14 -0800 (PST)
-Date:   Sun, 28 Nov 2021 23:34:13 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Steven Rostedt <rostedt@goodmis.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>
-Subject: Re: [PATCH 1/8] perf/kprobe: Add support to create multiple probes
-Message-ID: <YaQD5d7Uc6GCvNbe@krava>
-References: <20211124084119.260239-1-jolsa@kernel.org>
- <20211124084119.260239-2-jolsa@kernel.org>
- <20211128224954.11e8ac2a2ff1f45354c4a161@kernel.org>
+        Sun, 28 Nov 2021 17:44:48 -0500
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-287-ok2-tAiAMcm0MZnoOWqcKg-1; Sun, 28 Nov 2021 22:41:29 +0000
+X-MC-Unique: ok2-tAiAMcm0MZnoOWqcKg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.26; Sun, 28 Nov 2021 22:41:28 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.026; Sun, 28 Nov 2021 22:41:28 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Noah Goldstein' <goldstein.w.n@gmail.com>
+CC:     Eric Dumazet <edumazet@google.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "alexanderduyck@fb.com" <alexanderduyck@fb.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v1] x86/lib: Optimize 8x loop and memory clobbers in
+ csum_partial.c
+Thread-Topic: [PATCH v1] x86/lib: Optimize 8x loop and memory clobbers in
+ csum_partial.c
+Thread-Index: AQHX4nNzHa79im/GnUeKV4t1ya1z3awZWESAgAAYhYCAABG+4A==
+Date:   Sun, 28 Nov 2021 22:41:28 +0000
+Message-ID: <1ac1f60c643a478d84862ac264437d14@AcuMS.aculab.com>
+References: <20211125193852.3617-1-goldstein.w.n@gmail.com>
+ <CANn89iLnH5B11CtzZ14nMFP7b--7aOfnQqgmsER+NYNzvnVurQ@mail.gmail.com>
+ <CAFUsyfK-znRWJN7FTMdJaDTd45DgtBQ9ckKGyh8qYqn0eFMMFA@mail.gmail.com>
+ <CAFUsyfLKqonuKAh4k2qdBa24H1wQtR5FkAmmtXQGBpyizi6xvQ@mail.gmail.com>
+ <CAFUsyfJ619Jx_BS515Se0V_zRdypOg3_2YzbKUk5zDBNaixhaQ@mail.gmail.com>
+ <8e4961ae0cf04a5ca4dffdec7da2e57b@AcuMS.aculab.com>
+ <CAFUsyfLoEckBrnYKUgqWC7AJPTBDfarjBOgBvtK7eGVZj9muYQ@mail.gmail.com>
+In-Reply-To: <CAFUsyfLoEckBrnYKUgqWC7AJPTBDfarjBOgBvtK7eGVZj9muYQ@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211128224954.11e8ac2a2ff1f45354c4a161@kernel.org>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 28, 2021 at 10:49:54PM +0900, Masami Hiramatsu wrote:
-> On Wed, 24 Nov 2021 09:41:12 +0100
-> Jiri Olsa <jolsa@redhat.com> wrote:
-> 
-> > Adding support to create multiple probes within single perf event.
-> > This way we can associate single bpf program with multiple kprobes,
-> > because bpf program gets associated with the perf event.
-> > 
-> > The perf_event_attr is not extended, current fields for kprobe
-> > attachment are used for multi attachment.
-> > 
-> > For current kprobe atachment we use either:
-> > 
-> >    kprobe_func (in config1) + probe_offset (in config2)
-> > 
-> > to define kprobe by function name with offset, or:
-> > 
-> >    kprobe_addr (in config2)
-> > 
-> > to define kprobe with direct address value.
-> > 
-> > For multi probe attach the same fields point to array of values
-> > with the same semantic. Each probe is defined as set of values
-> > with the same array index (idx) as:
-> > 
-> >    kprobe_func[idx]  + probe_offset[idx]
-> > 
-> > to define kprobe by function name with offset, or:
-> > 
-> >    kprobe_addr[idx]
-> > 
-> > to define kprobe with direct address value.
-> > 
-> > The number of probes is passed in probe_cnt value, which shares
-> > the union with wakeup_events/wakeup_watermark values which are
-> > not used for kprobes.
-> > 
-> > Since [1] it's possible to stack multiple probes events under
-> > one head event. Using the same code to allow that for probes
-> > defined under perf kprobe interface.
-> 
-> OK, so you also want to add multi-probes on single event by
-> single perf-event syscall. Not defining different events.
-
-correct.. bpf program is then attached to perf event with
-ioctl call.. this way we can have multiple probes attached
-to single bpf program
-
-> 
-> Those are bit different, multi-probes on single event can
-> invoke single event handler from different probe points. For
-> exapmple same user bpf handler will be invoked from different
-> address.
-
-right, that's the goal, having single bpf program executed
-from multiple probes
-
-> 
-> > 
-> > [1] https://lore.kernel.org/lkml/156095682948.28024.14190188071338900568.stgit@devnote2/
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  include/uapi/linux/perf_event.h |   1 +
-> >  kernel/trace/trace_event_perf.c | 106 ++++++++++++++++++++++++++++----
-> >  kernel/trace/trace_kprobe.c     |  47 ++++++++++++--
-> >  kernel/trace/trace_probe.c      |   2 +-
-> >  kernel/trace/trace_probe.h      |   3 +-
-> >  5 files changed, 138 insertions(+), 21 deletions(-)
-> > 
-> > diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-> > index bd8860eeb291..eea80709d1ed 100644
-> > --- a/include/uapi/linux/perf_event.h
-> > +++ b/include/uapi/linux/perf_event.h
-> > @@ -414,6 +414,7 @@ struct perf_event_attr {
-> >  	union {
-> >  		__u32		wakeup_events;	  /* wakeup every n events */
-> >  		__u32		wakeup_watermark; /* bytes before wakeup   */
-> > +		__u32		probe_cnt;	  /* number of [k,u] probes */
-> >  	};
-> >  
-> >  	__u32			bp_type;
-> > diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
-> > index a114549720d6..26078e40c299 100644
-> > --- a/kernel/trace/trace_event_perf.c
-> > +++ b/kernel/trace/trace_event_perf.c
-> > @@ -245,23 +245,27 @@ void perf_trace_destroy(struct perf_event *p_event)
-> >  }
-> >  
-> >  #ifdef CONFIG_KPROBE_EVENTS
-> > -int perf_kprobe_init(struct perf_event *p_event, bool is_retprobe)
-> > +static struct trace_event_call*
-> > +kprobe_init(bool is_retprobe, u64 kprobe_func, u64 kprobe_addr,
-> > +	    u64 probe_offset, struct trace_event_call *old)
-> >  {
-> >  	int ret;
-> >  	char *func = NULL;
-> >  	struct trace_event_call *tp_event;
-> >  
-> > -	if (p_event->attr.kprobe_func) {
-> > +	if (kprobe_func) {
-> >  		func = kzalloc(KSYM_NAME_LEN, GFP_KERNEL);
-> >  		if (!func)
-> > -			return -ENOMEM;
-> > +			return ERR_PTR(-ENOMEM);
-> >  		ret = strncpy_from_user(
-> > -			func, u64_to_user_ptr(p_event->attr.kprobe_func),
-> > +			func, u64_to_user_ptr(kprobe_func),
-> >  			KSYM_NAME_LEN);
-> >  		if (ret == KSYM_NAME_LEN)
-> >  			ret = -E2BIG;
-> > -		if (ret < 0)
-> > -			goto out;
-> > +		if (ret < 0) {
-> > +			kfree(func);
-> > +			return ERR_PTR(ret);
-> > +		}
-> >  
-> >  		if (func[0] == '\0') {
-> >  			kfree(func);
-> > @@ -270,20 +274,96 @@ int perf_kprobe_init(struct perf_event *p_event, bool is_retprobe)
-> >  	}
-> >  
-> >  	tp_event = create_local_trace_kprobe(
-> > -		func, (void *)(unsigned long)(p_event->attr.kprobe_addr),
-> > -		p_event->attr.probe_offset, is_retprobe);
-> > -	if (IS_ERR(tp_event)) {
-> > -		ret = PTR_ERR(tp_event);
-> > -		goto out;
-> > +		func, (void *)(unsigned long)(kprobe_addr),
-> > +		probe_offset, is_retprobe, old);
-> 
-> Hmm, here I have a concern (maybe no real issue is caused at this momemnt.)
-> Since ftrace's multi-probe event has same event/group name among the
-> probes's internal event-calls. However, create_local_trace_kprobe()
-> actually uses the "func" name for the event name.
-> I think you should choose a randome different "representative" event name
-> for the event (not probe), and share it among the probes on the event,
-> if the perf event has no event name.
-> 
-> (I'm not sure how the event names are used from inside of the BPF programs,
-> but just for the consistency.)
-
-ok, I don't think event names are used, I'll check
-
-> 
-> > +	kfree(func);
-> > +	return tp_event;
-> > +}
-> > +
-> > +static struct trace_event_call*
-> > +kprobe_init_multi(struct perf_event *p_event, bool is_retprobe)
-> > +{
-> > +	void __user *kprobe_func = u64_to_user_ptr(p_event->attr.kprobe_func);
-> > +	void __user *kprobe_addr = u64_to_user_ptr(p_event->attr.kprobe_addr);
-> > +	u64 *funcs = NULL, *addrs = NULL, *offs = NULL;
-> > +	struct trace_event_call *tp_event, *tp_old = NULL;
-> > +	u32 i, cnt = p_event->attr.probe_cnt;
-> > +	int ret = -EINVAL;
-> > +	size_t size;
-> > +
-> > +	if (!cnt)
-> > +		return ERR_PTR(-EINVAL);
-> > +
-> > +	size = cnt * sizeof(u64);
-> > +	if (kprobe_func) {
-> > +		ret = -ENOMEM;
-> > +		funcs = kmalloc(size, GFP_KERNEL);
-> > +		if (!funcs)
-> > +			goto out;
-> > +		ret = -EFAULT;
-> > +		if (copy_from_user(funcs, kprobe_func, size))
-> > +			goto out;
-> > +	}
-> > +
-> > +	if (kprobe_addr) {
-> > +		ret = -ENOMEM;
-> > +		addrs = kmalloc(size, GFP_KERNEL);
-> > +		if (!addrs)
-> > +			goto out;
-> > +		ret = -EFAULT;
-> > +		if (copy_from_user(addrs, kprobe_addr, size))
-> > +			goto out;
-> > +		/* addresses and ofsets share the same array */
-> > +		offs = addrs;
-> >  	}
-> >  
-> > +	for (i = 0; i < cnt; i++) {
-> > +		tp_event = kprobe_init(is_retprobe, funcs ? funcs[i] : 0,
-> > +				       addrs ? addrs[i] : 0, offs ? offs[i] : 0,
-> > +				       tp_old);
-> > +		if (IS_ERR(tp_event)) {
-> > +			if (tp_old)
-> > +				destroy_local_trace_kprobe(tp_old);
-> > +			ret = PTR_ERR(tp_event);
-> > +			goto out;
-> > +		}
-> > +		if (!tp_old)
-> > +			tp_old = tp_event;
-> > +	}
-> > +	ret = 0;
-> > +out:
-> > +	kfree(funcs);
-> > +	kfree(addrs);
-> > +	return ret ? ERR_PTR(ret) : tp_old;
-> > +}
-> > +
-> > +static struct trace_event_call*
-> > +kprobe_init_single(struct perf_event *p_event, bool is_retprobe)
-> > +{
-> > +	struct perf_event_attr *attr = &p_event->attr;
-> > +
-> > +	return kprobe_init(is_retprobe, attr->kprobe_func, attr->kprobe_addr,
-> > +			   attr->probe_offset, NULL);
-> > +}
-> > +
-> > +int perf_kprobe_init(struct perf_event *p_event, bool is_retprobe)
-> > +{
-> > +	struct trace_event_call *tp_event;
-> > +	int ret;
-> > +
-> > +	if (p_event->attr.probe_cnt)
-> 
-> isn't this "p_event->attr.probe_cnt > 1" ?
-
-right, probe_cnt is just added by this patchset and used only when
-there are multiple probes being attached, so that's why it works
-even with 1 at the moment
-
-will change
-
-> 
-> > +		tp_event = kprobe_init_multi(p_event, is_retprobe);
-> > +	else
-> > +		tp_event = kprobe_init_single(p_event, is_retprobe);
-> > +
-> > +	if (IS_ERR(tp_event))
-> > +		return PTR_ERR(tp_event);
-> > +
-> >  	mutex_lock(&event_mutex);
-> >  	ret = perf_trace_event_init(tp_event, p_event);
-> >  	if (ret)
-> >  		destroy_local_trace_kprobe(tp_event);
-> >  	mutex_unlock(&event_mutex);
-> > -out:
-> > -	kfree(func);
-> >  	return ret;
-> >  }
-> >  
-> > diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> > index 33272a7b6912..86a7aada853a 100644
-> > --- a/kernel/trace/trace_kprobe.c
-> > +++ b/kernel/trace/trace_kprobe.c
-> > @@ -237,13 +237,18 @@ static int kprobe_dispatcher(struct kprobe *kp, struct pt_regs *regs);
-> >  static int kretprobe_dispatcher(struct kretprobe_instance *ri,
-> >  				struct pt_regs *regs);
-> >  
-> > +static void __free_trace_kprobe(struct trace_kprobe *tk)
-> > +{
-> > +	kfree(tk->symbol);
-> > +	free_percpu(tk->nhit);
-> > +	kfree(tk);
-> > +}
-> > +
-> >  static void free_trace_kprobe(struct trace_kprobe *tk)
-> >  {
-> >  	if (tk) {
-> >  		trace_probe_cleanup(&tk->tp);
-> > -		kfree(tk->symbol);
-> > -		free_percpu(tk->nhit);
-> > -		kfree(tk);
-> > +		__free_trace_kprobe(tk);
-> 
-> Why is this needed?
-
-I needed some free function that does not call trace_probe_cleanup and
-trace_probe_unlink.. I wrote details in the destroy_local_trace_kprobe
-comment below
-
-> 
-> >  	}
-> >  }
-> >  
-> > @@ -1796,7 +1801,7 @@ static int unregister_kprobe_event(struct trace_kprobe *tk)
-> >  /* create a trace_kprobe, but don't add it to global lists */
-> >  struct trace_event_call *
-> >  create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
-> > -			  bool is_return)
-> > +			  bool is_return, struct trace_event_call *old)
-> >  {
-> >  	enum probe_print_type ptype;
-> >  	struct trace_kprobe *tk;
-> > @@ -1820,6 +1825,28 @@ create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
-> >  		return ERR_CAST(tk);
-> >  	}
-> >  
-> > +	if (old) {
-> > +		struct trace_kprobe *tk_old;
-> > +
-> > +		tk_old = trace_kprobe_primary_from_call(old);
-> 
-> So, this will choose the first(primary) probe's function name as
-> the representative event name. But other probes can have different
-> event names.
-
-ok
-
-> 
-> > +		if (!tk_old) {
-> > +			ret = -EINVAL;
-> > +			goto error;
-> > +		}
-> > +
-> > +		/* Append to existing event */
-> > +		ret = trace_probe_append(&tk->tp, &tk_old->tp);
-> > +		if (ret)
-> > +			goto error;
-> > +
-> > +		/* Register k*probe */
-> > +		ret = __register_trace_kprobe(tk);
-> > +		if (ret)
-> > +			goto error;
-> 
-> If "appended" probe failed to register, it must be "unlinked" from
-> the first one and goto error to free the trace_kprobe.
-> 
-> 	if (ret) {
-> 		trace_probe_unlink(&tk->tp);
-> 		goto error;
-> 	}
-> 
-> See append_trace_kprobe() for details.
-
-so there's goto error jumping to:
-
-error:
-	free_trace_kprobe(tk);
-
-that calls:
-	trace_probe_cleanup
-	  -> trace_probe_unlink
-
-that should do it, right?
-
-> 
-> > +
-> > +		return trace_probe_event_call(&tk->tp);
-> > +	}
-> > +
-> >  	init_trace_event_call(tk);
-> >  
-> >  	ptype = trace_kprobe_is_return(tk) ?
-> > @@ -1841,6 +1868,8 @@ create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
-> >  
-> >  void destroy_local_trace_kprobe(struct trace_event_call *event_call)
-> >  {
-> > +	struct trace_probe_event *event;
-> > +	struct trace_probe *pos, *tmp;
-> >  	struct trace_kprobe *tk;
-> >  
-> >  	tk = trace_kprobe_primary_from_call(event_call);
-> > @@ -1852,9 +1881,15 @@ void destroy_local_trace_kprobe(struct trace_event_call *event_call)
-> >  		return;
-> >  	}
-> >  
-> > -	__unregister_trace_kprobe(tk);
-> > +	event = tk->tp.event;
-> > +	list_for_each_entry_safe(pos, tmp, &event->probes, list) {
-> > +		list_for_each_entry_safe(pos, tmp, &event->probes, list) {
-> > +		list_del_init(&pos->list);
-> > +		__unregister_trace_kprobe(tk);
-> > +		__free_trace_kprobe(tk);
-> > +	}
-> >  
-> > -	free_trace_kprobe(tk);
-> > +	trace_probe_event_free(event);
-> 
-> Actually, each probe already allocated the trace_probe events (which are not
-> used if it is appended). Thus you have to use trace_probe_unlink(&tk->tp) in
-> the above loop.
-> 
-> 	list_for_each_entry_safe(pos, tmp, &event->probes, list) {
-> 		list_for_each_entry_safe(pos, tmp, &event->probes, list) {
-> 		__unregister_trace_kprobe(tk);
-> 		trace_probe_unlink(&tk->tp); /* This will call trace_probe_event_free() internally */
-> 		free_trace_kprobe(tk);
-> 	}
-
-so calling trace_probe_event_free inside this loop is a problem,
-because the loop iterates that trace_probe_event's probes list,
-and last probe removed will trigger trace_probe_event_free, that
-will free the list we iterate..  and we go down ;-)
-
-so that's why I added new free function '__free_trace_kprobe'
-that frees everything as free_trace_kprobe, but does not call
-trace_probe_unlink
-
-	event = tk->tp.event;
-	list_for_each_entry_safe(pos, tmp, &event->probes, list) {
-		list_for_each_entry_safe(pos, tmp, &event->probes, list) {
-		list_del_init(&pos->list);
-		__unregister_trace_kprobe(tk);
-		__free_trace_kprobe(tk);
-	}
-
-	trace_probe_event_free(event);
-
-and there's trace_probe_event_free(event) to make the final free
-
-thanks,
-jirka
+RnJvbTogTm9haCBHb2xkc3RlaW4NCj4gU2VudDogMjggTm92ZW1iZXIgMjAyMSAyMTowMA0KPiAN
+Cj4gT24gU3VuLCBOb3YgMjgsIDIwMjEgYXQgMTo0NyBQTSBEYXZpZCBMYWlnaHQgPERhdmlkLkxh
+aWdodEBhY3VsYWIuY29tPiB3cm90ZToNCj4gPg0KPiA+IC4uLg0KPiA+ID4gUmVnYXJkaW5nIHRo
+ZSAzMiBieXRlIGNhc2UsIGFkZGluZyB0d28gYWNjdW11bGF0b3JzIGhlbHBzIHdpdGggdGhlIGxh
+dGVuY3kNCj4gPiA+IG51bWJlcnMgYnV0IGNhdXNlcyBhIHJlZ3Jlc3Npb24gaW4gdGhyb3VnaHB1
+dCBmb3IgdGhlIDQwLzQ4IGJ5dGUgY2FzZXMuIFdoaWNoDQo+ID4gPiBpcyB0aGUgbW9yZSBpbXBv
+cnRhbnQgbWV0cmljIGZvciB0aGUgdXNhZ2Ugb2YgY3N1bV9wYXJ0aWFsKCk/DQo+ID4gPg0KPiA+
+ID4gSGVyZSBhcmUgdGhlIG51bWJlcnMgZm9yIHRoZSBzbWFsbGVyIHNpemVzOg0KPiA+ID4NCj4g
+PiA+IHNpemUsIGxhdCBvbGQsICAgIGxhdCB2ZXIyLCAgICBsYXQgdmVyMSwgICAgdHB1dCBvbGQs
+ICAgdHB1dCB2ZXIyLCAgIHRwdXQgdmVyMQ0KPiA+ID4gICAgMCwgICA0Ljk2MSwgICAgICAgNC41
+MDMsICAgICAgIDQuOTAxLCAgICAgICA0Ljg4NywgICAgICAgNC4zOTksICAgICAgIDQuOTUxDQo+
+ID4gPiAgICA4LCAgIDUuNTkwLCAgICAgICA1LjU5NCwgICAgICAgNS42MjAsICAgICAgIDQuMjI3
+LCAgICAgICA0LjExMCwgICAgICAgNC4yNTINCj4gPiA+ICAgMTYsICAgNi4xODIsICAgICAgIDYu
+Mzk4LCAgICAgICA2LjIwMiwgICAgICAgNC4yMzMsICAgICAgIDQuMDYyLCAgICAgICA0LjI3OA0K
+PiA+ID4gICAyNCwgICA3LjM5MiwgICAgICAgNy41OTEsICAgICAgIDcuMzgwLCAgICAgICA0LjI1
+NiwgICAgICAgNC4yNDYsICAgICAgIDQuMjc5DQo+ID4gPiAgIDMyLCAgIDcuMzcxLCAgICAgICA2
+LjM2NiwgICAgICAgNy4zOTAsICAgICAgIDQuNTUwLCAgICAgICA0LjkwMCwgICAgICAgNC41MzcN
+Cj4gPiA+ICAgNDAsICAgOC42MjEsICAgICAgIDcuNDk2LCAgICAgICA4LjYwMSwgICAgICAgNC44
+NjIsICAgICAgIDUuMTYyLCAgICAgICA0LjgzNg0KPiA+ID4gICA0OCwgICA5LjQwNiwgICAgICAg
+OC4xMjgsICAgICAgIDkuMzc0LCAgICAgICA1LjIwNiwgICAgICAgNS43MzYsICAgICAgIDUuMjM0
+DQo+ID4gPiAgIDU2LCAgMTAuNTM1LCAgICAgICA5LjE4OSwgICAgICAxMC41MjIsICAgICAgIDUu
+NDE2LCAgICAgICA1Ljc3MiwgICAgICAgNS40NDcNCj4gPiA+ICAgNjQsICAxMC4wMDAsICAgICAg
+IDcuNDg3LCAgICAgICA3LjU5MCwgICAgICAgNi45NDYsICAgICAgIDYuOTc1LCAgICAgICA2Ljk4
+OQ0KPiA+ID4gICA3MiwgIDExLjE5MiwgICAgICAgOC42MzksICAgICAgIDguNzYzLCAgICAgICA3
+LjIxMCwgICAgICAgNy4zMTEsICAgICAgIDcuMjc3DQo+ID4gPiAgIDgwLCAgMTEuNzM0LCAgICAg
+ICA5LjE3OSwgICAgICAgOS40MDksICAgICAgIDcuNjA1LCAgICAgICA3LjYyMCwgICAgICAgNy41
+NDgNCj4gPiA+ICAgODgsICAxMi45MzMsICAgICAgMTAuNTQ1LCAgICAgIDEwLjU4NCwgICAgICAg
+Ny44NzgsICAgICAgIDcuOTAyLCAgICAgICA3Ljg1OA0KPiA+ID4gICA5NiwgIDEyLjk1MiwgICAg
+ICAgOS4zMzEsICAgICAgMTAuNjI1LCAgICAgICA4LjE2OCwgICAgICAgOC40NzAsICAgICAgIDgu
+MjA2DQo+ID4gPiAgMTA0LCAgMTQuMjA2LCAgICAgIDEwLjQyNCwgICAgICAxMS44MzksICAgICAg
+IDguNDkxLCAgICAgICA4Ljc4NSwgICAgICAgOC41MDINCj4gPiA+ICAxMTIsICAxNC43NjMsICAg
+ICAgMTEuNDAzLCAgICAgIDEyLjQxNiwgICAgICAgOC43OTgsICAgICAgIDkuMTM0LCAgICAgICA4
+Ljc3MQ0KPiA+ID4gIDEyMCwgIDE1Ljk1NSwgICAgICAxMi42MzUsICAgICAgMTMuNjUxLCAgICAg
+ICA5LjE3NSwgICAgICAgOS40OTQsICAgICAgIDkuMTMwDQo+ID4gPiAgMTI4LCAgMTUuMjcxLCAg
+ICAgIDEwLjU5OSwgICAgICAxMC43MjQsICAgICAgIDkuNzI2LCAgICAgICA5LjY3MiwgICAgICAg
+OS42NTUNCj4gPiA+DQo+ID4gPiAndmVyMicgdXNlcyB0d28gYWNjdW11bGF0b3JzIGZvciAzMiBi
+eXRlIGNhc2UgYW5kIGhhcyBiZXR0ZXIgbGF0ZW5jeSBudW1iZXJzDQo+ID4gPiBidXQgcmVncmVz
+c2lvbnMgaW4gdHB1dCBjb21wYXJlZCB0byAnb2xkJyBhbmQgJ3ZlcjEnLiAndmVyMScgaXMgdGhl
+DQo+ID4gPiBpbXBsZW1lbnRhdGlvbg0KPiA+ID4gcG9zdGVkIHdoaWNoIGhhcyBlc3NlbnRpYWxs
+eSB0aGUgc2FtZSBudW1iZXJzIGZvciB0cHV0L2xhdCBhcyAnb2xkJw0KPiA+ID4gZm9yIHNpemVz
+IFswLCA2M10uDQo+ID4NCj4gPiBXaGljaCBjcHUgYXJlIHlvdSB0ZXN0aW5nIG9uIC0gaXQgd2ls
+bCBtYWtlIGEgYmlnIGRpZmZlcmVuY2UgPw0KPiANCj4gVGlnZXJsYWtlLCBhbHRob3VnaCBhc3N1
+bWluZyBgYWRjYCBhcyB0aGUgYm90dGxlbmVjaywgdGhlIHJlc3VsdHMNCj4gc2hvdWxkIGJlIGxh
+cmdlbHkgaW5kZXBlbmRlbnQuDQoNClRoZSBjcHUgZGVmaW5pdGVseSBtYWtlcyBhIGRpZmZlcmVu
+Y2UuDQpBbHRob3VnaCB0aGUgYmlnIGNoYW5nZXMgZm9yIEludGVsIG1haW5zdHJlYW0gY3B1IHdh
+cyBiZWZvcmUgSXZ5L1NhbmR5IGJyaWRnZQ0KYW5kIHRvIEJyb2Fkd2VsbC9IYXN3ZWxsLiBUaGV5
+IGltcHJvdmVkIHRoZSBsYXRlbmN5IGZvciBhZGMgZnJvbSAyIGNsb2Nrcw0KdG8gMSBjbG9jay4N
+ClRoZSBsYXRlciBjcHUgYWxzbyBoYXZlIGV4dHJhIGluc3RydWN0aW9uIHBvcnRzIC0gd2hpY2gg
+Y2FuIGhlbHANCnBhcmFsbGVsIGV4Y2V1dGlvbi4NClRoYXQgY291bGQgd2VsbCBtYWtlIGEgYmln
+IGRpZmZlcmVuY2Ugd2hlcmUgeW91J3ZlIGR1cGxpY2F0ZWQgdGhlIGFkYyBjaGFpbi4NCg0KSW50
+ZXJlc3RpbmcgYW4gYWRjIGNoYWluIGNhbiBvbmx5IGRvIG9uZSBhZGQgKDggYnl0ZXMpIHBlciBj
+bG9jay4NCkJ1dCB5b3Ugc2hvdWxkIGJlIGFibGUgdG8gZG8gdHdvIDQgYnl0ZSBsb2FkcyBhbmQg
+YWRkIHRvIHR3byBzZXBhcmF0ZQ0KNjRiaXQgcmVnaXN0ZXIgZXZlcnkgY2xvY2suDQpUaGF0IGlz
+IGFsc28gOCBieXRlcy9jbG9jay4NClNvIGEgQyBsb29wOg0KCWZvciAoO2J1ZiAhPSBidWZfZW5k
+OyBidWYgKz0gMikgew0KCQlzdW1fNjRhICs9IGJ1Zl8zMlswXTsNCgkJc3VtXzY0YiArPSBidWZf
+MzJbMV07DQoJfQ0KTWlnaHQgYmUgYXMgZmFzdCBhcyB0aGUgYXNtIG9uZSENCkl0IHByb2JhYmx5
+IG5lZWRzIHVucm9sbGluZyBvbmNlLCBhbmQgbWF5IG5lZWQgJ2FkanVzdGluZycNCnNvIHRoYXQg
+dGhlIGxvb3AgdGVzdCBpcyAnYWRkICRkLCAlcmVnOyBqbnogMWInDQpUaGUgJ2FkZCcgYW5kICdq
+bnonIHNob3VsZCB0aGVuIGdldCAnZnVzZWQnIGludG8gYSBzaW5nbGUgdS1vcC4NCg0KPiA+IEFu
+ZCB3aGF0IGFyZSB5b3UgbWVhc2luZyB0aHJvdWdocHV0IGluPw0KPiANCj4gUnVubmluZyBiYWNr
+IHRvIGJhY2sgaXRlcmF0aW9ucyB3aXRoIHRoZSBzYW1lIGlucHV0IHdpdGhvdXQgYW55DQo+IGRl
+cGVuZGVuY3kgYmV0d2VlbiBpdGVyYXRpb25zLiBUaGUgT29PIHdpbmRvdyB3aWxsIGluY2x1ZGUN
+Cj4gbXVsdGlwbGUgaXRlcmF0aW9ucyBhdCBvbmNlLg0KPiANCj4gPiBBbmQgYXJlIHlvdSB0ZXN0
+aW5nIGFsaWduZWQgb3IgbWlzLWFsaWduZWQgNjRiaXQgcmVhZHM/DQo+IA0KPiBBbGlnbmVkIGFz
+IHRoYXQgaXMgdGhlIGNvbW1vbiBjYXNlLg0KDQpJIHdhcyB0aGlua2luZyB0aGF0IHRoZSBjb2Rl
+IHRvIGFsaWduIHRoZSBidWZmZXIgc3RhcnQgbWF5IG5vdA0KYmUgbmVlZGVkIC0gc28gdGhlIHRl
+c3QgY2FuIGJlIHJlbW92ZWQgd2l0aG91dCBhZmZlY3RpbmcgcGVyZm9ybWFuY2UuDQpFc3BlY2lh
+bGx5IGlmIGFsaWduZWQgYnVmZmVycyBhcmUgJ2V4cGVjdGVkJw0KU28geW91IGp1c3QgaGF2ZSB0
+byBzdXBwb3J0IHZhcmlhYmxlIGxlbmd0aHMsIG5vdCBhbGlnbm1lbnRzLg0KDQo+ID4gSSB0aGlu
+ayBvbmUgb2YgdGhlIHBlcmZvcm1hbmNlIGNvdW50ZXJzIHdpbGwgZ2l2ZSAnY3B1IGNsb2Nrcycu
+DQo+IA0KPiBUaW1lIGlzIGluIFJlZiBDeWNsZXMgdXNpbmcgYHJkdHNjYA0KDQpIbW1tLi4uDQpV
+bmxlc3MgeW91IG1hbmFnZSB0byBsb2NrIHRoZSBjcHUgZnJlcXVlbmN5IGdvdmVybm9yIChvciB3
+aGF0ZXZlciBpdA0KaXMgY2FsbGVkKSByZHRzYyBpcyBhbG1vc3QgdXNlbGVzcyBmb3IgdGltaW5n
+IGluc3RydWN0aW9ucy4NClRoZSBjcHUgaGFyZHdhcmUgd2lsbCBjaGFuZ2UgdGhlIGNsb2NrIG11
+bHRpcGxpZXIgb24geW91Lg0KDQpJJ3ZlIHVzZWQgaGlzdG9ncmFtW2RlbHRhX2N5bGVzKCkgPj4g
+bl0rKyAod2l0aCBib3VuZCBjaGVja2luZykgdG8NCmdldCBhIGRpc3RyaWJ1dGlvbiBvZiB0aGUg
+Y29zdCBvZiBlYWNoIHBhc3MgLSByYXRoZXIgdGhhbiBhbiBhdmVyYWdlLg0KSSBsYXN0IHVzZWQg
+dGhhdCB0ZXN0aW5nIHdyaXRldigiZGV2L251bGwiLCAuLi4pLg0KRWFjaCBydW4gZ2F2ZSBhIHNo
+YXJwIHBlYWsgLSBidXQgaXQgZGlmZmVyZWQgcnVuIHRvIHJ1biENClBvc3NpYmx5IGJlY2F1c2Ug
+b2YgdGhlIHJlbGF0aXZlIGFsaWdubWVudCBvZiB0aGUgc3RhY2tzIGFuZCBidWZmZXJzLg0KDQou
+Lg0KPiA+IFVzaW5nIGFkeGMvYWR4byB0b2dldGhlciBpcyBhIHJpZ2h0IFBJVEEuDQo+IA0KPiBJ
+J20gYSBiaXQgaGVzaXRhbnQgYWJvdXQgYWR4Yy9hZHhvIGJlY2F1c2UgdGhleSBhcmUgZXh0ZW5z
+aW9ucyBzbw0KPiBzdXBwb3J0IHdpbGwgbmVlZCB0byBiZSB0ZXN0ZWQuDQoNCkluZGVlZC4NCg0K
+PiBodHRwczovL2xvcmUua2VybmVsLm9yZy9sa21sL0NBTm44OWlMcEZPb2tfdHY9REtzTFgxbXha
+R2RIUWdBVGRXNFhzMHJjNm9hWFFFYTVOZ0BtYWlsLmdtYWlsLmNvbS9ULw0KDQpBaCB0aGF0IGlz
+IHlvdXIgcGF0Y2ggdGhhdCBqdXN0IGNoYW5nZXMgdGhlIGFzbSgpIGJsb2NrLg0KSSB3YXMgbG9v
+a2luZyBmb3IgRXJpYydzIGNoYW5nZXMgYXMgd2VsbC4NCg0KSSBzcGVudCB0b28gbG9uZyB0cnlp
+bmcgdG8gb3B0aW1pc2UgdGhpcyBjb2RlIGxhc3QgeWVhci4NCk1vc3RseSBiZWNhdXNlIEkgZm91
+bmQgYSByZWFsbHkgY3JhcCB2ZXJzaW9uIGluIG9uZSBvZiBvdXIgYXBwbGljYXRpb25zDQp0aGF0
+IGlzIGNoZWNrc3VtbWluZyBVRFAvSVB2NCBSVFAgcGFja2V0cyBiZWZvcmUgc2VuZGluZyB0aGVt
+IG9uIGEgUkFXDQpzb2NrZXQuIFRoZXNlIGFyZSBhYm91dCAyMDAgYnl0ZXMgZWFjaCBhbmQgd2Ug
+YXJlIHNlbmRpbmcgMTAwcyBldmVyeSAyMG1zLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBB
+ZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMs
+IE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
