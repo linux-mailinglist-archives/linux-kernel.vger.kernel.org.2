@@ -2,130 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD437460581
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 10:48:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A8446057E
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 10:48:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357060AbhK1Jvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 04:51:37 -0500
-Received: from mga02.intel.com ([134.134.136.20]:48792 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243822AbhK1Jtg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 04:49:36 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10181"; a="223049536"
-X-IronPort-AV: E=Sophos;i="5.87,270,1631602800"; 
-   d="scan'208";a="223049536"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2021 01:46:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,270,1631602800"; 
-   d="scan'208";a="511271267"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 28 Nov 2021 01:46:19 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mrGlG-000AY7-NU; Sun, 28 Nov 2021 09:46:18 +0000
-Date:   Sun, 28 Nov 2021 17:45:40 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Luo bin <luobin9@huawei.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:618:22: sparse:
- sparse: cast to restricted __be64
-Message-ID: <202111281707.Z1jcCuXf-lkp@intel.com>
+        id S1357032AbhK1Jvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 04:51:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240660AbhK1Jta (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Nov 2021 04:49:30 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F116C061574;
+        Sun, 28 Nov 2021 01:46:14 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id t9so12626225wrx.7;
+        Sun, 28 Nov 2021 01:46:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=MyxG4fZuu+tZlzqJDqxR4dVlSnGITUq8koTwfVub/a8=;
+        b=QrZMkCn+j6+bK+NlmSrz5Um0jgoGm9qle6SWq2Tr9wdHc1gKAvd72yGwox4NzdGUdH
+         8zWrlp6UIDmukQ0FI5gy9YRXsHKdYFi9KpgCGbvJJTcY5wao7OUV206nTIlz7ZqzmtNU
+         pog+IwHDCKn4aQbBpDkpoSmgzcN2o06KrLge23CH7XLfyziuYBUFs5qK0S2fTa9epa8o
+         aN89tcTJ7s6JzB2w+tqVg0V1uR4DiGcMFQD9kSGRb7ueqN+gBe/IyrbjfBb+Ukvi/Gmz
+         LShk8EpMolVVdatVNfdId1RQ1ESrgxiaEPX8XqKTdIQ7ytvBlPo9lwRU3azYSIDPFbUn
+         ZqRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=MyxG4fZuu+tZlzqJDqxR4dVlSnGITUq8koTwfVub/a8=;
+        b=Jsy5vjJ2tMKxAkC0dwHTHiwDTBkGhlCz68KY+Y0Ek6KknYWGik/bzy0sl9DwXBXIV7
+         reAaFerDFip5XvqBlTcEo/8q+TxyGI7XF4j8644bwYhnctexYQ3MqM07NwlGmaEjWc4P
+         9j/TqfqIC9/tAOkUCJ/U9tCgA2/PysrPwmYi22LS8QLaB7MWc3B2iMrcKFvzghzfKlqU
+         Jfmsf8AIfM5HAKnd5jYU3KITrocoa1htMrXtJIo0cvnTbPwaX/GsvCdSvTE7Z8jZsArX
+         pMW0tCKujtQHD4A7SMcvAalhRZfuyJYSe0uVtbiUrULGslKDY2IGS5oSeb97TQg7hilE
+         efNg==
+X-Gm-Message-State: AOAM533GO5ohNovfq6ZUakq36gA2RKmyBLhlesGKJhJaAkI6xBP1qwA+
+        HZ05jIFNVdB7VGh2zeFJyt3hA3ocMdb8Fg==
+X-Google-Smtp-Source: ABdhPJxTTa6uZl+HmYtxgDzC9p7fkNcCeg2eRP9jtICua0t9IkNrWJw7UEJpmoyrTKvJKtV8vb8Y1Q==
+X-Received: by 2002:a5d:69ce:: with SMTP id s14mr26150329wrw.25.1638092773102;
+        Sun, 28 Nov 2021 01:46:13 -0800 (PST)
+Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
+        by smtp.gmail.com with ESMTPSA id x4sm15567607wmi.3.2021.11.28.01.46.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Nov 2021 01:46:12 -0800 (PST)
+Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
+Date:   Sun, 28 Nov 2021 10:46:11 +0100
+From:   Salvatore Bonaccorso <carnil@debian.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.19 088/323] locking/lockdep: Avoid RCU-induced noinstr
+ fail
+Message-ID: <YaNP46ypf6xcTcJH@eldamar.lan>
+References: <20211124115718.822024889@linuxfoundation.org>
+ <20211124115721.937655496@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211124115721.937655496@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   3498e7f2bb415e447354a3debef6738d9655768c
-commit: a425b6e1c69ba907b72b737a4d44f8cfbc43ce3c hinic: add mailbox function support
-date:   1 year, 7 months ago
-config: x86_64-randconfig-s022-20211124 (https://download.01.org/0day-ci/archive/20211128/202111281707.Z1jcCuXf-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.4-dirty
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a425b6e1c69ba907b72b737a4d44f8cfbc43ce3c
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout a425b6e1c69ba907b72b737a4d44f8cfbc43ce3c
-        # save the config file to linux build tree
-        make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=x86_64 SHELL=/bin/bash
+Hi,
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+On Wed, Nov 24, 2021 at 12:54:38PM +0100, Greg Kroah-Hartman wrote:
+> From: Peter Zijlstra <peterz@infradead.org>
+> 
+> [ Upstream commit ce0b9c805dd66d5e49fd53ec5415ae398f4c56e6 ]
+> 
+> vmlinux.o: warning: objtool: look_up_lock_class()+0xc7: call to rcu_read_lock_any_held() leaves .noinstr.text section
 
+For 4.19.218 at least this commit seems to cause a build failure for
+cpupower, if warnings are treated as errors, I have not seen the same
+for the 5.10.80 build:
 
-sparse warnings: (new ones prefixed by >>)
-   drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:543:54: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got unsigned char [usertype] * @@
-   drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:543:54: sparse:     expected void volatile [noderef] <asn:2> *addr
-   drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:543:54: sparse:     got unsigned char [usertype] *
-   drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:566:58: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got unsigned char [usertype] * @@
-   drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:566:58: sparse:     expected void volatile [noderef] <asn:2> *addr
-   drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:566:58: sparse:     got unsigned char [usertype] *
-   drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:601:6: sparse: sparse: symbol 'dump_mox_reg' was not declared. Should it be static?
->> drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:618:22: sparse: sparse: cast to restricted __be64
->> drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:618:22: sparse: sparse: cast to restricted __be64
->> drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:618:22: sparse: sparse: cast to restricted __be64
->> drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:618:22: sparse: sparse: cast to restricted __be64
->> drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:618:22: sparse: sparse: cast to restricted __be64
->> drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:618:22: sparse: sparse: cast to restricted __be64
->> drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:618:22: sparse: sparse: cast to restricted __be64
->> drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:618:22: sparse: sparse: cast to restricted __be64
->> drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:618:22: sparse: sparse: cast to restricted __be64
->> drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:618:22: sparse: sparse: cast to restricted __be64
-   drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:1057:25: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned char [usertype] *data @@     got void [noderef] <asn:2> * @@
-   drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:1057:25: sparse:     expected unsigned char [usertype] *data
-   drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:1057:25: sparse:     got void [noderef] <asn:2> *
-   drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c: note: in included file:
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:256:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int val @@     got restricted __be32 [usertype] @@
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:256:16: sparse:     expected unsigned int val
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:256:16: sparse:     got restricted __be32 [usertype]
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:256:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int val @@     got restricted __be32 [usertype] @@
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:256:16: sparse:     expected unsigned int val
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:256:16: sparse:     got restricted __be32 [usertype]
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:250:16: sparse: sparse: cast to restricted __be32
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:250:16: sparse: sparse: cast to restricted __be32
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:250:16: sparse: sparse: cast to restricted __be32
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:250:16: sparse: sparse: cast to restricted __be32
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:250:16: sparse: sparse: cast to restricted __be32
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:250:16: sparse: sparse: cast to restricted __be32
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:250:16: sparse: sparse: cast to restricted __be32
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:250:16: sparse: sparse: cast to restricted __be32
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:250:16: sparse: sparse: cast to restricted __be32
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:250:16: sparse: sparse: cast to restricted __be32
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:250:16: sparse: sparse: cast to restricted __be32
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:250:16: sparse: sparse: cast to restricted __be32
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:256:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int val @@     got restricted __be32 [usertype] @@
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:256:16: sparse:     expected unsigned int val
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:256:16: sparse:     got restricted __be32 [usertype]
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:256:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int val @@     got restricted __be32 [usertype] @@
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:256:16: sparse:     expected unsigned int val
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:256:16: sparse:     got restricted __be32 [usertype]
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:256:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int val @@     got restricted __be32 [usertype] @@
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:256:16: sparse:     expected unsigned int val
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:256:16: sparse:     got restricted __be32 [usertype]
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:256:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int val @@     got restricted __be32 [usertype] @@
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:256:16: sparse:     expected unsigned int val
-   drivers/net/ethernet/huawei/hinic/hinic_hw_if.h:256:16: sparse:     got restricted __be32 [usertype]
+gcc -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -DVERSION=\"4.19\" -DPACKAGE=\"cpupower\" -DPACKAGE_BUGREPORT=\"Debian\ \(reportbug\ linux-cpupower\)\" -D_GNU_SOURCE -pipe -DNLS -Wall -Wchar-subscripts -Wpointer-arith
+ -Wsign-compare -Wno-pointer-sign -Wdeclaration-after-statement -Wshadow -Os -fomit-frame-pointer -fPIC -o /home/build/linux-4.19.218/debian/build/build-tools/tools/power/cpupower/lib/cpupower.o -c lib/cpupower.c
+In file included from lockdep.c:28:
+../../../kernel/locking/lockdep.c: In function ‘look_up_lock_class’:
+../../../kernel/locking/lockdep.c:694:2: error: implicit declaration of function ‘hlist_for_each_entry_rcu_notrace’; did you mean ‘hlist_for_each_entry_continue’? [-Werror=implicit-function-declaration]
+  hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
+  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  hlist_for_each_entry_continue
+../../../kernel/locking/lockdep.c:694:53: error: ‘hash_entry’ undeclared (first use in this function); did you mean ‘hash_ptr’?
+  hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
+                                                     ^~~~~~~~~~
+                                                     hash_ptr
+../../../kernel/locking/lockdep.c:694:53: note: each undeclared identifier is reported only once for each function it appears in
+../../../kernel/locking/lockdep.c:694:64: error: expected ‘;’ before ‘{’ token
+  hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
+                                                                ^~
+                                                                ;
+../../../kernel/locking/lockdep.c:706:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+cc1: some warnings being treated as errors
+make[5]: *** [/home/build/linux-4.19.218/tools/build/Makefile.build:97: /home/build/linux-4.19.218/debian/build/build-tools/tools/lib/lockdep/lockdep.o] Error 1
+make[4]: *** [Makefile:121: /home/build/linux-4.19.218/debian/build/build-tools/tools/lib/lockdep/liblockdep-in.o] Error 2
+make[4]: Leaving directory '/home/build/linux-4.19.218/tools/lib/lockdep'
+make[3]: *** [/home/build/linux-4.19.218/debian/rules.d/tools/lib/lockdep/Makefile:16: all] Error 2
+make[3]: Leaving directory '/home/build/linux-4.19.218/debian/build/build-tools/tools/lib/lockdep'
+make[2]: *** [debian/rules.real:795: build-liblockdep] Error 2
+make[2]: *** Waiting for unfinished jobs....
 
-vim +618 drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c
+I was not yet able to look further on it.
 
-   614	
-   615	static u16 get_mbox_status(struct hinic_send_mbox *mbox)
-   616	{
-   617		/* write back is 16B, but only use first 4B */
- > 618		u64 wb_val = be64_to_cpu(*mbox->wb_status);
-   619	
-   620		rmb(); /* verify reading before check */
-   621	
-   622		return (u16)(wb_val & MBOX_WB_STATUS_ERRCODE_MASK);
-   623	}
-   624	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Regards,
+Salvatore
