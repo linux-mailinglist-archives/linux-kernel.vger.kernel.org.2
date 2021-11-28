@@ -2,96 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A93AC460995
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 21:05:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2112A460999
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 21:05:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353562AbhK1UIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 15:08:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52320 "EHLO
+        id S1357822AbhK1UIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 15:08:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231765AbhK1UGM (ORCPT
+        with ESMTP id S240202AbhK1UGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 15:06:12 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D07C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 12:02:55 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id v1so62914896edx.2
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 12:02:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=7HcxF6ZKSPDEpaGmFN3n6pX1ziwo71svBvOPDLwcsm8=;
-        b=lbhq+e5wVQbQYs/Cw/1WNhfNSNylslKTMLy7VaNqSd+iW7GMPsjS/eaij8QE4eslOM
-         yR1FaLv6QKkqgYfA4tOr3/blLGrGVUxX7MI21YxWy9yrGFbrBJbYbC+W2/KO5iqfdpgN
-         Qb+CQCmSvr6j5+SKBLTIRDQIZTUYLyLGNzhOXamZpEef07QxWVvVbmSh/1um/WR8BY1L
-         cg3qgE9E9gxYWZFG29zdw91wDPYdPtZavwiaWmZnNzKruXHxULQC6yDkqHMyJUpNhLWw
-         dC5Nke2VYlZAX3ty+fFd4d6PvZSOTNZ0/joyEPzSc/9vSDDI2ExV2sAWZu68U++9oMaA
-         /Qmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=7HcxF6ZKSPDEpaGmFN3n6pX1ziwo71svBvOPDLwcsm8=;
-        b=EGV4kBG5xcYPoE+uihpgOHHEMQFNApSXELKkYC9TQaZxbmHlVrJmiPnwJ5a19p15J/
-         na8jNbPSvdnUeaFuxESwZ1i+XxLQyIBprHiQxngTudSisbL/TAkSlBhAybbDi9EPlZk8
-         aGi5lJ3c3yDDlK6ai1j4IbvS4wKQlWLHdvR/UTb/Wu/N4sju9eDlsBzZA1mI1vHWjelz
-         e5Q2JAiahkWRxrqdPQtRn0kJ9WXh1xuvPXj8pqcNMiUWdpFwo/jB2lLjhoP7srDl57fb
-         /+LDrnOaglJq/jnp2rdIToKqUP6ew7ncHS/BhSW6S/lX1kZSV+rXDwoz9b1+LsUVBZ6M
-         knHg==
-X-Gm-Message-State: AOAM533kz5rnapxB/+OzR0+WtDRMPob25jJ0qtkdoqiNMGFcPHZt6g2P
-        pqtAMrVcbpK43U5YsoPFZGacUqu+Zse4C4v+zC4=
-X-Google-Smtp-Source: ABdhPJwd1WZo/zqf5Ufb1NKtnoBrT48c8sIgbtnXQekWV4RZU9GX6LW3cYWFm9wCRQly7jyszi/Y/QkAM5xTjjF84pU=
-X-Received: by 2002:a17:906:945:: with SMTP id j5mr54954312ejd.446.1638129774228;
- Sun, 28 Nov 2021 12:02:54 -0800 (PST)
-MIME-Version: 1.0
-Sender: uchuche66@gmail.com
-Received: by 2002:a17:907:86a5:0:0:0:0 with HTTP; Sun, 28 Nov 2021 12:02:53
- -0800 (PST)
-From:   Evelyn Philips <evelynphilips517@gmail.com>
-Date:   Sun, 28 Nov 2021 12:02:53 -0800
-X-Google-Sender-Auth: ZK19eIMl1oZFTVknZQPHpbH-Fwk
-Message-ID: <CABieb2wgGYEm-YUiw-EFnpoSop0aFP4cSQp8MA5haidX4utBOw@mail.gmail.com>
-Subject: Hello dear frined
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Sun, 28 Nov 2021 15:06:41 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E8EC061748;
+        Sun, 28 Nov 2021 12:03:25 -0800 (PST)
+Received: from mail.kernel.org (unknown [198.145.29.99])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9E453B80D5F;
+        Sun, 28 Nov 2021 20:03:23 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8B6C160041;
+        Sun, 28 Nov 2021 20:03:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638129801;
+        bh=fYzzj/FusNSnStGNweaI1Lw8LCCnN3s3U2QDq7fynns=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=hnHAXLGBgmVZhy/VoZyzTYKSEtw0/KzamE2erN0j33Uuv8MypNvJrP7NOojYeW9er
+         9+qgvQ9dIWyDEssNjBom/Vr14xOlJ9cqElPhxDqJ7elngZgOZnpMXd691lIcgR3E/6
+         f/GnNYeoc9i99mRodn52mx6dsCrxOjsSWVXzo6OWMx3nEQ1pgcMx8Cz8zipm3j+zrn
+         ppXae04LUIO8/xL8647OU+Yn58lXux+mmitmW1sYg3b7vc7Fhs1JaNCV16roq86ipx
+         gOHV6UJ/gopotAUpJ81r0fp/LSNdFsx0TA+pUnDoteqUbNc9xlxwBn1rYbAe7tc2Yj
+         eBkj2UrkwZDuQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7A64E609DB;
+        Sun, 28 Nov 2021 20:03:21 +0000 (UTC)
+Subject: Re: [GIT PULL] vhost,virtio,vdpa: bugfixes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20211128125803-mutt-send-email-mst@kernel.org>
+References: <20211128125803-mutt-send-email-mst@kernel.org>
+X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211128125803-mutt-send-email-mst@kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+X-PR-Tracked-Commit-Id: bb93ce4b150dde79f58e34103cbd1fe829796649
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: d06c942efea40e1701ade200477a7449008d9f24
+Message-Id: <163812980144.10783.3903876021175664187.pr-tracker-bot@kernel.org>
+Date:   Sun, 28 Nov 2021 20:03:21 +0000
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jasowang@redhat.com, longpeng2@huawei.com, mst@redhat.com,
+        pasic@linux.ibm.com, sgarzare@redhat.com, stable@vger.kernel.org,
+        wuzongyong@linux.alibaba.com, ye.guojin@zte.com.cn,
+        zealci@zte.com.cn
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dear Friend,
+The pull request you sent on Sun, 28 Nov 2021 12:58:03 -0500:
 
-I am glad to know you, but God knows you better and he knows why he
-has directed me to you at this point in time so do not be surprise at
-all. My names are Mrs.Evelyn.Philips.a widow, i have been suffering
-from ovarian cancer disease. At this moment i am about to end the race
-like this because the illness has gotten to a very bad stage, without
-any family members and no child. I hoped that you will not expose or
-betray this trust and confident that I am about to entrust on you for
-the mutual benefit of the orphans and the less privileges ones. I have
-some funds I inherited from my late husband, the sum of ($
-9,500,000.00 Nine point five million dollars.) deposited in the Bank.
-Having known my present health status, I decided to entrust this fund
-to you believing that you will utilize it the way i
-am going to instruct herein.
+> https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
 
-Therefore I need you to assist me and reclaim this money and use it
-for Charity works, for orphanages and gives justice and help to the
-poor, needy and to promote the words of God and the effort that the
-house of God will be maintained says The Lord." Jeremiah 22:15-16.=E2=80=9C
-It will be my great pleasure to compensate you with 35 % percent of
-the total money for your personal use, 5 % percent for any expenses
-that may occur during the international transfer process while 60% of
-the money will go to the charity project.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/d06c942efea40e1701ade200477a7449008d9f24
 
-All I require from you is sincerity and ability to complete God task
-without any failure. It will be my pleasure to see that the bank has
-finally release and transfer the fund into your bank account therein
-your country even before I die here in the hospital, because of my
-present health status everything need to be process rapidly as soon as
-possible. I am waiting for your immediate reply, if only you are
-interested for further details of the transaction and execution of
-this charitable project.
+Thank you!
 
-Best Regards your friend .Mrs.Evelyn.Philips.
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
