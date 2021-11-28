@@ -2,160 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490114607DD
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 18:10:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EEE84607D9
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 18:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358698AbhK1ROD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 12:14:03 -0500
-Received: from smtprelay0096.hostedemail.com ([216.40.44.96]:33562 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1358489AbhK1RMC (ORCPT
+        id S1358487AbhK1RNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 12:13:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231855AbhK1RLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 12:12:02 -0500
-Received: from omf04.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id D5832182CED2A;
-        Sun, 28 Nov 2021 17:08:43 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf04.hostedemail.com (Postfix) with ESMTPA id 5EF1EA00041C;
-        Sun, 28 Nov 2021 17:07:48 +0000 (UTC)
-Message-ID: <8f389151c39a8a5b6b31d5238cb680305225d9f2.camel@perches.com>
-Subject: Re: [PATCH 7/9] lib/cpumask: add
- num_{possible,present,active}_cpus_{eq,gt,le}
-From:   Joe Perches <joe@perches.com>
-To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>, Andrew Lunn <andrew@lunn.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Christoph Lameter <cl@linux.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Airlie <airlied@linux.ie>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Dennis Zhou <dennis@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guo Ren <guoren@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Jens Axboe <axboe@fb.com>, Jiri Olsa <jolsa@redhat.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Kees Cook <keescook@chromium.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Marc Zyngier <maz@kernel.org>, Marcin Wojtas <mw@semihalf.com>,
-        Mark Gross <markgross@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Roy Pledge <Roy.Pledge@nxp.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Solomon Peachy <pizza@shaftnet.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>, Tejun Heo <tj@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Will Deacon <will@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, kvm@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-crypto@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Date:   Sun, 28 Nov 2021 09:07:52 -0800
-In-Reply-To: <20211128035704.270739-8-yury.norov@gmail.com>
-References: <20211128035704.270739-1-yury.norov@gmail.com>
-         <20211128035704.270739-8-yury.norov@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1 
+        Sun, 28 Nov 2021 12:11:51 -0500
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 155CEC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 09:08:35 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 988D242684;
+        Sun, 28 Nov 2021 17:08:30 +0000 (UTC)
+To:     Andrew Lunn <andrew@lunn.ch>, Tianhao Chai <cth451@gmail.com>
+Cc:     Igor Russkikh <irusskikh@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>
+References: <20211128023733.GA466664@cth-desktop-dorm.mad.wi.cth451.me>
+ <YaOvShya4kP4SRk7@lunn.ch>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Re: [PATCH] ethernet: aquantia: Try MAC address from device tree
+Message-ID: <37679b8b-7a81-5605-23af-e442f9e91816@marcan.st>
+Date:   Mon, 29 Nov 2021 02:08:28 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: umd6ft7bscstit6mcsb41shstont4bff
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: 5EF1EA00041C
-X-Spam-Status: No, score=1.60
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+NoJl8n1YyBqeqY0nk94+uRiGfczHPVi8=
-X-HE-Tag: 1638119268-113142
+In-Reply-To: <YaOvShya4kP4SRk7@lunn.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-11-27 at 19:57 -0800, Yury Norov wrote:
-> Add num_{possible,present,active}_cpus_{eq,gt,le} and replace num_*_cpus()
-> with one of new functions where appropriate. This allows num_*_cpus_*()
-> to return earlier depending on the condition.
-[]
-> diff --git a/arch/arc/kernel/smp.c b/arch/arc/kernel/smp.c
-[]
-> @@ -103,7 +103,7 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
->  	 * if platform didn't set the present map already, do it now
->  	 * boot cpu is set to present already by init/main.c
->  	 */
-> -	if (num_present_cpus() <= 1)
-> +	if (num_present_cpus_le(2))
->  		init_cpu_present(cpu_possible_mask);
+On 29/11/2021 01.33, Andrew Lunn wrote:
+> On Sat, Nov 27, 2021 at 08:37:33PM -0600, Tianhao Chai wrote:
+>> Apple M1 Mac minis (2020) with 10GE NICs do not have MAC address in the
+>> card, but instead need to obtain MAC addresses from the device tree. In
+>> this case the hardware will report an invalid MAC.
+>>
+>> Currently atlantic driver does not query the DT for MAC address and will
+>> randomly assign a MAC if the NIC doesn't have a permanent MAC burnt in.
+>> This patch causes the driver to perfer a valid MAC address from OF (if
+>> present) over HW self-reported MAC and only fall back to a random MAC
+>> address when neither of them is valid.
+> 
+> This is a change in behaviour, and could cause regressions. It would
+> be better to keep with the current flow. Call
+> aq_fw_ops->get_mac_permanent() first. If that does not give a valid
+> MAC address, then try DT, and lastly use a random MAC address.
 
-?  is this supposed to be 2 or 1
+On DT platforms, it is expected that the device tree MAC will override 
+whatever the device thinks is its MAC address. See tg3, igb, igc, r8169, 
+for examples where eth_platform_get_mac_address takes precedence over 
+everything else.
 
-> diff --git a/drivers/cpufreq/pcc-cpufreq.c b/drivers/cpufreq/pcc-cpufreq.c
-[]
-> @@ -593,7 +593,7 @@ static int __init pcc_cpufreq_init(void)
->  		return ret;
->  	}
->  
-> -	if (num_present_cpus() > 4) {
-> +	if (num_present_cpus_gt(4)) {
->  		pcc_cpufreq_driver.flags |= CPUFREQ_NO_AUTO_DYNAMIC_SWITCHING;
->  		pr_err("%s: Too many CPUs, dynamic performance scaling disabled\n",
->  		       __func__);
+I would not expect any other existing platform to have a MAC assigned to 
+the device in this way using these cards; if any platforms do, chances 
+are they intended it for it to be used and this patch will fix a current 
+bug. If some platforms out there really have bogus MACs assigned in this 
+way, that's a firmware bug, and we'd have to find out and add explicit, 
+targeted workaround code. Are you aware of any such platforms? :)
 
-It looks as if the present variants should be using the same values
-so the _le test above with 1 changed to 2 looks odd.
-
-
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
