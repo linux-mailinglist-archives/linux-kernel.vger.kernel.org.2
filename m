@@ -2,124 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6060460303
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 03:40:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87BD446031B
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 03:53:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238084AbhK1Cmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 21:42:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235964AbhK1Ckw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 21:40:52 -0500
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0589DC061574;
-        Sat, 27 Nov 2021 18:37:36 -0800 (PST)
-Received: by mail-il1-x129.google.com with SMTP id s11so5967868ilv.3;
-        Sat, 27 Nov 2021 18:37:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=uZsW4vKAD42FBQLBm7RlaIj3WM0Zuzdt9kxEEmUrNBc=;
-        b=pS0Yvh2bATvCt+KtwU4raYn0HDh4lHnAJCf1ChnjFfFyCsAY5MnRfNbZqqobhfUT/Y
-         03cAIrqtaFVT5OJUmYwCptETrSDbZKCedyg65G6MQgGDohs2Jye57Si/aSGI6wq4pKZE
-         aiTfPIkZpetDjwG7gRXGSZl6ChDWWicYRhdAr7bMxrcdAMqgDo83yIZyoRGU6lOAZ438
-         bZJXCZTzZJSNV3aRTslUw1ozgSVND9aR3NqDFBOQqkl1hLdzzUxUt0ilYdwZ3Nqr62yG
-         SLizbcwV6orw34BE7tmD53FdCjV5hIY69bSlH+08+lVfsCk+hpzpT7BI+7+BTa9LWwk8
-         G+gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=uZsW4vKAD42FBQLBm7RlaIj3WM0Zuzdt9kxEEmUrNBc=;
-        b=FvkkHWpTQUkzPSxRvqkfl8JhIco3ktTnFY+LCfF/N30GroJh7irboK6n9eLzUOGFQ6
-         Rxr2jRIlZcDSqxKs31V0ygB/goqXRJ6prp4HvEHRegujFA0VTdxDS+HVznkCFK7ZoZR8
-         l5VpZESd11BWoArlQPdFA8NOm12UmpSEqU6/oJtQiwfMAQXcpyLYZsdySdwlh4bi9eIx
-         VWv5G46C82ZZRgYYze5xZcMbP39t+eEfnPiezXcAVXEix8QO1YsDa5Qoevtbz0rTXFJu
-         vRLe2VN6jl/UPH/m3N6xz9EXMQ5+Wz33/jsL8IkNN3mJWcYSp0MxCbSZBh+gyJp12QFr
-         MCig==
-X-Gm-Message-State: AOAM531pc+zqqtciuVp6g6VllfwsGoKJ9EGnm8GdEr4C1kG1XMZ91Yqa
-        KJDwFTfzWmMm9qPNaYAXLnLvaPip4AMgaA==
-X-Google-Smtp-Source: ABdhPJz+xKA0D6Bb6XV9fJrfFY2XXSpo2QcxVDRwW6lZtC+Sdb9sM2zDpYRzEVqmCchQX26oEn/M2w==
-X-Received: by 2002:a05:6e02:1d10:: with SMTP id i16mr46494963ila.182.1638067056229;
-        Sat, 27 Nov 2021 18:37:36 -0800 (PST)
-Received: from cth-desktop-dorm.mad.wi.cth451.me ([2600:6c44:113f:8901:6f66:c6f8:91db:cfda])
-        by smtp.gmail.com with ESMTPSA id g7sm4337845iln.67.2021.11.27.18.37.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Nov 2021 18:37:35 -0800 (PST)
-Date:   Sat, 27 Nov 2021 20:37:33 -0600
-From:   Tianhao Chai <cth451@gmail.com>
-To:     Igor Russkikh <irusskikh@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>
-Subject: [PATCH] ethernet: aquantia: Try MAC address from device tree
-Message-ID: <20211128023733.GA466664@cth-desktop-dorm.mad.wi.cth451.me>
+        id S241948AbhK1C4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 21:56:22 -0500
+Received: from mga06.intel.com ([134.134.136.31]:61303 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231843AbhK1CyU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 21:54:20 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10181"; a="296601599"
+X-IronPort-AV: E=Sophos;i="5.87,270,1631602800"; 
+   d="scan'208";a="296601599"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 18:51:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,270,1631602800"; 
+   d="scan'208";a="652488906"
+Received: from allen-box.sh.intel.com ([10.239.159.118])
+  by fmsmga001.fm.intel.com with ESMTP; 27 Nov 2021 18:50:57 -0800
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>
+Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Dan Williams <dan.j.williams@intel.com>, rafael@kernel.org,
+        Diana Craciun <diana.craciun@oss.nxp.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Liu Yi L <yi.l.liu@intel.com>,
+        Jacob jun Pan <jacob.jun.pan@intel.com>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Stuart Yoder <stuyoder@gmail.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Li Yang <leoyang.li@nxp.com>, iommu@lists.linux-foundation.org,
+        linux-pci@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH v2 00/17] Fix BUG_ON in vfio_iommu_group_notifier()
+Date:   Sun, 28 Nov 2021 10:50:34 +0800
+Message-Id: <20211128025051.355578-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Apple M1 Mac minis (2020) with 10GE NICs do not have MAC address in the
-card, but instead need to obtain MAC addresses from the device tree. In
-this case the hardware will report an invalid MAC.
+The original post and intent of this series is here.
+https://lore.kernel.org/linux-iommu/20211115020552.2378167-1-baolu.lu@linux.intel.com/
 
-Currently atlantic driver does not query the DT for MAC address and will
-randomly assign a MAC if the NIC doesn't have a permanent MAC burnt in.
-This patch causes the driver to perfer a valid MAC address from OF (if
-present) over HW self-reported MAC and only fall back to a random MAC
-address when neither of them is valid.
+Change log:
+v1: initial post
+  - https://lore.kernel.org/linux-iommu/20211115020552.2378167-1-baolu.lu@linux.intel.com/
 
-Signed-off-by: Tianhao Chai <cth451@gmail.com>
----
- .../net/ethernet/aquantia/atlantic/aq_nic.c   | 28 ++++++++++++-------
- 1 file changed, 18 insertions(+), 10 deletions(-)
+v2:
+  - Move kernel dma ownership auto-claiming from driver core to bus
+    callback. [Greg/Christoph/Robin/Jason]
+    https://lore.kernel.org/linux-iommu/20211115020552.2378167-1-baolu.lu@linux.intel.com/T/#m153706912b770682cb12e3c28f57e171aa1f9d0c
 
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_nic.c b/drivers/net/ethernet/aquantia/atlantic/aq_nic.c
-index 1acf544afeb4..ae6c4a044390 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_nic.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_nic.c
-@@ -316,18 +316,26 @@ int aq_nic_ndev_register(struct aq_nic_s *self)
- 	aq_macsec_init(self);
- #endif
- 
--	mutex_lock(&self->fwreq_mutex);
--	err = self->aq_fw_ops->get_mac_permanent(self->aq_hw, addr);
--	mutex_unlock(&self->fwreq_mutex);
--	if (err)
--		goto err_exit;
-+	if (eth_platform_get_mac_address(&self->pdev->dev, addr) == 0 &&
-+	    is_valid_ether_addr(addr)) {
-+		// DT supplied a valid MAC address
-+		eth_hw_addr_set(self->ndev, addr);
-+	} else {
-+		// If DT has none or an invalid one, ask device for MAC address
-+		mutex_lock(&self->fwreq_mutex);
-+		err = self->aq_fw_ops->get_mac_permanent(self->aq_hw, addr);
-+		mutex_unlock(&self->fwreq_mutex);
- 
--	eth_hw_addr_set(self->ndev, addr);
-+		if (err)
-+			goto err_exit;
- 
--	if (!is_valid_ether_addr(self->ndev->dev_addr) ||
--	    !aq_nic_is_valid_ether_addr(self->ndev->dev_addr)) {
--		netdev_warn(self->ndev, "MAC is invalid, will use random.");
--		eth_hw_addr_random(self->ndev);
-+		if (is_valid_ether_addr(addr) &&
-+		    aq_nic_is_valid_ether_addr(addr)) {
-+			eth_hw_addr_set(self->ndev, addr);
-+		} else {
-+			netdev_warn(self->ndev, "MAC is invalid, will use random.");
-+			eth_hw_addr_random(self->ndev);
-+		}
- 	}
- 
- #if defined(AQ_CFG_MAC_ADDR_PERMANENT)
+  - Code and interface refactoring for iommu_set/release_dma_owner()
+    interfaces. [Jason]
+    https://lore.kernel.org/linux-iommu/20211115020552.2378167-1-baolu.lu@linux.intel.com/T/#mea70ed8e4e3665aedf32a5a0a7db095bf680325e
+
+  - [NEW]Add new iommu_attach/detach_device_shared() interfaces for
+    multiple devices group. [Robin/Jason]
+    https://lore.kernel.org/linux-iommu/20211115020552.2378167-1-baolu.lu@linux.intel.com/T/#mea70ed8e4e3665aedf32a5a0a7db095bf680325e
+  
+  - [NEW]Use iommu_attach/detach_device_shared() in drm/tegra drivers.
+
+  - Refactoring and description refinement.
+
+This is based on v5.16-rc2 and available on github:
+https://github.com/LuBaolu/intel-iommu/commits/iommu-dma-ownership-v2
+
+Best regards,
+baolu
+
+Jason Gunthorpe (2):
+  vfio: Delete the unbound_list
+  drm/tegra: Use the iommu dma_owner mechanism
+
+Lu Baolu (15):
+  iommu: Add device dma ownership set/release interfaces
+  driver core: Add dma_unconfigure callback in bus_type
+  PCI: Add driver dma ownership management
+  driver core: platform: Add driver dma ownership management
+  amba: Add driver dma ownership management
+  bus: fsl-mc: Add driver dma ownership management
+  PCI: pci_stub: Suppress kernel DMA ownership auto-claiming
+  PCI: portdrv: Suppress kernel DMA ownership auto-claiming
+  iommu: Add security context management for assigned devices
+  iommu: Expose group variants of dma ownership interfaces
+  iommu: Add iommu_at[de]tach_device_shared() for multi-device groups
+  vfio: Set DMA USER ownership for VFIO devices
+  vfio: Remove use of vfio_group_viable()
+  vfio: Remove iommu group notifier
+  iommu: Remove iommu group changes notifier
+
+ include/linux/amba/bus.h              |   1 +
+ include/linux/device/bus.h            |   3 +
+ include/linux/fsl/mc.h                |   5 +
+ include/linux/iommu.h                 |  93 ++++++--
+ include/linux/pci.h                   |   5 +
+ include/linux/platform_device.h       |   1 +
+ drivers/amba/bus.c                    |  30 ++-
+ drivers/base/dd.c                     |   7 +-
+ drivers/base/platform.c               |  30 ++-
+ drivers/bus/fsl-mc/fsl-mc-bus.c       |  26 +-
+ drivers/gpu/drm/tegra/dc.c            |   1 +
+ drivers/gpu/drm/tegra/drm.c           |  55 ++---
+ drivers/gpu/drm/tegra/gr2d.c          |   1 +
+ drivers/gpu/drm/tegra/gr3d.c          |   1 +
+ drivers/gpu/drm/tegra/vic.c           |   1 +
+ drivers/iommu/iommu.c                 | 329 ++++++++++++++++++++------
+ drivers/pci/pci-driver.c              |  21 ++
+ drivers/pci/pci-stub.c                |   1 +
+ drivers/pci/pcie/portdrv_pci.c        |   2 +
+ drivers/vfio/fsl-mc/vfio_fsl_mc.c     |   1 +
+ drivers/vfio/pci/vfio_pci.c           |   1 +
+ drivers/vfio/platform/vfio_amba.c     |   1 +
+ drivers/vfio/platform/vfio_platform.c |   1 +
+ drivers/vfio/vfio.c                   | 248 ++-----------------
+ 24 files changed, 502 insertions(+), 363 deletions(-)
+
 -- 
-2.30.2
+2.25.1
 
