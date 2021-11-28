@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8CB44609A5
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 21:22:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 887E34609AE
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 21:29:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343821AbhK1UZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 15:25:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56438 "EHLO
+        id S240225AbhK1Uck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 15:32:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231765AbhK1UXS (ORCPT
+        with ESMTP id S231527AbhK1Uaj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 15:23:18 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E74B0C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 12:20:01 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id 207so30393952ljf.10
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 12:20:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=k4DCyz8+/Fxa9vXLn5RMQDYsGviUlWwuLm5KSdNmdZY=;
-        b=gEBN9h0rjiWtK6jttU/X32i65gXZsB9Rsw6WnTNHd6QQEECoU3oVb9Fzy+QKNq+M5b
-         ij4GEouoWUkj9ibEDrFkACwGhqmGsX0pfmp4KKb8WXYuqS1KIuLYMEf8JVWKUBlAOvEc
-         3DmhH8haP01CUUi+cI6ZdVIxdEa31t1e0pY0YnhQAkiJD1eMD7ILnkHEUEDhe/kuXj3p
-         FI3Sbf58ynZrNaPEuz1nEJUrpQNPL3rmCqJSFl1rW6iHjgaNB8zacW6xN9QXbZD75twJ
-         97G+ZAd9srSAWMgu4CgNHzGkzTOI/TisJ43wLaLrhYSq/drTtrcz0nipMGXek8KtPIeH
-         QGww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=k4DCyz8+/Fxa9vXLn5RMQDYsGviUlWwuLm5KSdNmdZY=;
-        b=M0p5vTraQT6Ghyb7s9ZabpLmLoiBavCEoE8qqnEgjMgrAMfOGRPA/WgefJpXzE/hyf
-         rEmVinrV29Bv4BlDnch9kMqZ3fjF/YOkJ+66m6+mUZxeBNp/RtuKuVDImSbX68hUsvIy
-         Cg2zw0Yuc7XMgTTi0k+IbzPfnwDtNAcXwFrpZvSm+VCcMCH1pupGDKqa0gmSToIWJa1S
-         +qjrHTa3xIH8zVuDRRjpEeKVS3OcTGDuqi9GTtiGfPFMlXdGMcsHNKrLl4Lh7JDYCp/1
-         HELZCC/jml3ThwSg6DMjp+Tj7TPLMQ4TJDtC+KEheduRGA3ngeRv5jgI9CCIy8ZFoYAk
-         wkGQ==
-X-Gm-Message-State: AOAM533RYuqbQMhnbdWjY3ZV0TShdw2Sq75PDXLYgIjUB7cxhvBEUQhF
-        ASb9egznV4/7hgtq8JY8xilG2eK7zUg=
-X-Google-Smtp-Source: ABdhPJxvPPnZuZKkpyL/VlLduwLNeb1FS0N0nAcE5rtjGsySNwTDTVMqW7CA+Av+gYdeEUBcSgrhfA==
-X-Received: by 2002:a2e:a305:: with SMTP id l5mr45044119lje.73.1638130800165;
-        Sun, 28 Nov 2021 12:20:00 -0800 (PST)
-Received: from localhost.localdomain (h-155-4-221-129.NA.cust.bahnhof.se. [155.4.221.129])
-        by smtp.gmail.com with ESMTPSA id c25sm1136949lja.38.2021.11.28.12.19.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 12:19:59 -0800 (PST)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Lucas Stach <l.stach@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] drm/etnaviv: constify static struct cooling_ops
-Date:   Sun, 28 Nov 2021 21:19:16 +0100
-Message-Id: <20211128201916.10230-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Sun, 28 Nov 2021 15:30:39 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9B63C061748;
+        Sun, 28 Nov 2021 12:27:22 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1638131240;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=34cEonPYoHn2wOD4iyX9ID5tmiVh/WyoVyXwqDXryy0=;
+        b=oPRc3eq0k+Tw8NUVD33WjmT1yTwdDLqkvp0k8L0fhSlgI1D7uqHcq0GMPi3xW2KkValqF4
+        f5+puEWtkAmZQdWC59ouxHon7GH94O2JlbvCxRQE9FC0LWhmJpHAbFNeQ3DsfMLG+EixpT
+        hZSGFuc3YgBIjuAqAs5dcF3jT9Jqg1fD8TVHhI2W7B6NwkElYoFJ/x3rfoBW9TCXYktSB/
+        7JCQiSAnY6v16Mi6SX4hF9iVphpSdW7rzPWmj9h3jzBE1irCfw+8iZ1z8Ba0yvELN0tdUE
+        jvbgs+JgRTKN87ldu+pCs8ssio7C6Aj2xXaDx576hfi5qFT2JGCWpokNJEKoGg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1638131240;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=34cEonPYoHn2wOD4iyX9ID5tmiVh/WyoVyXwqDXryy0=;
+        b=qYh8H7dUzo5GOUV8STynfR6skQ9RyXxzWobJRhhOvRzBoMIDa6HMBwwWiZzqU46S2s7nZL
+        1Dk2qEe1TKRHefAQ==
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Marc Zygnier <maz@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Megha Dey <megha.dey@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, linux-pci@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        iommu@lists.linux-foundation.org, dmaengine@vger.kernel.org,
+        Stuart Yoder <stuyoder@gmail.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+        Vinod Koul <vkoul@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>, Sinan Kaya <okaya@kernel.org>
+Subject: Re: [patch 00/37] genirq/msi, PCI/MSI: Spring cleaning - Part 2
+In-Reply-To: <20211128003905.GU4670@nvidia.com>
+References: <20211126224100.303046749@linutronix.de>
+ <20211128003905.GU4670@nvidia.com>
+Date:   Sun, 28 Nov 2021 21:27:19 +0100
+Message-ID: <87y258do0o.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of cooling_ops is to pass its address to
-thermal_of_cooling_device_register(), which takes a pointer to const
-struct thermal_cooling_device_ops as input. Make it const to allow the
-compiler to put it in read-only memory.
+On Sat, Nov 27 2021 at 20:39, Jason Gunthorpe wrote:
+> On Sat, Nov 27, 2021 at 02:21:17AM +0100, Thomas Gleixner wrote:
+>>    4) Provide a function to retrieve the Linux interrupt number for a given
+>>       MSI index similar to pci_irq_vector() and cleanup all open coded
+>>       variants.
+>
+> The msi_get_virq() sure does make a big difference.. Though it does
+> highlight there is some asymmetry with how platform and PCI works here
+> where PCI fills some 'struct msix_entry *'. Many drivers would be
+> quite happy to just call msi_get_virq() and avoid the extra memory, so
+> I think the msi_get_virq() version is good.
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/gpu/drm/etnaviv/etnaviv_gpu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+struct msix_entry should just go away.
 
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-index 06bde46df451..37018bc55810 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-@@ -1658,7 +1658,7 @@ etnaviv_gpu_cooling_set_cur_state(struct thermal_cooling_device *cdev,
- 	return 0;
- }
- 
--static struct thermal_cooling_device_ops cooling_ops = {
-+static const struct thermal_cooling_device_ops cooling_ops = {
- 	.get_max_state = etnaviv_gpu_cooling_get_max_state,
- 	.get_cur_state = etnaviv_gpu_cooling_get_cur_state,
- 	.set_cur_state = etnaviv_gpu_cooling_set_cur_state,
--- 
-2.34.1
+90+% of the use cases fill it with a linear index range 0...N and then
+use the virq entry for request_irq(). So they can just use
+pci_alloc_irs_vectors_affinity() and retrieve the interrupt number via
+pci_irq_vector().
 
+The few drivers which actually use it to allocate a sparse populated MSI
+index, e.g. 0, 12, 14 can be converted over to alloc vector 0 and then
+use the dynamic extenstion for the rest.
+
+Thanks,
+
+        tglx
