@@ -2,154 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD9E460946
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 20:20:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCEE9460945
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 20:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348438AbhK1TXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 14:23:55 -0500
-Received: from mga03.intel.com ([134.134.136.65]:13648 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230246AbhK1TVy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 14:21:54 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10182"; a="235788532"
-X-IronPort-AV: E=Sophos;i="5.87,271,1631602800"; 
-   d="scan'208";a="235788532"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2021 11:18:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,271,1631602800"; 
-   d="scan'208";a="676086683"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 28 Nov 2021 11:18:36 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mrPh5-000B2H-DU; Sun, 28 Nov 2021 19:18:35 +0000
-Date:   Mon, 29 Nov 2021 03:17:46 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars:for-next/kspp-misc-fixes 3/4]
- ./usr/include/linux/netfilter/x_tables.h:66:25: warning: field 'target' with
- variable sized type 'struct xt_entry_target' not at the end of a struct or
- class is a GNU extension
-Message-ID: <202111290333.fNQW2C1s-lkp@intel.com>
+        id S1343998AbhK1TXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 14:23:15 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:48970 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235084AbhK1TVO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Nov 2021 14:21:14 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1638127077;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/JUkgr1+1xpaGfU+RedPaRQmMTBII3kcX9LK2s6OBK4=;
+        b=OwlJzKpXh6HUO0d3S226LkHX0VBEv/ZMGzpouZpDaknUBEWmnL8N2ToysfCkKrXjYYLOZt
+        iVHuFafr0na37AQ6l9x85IxpDbPbsDoXGIi4PG8PTi0OhrcrYJoC+WaQfVt0vabA2eV+em
+        Ng7psNOZAIZ6xyzx621ez74kPw534jLdfrViT1k8TelbaOpr2LqjSUYcbp1OmtUlpO8Rg4
+        hfzXc9Jnehb8NHUubdd/cHrAjk8X0duzPRgkrYbGSvWuwrfUsk87VbsYQiNw3269IIlODP
+        uCKRHXUM+mb3iSajZoLTXqvgYDA9blbP6Sp/JVA16AG7rVFKHfUjui+S06A1ow==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1638127077;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/JUkgr1+1xpaGfU+RedPaRQmMTBII3kcX9LK2s6OBK4=;
+        b=JXCAyg87l9Mmdgu7jORXkXxXfTo1i6k+92QcrgQ4LwuGTC1qebUkIJsKOUQq12BUqiQCat
+        D/zS/UZaK15PW0BA==
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Megha Dey <megha.dey@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Cooper <amc96@cam.ac.uk>,
+        Juergen Gross <jgross@suse.com>, linux-pci@vger.kernel.org,
+        xen-devel@lists.xenproject.org
+Subject: Re: [patch 03/10] genirq/msi: Make MSI descriptor alloc/free ready
+ for range allocations
+In-Reply-To: <8735ngs26o.wl-maz@kernel.org>
+References: <20211126233124.618283684@linutronix.de>
+ <20211127000918.664542907@linutronix.de> <8735ngs26o.wl-maz@kernel.org>
+Date:   Sun, 28 Nov 2021 20:17:56 +0100
+Message-ID: <87a6hof5sr.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/kspp-misc-fixes
-head:   5c9a39a1ff78d32e645774c7eb213c831b51b1ee
-commit: fb29d640e9640985e307deaee123e83144305633 [3/4] treewide: Replace zero-length arrays with flexible-array members
-config: x86_64-randconfig-r036-20211128 (https://download.01.org/0day-ci/archive/20211129/202111290333.fNQW2C1s-lkp@intel.com/config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 5162b558d8c0b542e752b037e72a69d5fd51eb1e)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/commit/?id=fb29d640e9640985e307deaee123e83144305633
-        git remote add gustavoars https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git
-        git fetch --no-tags gustavoars for-next/kspp-misc-fixes
-        git checkout fb29d640e9640985e307deaee123e83144305633
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+On Sun, Nov 28 2021 at 15:57, Marc Zyngier wrote:
+> On Sat, 27 Nov 2021 01:24:34 +0000,
+> Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> The issue seems to be originating in the previous patch, where the
+> following line was added:
+>
+> +	struct msi_range range = { .first = 0, .last = UINT_MAX, .ndesc = nvec, };
+>
+> In that context, only 'ndesc' was used, and that was fine.
+>
+> However, in the current patch, ndesc use is removed, only first/last
+> are considered, and UINT_MAX is... a lot of MSIs.
+>
+> This fixes it:
+>
+> diff --git a/kernel/irq/msi.c b/kernel/irq/msi.c
+> index bef5b74a7268..a520bfd94a56 100644
+> --- a/kernel/irq/msi.c
+> +++ b/kernel/irq/msi.c
+> @@ -975,7 +975,7 @@ int msi_domain_alloc_irqs_descs_locked(struct irq_domain *domain, struct device
+>   */
+>  int msi_domain_alloc_irqs(struct irq_domain *domain, struct device *dev, int nvec)
+>  {
+> -	struct msi_range range = { .first = 0, .last = UINT_MAX, .ndesc = nvec, };
+> +	struct msi_range range = { .first = 0, .last = nvec - 1, .ndesc = nvec, };
+>  	int ret;
+>  
+>  	msi_lock_descs(dev);
+>
+> However, it'd be good to clarify the use of range->ndesc.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Hrm. The stupid search should terminated nevertheless. Let me stare at
+it again.
 
-All warnings (new ones prefixed by >>):
+>> -static int msi_add_simple_msi_descs(struct device *dev, unsigned int index, unsigned int ndesc)
+>> +static int msi_add_simple_msi_descs(struct device *dev, struct msi_range *range)
+>
+> nit: most of the functions changed in this patch need to have their
+> documentation tidied up.
 
-   In file included from <built-in>:1:
-   In file included from ./usr/include/linux/netfilter_ipv6/ip6_tables.h:24:
->> ./usr/include/linux/netfilter/x_tables.h:66:25: warning: field 'target' with variable sized type 'struct xt_entry_target' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-           struct xt_entry_target target;
-                                  ^
-   ./usr/include/linux/netfilter/x_tables.h:71:25: warning: field 'target' with variable sized type 'struct xt_entry_target' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-           struct xt_entry_target target;
-                                  ^
-   In file included from <built-in>:1:
->> ./usr/include/linux/netfilter_ipv6/ip6_tables.h:131:20: warning: field 'entry' with variable sized type 'struct ip6t_entry' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-           struct ip6t_entry entry;
-                             ^
-   ./usr/include/linux/netfilter_ipv6/ip6_tables.h:136:20: warning: field 'entry' with variable sized type 'struct ip6t_entry' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-           struct ip6t_entry entry;
-                             ^
-   4 warnings generated.
---
-   In file included from <built-in>:1:
->> ./usr/include/linux/netfilter_bridge/ebtables.h:163:26: warning: field 'target' with variable sized type 'struct ebt_entry_target' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-           struct ebt_entry_target target;
-                                   ^
-   1 warning generated.
---
-   In file included from <built-in>:1:
-   In file included from ./usr/include/linux/netfilter_ipv4/ip_tables.h:24:
->> ./usr/include/linux/netfilter/x_tables.h:66:25: warning: field 'target' with variable sized type 'struct xt_entry_target' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-           struct xt_entry_target target;
-                                  ^
-   ./usr/include/linux/netfilter/x_tables.h:71:25: warning: field 'target' with variable sized type 'struct xt_entry_target' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-           struct xt_entry_target target;
-                                  ^
-   2 warnings generated.
---
-   In file included from <built-in>:1:
->> ./usr/include/linux/seg6_hmac.h:12:17: warning: field 'tlvhdr' with variable sized type 'struct sr6_tlv' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-           struct sr6_tlv tlvhdr;
-                          ^
-   1 warning generated.
---
-   In file included from <built-in>:1:
-   In file included from ./usr/include/rdma/mlx5-abi.h:39:
-   In file included from ./usr/include/rdma/ib_user_ioctl_verbs.h:38:
->> ./usr/include/rdma/ib_user_verbs.h:436:34: warning: field 'base' with variable sized type 'struct ib_uverbs_create_cq_resp' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-           struct ib_uverbs_create_cq_resp base;
-                                           ^
->> ./usr/include/rdma/ib_user_verbs.h:644:34: warning: field 'base' with variable sized type 'struct ib_uverbs_create_qp_resp' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-           struct ib_uverbs_create_qp_resp base;
-                                           ^
->> ./usr/include/rdma/ib_user_verbs.h:740:29: warning: field 'base' with variable sized type 'struct ib_uverbs_modify_qp' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-           struct ib_uverbs_modify_qp base;
-                                      ^
->> ./usr/include/rdma/ib_user_verbs.h:916:2: warning: field '' with variable sized type 'union ib_uverbs_flow_spec_eth::(anonymous at ./usr/include/rdma/ib_user_verbs.h:916:2)' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-           union {
-           ^
->> ./usr/include/rdma/ib_user_verbs.h:938:2: warning: field '' with variable sized type 'union ib_uverbs_flow_spec_ipv4::(anonymous at ./usr/include/rdma/ib_user_verbs.h:938:2)' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-           union {
-           ^
->> ./usr/include/rdma/ib_user_verbs.h:956:2: warning: field '' with variable sized type 'union ib_uverbs_flow_spec_tcp_udp::(anonymous at ./usr/include/rdma/ib_user_verbs.h:956:2)' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-           union {
-           ^
->> ./usr/include/rdma/ib_user_verbs.h:979:2: warning: field '' with variable sized type 'union ib_uverbs_flow_spec_ipv6::(anonymous at ./usr/include/rdma/ib_user_verbs.h:979:2)' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-           union {
-           ^
->> ./usr/include/rdma/ib_user_verbs.h:992:2: warning: field '' with variable sized type 'union ib_uverbs_flow_spec_action_tag::(anonymous at ./usr/include/rdma/ib_user_verbs.h:992:2)' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-           union {
-           ^
->> ./usr/include/rdma/ib_user_verbs.h:1016:2: warning: field '' with variable sized type 'union ib_uverbs_flow_spec_action_handle::(anonymous at ./usr/include/rdma/ib_user_verbs.h:1016:2)' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-           union {
-           ^
->> ./usr/include/rdma/ib_user_verbs.h:1029:2: warning: field '' with variable sized type 'union ib_uverbs_flow_spec_action_count::(anonymous at ./usr/include/rdma/ib_user_verbs.h:1029:2)' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-           union {
-           ^
->> ./usr/include/rdma/ib_user_verbs.h:1046:2: warning: field '' with variable sized type 'union ib_uverbs_flow_spec_tunnel::(anonymous at ./usr/include/rdma/ib_user_verbs.h:1046:2)' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-           union {
-           ^
->> ./usr/include/rdma/ib_user_verbs.h:1064:2: warning: field '' with variable sized type 'union ib_uverbs_flow_spec_esp::(anonymous at ./usr/include/rdma/ib_user_verbs.h:1064:2)' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-           union {
-           ^
->> ./usr/include/rdma/ib_user_verbs.h:1091:2: warning: field '' with variable sized type 'union ib_uverbs_flow_spec_gre::(anonymous at ./usr/include/rdma/ib_user_verbs.h:1091:2)' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-           union {
-           ^
->> ./usr/include/rdma/ib_user_verbs.h:1114:2: warning: field '' with variable sized type 'union ib_uverbs_flow_spec_mpls::(anonymous at ./usr/include/rdma/ib_user_verbs.h:1114:2)' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-           union {
-           ^
-   14 warnings generated.
+Duh, yes.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks,
+
+        tglx
