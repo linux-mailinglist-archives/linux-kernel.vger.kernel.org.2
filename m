@@ -2,65 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 469FC4603D4
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 05:10:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 221364603CF
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 05:06:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244402AbhK1ENg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 23:13:36 -0500
-Received: from smtpbg506.qq.com ([203.205.250.33]:42221 "EHLO smtpbg510.qq.com"
+        id S1346289AbhK1EJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 23:09:41 -0500
+Received: from smtpbg516.qq.com ([203.205.250.54]:57099 "EHLO smtpbg519.qq.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1343971AbhK1ELd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 23:11:33 -0500
-X-QQ-mid: bizesmtp50t1638071067tq8fm8q1
+        id S1346284AbhK1EHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 23:07:41 -0500
+X-QQ-mid: bizesmtp42t1638071331tlejl57q
 Received: from kali.lan (unknown [182.148.14.187])
         by esmtp6.qq.com (ESMTP) with 
-        id ; Sun, 28 Nov 2021 11:44:26 +0800 (CST)
+        id ; Sun, 28 Nov 2021 11:48:50 +0800 (CST)
 X-QQ-SSF: 01000000002000C0G000B00A0000000
-X-QQ-FEAT: 2anfE2eVO982IXslQaS4kYVkTvbi7PfCYwEz5naq+ufJKYczgAgi4GIIvvpIB
-        p6UXQghuOCm8sCUAe6zsdT2ZY/PozPzz+gw15CnzBNj5G1VIXD+TA+sbBHtMShq6lB5vAXK
-        mb/XvMtODhocoIY5i2a3JHWaPsObktv2rKP0KS/VvNDKeh1P6bvLv8OUw8R3a0jootC/wQ4
-        8TVAT6pXFx2XDk9p4v/sXPeqYoeODTjipj5sJJW3Bh4Lia9LW94Ws0dOudu4eiCj08wR3US
-        l6qLWiPvYpvBFfy+CVh9OPJkmcweK3CeAwT5tIFXSR/omUhweM0Y8iUAcPS8rL4opCX06iS
-        fZvvl6OEAg6Loxtn2c=
+X-QQ-FEAT: lzF2rc3yiXUKJqz69H5sGeB+vsB0ngWtnRweRIvOWr47fdSr12MLNKP0bgQ9x
+        hgsWnbJQV/Zle48c06ylLN19pORU99zUp1oUJHpm+vE7/iPafaTv6GiER7SckIVIt32wb28
+        JWb+g9ifs/QVBY1BFtooVQRzsbXbXcU/Zxiijo9hsIgSyzB4HIevE9JCqkEHlgzNmsi3g2f
+        FOD60PVx31Fm2gxHBB7bb3Sr4OVE8cntE9aBmsJiFb+laLW4OpUCPzaomcU7AI50n81RtGS
+        ajrzSBzY7ARFNOBWRq4GsBphFDXXwsFYqN+j0vAzecFK3kmdS+fxKrgXfLMlgU+e7qUVNdE
+        0/Ct1S8onpuiANaDlaocIbXEUEFnCHkIV5lgai0
 X-QQ-GoodBg: 0
 From:   Jason Wang <wangborong@cdjrlc.com>
-To:     rth@twiddle.net
-Cc:     ink@jurassic.park.msu.ru, mattst88@gmail.com,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] alpha: fix typo in a comment
-Date:   Sun, 28 Nov 2021 11:43:48 +0800
-Message-Id: <20211128034348.5900-1-wangborong@cdjrlc.com>
+To:     monstr@monstr.eu
+Cc:     wangborong@cdjrlc.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] microblaze: fix typo in a comment
+Date:   Sun, 28 Nov 2021 11:48:23 +0800
+Message-Id: <20211128034823.6930-1-wangborong@cdjrlc.com>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam4
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The double `and' in a comment is repeated. Consequently, remove one
-`and' from the comment.
+The double `was' is repeated in a comment. Consequently, remove one
+`was' from the comment.
 
 Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
 ---
- arch/alpha/kernel/irq_i8259.c | 2 +-
+ arch/microblaze/kernel/signal.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/alpha/kernel/irq_i8259.c b/arch/alpha/kernel/irq_i8259.c
-index 1dcf0d9038fd..db574dcd6675 100644
---- a/arch/alpha/kernel/irq_i8259.c
-+++ b/arch/alpha/kernel/irq_i8259.c
-@@ -147,7 +147,7 @@ isa_no_iack_sc_device_interrupt(unsigned long vector)
- 	 */
- 	/* 
- 	 *  The first read of gives you *all* interrupting lines.
--	 *  Therefore, read the mask register and and out those lines
-+	 *  Therefore, read the mask register and out those lines
- 	 *  not enabled.  Note that some documentation has 21 and a1 
- 	 *  write only.  This is not true.
- 	 */
+diff --git a/arch/microblaze/kernel/signal.c b/arch/microblaze/kernel/signal.c
+index fc61eb0eb8dd..59f0af5ee042 100644
+--- a/arch/microblaze/kernel/signal.c
++++ b/arch/microblaze/kernel/signal.c
+@@ -11,7 +11,7 @@
+  *
+  * 1997-11-28 Modified for POSIX.1b signals by Richard Henderson
+  *
+- * This file was was derived from the sh version, arch/sh/kernel/signal.c
++ * This file was derived from the sh version, arch/sh/kernel/signal.c
+  *
+  * This file is subject to the terms and conditions of the GNU General
+  * Public License. See the file COPYING in the main directory of this
 -- 
 2.33.0
 
