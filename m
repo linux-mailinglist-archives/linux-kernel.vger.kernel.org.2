@@ -2,188 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC9304609EF
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 22:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 747304609F5
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 22:03:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359208AbhK1VFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 16:05:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36950 "EHLO
+        id S1358099AbhK1VHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 16:07:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232621AbhK1VDr (ORCPT
+        with ESMTP id S237186AbhK1VFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 16:03:47 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 134A1C06174A;
-        Sun, 28 Nov 2021 13:00:29 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1638133227;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oVxt6RB3wq6HozhBc+E1hXItThUGltcJ9ju6gKUja04=;
-        b=ovQrQWgMUuCiS2J0TbehvfgGdvNDScGgbL+6hWiymu/4hk9yeorrjvjwv2A9ri4fiF4TL3
-        DSfT6C8e0bmVDuHDUQCzJRqttusZrTW5XX4wCU7Yj9sLULu1x4kK66+AlBBbjIUAjG9B8b
-        64XqhOhWkg/ctdSQbKmE8BPcVfZbk2k2cR6inZtwbnSoC1F0IYB1MxGUeqWra/EysyM5Ez
-        qxt0eKskFmSTQ/tAboszZk03QHU7P8ZOyTxd+7hAvKgMMi3vTl00SxM61TgYLUB2M3NMJS
-        AYqARRb1pH+8qjed7HIPkZ/WNgRcJfB3t7oIWocwmnlKWlG53ZmKHDR/Q2zjcg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1638133227;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oVxt6RB3wq6HozhBc+E1hXItThUGltcJ9ju6gKUja04=;
-        b=NUA/BtE19KWnZCRSqlc8MZDe4YbQjIYarpAE6lp/GjIsHlXDmVpRZHIvnhigXdHIcoaHek
-        On6pzReK20LEQhBw==
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Megha Dey <megha.dey@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>, linux-pci@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        iommu@lists.linux-foundation.org, dmaengine@vger.kernel.org,
-        Stuart Yoder <stuyoder@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-        Vinod Koul <vkoul@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>, Sinan Kaya <okaya@kernel.org>
-Subject: Re: [patch 29/37] PCI/MSI: Use __msi_get_virq() in pci_get_vector()
-In-Reply-To: <871r30rrzq.wl-maz@kernel.org>
-References: <20211126224100.303046749@linutronix.de>
- <20211126230525.660206325@linutronix.de> <871r30rrzq.wl-maz@kernel.org>
-Date:   Sun, 28 Nov 2021 22:00:26 +0100
-Message-ID: <87tufwdmhh.ffs@tglx>
+        Sun, 28 Nov 2021 16:05:06 -0500
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD600C061756;
+        Sun, 28 Nov 2021 13:01:49 -0800 (PST)
+Received: by mail-ua1-x933.google.com with SMTP id ay21so29739725uab.12;
+        Sun, 28 Nov 2021 13:01:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4/0Be4YdoJWrG3olK/Rdtkxl4HfF+TWIUQ8musiC5+o=;
+        b=C9ZM6XWOIPWLRDmLnX8iB5K+Q89OAemIRb7G4mdMUTTTyxMxvQ+o9VJ/HI38gRYa68
+         HtjcQXlde0R6vqRDS0Tn++YQiOyrogjVZTN1JRhLECsZGc8bEGgVEWXeaRsR2uc/yTz0
+         0LjxJNv7NGZf6pz1DxGpR1qK1OuOBz8mWhVYQFxjCLDUJ2DHAPjt6yPA5qW13OAQ1054
+         7Xu/tftqW5CTqxgRIcompK+CsA/IBVyeudJVwhCREI/ZG0ptcwbJHGtkrvWf+oj9p1xr
+         lF3l3Becle1LGVz18sjXrPrG0evLCOEZahwMst+jMXqW94aC1Vk6Gid69uXKRfZKRjf+
+         jwcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4/0Be4YdoJWrG3olK/Rdtkxl4HfF+TWIUQ8musiC5+o=;
+        b=WCmswbt6x/ccJQP3RVRDLo9JjV4AuaUPYoIzLsSP+3qGOF2oiQMMs6pegcpVf7qgo/
+         XZx1AqBQwuitV1jWQBV3yTSHhpSVcCoFlm/xDaWTxSMuC85NizG11pdk1rYAqsSGGLzZ
+         k51GUvhf7UAJ19bw9ODv+SN6JqhTeltGuzXd5IROH5fPwbWoNXfusvqXQc/I9+0AK0TS
+         zFyGA3J0k440IrpAD1KP/XTv63jvbQS8MCdctSiVN0V/sBHNDSYa9R8Kt+FYy8rZEipW
+         p1YhyRE526+1k8wd25V78stn7xLLnn3lAFZY7nkefhdSXV2UKaR86YxqLWGwTXj6Lv8l
+         D4nA==
+X-Gm-Message-State: AOAM533ALOE11fwgEvVtFiiwRRW2LSCPNOdKxlXa0l/RQ7ZHFc2S+SjJ
+        nKcMylu27Zfw+6ZZXSEeDMoJrximaBe3IZt6Cv4=
+X-Google-Smtp-Source: ABdhPJzeuwkeOUNKv1l60vODjiUB+kSjTf1MFzRhiHgoVNc8dglgKZZM06QQhFncdAgmwuqbpybhxNs1g8eVL5sYhsc=
+X-Received: by 2002:a05:6102:3588:: with SMTP id h8mr28485619vsu.7.1638133309000;
+ Sun, 28 Nov 2021 13:01:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20211125211443.1150135-1-Mr.Bossman075@gmail.com>
+ <20211125211443.1150135-8-Mr.Bossman075@gmail.com> <CAOMZO5Dqo6c=4nGCOakMKG8fn=V1HA7-O26t3GmwWtD-FbZiPg@mail.gmail.com>
+ <dae68360-456e-3db8-57ed-2287dc7cfd57@gmail.com> <CAOMZO5Ca7j6_KOBJ1XVpx0yRvCaAH3i2Wac0jwL8HT8pxso2eA@mail.gmail.com>
+ <fca5e8f8-a442-c9ec-27ed-da9c8a8d8ed4@gmail.com>
+In-Reply-To: <fca5e8f8-a442-c9ec-27ed-da9c8a8d8ed4@gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Sun, 28 Nov 2021 18:01:38 -0300
+Message-ID: <CAOMZO5AP338L_Fus7Bwiq+1-2V3jnMoikef+JvaNjTSRjU=kxw@mail.gmail.com>
+Subject: Re: [PATCH v3 07/13] clk: imx: Add initial support for i.MXRT clock driver
+To:     Jesse Taube <mr.bossman075@gmail.com>
+Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Stefan Agner <stefan@agner.ch>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Giulio Benetti <giulio.benetti@benettiengineering.com>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 28 2021 at 19:37, Marc Zyngier wrote:
-> On Sat, 27 Nov 2021 01:22:03 +0000,
-> Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> I worked around it with the hack below, but I doubt this is the real
-> thing. portdrv_core.c does complicated things, and I don't completely
-> understand its logic.
->
-> 	M.
->
-> diff --git a/drivers/pci/msi/msi.c b/drivers/pci/msi/msi.c
-> index 1f72bc734226..b15278a5fb4b 100644
-> --- a/drivers/pci/msi/msi.c
-> +++ b/drivers/pci/msi/msi.c
-> @@ -1092,8 +1092,9 @@ int pci_irq_vector(struct pci_dev *dev, unsigned int nr)
->  	int irq = __msi_get_virq(&dev->dev, nr);
->  
->  	switch (irq) {
-> -	case -ENODEV: return !nr ? dev->irq : -EINVAL;
-> -	case -ENOENT: return -EINVAL;
-> +	case -ENOENT:
-> +	case -ENODEV:
-> +		return !nr ? dev->irq : -EINVAL;
+On Sun, Nov 28, 2021 at 5:59 PM Jesse Taube <mr.bossman075@gmail.com> wrote:
 
-Hrm. ENODEV is returned when dev->msi.data == NULL, ENOENT when there is
-no MSI entry. But yes, that goes south when the device tried to enable
-MSI[X} and then ended up with INTx. It still has dev->msi.data, which
-causes it to return -ENOENT, which makes the above go belly up.
+> Uh so i should change it, or can i keep it like 'clk-imx5.c'(how it is now).
+> sry for the confusion
 
-Moo, what was I thinking?
-
-Thanks,
-
-        tglx
----
---- a/drivers/pci/msi/msi.c
-+++ b/drivers/pci/msi/msi.c
-@@ -1032,13 +1032,13 @@ EXPORT_SYMBOL(pci_free_irq_vectors);
-  */
- int pci_irq_vector(struct pci_dev *dev, unsigned int nr)
- {
--	int irq = __msi_get_virq(&dev->dev, nr);
-+	unsigned int irq;
- 
--	switch (irq) {
--	case -ENODEV: return !nr ? dev->irq : -EINVAL;
--	case -ENOENT: return -EINVAL;
--	}
--	return irq;
-+	if (!dev->msi_enabled && !dev->msix_enabled)
-+		return !nr ? dev->irq : -EINVAL;
-+
-+	irq = msi_get_virq(&dev->dev, nr);
-+	return irq ? irq : -EINVAL;
- }
- EXPORT_SYMBOL(pci_irq_vector);
- 
---- a/include/linux/msi.h
-+++ b/include/linux/msi.h
-@@ -169,21 +169,7 @@ static inline bool msi_device_has_proper
- }
- #endif
- 
--int __msi_get_virq(struct device *dev, unsigned int index);
--
--/**
-- * msi_get_virq - Return Linux interrupt number of a MSI interrupt
-- * @dev:	Device to operate on
-- * @index:	MSI interrupt index to look for (0-based)
-- *
-- * Return: The Linux interrupt number on success (> 0), 0 if not found
-- */
--static inline unsigned int msi_get_virq(struct device *dev, unsigned int index)
--{
--	int ret = __msi_get_virq(dev, index);
--
--	return ret < 0 ? 0 : ret;
--}
-+unsigned int msi_get_virq(struct device *dev, unsigned int index);
- 
- /* Helpers to hide struct msi_desc implementation details */
- #define msi_desc_to_dev(desc)		((desc)->dev)
---- a/kernel/irq/msi.c
-+++ b/kernel/irq/msi.c
-@@ -119,21 +119,19 @@ int msi_setup_device_data(struct device
- }
- 
- /**
-- * __msi_get_virq - Return Linux interrupt number of a MSI interrupt
-+ * msi_get_virq - Return Linux interrupt number of a MSI interrupt
-  * @dev:	Device to operate on
-  * @index:	MSI interrupt index to look for (0-based)
-  *
-- * Return: The Linux interrupt number on success (> 0)
-- *	   -ENODEV when the device is not using MSI
-- *	   -ENOENT if no such entry exists
-+ * Return: The Linux interrupt number on success (> 0), 0 if not found
-  */
--int __msi_get_virq(struct device *dev, unsigned int index)
-+unsigned int msi_get_virq(struct device *dev, unsigned int index)
- {
- 	struct msi_desc *desc;
- 	bool pcimsi;
- 
- 	if (!dev->msi.data)
--		return -ENODEV;
-+		return 0;
- 
- 	pcimsi = msi_device_has_property(dev, MSI_PROP_PCI_MSI);
- 
-@@ -152,9 +150,9 @@ int __msi_get_virq(struct device *dev, u
- 		if (desc->msi_index == index)
- 			return desc->irq;
- 	}
--	return -ENOENT;
-+	return 0;
- }
--EXPORT_SYMBOL_GPL(__msi_get_virq);
-+EXPORT_SYMBOL_GPL(msi_get_virq);
- 
- #ifdef CONFIG_SYSFS
- static ssize_t msi_mode_show(struct device *dev, struct device_attribute *attr,
+Please name it drivers/clk/imx/clk-imxrt1050.c
