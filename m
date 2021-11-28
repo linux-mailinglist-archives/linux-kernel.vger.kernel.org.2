@@ -2,101 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C9A46056E
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 10:24:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDAE0460579
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 10:39:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356963AbhK1J1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 04:27:37 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:36536 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234064AbhK1JZd (ORCPT
+        id S238766AbhK1Jm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 04:42:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232449AbhK1Jk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 04:25:33 -0500
-Received: by mail-il1-f200.google.com with SMTP id i10-20020a056e02152a00b00293be3da5c0so19902859ilu.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 01:22:17 -0800 (PST)
+        Sun, 28 Nov 2021 04:40:56 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947D8C061574;
+        Sun, 28 Nov 2021 01:37:40 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id i5so29585935wrb.2;
+        Sun, 28 Nov 2021 01:37:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=yS8bp9p4OwbBcDXZwjKduN0ErmvAIr72SeQf1xhGQqA=;
+        b=UoLCJ211PuMXgLgOHMXTlOMJQOtUGt+mwX1mOKYjSfUH1AfLHF+UmkiHWcUS5UF4AE
+         ilwrZXuqrh3dTmCh5ZAqJdgbzLFK1QTjTpQGhjwzbhnwZXiN8hHE9zlt4gLVGpymLpTW
+         b+hCTsRz5ZYjDHJsh3XBnCm5tu/XAI51E3A+ICn3jAqhgK4vMssfe77NHPntUTN66QkN
+         KcOFfDJiIIYoUK8KBmkFZVbZB7xRAkVl4TU1X6Po+qXjL8kmCANov4PoeCedx4kmdMzE
+         S9/tEr8L8CO0vTuo48oi18DyiX6UvDDXSSTNj46f4MJvVHloYyPyjm4+XUIZkVMdJZ/0
+         wSbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=/gh/RIirNb12dG3VUXwDsG22Fm8KS1ZnNB70KsKbfa8=;
-        b=gKCnk37NZg4lU1mBg04OXbNjPNsWnqVJ9qr3nLm6tUv6tz/y4KUMYLEADFZqwtwELF
-         PUh2AtwWJoXXM2V5kZZOZH+ZetwNSPp/KUKXl8FqxIemJvDf+COjXq71Y9Eacrnny4ci
-         BjtGsw4glC1OZITKYW/3GxhqotMOjBwtDT0MzvA4pqnpN98FmQTT1g5xgv/9zhI96PfC
-         xk+U6a9K/p3CoGiNgiDH5ZMEg2iN52ueNzayIYgy/cDfKBJAG+79fSStaRxTjP5ypQPj
-         M7LZIb/NvpIBS5jnfk+29RbYTeeO7Ykg6TBEfn9TmkwyYLS6w2ogx1Ae/DYuoKHYPXPa
-         Jtkg==
-X-Gm-Message-State: AOAM531Q9uqnXMrhHLWjoxx6/4QMgC4N+i+hBSvZaN0/NlJbDbXb4wd6
-        tBj+QVvw6WceoRtJcnOaQlh+l6/cvEzOtxJ2Y1MGycIkN3Ry
-X-Google-Smtp-Source: ABdhPJye5Ui+qEY5l/8O444JqqbQhowZO9TRfMvoZ72SWuUt2trfxS5NlwmhUs8VBemz4qXCkJV/M6A/y+rgmfwxJT06ZJUxsouY
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=yS8bp9p4OwbBcDXZwjKduN0ErmvAIr72SeQf1xhGQqA=;
+        b=Q7WrmpCuX5vLsUGlQRXFGWci+7Eu0yFBFiCUxyDGEjZs38DtbEYu6XL8ptWDCZumlz
+         0v/zo3TdmOGQ6lIOyYg94i7JTbu5h6162anCfvs9BHybzl35T2mW+oZ6+IY35xwknX+3
+         GkvhFMpVNTxRn4+GKWPaHav1wYZGd1aVKWAhp2/Gwg5LSklA3Rb1bftE/Jf/sKo4aUMX
+         vVShDdGBWBsdcXcYrfKevk4mvkxkhPrrP+h3Wz93U6ag8dNWfNz1duyHrDfKMpbjyhNB
+         Tu074tUX0AyBp8pcG2cpjAA/SZn52dDMdl6zSjXiXx99PdhdJa1GAPGHthkUUpSqBH3x
+         9Icw==
+X-Gm-Message-State: AOAM533d+eUPmhyp5/dpWVIklRjfZCui8LOOjyr3E2i0i+6mQD5jhHW/
+        71LfN6d4K4ZohQBuQnC6Q6c=
+X-Google-Smtp-Source: ABdhPJwDPlBHu0ZPZo7nnrznGM1T0IOJ2mdNfzw9v4BO817dl5OZQrlSy0VbGE6/+AYX1FxdwinhWA==
+X-Received: by 2002:adf:fb4f:: with SMTP id c15mr26530815wrs.507.1638092258891;
+        Sun, 28 Nov 2021 01:37:38 -0800 (PST)
+Received: from [127.0.0.1] (static.235.156.203.116.clients.your-server.de. [116.203.156.235])
+        by smtp.gmail.com with ESMTPSA id j17sm15530918wmq.41.2021.11.28.01.37.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Nov 2021 01:37:38 -0800 (PST)
+Date:   Sun, 28 Nov 2021 09:37:23 +0000 (UTC)
+From:   Fusion <qydwhotmail@gmail.com>
+To:     Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Paul Turner <pjt@google.com>, weixugc@google.com,
+        Greg Thelen <gthelen@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Will Deacon <will@kernel.org>, Mike Rapoport <rppt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>, masahiroy@kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "maintainer:X86 ARCHITECTURE " <x86@kernel.org>,
+        frederic@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Message-ID: <7d339956-27fb-4eb6-bd73-791807ddef56@gmail.com>
+In-Reply-To: <CA+CK2bAX2XmMrt9RBGiUV7LG_sbpB7ov6bxMVjr5FSBVirE1CA@mail.gmail.com>
+References: <20211123214814.3756047-1-pasha.tatashin@soleen.com> <20211123214814.3756047-3-pasha.tatashin@soleen.com> <6d82e674-76dc-f3b0-2e53-a92eeb249eff@gmail.com> <CA+CK2bAX2XmMrt9RBGiUV7LG_sbpB7ov6bxMVjr5FSBVirE1CA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mm: page table check
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:148c:: with SMTP id n12mr10574733ilk.209.1638091337453;
- Sun, 28 Nov 2021 01:22:17 -0800 (PST)
-Date:   Sun, 28 Nov 2021 01:22:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000047549805d1d5dcdc@google.com>
-Subject: [syzbot] KMSAN: uninit-value in hci_conn_complete_evt
-From:   syzbot <syzbot+dcb7d98a388eafb85ecb@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, glider@google.com, johan.hedberg@gmail.com,
-        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Correlation-ID: <7d339956-27fb-4eb6-bd73-791807ddef56@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+I ran journalctl -kf to see what happened when my system freezed.
 
-syzbot found the following issue on:
+There are "IPV6 table full" error messages and khugepaged constantly reporting RIPs.
 
-HEAD commit:    a535b0caaa2f Revert "DO-NOT-SUBMIT: kmsan: suppress a repo..
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=10becf06b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2d142cdf4204061
-dashboard link: https://syzkaller.appspot.com/bug?extid=dcb7d98a388eafb85ecb
-compiler:       clang version 14.0.0 (git@github.com:llvm/llvm-project.git 0996585c8e3b3d409494eb5f1cad714b9e1f7fb5), GNU ld (GNU Binutils for Debian) 2.35.2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+dcb7d98a388eafb85ecb@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in hci_conn_complete_evt+0x8e7/0x1de0 net/bluetooth/hci_event.c:2668
- hci_conn_complete_evt+0x8e7/0x1de0 net/bluetooth/hci_event.c:2668
- hci_event_packet+0x1670/0x22e0 net/bluetooth/hci_event.c:6311
- hci_rx_work+0x6ae/0xd10 net/bluetooth/hci_core.c:5136
- process_one_work+0xdc7/0x1760 kernel/workqueue.c:2297
- worker_thread+0x1101/0x22b0 kernel/workqueue.c:2444
- kthread+0x66b/0x780 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30
-
-Uninit was created at:
- slab_post_alloc_hook mm/slab.h:524 [inline]
- slab_alloc_node mm/slub.c:3227 [inline]
- __kmalloc_node_track_caller+0xa3b/0x13c0 mm/slub.c:4962
- kmalloc_reserve net/core/skbuff.c:356 [inline]
- __alloc_skb+0x4db/0xe40 net/core/skbuff.c:427
- alloc_skb include/linux/skbuff.h:1116 [inline]
- bt_skb_alloc include/net/bluetooth/bluetooth.h:389 [inline]
- bcsp_recv+0x1550/0x2120 drivers/bluetooth/hci_bcsp.c:673
- hci_uart_tty_receive+0x345/0x7a0 drivers/bluetooth/hci_ldisc.c:613
- tty_ldisc_receive_buf+0x32a/0x390 drivers/tty/tty_buffer.c:475
- tty_port_default_receive_buf+0x14b/0x1e0 drivers/tty/tty_port.c:39
- receive_buf drivers/tty/tty_buffer.c:491 [inline]
- flush_to_ldisc+0x3b5/0x940 drivers/tty/tty_buffer.c:543
- process_one_work+0xdc7/0x1760 kernel/workqueue.c:2297
- worker_thread+0x1101/0x22b0 kernel/workqueue.c:2444
- kthread+0x66b/0x780 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+So it could be when memory consumption is over a certain percent, the bug will be triggered.
