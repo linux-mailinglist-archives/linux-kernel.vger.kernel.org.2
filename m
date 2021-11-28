@@ -2,68 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD61A4609DB
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 21:54:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7CCF4609E2
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 21:58:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354776AbhK1U55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 15:57:57 -0500
-Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:64828 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353115AbhK1Uzs (ORCPT
+        id S1357779AbhK1VBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 16:01:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1357945AbhK1U7M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 15:55:48 -0500
-Received: from pop-os.home ([86.243.171.122])
-        by smtp.orange.fr with ESMTPA
-        id rR9xmabogRLGprR9xmsUs5; Sun, 28 Nov 2021 21:52:30 +0100
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Sun, 28 Nov 2021 21:52:30 +0100
-X-ME-IP: 86.243.171.122
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     konrad.wilk@oracle.com, akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] mm/mempool: Use non-atomic '__set_bit()' when possible
-Date:   Sun, 28 Nov 2021 21:52:28 +0100
-Message-Id: <e52476da5cee57151745c5c3c934a69798dc6fa4.1638132190.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sun, 28 Nov 2021 15:59:12 -0500
+Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FD61C061746;
+        Sun, 28 Nov 2021 12:54:41 -0800 (PST)
+Received: by mail-vk1-xa30.google.com with SMTP id u68so9562862vke.11;
+        Sun, 28 Nov 2021 12:54:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hD8X8qVZq4QKTN1ZTeopdiOIlClAYJmnZKU9CVsO/cs=;
+        b=aQg3vtt+4H1lt0RbLFuPBMh8bth02t7Ut92OWIKW2emBz2XXNHbzvFxf+/P5VUrr97
+         GDXNJQ6yUURYSpyi0lKuaoq8r5ivaD0nM+3Up/L2fbRBSOiWy1twBwURPjdOr6yRidvo
+         YI909txyLgz3vvYfi9//m1Z7wiZfjoAM88zGAW4HxfCP6zqpeb9X07Su2xS37uBk4+wr
+         D6DA0omN63xrdYEOOYofEOEkga/4xhoowr3EMRYWQwY+QZroTYK0HWiaIHmg++hoosCS
+         zhfS/G+gBRNSUIqzXMa3D7ZXDQFpcrBElurXwgLguCI937gUXEoIul2GU9NV3GXydVBU
+         bCHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hD8X8qVZq4QKTN1ZTeopdiOIlClAYJmnZKU9CVsO/cs=;
+        b=J3OUJ0dG4emDmi+RqX8H0ZzHZlTz4ykORceOUqMgNLEC6/OXqs4mp+mhQNtkq6e3OZ
+         KFTzkUMh5I8U2fwwA7aPUeJNl8zgFH9apOwoMpnsa/uSk2yj41/hvRa/YPjLJlexbSnr
+         L4LJsTm2KnNGpbHY5swg2bu300qxUYeSeYAlHDU+Ur2ifplS/4xzQeKZ/NA0dCxO3X7l
+         2o7+8mwACKbsI3NzpcZ0cD+muKO4KcgvfkveHKa2h+RoabyBjkWxiGVAQcXZVMTLb9gz
+         iVHV/YLaXId5oRNk8YSmevqB+xTrBS6yF3/n3L9yf6XYl7g0BIJErR5hFuWa9Z/bTZ4d
+         S1lQ==
+X-Gm-Message-State: AOAM5330vBhWtZK3/HlspRcNE6UPoh/0K3VivqRtALeCtN98zhT9cenZ
+        5+SBIH/1fVYcSrPcvxvY/8VwotVZ5wqdX0CUIAw=
+X-Google-Smtp-Source: ABdhPJy4IAicZ4T3I0QqmFkKXJz64V93a9r3U1yEXvPSJUIQruJd7WrzOa8FDTdmvw9a/2V3TdwZq25nTnF467frhZs=
+X-Received: by 2002:a1f:2b4a:: with SMTP id r71mr27341358vkr.37.1638132880735;
+ Sun, 28 Nov 2021 12:54:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211125211443.1150135-1-Mr.Bossman075@gmail.com>
+ <20211125211443.1150135-8-Mr.Bossman075@gmail.com> <CAOMZO5Dqo6c=4nGCOakMKG8fn=V1HA7-O26t3GmwWtD-FbZiPg@mail.gmail.com>
+ <dae68360-456e-3db8-57ed-2287dc7cfd57@gmail.com>
+In-Reply-To: <dae68360-456e-3db8-57ed-2287dc7cfd57@gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Sun, 28 Nov 2021 17:54:30 -0300
+Message-ID: <CAOMZO5Ca7j6_KOBJ1XVpx0yRvCaAH3i2Wac0jwL8HT8pxso2eA@mail.gmail.com>
+Subject: Re: [PATCH v3 07/13] clk: imx: Add initial support for i.MXRT clock driver
+To:     Jesse Taube <mr.bossman075@gmail.com>
+Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Stefan Agner <stefan@agner.ch>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Giulio Benetti <giulio.benetti@benettiengineering.com>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-the 'a' and 'b' bitmap are local to this function, so no concurrent access
-can occur.
-So, the non-atomic '__set_bit()' can be used to save a few cycles.
+On Sun, Nov 28, 2021 at 5:52 PM Jesse Taube <mr.bossman075@gmail.com> wrote:
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- mm/frontswap.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> we can have multiple imxrt versions in there like the other IMX clk
+> drivers, is this okay?
 
-diff --git a/mm/frontswap.c b/mm/frontswap.c
-index 130e301c5ac0..6bed12260dea 100644
---- a/mm/frontswap.c
-+++ b/mm/frontswap.c
-@@ -127,7 +127,7 @@ void frontswap_register_ops(struct frontswap_ops *ops)
- 	spin_lock(&swap_lock);
- 	plist_for_each_entry(si, &swap_active_head, list) {
- 		if (!WARN_ON(!si->frontswap_map))
--			set_bit(si->type, a);
-+			__set_bit(si->type, a);
- 	}
- 	spin_unlock(&swap_lock);
- 
-@@ -149,7 +149,7 @@ void frontswap_register_ops(struct frontswap_ops *ops)
- 	spin_lock(&swap_lock);
- 	plist_for_each_entry(si, &swap_active_head, list) {
- 		if (si->frontswap_map)
--			set_bit(si->type, b);
-+			__set_bit(si->type, b);
- 	}
- 	spin_unlock(&swap_lock);
- 
--- 
-2.30.2
+Yes, in i.MX we use drivers/clk/imx/clk-<soc>.c
 
+The same pattern could be used for i.MXRT as well.
