@@ -2,200 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A62C6460A4D
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 22:24:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD72460A52
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 22:24:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238346AbhK1V1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 16:27:51 -0500
-Received: from mga09.intel.com ([134.134.136.24]:51328 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232140AbhK1VZt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 16:25:49 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10181"; a="235682935"
-X-IronPort-AV: E=Sophos;i="5.87,271,1631602800"; 
-   d="scan'208";a="235682935"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2021 13:21:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,271,1631602800"; 
-   d="scan'208";a="608465133"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 28 Nov 2021 13:21:40 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mrRcB-000BAJ-BI; Sun, 28 Nov 2021 21:21:39 +0000
-Date:   Mon, 29 Nov 2021 05:21:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Bert Vermeulen <bert@biot.com>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sander Vanheule <sander@svanheule.net>
-Subject: arch/mips/kernel/vpe-mt.c:178:7: warning: no previous prototype for
- function 'vpe_alloc'
-Message-ID: <202111290501.4KhjVZ6G-lkp@intel.com>
+        id S241368AbhK1V2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 16:28:07 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:45926 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235923AbhK1V0A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Nov 2021 16:26:00 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1ASLLFSv001107;
+        Sun, 28 Nov 2021 21:22:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=Ys4l5tbNah9gp9ZA/2/6hD3QjZjXlQL+H7Yg1QZPkEI=;
+ b=D5S3MM1ZWxgxVzwqqH+iptvBFtTAx49u3ivMoewyPiShWXt+Zgf8BV/KhbMlGpC0Rmxd
+ KeR62Js8ovfTmfrMY0O6c5yHf9z2p/Q7g0KZYw+/lC+Yzruy/P7ur1Cmuj7BaAZSMzM7
+ 7C9l4O23AddGN9rMbfo68CYwjd3SIWWMEejuH+CqerCBqmpMOulsAYbrVR1fN47TCFcX
+ ZqYUgaiNdKX0I/W7/6fdM6uatnXzPDhxu/SE41kdhSIlG1CIeUTLVqrMj8iWmEfG+BWT
+ +9UVW0MR8JJswhKBqwN15jkjiSs1Z2DvaqgpaAlo33xkBATUW9/eXM4vcfQXAv4nUP91 nQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3cmhky80f9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 28 Nov 2021 21:22:27 +0000
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1ASLLjpY003905;
+        Sun, 28 Nov 2021 21:22:27 GMT
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3cmhky80f0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 28 Nov 2021 21:22:27 +0000
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1ASLICPF026667;
+        Sun, 28 Nov 2021 21:22:25 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma05fra.de.ibm.com with ESMTP id 3ckca8xdmh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 28 Nov 2021 21:22:25 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1ASLMMTG63373700
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 28 Nov 2021 21:22:22 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 686895204E;
+        Sun, 28 Nov 2021 21:22:22 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 185445204F;
+        Sun, 28 Nov 2021 21:22:22 +0000 (GMT)
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Len Brown <len.brown@intel.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Ian Rogers <irogers@google.com>
+Subject: [PATCH 0/3] topology/sysfs: only export used sysfs attributes
+Date:   Sun, 28 Nov 2021 22:22:18 +0100
+Message-Id: <20211128212221.1069726-1-hca@linux.ibm.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: o3sCDf_94fvlZY3Cu5QuRW9PeAPvXZVH
+X-Proofpoint-GUID: CIESnp1ALJNU1bZLxFcny7otJfALwDpt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-28_07,2021-11-28_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
+ phishscore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=802 suspectscore=0
+ malwarescore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111280119
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bert,
+Create die and cluster cpu topology sysfs attributes only if an
+architecture makes uses of it, instead of creating them always for all
+architectures with bogus default values.
+Also change the book and drawer cpu topology macros so they match all
+all other topology macros.
 
-First bad commit (maybe != root cause):
+Heiko Carstens (3):
+  topology/sysfs: export die attributes only if an architectures has support
+  topology/sysfs: export cluster attributes only if an architectures has support
+  topology/sysfs: rework book and drawer topology ifdefery
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   9557e60b8c3521e43bf5f21db95b2b42d7c43ac9
-commit: 4042147a0cc6af5a400b5e12a7855e893dec01b4 MIPS: Add Realtek RTL838x/RTL839x support as generic MIPS system
-date:   10 months ago
-config: mips-randconfig-r024-20211128 (https://download.01.org/0day-ci/archive/20211129/202111290501.4KhjVZ6G-lkp@intel.com/config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 5c64d8ef8cc0c0ed3e0f2ae693d99e7f70f20a84)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install mips cross compiling tool for clang build
-        # apt-get install binutils-mips-linux-gnu
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4042147a0cc6af5a400b5e12a7855e893dec01b4
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout 4042147a0cc6af5a400b5e12a7855e893dec01b4
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=mips SHELL=/bin/bash arch/mips/kernel/
+ Documentation/admin-guide/cputopology.rst | 33 +++++++++++------------
+ drivers/base/topology.c                   | 28 ++++++++++++++-----
+ include/linux/topology.h                  | 20 ++++++++++++++
+ 3 files changed, 57 insertions(+), 24 deletions(-)
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+-- 
+2.32.0
 
-All warnings (new ones prefixed by >>):
-
->> arch/mips/kernel/vpe-mt.c:178:7: warning: no previous prototype for function 'vpe_alloc' [-Wmissing-prototypes]
-   void *vpe_alloc(void)
-         ^
-   arch/mips/kernel/vpe-mt.c:178:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   void *vpe_alloc(void)
-   ^
-   static 
->> arch/mips/kernel/vpe-mt.c:196:5: warning: no previous prototype for function 'vpe_start' [-Wmissing-prototypes]
-   int vpe_start(void *vpe, unsigned long start)
-       ^
-   arch/mips/kernel/vpe-mt.c:196:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   int vpe_start(void *vpe, unsigned long start)
-   ^
-   static 
->> arch/mips/kernel/vpe-mt.c:206:5: warning: no previous prototype for function 'vpe_stop' [-Wmissing-prototypes]
-   int vpe_stop(void *vpe)
-       ^
-   arch/mips/kernel/vpe-mt.c:206:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   int vpe_stop(void *vpe)
-   ^
-   static 
->> arch/mips/kernel/vpe-mt.c:227:5: warning: no previous prototype for function 'vpe_free' [-Wmissing-prototypes]
-   int vpe_free(void *vpe)
-       ^
-   arch/mips/kernel/vpe-mt.c:227:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   int vpe_free(void *vpe)
-   ^
-   static 
-   4 warnings generated.
-
-
-vim +/vpe_alloc +178 arch/mips/kernel/vpe-mt.c
-
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  175  
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  176  /* module wrapper entry points */
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  177  /* give me a vpe */
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30 @178  void *vpe_alloc(void)
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  179  {
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  180  	int i;
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  181  	struct vpe *v;
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  182  
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  183  	/* find a vpe */
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  184  	for (i = 1; i < MAX_VPES; i++) {
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  185  		v = get_vpe(i);
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  186  		if (v != NULL) {
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  187  			v->state = VPE_STATE_INUSE;
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  188  			return v;
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  189  		}
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  190  	}
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  191  	return NULL;
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  192  }
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  193  EXPORT_SYMBOL(vpe_alloc);
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  194  
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  195  /* start running from here */
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30 @196  int vpe_start(void *vpe, unsigned long start)
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  197  {
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  198  	struct vpe *v = vpe;
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  199  
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  200  	v->__start = start;
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  201  	return vpe_run(v);
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  202  }
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  203  EXPORT_SYMBOL(vpe_start);
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  204  
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  205  /* halt it for now */
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30 @206  int vpe_stop(void *vpe)
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  207  {
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  208  	struct vpe *v = vpe;
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  209  	struct tc *t;
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  210  	unsigned int evpe_flags;
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  211  
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  212  	evpe_flags = dvpe();
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  213  
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  214  	t = list_entry(v->tc.next, struct tc, tc);
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  215  	if (t != NULL) {
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  216  		settc(t->index);
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  217  		write_vpe_c0_vpeconf0(read_vpe_c0_vpeconf0() & ~VPECONF0_VPA);
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  218  	}
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  219  
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  220  	evpe(evpe_flags);
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  221  
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  222  	return 0;
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  223  }
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  224  EXPORT_SYMBOL(vpe_stop);
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  225  
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  226  /* I've done with it thank you */
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30 @227  int vpe_free(void *vpe)
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  228  {
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  229  	struct vpe *v = vpe;
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  230  	struct tc *t;
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  231  	unsigned int evpe_flags;
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  232  
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  233  	t = list_entry(v->tc.next, struct tc, tc);
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  234  	if (t == NULL)
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  235  		return -ENOEXEC;
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  236  
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  237  	evpe_flags = dvpe();
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  238  
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  239  	/* Put MVPE's into 'configuration state' */
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  240  	set_c0_mvpcontrol(MVPCONTROL_VPC);
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  241  
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  242  	settc(t->index);
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  243  	write_vpe_c0_vpeconf0(read_vpe_c0_vpeconf0() & ~VPECONF0_VPA);
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  244  
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  245  	/* halt the TC */
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  246  	write_tc_c0_tchalt(TCHALT_H);
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  247  	mips_ihb();
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  248  
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  249  	/* mark the TC unallocated */
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  250  	write_tc_c0_tcstatus(read_tc_c0_tcstatus() & ~TCSTATUS_A);
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  251  
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  252  	v->state = VPE_STATE_UNUSED;
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  253  
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  254  	clear_c0_mvpcontrol(MVPCONTROL_VPC);
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  255  	evpe(evpe_flags);
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  256  
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  257  	return 0;
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  258  }
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  259  EXPORT_SYMBOL(vpe_free);
-1a2a6d7e8816ed Dengcheng Zhu 2013-10-30  260  
-
-:::::: The code at line 178 was first introduced by commit
-:::::: 1a2a6d7e8816ed2b2679a0c4f7ba4019cd31dd62 MIPS: APRP: Split VPE loader into separate files.
-
-:::::: TO: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-:::::: CC: Ralf Baechle <ralf@linux-mips.org>
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
