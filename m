@@ -2,176 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 994DA460503
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 07:36:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A74460508
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 07:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344930AbhK1GkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 01:40:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232356AbhK1GiF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 01:38:05 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D87C061574;
-        Sat, 27 Nov 2021 22:34:50 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id p19so13083910qtw.12;
-        Sat, 27 Nov 2021 22:34:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=rKuklq8jxCETHcjcAENlFbP3nl/uNBZqDfuGt3bzd1Q=;
-        b=N/urFmV2NmOFP42e1LVLW8fwa/hr9KDv3ZUpw+lC8WGtW8rc7tWztvbdFPuGBjub1O
-         wspFhVe7cCjM3GiHaTs/o61wPhHvRulBbX8eWk+oUvPHasNmnTk9fguzetRPFqMAMSbw
-         NSq70yUrota4HuwP2mw6e4EdU69PrQnC7+N7r+KW5WUjDm+ME76HZpk50UYeWuhhvrtv
-         jzlo36RajlwI73FqiorEZUjBdSjpmlO3li6nkrgdjIjD0UyBvsHE9SsWB4qkZCd+owE5
-         cwmTSVDOhxhxddNAGQkE0CL6sKvMvIJPhAZNBZoNO0tLt8RIHXr/GUyMzCFG050MR/6f
-         IXaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=rKuklq8jxCETHcjcAENlFbP3nl/uNBZqDfuGt3bzd1Q=;
-        b=Pa80BKMN59lCsJjnNbgSKArKhYsSHTbwTyZdaLszu61Eq1nWBjNEjQOHxz7EdvC7vL
-         oSrFrUT8QYtWq8xbe0sRfmtof1vQjHid40cNlXnlK3Mqlrz4knwp1vv0QswMbS0LlMBb
-         wpOcDBBuXSAzIB15fSgwSph31VG5R5db6uJrmjcbUlMsSK3SCAWlO8ZvXCwtWGok3Hhg
-         bYYyxsuz9uJFWaVuQHyMZUTLpb7HwJapCl/iQ1CEDgtuDS6zhSe5UF0uRLR5BDgqWEBe
-         DeSMR4qUsze6spOYQrbR9cg2nfwoIVXhXOIvHwD3ZvK+AzZpJh5LCC51RTpPoODwdTPs
-         F1vw==
-X-Gm-Message-State: AOAM5326QRBlJ8UUkGW7nDB1bnPZnFyQb+S0TIdkKqiv+KG9AYU1uGAS
-        DwwMJd341SsMv1Gst8Ree84=
-X-Google-Smtp-Source: ABdhPJyJzVPAC11UsMz+HJsW0TzZJUpS9rijQwW94Vpknlgpg+/mG8cwCXUq1qsThYXJdJN6S8tP7Q==
-X-Received: by 2002:ac8:5fcc:: with SMTP id k12mr35432768qta.346.1638081289128;
-        Sat, 27 Nov 2021 22:34:49 -0800 (PST)
-Received: from localhost ([66.216.211.25])
-        by smtp.gmail.com with ESMTPSA id f18sm6419326qko.34.2021.11.27.22.34.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Nov 2021 22:34:48 -0800 (PST)
-Date:   Sat, 27 Nov 2021 22:34:47 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     linux-kernel@vger.kernel.org,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>, Andrew Lunn <andrew@lunn.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Christoph Lameter <cl@linux.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Airlie <airlied@linux.ie>,
-        David Laight <David.Laight@aculab.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guo Ren <guoren@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Jens Axboe <axboe@fb.com>, Jiri Olsa <jolsa@redhat.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Kees Cook <keescook@chromium.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Marc Zyngier <maz@kernel.org>, Marcin Wojtas <mw@semihalf.com>,
-        Mark Gross <markgross@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Roy Pledge <Roy.Pledge@nxp.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Solomon Peachy <pizza@shaftnet.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>, Tejun Heo <tj@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Will Deacon <will@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, kvm@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-crypto@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 7/9] lib/cpumask: add
- num_{possible,present,active}_cpus_{eq,gt,le}
-Message-ID: <20211128063447.GA270945@lapt>
+        id S1343611AbhK1Gre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 01:47:34 -0500
+Received: from mga02.intel.com ([134.134.136.20]:35914 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244853AbhK1Gpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Nov 2021 01:45:33 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10181"; a="223040330"
+X-IronPort-AV: E=Sophos;i="5.87,270,1631602800"; 
+   d="scan'208";a="223040330"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 22:42:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,270,1631602800"; 
+   d="scan'208";a="476345189"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 27 Nov 2021 22:42:16 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mrDtA-000AQU-2I; Sun, 28 Nov 2021 06:42:16 +0000
+Date:   Sun, 28 Nov 2021 14:41:30 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars:for-next/kspp-misc-fixes] BUILD SUCCESS
+ 5c9a39a1ff78d32e645774c7eb213c831b51b1ee
+Message-ID: <61a3249a.c7K27mr7Jb/svHab%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YaMME60Jfiz5BeJF@qmqm.qmqm.pl>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(restore CC list)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/kspp-misc-fixes
+branch HEAD: 5c9a39a1ff78d32e645774c7eb213c831b51b1ee  ASoC: SOF: topology: Replace zero-length array with flexible-array member
 
-On Sun, Nov 28, 2021 at 05:56:51AM +0100, Michał Mirosław wrote:
-> On Sat, Nov 27, 2021 at 07:57:02PM -0800, Yury Norov wrote:
-> > Add num_{possible,present,active}_cpus_{eq,gt,le} and replace num_*_cpus()
-> > with one of new functions where appropriate. This allows num_*_cpus_*()
-> > to return earlier depending on the condition.
-> [...]
-> > @@ -3193,7 +3193,7 @@ int __init pcpu_page_first_chunk(size_t reserved_size,
-> >  
-> >  	/* allocate pages */
-> >  	j = 0;
-> > -	for (unit = 0; unit < num_possible_cpus(); unit++) {
-> > +	for (unit = 0; num_possible_cpus_gt(unit); unit++) {
-> 
-> This looks dubious.
+elapsed time: 723m
 
-Only this?
+configs tested: 149
+configs skipped: 3
 
-> The old version I could hope the compiler would call
-> num_possible_cpus() only once if it's marked const or pure, but the
-> alternative is going to count the bits every time making this a guaranteed
-> O(n^2) even though the bitmap doesn't change.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-num_possible_cpus() is not const neither pure. This is O(n^2) before and after.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                      tqm8xx_defconfig
+powerpc                      pcm030_defconfig
+mips                         cobalt_defconfig
+arm                        spear6xx_defconfig
+mips                         tb0226_defconfig
+sh                         ecovec24_defconfig
+arm                        oxnas_v6_defconfig
+sh                           se7722_defconfig
+mips                        jmr3927_defconfig
+arc                           tb10x_defconfig
+m68k                          multi_defconfig
+mips                  cavium_octeon_defconfig
+sh                           se7206_defconfig
+sh                          rsk7203_defconfig
+x86_64                           alldefconfig
+arm                        spear3xx_defconfig
+mips                     decstation_defconfig
+powerpc                     pseries_defconfig
+sh                            hp6xx_defconfig
+mips                         tb0287_defconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                      ep88xc_defconfig
+sh                ecovec24-romimage_defconfig
+powerpc                      ppc64e_defconfig
+powerpc                 mpc8272_ads_defconfig
+powerpc                     skiroot_defconfig
+powerpc                 mpc85xx_cds_defconfig
+arc                          axs103_defconfig
+powerpc                      mgcoge_defconfig
+arm                            mmp2_defconfig
+mips                            gpr_defconfig
+ia64                             alldefconfig
+um                                  defconfig
+xtensa                  cadence_csp_defconfig
+xtensa                generic_kc705_defconfig
+sh                         ap325rxa_defconfig
+mips                           ip27_defconfig
+h8300                               defconfig
+m68k                                defconfig
+riscv                    nommu_k210_defconfig
+mips                         db1xxx_defconfig
+powerpc                     taishan_defconfig
+riscv             nommu_k210_sdcard_defconfig
+sh                        edosk7705_defconfig
+powerpc                    adder875_defconfig
+xtensa                    xip_kc705_defconfig
+powerpc               mpc834x_itxgp_defconfig
+sh                          sdk7786_defconfig
+arm                        cerfcube_defconfig
+nds32                            alldefconfig
+powerpc                 mpc8540_ads_defconfig
+powerpc                     mpc512x_defconfig
+openrisc                 simple_smp_defconfig
+i386                             allyesconfig
+arm                         socfpga_defconfig
+arm                          gemini_defconfig
+powerpc                mpc7448_hpc2_defconfig
+arm                       spear13xx_defconfig
+arm                  randconfig-c002-20211128
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nds32                             allnoconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allmodconfig
+s390                                defconfig
+parisc                           allyesconfig
+s390                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a011-20211128
+x86_64               randconfig-a014-20211128
+x86_64               randconfig-a012-20211128
+x86_64               randconfig-a016-20211128
+x86_64               randconfig-a013-20211128
+x86_64               randconfig-a015-20211128
+i386                 randconfig-a015-20211128
+i386                 randconfig-a016-20211128
+i386                 randconfig-a013-20211128
+i386                 randconfig-a012-20211128
+i386                 randconfig-a014-20211128
+i386                 randconfig-a011-20211128
+i386                 randconfig-a016-20211126
+i386                 randconfig-a015-20211126
+i386                 randconfig-a012-20211126
+i386                 randconfig-a013-20211126
+i386                 randconfig-a014-20211126
+i386                 randconfig-a011-20211126
+arc                  randconfig-r043-20211128
+s390                 randconfig-r044-20211128
+riscv                randconfig-r042-20211128
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
 
+clang tested configs:
+s390                 randconfig-c005-20211128
+i386                 randconfig-c001-20211128
+riscv                randconfig-c006-20211128
+arm                  randconfig-c002-20211128
+powerpc              randconfig-c003-20211128
+x86_64               randconfig-c007-20211128
+mips                 randconfig-c004-20211128
+i386                 randconfig-a001-20211128
+i386                 randconfig-a002-20211128
+i386                 randconfig-a006-20211128
+i386                 randconfig-a005-20211128
+i386                 randconfig-a004-20211128
+i386                 randconfig-a003-20211128
+x86_64               randconfig-a001-20211128
+x86_64               randconfig-a006-20211128
+x86_64               randconfig-a003-20211128
+x86_64               randconfig-a005-20211128
+x86_64               randconfig-a004-20211128
+x86_64               randconfig-a002-20211128
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
