@@ -2,107 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 021A0460681
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 14:28:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B87F46068D
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 14:35:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357565AbhK1NbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 08:31:24 -0500
-Received: from www381.your-server.de ([78.46.137.84]:54570 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346127AbhK1N3V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 08:29:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=z5cmO+w0Xv1Obso/iLfol1dI+hkAIwHqoz5lNKuJgZI=; b=P9whX+3qcnmMIQZQ1j9q62QIt4
-        PgNyt1JwbMkxu6edw637P9L/GO0D94vqRuAr+MU16jB/oKm9uU0zODxVe6IP1fUjdW6couujR4kmm
-        y3Fxfc6Kt9ToTQLLKE2nSOzIcr3v84pd4X2GSMQjvxybVxcbsv7Yr8ZyvRhM1cDhObakBsgkcfKHC
-        24qrhCy6m4gAa6V55LTpOrPsvl7d4bMZXvE7FYNJqS7TlQyFf8k2qxnDb+dYi50xrXDLNrMd9fdGh
-        gG2fo73GzaTP2AR0rPHa2N9ajr5IgbwuxQ4aTv1F/N0Nw/GiLAPyRP7GrkO/zwoxorX6wX89XjoDI
-        YGYj6U+g==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1mrKBo-0006ie-G7; Sun, 28 Nov 2021 14:25:56 +0100
-Received: from [82.135.83.112] (helo=[192.168.178.20])
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1mrKBo-000QTE-5M; Sun, 28 Nov 2021 14:25:56 +0100
-Subject: Re: [PATCH 11/15] iio: buffer-dma: Boost performance using
- write-combine cache setting
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>
-Cc:     Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org
-References: <20211115141925.60164-1-paul@crapouillou.net>
- <20211115141925.60164-12-paul@crapouillou.net>
- <20211121150037.2a606be0@jic23-huawei> <8WNX2R.M4XE9MQC24W22@crapouillou.net>
- <YX153R.0PENWW3ING7F1@crapouillou.net> <20211127160533.5259f486@jic23-huawei>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <e46c6f2d-26d7-64d2-ebfc-ff6dc78aad2f@metafoo.de>
-Date:   Sun, 28 Nov 2021 14:25:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S237510AbhK1Nid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 08:38:33 -0500
+Received: from 8bytes.org ([81.169.241.247]:34016 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346127AbhK1NgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Nov 2021 08:36:18 -0500
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id C7DA1396; Sun, 28 Nov 2021 14:33:00 +0100 (CET)
+Date:   Sun, 28 Nov 2021 14:32:59 +0100
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org
+Subject: [git pull] IOMMU Fixes for Linux v5.16-rc2
+Message-ID: <YaOFCyGBRITPRyaa@8bytes.org>
 MIME-Version: 1.0
-In-Reply-To: <20211127160533.5259f486@jic23-huawei>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26367/Sun Nov 28 10:19:58 2021)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="7xziTSZJMkKpZ1PO"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/21 5:05 PM, Jonathan Cameron wrote:
->> Non-coherent mapping with no cache sync:
->> - fileio:
->>      read:	156 MiB/s
->>      write:	123 MiB/s
->> - dmabuf:
->>      read:	234 MiB/s (capped by sample rate)
->>      write:	182 MiB/s
->>
->> Non-coherent reads with no cache sync + write-combine writes:
->> - fileio:
->>      read:	156 MiB/s
->>      write:	140 MiB/s
->> - dmabuf:
->>      read:	234 MiB/s (capped by sample rate)
->>      write:	210 MiB/s
->>
->>
->> A few things we can deduce from this:
->>
->> * Write-combine is not available on Zynq/ARM? If it was working, it
->> should give a better performance than the coherent mapping, but it
->> doesn't seem to do anything at all. At least it doesn't harm
->> performance.
-> I'm not sure it's very relevant to this sort of streaming write.
-> If you write a sequence of addresses then nothing stops them getting combined
-> into a single write whether or not it is write-combining.
 
-There is a difference at which point they can get combined. With 
-write-combine they can be coalesced into a single transaction anywhere 
-in the interconnect, as early as the CPU itself. Without write-cobmine 
-the DDR controller might decide to combine them, but not earlier. This 
-can make a difference especially if the write is a narrow write, i.e. 
-the access size is smaller than the buswidth.
+--7xziTSZJMkKpZ1PO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Lets say you do 32-bit writes, but your bus is 64 bits wide. With WC two 
-32-bits can be combined into a 64-bit write. Without WC that is not 
-possible and you are potentially not using the bus to its fullest 
-capacity. This is especially true if the memory bus is wider than the 
-widest access size of the CPU.
+Hi Linus,
 
+The following changes since commit 136057256686de39cc3a07c2e39ef6bc43003ff6:
 
+  Linux 5.16-rc2 (2021-11-21 13:47:39 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-fixes-v5.16-rc2
+
+for you to fetch changes up to 86dc40c7ea9c22f64571e0e45f695de73a0e2644:
+
+  iommu/vt-d: Fix unmap_pages support (2021-11-26 22:54:47 +0100)
+
+----------------------------------------------------------------
+IOMMU Fixes for Linux v5.16-rc2:
+
+Including:
+
+  - Intel VT-d fixes:
+    - Remove unused PASID_DISABLED
+    - Fix RCU locking
+    - Fix for the unmap_pages call-back
+
+  - Rockchip RK3568 address mask fix
+
+  - AMD IOMMUv2 log message clarification
+
+----------------------------------------------------------------
+Alex Bee (1):
+      iommu/rockchip: Fix PAGE_DESC_HI_MASKs for RK3568
+
+Alex Williamson (1):
+      iommu/vt-d: Fix unmap_pages support
+
+Christophe JAILLET (1):
+      iommu/vt-d: Fix an unbalanced rcu_read_lock/rcu_read_unlock()
+
+Joerg Roedel (2):
+      iommu/vt-d: Remove unused PASID_DISABLED
+      iommu/amd: Clarify AMD IOMMUv2 initialization messages
+
+ arch/x86/include/asm/fpu/api.h  | 6 ------
+ drivers/iommu/amd/iommu_v2.c    | 6 +++---
+ drivers/iommu/intel/cap_audit.c | 5 +++--
+ drivers/iommu/intel/iommu.c     | 6 ++----
+ drivers/iommu/rockchip-iommu.c  | 4 ++--
+ 5 files changed, 10 insertions(+), 17 deletions(-)
+
+Please pull.
+
+Thanks,
+
+	Joerg
+
+--7xziTSZJMkKpZ1PO
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEr9jSbILcajRFYWYyK/BELZcBGuMFAmGjhQsACgkQK/BELZcB
+GuPmVRAAub7Gwv82zRlFldNWwQOh6CHMmOBB34W8wNCO3BueB3erZTU2wBpSWCIu
+BN0Bz5g1uGPqbDbW58i2UVDowBqY6MSN0RwLDtPAsVT5to2FiJcIu34pBfLDXpgs
+j8rio4MSEWEyvT2i/8bEMXlyB4lHuw6Lateh3LV+eNDYA4va8625kBp7agAd1N2z
+0SKPtMHlwzDfTbGKYUlASkFbPXHc6WKWDhL8enxfoBHY4ZTWcCj5OLqZzKfyRIMK
+jgHPALme/nVJvbGWDFx4EXjQLQT0Q6FnOGxHi2W1iaKvcyHatrN/2KdflepTLP1C
+THosEoua360YqVsWPtht2zga7sAHD1fAFIm1EIUgb9OpPq1BrxOGNbOXcOv5PkcD
+h68vQqefysu68Af/OC8mX19xKXKH7MtJsF0xC+4jYG7dT16/fZUbekV19RD+Rq8W
+8aVksSdwi+NinJ9iKfqcmPe7BFvmOyF3SLDbsAp9IEWJPt68JyiQ5KpE86P4tYA8
+XKpOoGI16kT85oZyExGFcJm8B1wfYOLo7go7PyxGkeX93Tu8R9PI+k5XIoZcyBhv
+RN2y6QhfnxfeMe8k9fiZPD84sS76w00x58OyMbjEDA/Zymsl2zDdAAP/hQ/guAxd
+xCXIt9zH39efF3BNfB1KiQP5bHEFU2ebzsjfkPHs8ka4V4a1mAs=
+=WhCV
+-----END PGP SIGNATURE-----
+
+--7xziTSZJMkKpZ1PO--
