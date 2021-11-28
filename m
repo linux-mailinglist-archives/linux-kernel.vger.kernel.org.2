@@ -2,109 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DDFE46075C
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 17:05:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5A3460761
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 17:08:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358242AbhK1QIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 11:08:38 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:54240 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353606AbhK1QGh (ORCPT
+        id S1358175AbhK1QLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 11:11:41 -0500
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:40798 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238569AbhK1QJk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 11:06:37 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EFDA86101E
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 16:03:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 815E1C53FC7;
-        Sun, 28 Nov 2021 16:03:19 +0000 (UTC)
-Date:   Sun, 28 Nov 2021 11:03:17 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Subject: [GIT PULL] tracing: Test the 'Do not trace this pid' case in create
- event
-Message-ID: <20211128110317.225b19f6@oasis.local.home>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Sun, 28 Nov 2021 11:09:40 -0500
+Received: by mail-oi1-f173.google.com with SMTP id bk14so29645066oib.7;
+        Sun, 28 Nov 2021 08:06:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6XcdVLR5T8aEqWDjXmGT4FtJ9lSL6Rm6Y96yhhLDME0=;
+        b=4taXed+QR7SrHztucROx6uelGYy2q0iUcqYS3LBQkVwPhpmVaYT9tAZEWL3R9cQeHt
+         aQdSP0/huV8hw0ihrik92vGsIMf2I14vEHl0KKW2QDwzZpHH2zFb4sD3bulkuspQ8e/K
+         k6pjsZp2eUsD8uZmI0GnG8Y5wpkZwd2THd9fMC5GturI+smrVD+NQrGut5cc5b+Bpi5V
+         k2V2qAqaOWhN9V3tKV3t0Q3hU8OWeOZDF7RXHNG/SL0bX2UUCHTzwdVvaBNaW4q7j70y
+         H//9rO4fb5qAOwuY0fpj6bLW+L3qJXMOydUUxjARYYzwctQzl+gILw754rVguoIMj/IS
+         wslQ==
+X-Gm-Message-State: AOAM530vxLSlS8AnM8U/HdrlODPsg0KLAMfGDTy1KAV/qDHzyFx8fiR9
+        KGCh4+KjnHgfy/NYkYQqTA==
+X-Google-Smtp-Source: ABdhPJwKIwsK+qKc3/WIO+9F/yWvFZR4TMP+v+GAwfhU3SlRfqN972FhHTZlzd0Etz2MduGDNYwiZg==
+X-Received: by 2002:aca:1708:: with SMTP id j8mr34441661oii.62.1638115583942;
+        Sun, 28 Nov 2021 08:06:23 -0800 (PST)
+Received: from robh.at.kernel.org ([2607:fb90:20d6:afc8:f6e9:d57a:3e26:ee41])
+        by smtp.gmail.com with ESMTPSA id y12sm2487710oiv.49.2021.11.28.08.06.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Nov 2021 08:06:23 -0800 (PST)
+Received: (nullmailer pid 2561004 invoked by uid 1000);
+        Sun, 28 Nov 2021 16:06:20 -0000
+Date:   Sun, 28 Nov 2021 10:06:20 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Akhil R <akhilrajeev@nvidia.com>
+Cc:     dan.j.williams@intel.com, devicetree@vger.kernel.org,
+        dmaengine@vger.kernel.org, jonathanh@nvidia.com,
+        kyarlagadda@nvidia.com, ldewangan@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        p.zabel@pengutronix.de, rgumasta@nvidia.com,
+        thierry.reding@gmail.com, vkoul@kernel.org
+Subject: Re: [PATCH v13 1/4] dt-bindings: dmaengine: Add doc for tegra gpcdma
+Message-ID: <YaOo/FHKQBAa93hd@robh.at.kernel.org>
+References: <1637573292-13214-1-git-send-email-akhilrajeev@nvidia.com>
+ <1637573292-13214-2-git-send-email-akhilrajeev@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1637573292-13214-2-git-send-email-akhilrajeev@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 22, 2021 at 02:58:09PM +0530, Akhil R wrote:
+> Add DT binding document for Nvidia Tegra GPCDMA controller.
+> 
+> Signed-off-by: Rajesh Gumasta <rgumasta@nvidia.com>
+> Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
+> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+> ---
+>  .../bindings/dma/nvidia,tegra186-gpc-dma.yaml      | 111 +++++++++++++++++++++
+>  1 file changed, 111 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml b/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
+> new file mode 100644
+> index 0000000..3a5a70d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
+> @@ -0,0 +1,111 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/dma/nvidia,tegra186-gpc-dma.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NVIDIA Tegra GPC DMA Controller Device Tree Bindings
+> +
+> +description: |
+> +  The Tegra General Purpose Central (GPC) DMA controller is used for faster
+> +  data transfers between memory to memory, memory to device and device to
+> +  memory.
+> +
+> +maintainers:
+> +  - Jon Hunter <jonathanh@nvidia.com>
+> +  - Rajesh Gumasta <rgumasta@nvidia.com>
+> +
+> +allOf:
+> +  - $ref: "dma-controller.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: nvidia,tegra186-gpcdma
+> +      - items:
+> +         - const: nvidia,tegra186-gpcdma
+> +         - const: nvidia,tegra194-gpcdma
 
+Still not how 'compatible' works nor what I wrote out for you.
 
-Linus,
-
-tracing: Fix the fix of pid filtering
-
-- The setting of the pid filtering flag tested the "trace only this
-  pid" case twice, and ignored the "trace everything but this pid" case.
-
-  Note, the 5.15 kernel does things a little differently due to the new
-  sparse pid mask introduced in 5.16, and as the bug was discovered
-  running the 5.15 kernel, and the first fix was initially done for
-  that kernel, that fix handled both cases (only pid and all but pid),
-  but the forward port to 5.16 created this bug.
-
-  This is because my presentation I'm writing is using the 5.15 kernel.
-
-
-Please pull the latest trace-v5.16-rc2-3 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-trace-v5.16-rc2-3
-
-Tag SHA1: 587a9f8832c97f3b0f94c2f85a3954204b560e23
-Head SHA1: 27ff768fa21ca3286fcc87c3f38ac67d1a2cbe2d
-
-
-Steven Rostedt (VMware) (1):
-      tracing: Test the 'Do not trace this pid' case in create event
-
-----
- kernel/trace/trace_events.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
----------------------------
-commit 27ff768fa21ca3286fcc87c3f38ac67d1a2cbe2d
-Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Date:   Sat Nov 27 16:45:26 2021 -0500
-
-    tracing: Test the 'Do not trace this pid' case in create event
-    
-    When creating a new event (via a module, kprobe, eprobe, etc), the
-    descriptors that are created must add flags for pid filtering if an
-    instance has pid filtering enabled, as the flags are used at the time the
-    event is executed to know if pid filtering should be done or not.
-    
-    The "Only trace this pid" case was added, but a cut and paste error made
-    that case checked twice, instead of checking the "Trace all but this pid"
-    case.
-    
-    Link: https://lore.kernel.org/all/202111280401.qC0z99JB-lkp@intel.com/
-    
-    Fixes: 6cb206508b62 ("tracing: Check pid filtering when creating events")
-    Reported-by: kernel test robot <lkp@intel.com>
-    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index f8965fd50d3b..92be9cb1d7d4 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -2693,7 +2693,7 @@ trace_create_new_event(struct trace_event_call *call,
- 					     lockdep_is_held(&event_mutex));
- 
- 	if (!trace_pid_list_first(pid_list, &first) ||
--	    !trace_pid_list_first(pid_list, &first))
-+	    !trace_pid_list_first(no_pid_list, &first))
- 		file->flags |= EVENT_FILE_FL_PID_FILTER;
- 
- 	file->event_call = call;
+Rob
