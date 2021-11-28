@@ -2,106 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4300E4607D1
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 18:06:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 490114607DD
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 18:10:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358634AbhK1RJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 12:09:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358705AbhK1RHS (ORCPT
+        id S1358698AbhK1ROD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 12:14:03 -0500
+Received: from smtprelay0096.hostedemail.com ([216.40.44.96]:33562 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1358489AbhK1RMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 12:07:18 -0500
-Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE0DC0613F7
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 09:03:17 -0800 (PST)
-Received: by mail-vk1-xa31.google.com with SMTP id b192so9372612vkf.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 09:03:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BY3oht+y8HrGDIiA0mto2rflEOHEoMX+CLpzHXZf2nA=;
-        b=isEtZ0KqXs7KwQiyrUe6920AusXIYyZ3lAycqrX8wlYMxZzrktdUryhup02VI1Fc9m
-         6RbwZfK5VEwmxi4UjWRmZWbt303aROEHrxkJJaNuODRMse9Ohe1/XfcUA2kKvpqE/UhR
-         RbvvxfS7z6qb3X5YjlkfRE/T60Xju+cO7p9YyQj6EXdMEqvWjpSSGjY7+8CraHpfL2aA
-         ffanPd/1CCgvM5Qlb7yHtQ4jsRvgFbvogD1YtoQrtwx8TwfczmVqEphgtQg/Mw4op13n
-         xhf2K4LG1zddQ8cTqaUD7GGqrYRoeY6Irx5UZc4QfFAbdWaoCrgQ8/GT2dQ3C6PBrKqL
-         g4bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BY3oht+y8HrGDIiA0mto2rflEOHEoMX+CLpzHXZf2nA=;
-        b=Cl7u+eSrIRSnQrWGrb7lOZJBKMXTpaWd1RXPkZ2uSz22AbymuSjEux1NU0Dl2x3GQl
-         LzjNhkJTIEHzR3Q/ib0jsrWrRG7pOhrGMx5pou4ok8VreQcm+VWhXVLgOmFAaTQBz52u
-         8POJzOPlfzhNQigRzPzzJH5Ozzbb1kRuc59gMoZQMbOgW4TcqhKVTUVFnc5zZtBm6Jho
-         8mCZHNaZGrh4Wr+Z/vlqVfa43UNT8RJfbSyEXR4TQgStQ2oJ8pJllfavIvVpsX/0rxfs
-         rAm/IItzUG1MBXyrGofl2iDCOSf7QXtDyai9jADcf3cdhtpAKaMw8rRvLwv6lkIpAoqG
-         Eh2A==
-X-Gm-Message-State: AOAM533xUJn2/y8FpInKnxOfcL3Z4S99NPYOlN/km10A6c0RRXZzn8j8
-        inrAuKaJjVgSkIcMnMNQzhpBtES8jcFguAMdzapEHg==
-X-Google-Smtp-Source: ABdhPJzWijuBwUQuP+Vndk1T+sepX2T8/WmWaWQfnWsOR0CMc9FuYs9zuujxjQxRb2Guzz9nNOvUpGArHq0GRwbXUxw=
-X-Received: by 2002:a1f:2849:: with SMTP id o70mr25716022vko.35.1638118996213;
- Sun, 28 Nov 2021 09:03:16 -0800 (PST)
+        Sun, 28 Nov 2021 12:12:02 -0500
+Received: from omf04.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id D5832182CED2A;
+        Sun, 28 Nov 2021 17:08:43 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf04.hostedemail.com (Postfix) with ESMTPA id 5EF1EA00041C;
+        Sun, 28 Nov 2021 17:07:48 +0000 (UTC)
+Message-ID: <8f389151c39a8a5b6b31d5238cb680305225d9f2.camel@perches.com>
+Subject: Re: [PATCH 7/9] lib/cpumask: add
+ num_{possible,present,active}_cpus_{eq,gt,le}
+From:   Joe Perches <joe@perches.com>
+To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alexey Klimov <aklimov@redhat.com>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Andi Kleen <ak@linux.intel.com>, Andrew Lunn <andrew@lunn.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Christoph Lameter <cl@linux.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Airlie <airlied@linux.ie>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Dennis Zhou <dennis@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guo Ren <guoren@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Jens Axboe <axboe@fb.com>, Jiri Olsa <jolsa@redhat.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Kees Cook <keescook@chromium.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Marc Zyngier <maz@kernel.org>, Marcin Wojtas <mw@semihalf.com>,
+        Mark Gross <markgross@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Roy Pledge <Roy.Pledge@nxp.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Solomon Peachy <pizza@shaftnet.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>, Tejun Heo <tj@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Will Deacon <will@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, kvm@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-crypto@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
+Date:   Sun, 28 Nov 2021 09:07:52 -0800
+In-Reply-To: <20211128035704.270739-8-yury.norov@gmail.com>
+References: <20211128035704.270739-1-yury.norov@gmail.com>
+         <20211128035704.270739-8-yury.norov@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-References: <20211127223253.19098-1-semen.protsenko@linaro.org>
- <20211127223253.19098-5-semen.protsenko@linaro.org> <YaOR+TbcR1V4ovf/@kroah.com>
- <CAPLW+4mG8AMPCXGWYwURVJhCw0Cv=mYYzNAZf0i7akVcqc384w@mail.gmail.com>
-In-Reply-To: <CAPLW+4mG8AMPCXGWYwURVJhCw0Cv=mYYzNAZf0i7akVcqc384w@mail.gmail.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Sun, 28 Nov 2021 19:03:05 +0200
-Message-ID: <CAPLW+4k9OAdcg8XcTbazV_470mFw3x61_UakoR-qNHo5C8et_g@mail.gmail.com>
-Subject: Re: [PATCH 4/8] tty: serial: samsung: Remove USI initialization
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Jaewon Kim <jaewon02.kim@samsung.com>,
-        Chanho Park <chanho61.park@samsung.com>,
-        David Virag <virag.david003@gmail.com>,
-        Youngmin Nam <youngmin.nam@samsung.com>,
-        devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: umd6ft7bscstit6mcsb41shstont4bff
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: 5EF1EA00041C
+X-Spam-Status: No, score=1.60
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+NoJl8n1YyBqeqY0nk94+uRiGfczHPVi8=
+X-HE-Tag: 1638119268-113142
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 28 Nov 2021 at 18:26, Sam Protsenko <semen.protsenko@linaro.org> wrote:
->
-> On Sun, 28 Nov 2021 at 16:28, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Sun, Nov 28, 2021 at 12:32:49AM +0200, Sam Protsenko wrote:
-> > > USI control is now extracted to dedicated USIv2 driver. Remove USI
-> > > related code from serial driver to avoid conflicts and code duplication.
-> >
-> > What conflicts?
-> >
->
-> There might be possible conflicts when accessing the same USI register
-> from both serial driver and USIv2 driver. Also there will be conflicts
-> when trying to access the same I/O address space in those both
-> drivers.
->
-> > What duplication?  All you did here was delete code.
-> >
->
-> It's all explained in [PATCH 0/8], but long story short, I've added
-> USIv2 driver (in this series) which handles the code that's removed
-> from serial driver in this patch.
->
+On Sat, 2021-11-27 at 19:57 -0800, Yury Norov wrote:
+> Add num_{possible,present,active}_cpus_{eq,gt,le} and replace num_*_cpus()
+> with one of new functions where appropriate. This allows num_*_cpus_*()
+> to return earlier depending on the condition.
+[]
+> diff --git a/arch/arc/kernel/smp.c b/arch/arc/kernel/smp.c
+[]
+> @@ -103,7 +103,7 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
+>  	 * if platform didn't set the present map already, do it now
+>  	 * boot cpu is set to present already by init/main.c
+>  	 */
+> -	if (num_present_cpus() <= 1)
+> +	if (num_present_cpus_le(2))
+>  		init_cpu_present(cpu_possible_mask);
 
-In other words, this code is now present here: [1]. But of course
-USIv2 driver must be applied first, and then this patch (removing the
-same code from serial driver). That's why it's in the same series and
-it's placed after USIv2 driver ([PATCH 3/8]).
+?  is this supposed to be 2 or 1
 
-[1] https://patchwork.kernel.org/project/linux-samsung-soc/patch/20211127223253.19098-4-semen.protsenko@linaro.org/
+> diff --git a/drivers/cpufreq/pcc-cpufreq.c b/drivers/cpufreq/pcc-cpufreq.c
+[]
+> @@ -593,7 +593,7 @@ static int __init pcc_cpufreq_init(void)
+>  		return ret;
+>  	}
+>  
+> -	if (num_present_cpus() > 4) {
+> +	if (num_present_cpus_gt(4)) {
+>  		pcc_cpufreq_driver.flags |= CPUFREQ_NO_AUTO_DYNAMIC_SWITCHING;
+>  		pr_err("%s: Too many CPUs, dynamic performance scaling disabled\n",
+>  		       __func__);
 
-> > confused,
-> >
-> > greg k-h
+It looks as if the present variants should be using the same values
+so the _le test above with 1 changed to 2 looks odd.
+
+
