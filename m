@@ -2,113 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8016C46097B
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 20:37:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4A3460980
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 20:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359342AbhK1Tka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 14:40:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240225AbhK1TiN (ORCPT
+        id S1346833AbhK1TnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 14:43:07 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:53702 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235084AbhK1TlG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 14:38:13 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C6BBC061756
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 11:34:57 -0800 (PST)
+        Sun, 28 Nov 2021 14:41:06 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2A10DB80D63
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 19:34:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 084A5C004E1;
-        Sun, 28 Nov 2021 19:34:54 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D56366111B;
+        Sun, 28 Nov 2021 19:37:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E7BAC004E1;
+        Sun, 28 Nov 2021 19:37:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638128095;
-        bh=R8pL+uk+a2lIAKlx/R55fWu0qSIieBQ7zGB4nhMRKuM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qfI63raXGr7R2e6X+Hj8QPYBLoyKDyHR0BUoYkDNZn+F/to2CLi/wZ7bqIArcN21X
-         cAc6gmN22umtFRPgdryav3U9btAxE4yN9T4pRJdJy3nAyAHf+Wd0Dycx2uZG7Oz6q6
-         9BbowN6ggk6j29IutQsjrG5i9JN3WPwfFMXIJEGbt7DAMqRBGWthym5VkqyMh3HptO
-         zgdf2a+xs63hRrDuZZimsuo5qs4jb2QrxoonN3FaKLe0lixn5ODAFDGO21u1WAdVEo
-         n/6oNECvylFRoI1iaX+itl2qZA4O45m/KIV37AB+Q4sP2PMTrIjFt0Nqm1yDNxNJM8
-         +DBdOXwKJrasg==
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dani Liberman <dliberman@habana.ai>
-Subject: [PATCH 12/12] habanalabs: enable access to info ioctl during hard reset
-Date:   Sun, 28 Nov 2021 21:34:35 +0200
-Message-Id: <20211128193435.266534-12-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211128193435.266534-1-ogabbay@kernel.org>
-References: <20211128193435.266534-1-ogabbay@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        s=k20201202; t=1638128269;
+        bh=9kshVg9cWpie2kn2nDFxTot3kBs7ISxnybYkG4sh8SM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nZest/lJT4X+8M592uWupGcZA3K/bqpTbWXeabbvC0ZxQ9e7NFcweRsLi7hPITUxi
+         cv3N1cQ4AvwAkP/8BbG8U4/eNiDUwizouClthzINE6Z02aJay9QfGBzvB3o5zRpY0t
+         A7u6aKdfeU7rzeujANQP3gXKyhtm7f45fn8Vx11KlK2MUAuEC3uHEX680Tb6AayILE
+         IK/Ufbe3Hdy9YtKCoMnccCSllNGTkg36pvnE3PXBdSW2gwDFjmBDIbhUmOCuHLkcMG
+         ctIZ0c1oxyCwilUk8uaY0b04ik5js9T60W6ssAhdZleFp0cihB1hYaWxYe/eqGc93f
+         OwcqHzbhqKY6A==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mrPze-008TDJ-Q8; Sun, 28 Nov 2021 19:37:47 +0000
+Date:   Sun, 28 Nov 2021 19:37:45 +0000
+Message-ID: <871r30rrzq.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Megha Dey <megha.dey@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, linux-pci@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        iommu@lists.linux-foundation.org, dmaengine@vger.kernel.org,
+        Stuart Yoder <stuyoder@gmail.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+        Vinod Koul <vkoul@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>, Sinan Kaya <okaya@kernel.org>
+Subject: Re: [patch 29/37] PCI/MSI: Use __msi_get_virq() in pci_get_vector()
+In-Reply-To: <20211126230525.660206325@linutronix.de>
+References: <20211126224100.303046749@linutronix.de>
+        <20211126230525.660206325@linutronix.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: tglx@linutronix.de, linux-kernel@vger.kernel.org, helgaas@kernel.org, alex.williamson@redhat.com, kevin.tian@intel.com, jgg@nvidia.com, megha.dey@intel.com, ashok.raj@intel.com, linux-pci@vger.kernel.org, gregkh@linuxfoundation.org, ssantosh@kernel.org, iommu@lists.linux-foundation.org, dmaengine@vger.kernel.org, stuyoder@gmail.com, laurentiu.tudor@nxp.com, nm@ti.com, kristo@kernel.org, linux-arm-kernel@lists.infradead.org, x86@kernel.org, vkoul@kernel.org, mark.rutland@arm.com, will@kernel.org, okaya@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dani Liberman <dliberman@habana.ai>
+On Sat, 27 Nov 2021 01:22:03 +0000,
+Thomas Gleixner <tglx@linutronix.de> wrote:
+> 
+> Use __msi_get_vector() and handle the return values to be compatible.
+> 
+> No functional change intended.
 
-Because info ioctl is used to retrieve data, some of its opcodes may be
-used during hard reset.
-Other ioctls should be blocked while device is not operational.
+You wish ;-).
 
-Signed-off-by: Dani Liberman <dliberman@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- drivers/misc/habanalabs/common/command_submission.c | 5 +----
- drivers/misc/habanalabs/common/habanalabs_ioctl.c   | 7 -------
- 2 files changed, 1 insertion(+), 11 deletions(-)
+[   15.779540] pcieport 0001:00:01.0: AER: request AER IRQ -22 failed
 
-diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
-index 7a277f442207..8be547b0926c 100644
---- a/drivers/misc/habanalabs/common/command_submission.c
-+++ b/drivers/misc/habanalabs/common/command_submission.c
-@@ -1146,9 +1146,6 @@ static int hl_cs_sanity_checks(struct hl_fpriv *hpriv, union hl_cs_args *args)
- 	enum hl_cs_type cs_type;
+Notice how amusing the IRQ number is?
+
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  drivers/pci/msi/msi.c |   25 +++++--------------------
+>  1 file changed, 5 insertions(+), 20 deletions(-)
+> 
+> --- a/drivers/pci/msi/msi.c
+> +++ b/drivers/pci/msi/msi.c
+> @@ -1023,28 +1023,13 @@ EXPORT_SYMBOL(pci_free_irq_vectors);
+>   */
+>  int pci_irq_vector(struct pci_dev *dev, unsigned int nr)
+>  {
+> -	if (dev->msix_enabled) {
+> -		struct msi_desc *entry;
+> +	int irq = __msi_get_virq(&dev->dev, nr);
+>  
+> -		for_each_pci_msi_entry(entry, dev) {
+> -			if (entry->msi_index == nr)
+> -				return entry->irq;
+> -		}
+> -		WARN_ON_ONCE(1);
+> -		return -EINVAL;
+> +	switch (irq) {
+> +	case -ENODEV: return !nr ? dev->irq : -EINVAL;
+> +	case -ENOENT: return -EINVAL;
+>  	}
+> -
+> -	if (dev->msi_enabled) {
+> -		struct msi_desc *entry = first_pci_msi_entry(dev);
+> -
+> -		if (WARN_ON_ONCE(nr >= entry->nvec_used))
+> -			return -EINVAL;
+> -	} else {
+> -		if (WARN_ON_ONCE(nr > 0))
+> -			return -EINVAL;
+> -	}
+> -
+> -	return dev->irq + nr;
+> +	return irq;
+>  }
+>  EXPORT_SYMBOL(pci_irq_vector);
+
+I worked around it with the hack below, but I doubt this is the real
+thing. portdrv_core.c does complicated things, and I don't completely
+understand its logic.
+
+	M.
+
+diff --git a/drivers/pci/msi/msi.c b/drivers/pci/msi/msi.c
+index 1f72bc734226..b15278a5fb4b 100644
+--- a/drivers/pci/msi/msi.c
++++ b/drivers/pci/msi/msi.c
+@@ -1092,8 +1092,9 @@ int pci_irq_vector(struct pci_dev *dev, unsigned int nr)
+ 	int irq = __msi_get_virq(&dev->dev, nr);
  
- 	if (!hl_device_operational(hdev, &status)) {
--		dev_warn_ratelimited(hdev->dev,
--			"Device is %s. Can't submit new CS\n",
--			hdev->status[status]);
- 		return -EBUSY;
+ 	switch (irq) {
+-	case -ENODEV: return !nr ? dev->irq : -EINVAL;
+-	case -ENOENT: return -EINVAL;
++	case -ENOENT:
++	case -ENODEV:
++		return !nr ? dev->irq : -EINVAL;
  	}
- 
-@@ -2997,7 +2994,7 @@ int hl_wait_ioctl(struct hl_fpriv *hpriv, void *data)
- 	 * user interrupt
- 	 */
- 	if (!hl_device_operational(hpriv->hdev, NULL))
--		return -EPERM;
-+		return -EBUSY;
- 
- 	if (flags & HL_WAIT_CS_FLAGS_INTERRUPT)
- 		rc = hl_interrupt_wait_ioctl(hpriv, data);
-diff --git a/drivers/misc/habanalabs/common/habanalabs_ioctl.c b/drivers/misc/habanalabs/common/habanalabs_ioctl.c
-index 15797d55b4e8..6c7339978bae 100644
---- a/drivers/misc/habanalabs/common/habanalabs_ioctl.c
-+++ b/drivers/misc/habanalabs/common/habanalabs_ioctl.c
-@@ -774,7 +774,6 @@ static long _hl_ioctl(struct file *filep, unsigned int cmd, unsigned long arg,
- 		const struct hl_ioctl_desc *ioctl, struct device *dev)
- {
- 	struct hl_fpriv *hpriv = filep->private_data;
--	struct hl_device *hdev = hpriv->hdev;
- 	unsigned int nr = _IOC_NR(cmd);
- 	char stack_kdata[128] = {0};
- 	char *kdata = NULL;
-@@ -783,12 +782,6 @@ static long _hl_ioctl(struct file *filep, unsigned int cmd, unsigned long arg,
- 	u32 hl_size;
- 	int retcode;
- 
--	if (hdev->hard_reset_pending) {
--		dev_crit_ratelimited(dev,
--			"Device HARD reset pending! Please close FD\n");
--		return -ENODEV;
--	}
--
- 	/* Do not trust userspace, use our own definition */
- 	func = ioctl->func;
- 
--- 
-2.25.1
+ 	return irq;
+ }
 
+-- 
+Without deviation from the norm, progress is not possible.
