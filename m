@@ -2,136 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC6D460755
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 16:59:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF9D460754
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 16:59:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358124AbhK1QDC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 28 Nov 2021 11:03:02 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:35714 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S244386AbhK1QA4 (ORCPT
+        id S1346518AbhK1QC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 11:02:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352844AbhK1QAz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 11:00:56 -0500
-X-UUID: a06df0059a734746a1cc6e4dd9453dbf-20211128
-X-UUID: a06df0059a734746a1cc6e4dd9453dbf-20211128
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <jason-jh.lin@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 283879108; Sun, 28 Nov 2021 23:57:35 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Sun, 28 Nov 2021 23:57:34 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 28 Nov 2021 23:57:33 +0800
-Message-ID: <ae29424d8121f8951cfb5fece114b6fcba90d351.camel@mediatek.com>
-From:   Jason-JH Lin <jason-jh.lin@mediatek.com>
-To:     Tzung-Bi Shih <tzungbi@google.com>
-CC:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        "; Philipp Zabel" <p.zabel@pengutronix.de>,
-        "; Matthias Brugger" <matthias.bgg@gmail.com>,
-        "; Jassi Brar" <jassisinghbrar@gmail.com>,
-        "; David Airlie" <airlied@linux.ie>,
-        "; Daniel Vetter" <daniel@ffwll.ch>,
-        "; dri-devel@lists.freedesktop.org; linux-mediatek@lists.infradead.org; 
-        linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org; 
-        hsinyi@chromium.org; fshao@chromium.org; Nancy Lin
-        =?UTF-8?Q?=28=E6=9E=97=E6=AC=A3=E8=9E=A2=29?=" 
-        <Nancy.Lin@mediatek.com>,
-        "; Singo Chang =?UTF-8?Q?=28=E5=BC=B5=E8=88=88=E5=9C=8B=29?=" 
-        <Singo.Chang@mediatek.com>
-In-Reply-To: <PU1PR03MB306252A252139515F7EA9ABCB8659@PU1PR03MB3062.apcprd03.prod.outlook.com>
-References: <20211117064158.27451-1-jason-jh.lin@mediatek.com>
-         <20211117064158.27451-4-jason-jh.lin@mediatek.com>
-         <YZXqz6XDChwscDC0@google.com>
-         <PU1PR03MB306252A252139515F7EA9ABCB8659@PU1PR03MB3062.apcprd03.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-MIME-Version: 1.0
-Subject: Re: FW: [PATCH 3/3] drm/mediatek: add devlink to cmdq dev
-Date:   Sun, 28 Nov 2021 23:57:33 +0800
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Content-Transfer-Encoding: 8BIT
-X-MTK:  N
+        Sun, 28 Nov 2021 11:00:55 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C350C061746;
+        Sun, 28 Nov 2021 07:57:39 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D9D6D60FF2;
+        Sun, 28 Nov 2021 15:57:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39E31C004E1;
+        Sun, 28 Nov 2021 15:57:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638115058;
+        bh=dvG9p4JqFdjvOEy4EOXxmzA5LeHayuGr/Isd+G4hlxQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VvikoL4cJtNFOFPZajteiBXe8ODn9A+inzWnb1CaODmfNAbPwtbi08LL0plfuHxDd
+         DgSa9NTBzspw9q7oYBHcBXjh+vJD4PalgBNC/xQ/STeSZ8ewzx4AbQ9n36UqQatFyD
+         1bcZNZffvJGhdA7Xdefty9eQqd4zpvDNt2H8vFg5BapAqAq7KJERfwGGf3ZDVdmirY
+         0qakJZOeNItYEDopWJl9xC2o8fcS28t7nM+gmh9J1FBWGPKvUHqqdNSdDR1Kh7mtvx
+         zq+hYq8AxC6y937gfo3dFPb5jPwBYfQvs36hTRqRq5kkx1M2f9JsbJxWQfa0sVPdL3
+         Pvgxuk0l5kd0Q==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mrMYZ-008Rat-NA; Sun, 28 Nov 2021 15:57:35 +0000
+Date:   Sun, 28 Nov 2021 15:57:35 +0000
+Message-ID: <8735ngs26o.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Megha Dey <megha.dey@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Cooper <amc96@cam.ac.uk>,
+        Juergen Gross <jgross@suse.com>, linux-pci@vger.kernel.org,
+        xen-devel@lists.xenproject.org
+Subject: Re: [patch 03/10] genirq/msi: Make MSI descriptor alloc/free ready for range allocations
+In-Reply-To: <20211127000918.664542907@linutronix.de>
+References: <20211126233124.618283684@linutronix.de>
+        <20211127000918.664542907@linutronix.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: tglx@linutronix.de, linux-kernel@vger.kernel.org, helgaas@kernel.org, alex.williamson@redhat.com, kevin.tian@intel.com, jgg@nvidia.com, megha.dey@intel.com, ashok.raj@intel.com, mpe@ellerman.id.au, amc96@cam.ac.uk, jgross@suse.com, linux-pci@vger.kernel.org, xen-devel@lists.xenproject.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tzung-Bi,
+On Sat, 27 Nov 2021 01:24:34 +0000,
+Thomas Gleixner <tglx@linutronix.de> wrote:
+> 
+> Convert the MSI descriptor related functions to ranges and fixup the call
+> sites.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  drivers/base/platform-msi.c |    3 ++-
+>  include/linux/msi.h         |    7 ++++---
+>  kernel/irq/msi.c            |   38 +++++++++++++++++++-------------------
+>  3 files changed, 25 insertions(+), 23 deletions(-)
 
-Thanks for the reviews.
+This particular patch breaks one of my test boxes when allocating the
+MSIs for the first SMMUv3 it encounters:
 
-> From: Linux-mediatek <linux-mediatek-bounces@lists.infradead.org> On
-> Behalf Of Tzung-Bi Shih
-> Sent: Thursday, November 18, 2021 1:55 PM
-> To: Jason-JH Lin (林睿祥) <Jason-JH.Lin@mediatek.com>
-> Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>; Philipp Zabel <
-> p.zabel@pengutronix.de>; Matthias Brugger <matthias.bgg@gmail.com>;
-> Jassi Brar <jassisinghbrar@gmail.com>; David Airlie <airlied@linux.ie
-> >; Daniel Vetter <daniel@ffwll.ch>; dri-devel@lists.freedesktop.org; 
-> linux-mediatek@lists.infradead.org; 
-> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org; 
-> hsinyi@chromium.org; fshao@chromium.org; Nancy Lin (林欣螢) <
-> Nancy.Lin@mediatek.com>; Singo Chang (張興國) <Singo.Chang@mediatek.com>
-> Subject: Re: [PATCH 3/3] drm/mediatek: add devlink to cmdq dev
-> 
-> On Wed, Nov 17, 2021 at 02:41:58PM +0800, jason-jh.lin wrote:
-> > @@ -158,6 +159,7 @@ static void mtk_drm_crtc_destroy(struct
-> > drm_crtc *crtc)
-> >  	mtk_drm_cmdq_pkt_destroy(&mtk_crtc->cmdq_handle);
-> >  
-> >  	if (mtk_crtc->cmdq_client.chan) {
-> > +		device_link_remove(mtk_crtc->drm_dev, mtk_crtc-
-> > >cmdq_client.chan->mbox->dev);
-> >  		mbox_free_channel(mtk_crtc->cmdq_client.chan);
-> >  		mtk_crtc->cmdq_client.chan = NULL;
-> >  	}
-> 
-> [...]
-> > @@ -956,6 +959,16 @@ int mtk_drm_crtc_create(struct drm_device
-> > *drm_dev,
-> >  	}
-> >  
-> >  	if (mtk_crtc->cmdq_client.chan) {
-> > +		struct device_link *link;
-> > +
-> > +		/* add devlink to cmdq dev to make sure suspend/resume
-> > order is correct */
-> > +		link = device_link_add(dev, mtk_crtc->cmdq_client.chan-
-> > >mbox->dev,
-> > +				       DL_FLAG_PM_RUNTIME |
-> > DL_FLAG_STATELESS);
-> > +		if (!link) {
-> > +			dev_err(dev, "Unable to link dev=%s\n",
-> > +				dev_name(mtk_crtc->cmdq_client.chan-
-> > >mbox->dev));
-> > +		}
-> > +
-> 
-> If device_link_add() failed, doesn't mtk_drm_crtc_create() need to
-> return an error and exit?
+[   14.700206] arm-smmu-v3 arm-smmu-v3.0.auto: option mask 0x0
+[   14.705848] arm-smmu-v3 arm-smmu-v3.0.auto: ias 48-bit, oas 48-bit (features 0x00041fff)
+[   14.716184] arm-smmu-v3 arm-smmu-v3.0.auto: allocated 65536 entries for cmdq
+[   14.723285] arm-smmu-v3 arm-smmu-v3.0.auto: allocated 128 entries for evtq
+[   14.730170] arm-smmu-v3 arm-smmu-v3.0.auto: allocated 256 entries for priq
+[   41.282305] watchdog: BUG: soft lockup - CPU#43 stuck for 26s! [swapper/0:1]
+[   41.289383] Modules linked in:
+[   41.292430] irq event stamp: 3906684
+[   41.295994] hardirqs last  enabled at (3906683): [<ffffb73f677c54d8>] ___slab_alloc+0x7c8/0x8c0
+[   41.304698] hardirqs last disabled at (3906684): [<ffffb73f6806d478>] el1_interrupt+0x38/0xb0
+[   41.313220] softirqs last  enabled at (3798058): [<ffffb73f6746099c>] __do_softirq+0x40c/0x58c
+[   41.321825] softirqs last disabled at (3798053): [<ffffb73f674ee610>] __irq_exit_rcu+0x120/0x160
+[   41.330607] CPU: 43 PID: 1 Comm: swapper/0 Not tainted 5.16.0-rc2-00078-g76af42494903 #41
+[   41.338775] Hardware name: WIWYNN Mt.Jade Server System B81.030Z1.0007/Mt.Jade Motherboard, BIOS 1.3.20210110 2021/01/10
+[   41.349634] pstate: 60400009 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[   41.356585] pc : lock_is_held_type+0x124/0x20c
+[   41.361019] lr : lock_is_held_type+0xe8/0x20c
+[   41.365365] sp : ffff80001051b840
+[   41.368669] pmr_save: 000000e0
+[   41.371712] x29: ffff80001051b840 x28: ffff000034d80000 x27: ffff07ff87606600
+[   41.378838] x26: 00000000000000e0 x25: 00000000ffffffff x24: ffffb73f68733d00
+[   41.385964] x23: 0000000000000028 x22: ffff07ff87606fb8 x21: ffffb73f68bffc38
+[   41.393090] x20: ffff07ff87606fe0 x19: 0000000000000002 x18: 0000000000000014
+[   41.400217] x17: 0000000076a13aac x16: 00000000486de301 x15: 00000000ed5ff5e1
+[   41.407342] x14: 00000000fda7b077 x13: 0000000000000006 x12: 00000000b82b73dd
+[   41.414468] x11: ffff07ff87606fb8 x10: ffffb73f6952d000 x9 : ffffb73f675a3750
+[   41.421594] x8 : 0000000000000000 x7 : ffffb73f68e16000 x6 : ffffb73f677c6d64
+[   41.428720] x5 : 0000000000000000 x4 : 0000000000000001 x3 : 000000000000ffff
+[   41.435846] x2 : ffff50ff17454000 x1 : 0000000000000000 x0 : 0000000000000000
+[   41.442972] Call trace:
+[   41.445407]  lock_is_held_type+0x124/0x20c
+[   41.449494]  rcu_read_lock_sched_held+0x68/0xac
+[   41.454018]  trace_lock_acquire+0x78/0x1c0
+[   41.458107]  lock_acquire+0x40/0x90
+[   41.461585]  fs_reclaim_acquire+0x90/0x114
+[   41.465676]  kmem_cache_alloc_trace+0x80/0x300
+[   41.470110]  msi_add_simple_msi_descs+0x70/0x150
+[   41.474718]  msi_domain_alloc_irqs_descs_locked+0x90/0xfc
+[   41.480106]  msi_domain_alloc_irqs+0x58/0xa0
+[   41.484364]  platform_msi_domain_alloc_irqs+0x5c/0xa0
+[   41.489410]  arm_smmu_device_probe+0xfc0/0x1230
+[   41.493936]  platform_probe+0x74/0xe4
+[   41.497590]  really_probe+0xc4/0x470
+[   41.501156]  __driver_probe_device+0x11c/0x190
+[   41.505589]  driver_probe_device+0x48/0x110
+[   41.509761]  __driver_attach+0xe0/0x200
+[   41.513585]  bus_for_each_dev+0x7c/0xe0
+[   41.517412]  driver_attach+0x30/0x3c
+[   41.520976]  bus_add_driver+0x150/0x230
+[   41.524801]  driver_register+0x84/0x140
+[   41.528626]  __platform_driver_register+0x34/0x40
+[   41.533319]  arm_smmu_driver_init+0x2c/0x38
+[   41.537496]  do_one_initcall+0x80/0x3d0
+[   41.541321]  kernel_init_freeable+0x318/0x3a0
+[   41.545672]  kernel_init+0x30/0x14c
+[   41.549151]  ret_from_fork+0x10/0x20
 
-OK, I'll add the return error at the next verion.
-> 
-> OTOH, if device_link_add() failed, won't it bring any side effects to
-> call device_link_remove()?
-> 
+The issue seems to be originating in the previous patch, where the
+following line was added:
 
-Because device_link_remove() will find the device_link of supplier and
-consumer, then delete the device_link between them.
-If device_link_add() failed, supplier and consumer won't create the
-device_link.
-So calling device_link_remove() won't do anything without deive_link
-and won't bring any side effects.
++	struct msi_range range = { .first = 0, .last = UINT_MAX, .ndesc = nvec, };
 
-Regards,
-Jason-JH.Lin
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> 
-https://urldefense.com/v3/__http://lists.infradead.org/mailman/listinfo/linux-mediatek__;!!CTRNKA9wMg0ARbw!125dmOZ7xCLkwbIrzZf1VqVLQBbdT4RFHoMjR38U1GeCxaTM6xvvB-mSr7sTc6BuY5IH$
->  
+In that context, only 'ndesc' was used, and that was fine.
+
+However, in the current patch, ndesc use is removed, only first/last
+are considered, and UINT_MAX is... a lot of MSIs.
+
+This fixes it:
+
+diff --git a/kernel/irq/msi.c b/kernel/irq/msi.c
+index bef5b74a7268..a520bfd94a56 100644
+--- a/kernel/irq/msi.c
++++ b/kernel/irq/msi.c
+@@ -975,7 +975,7 @@ int msi_domain_alloc_irqs_descs_locked(struct irq_domain *domain, struct device
+  */
+ int msi_domain_alloc_irqs(struct irq_domain *domain, struct device *dev, int nvec)
+ {
+-	struct msi_range range = { .first = 0, .last = UINT_MAX, .ndesc = nvec, };
++	struct msi_range range = { .first = 0, .last = nvec - 1, .ndesc = nvec, };
+ 	int ret;
+ 
+ 	msi_lock_descs(dev);
+
+However, it'd be good to clarify the use of range->ndesc.
+
+[...]
+
+> --- a/kernel/irq/msi.c
+> +++ b/kernel/irq/msi.c
+> @@ -101,19 +101,19 @@ int msi_add_msi_desc(struct device *dev,
+>   *
+>   * Return: 0 on success or an appropriate failure code.
+>   */
+> -static int msi_add_simple_msi_descs(struct device *dev, unsigned int index, unsigned int ndesc)
+> +static int msi_add_simple_msi_descs(struct device *dev, struct msi_range *range)
+
+nit: most of the functions changed in this patch need to have their
+documentation tidied up.
+
+Thanks,
+
+	M.
+
 -- 
-Jason-JH Lin <jason-jh.lin@mediatek.com>
-
+Without deviation from the norm, progress is not possible.
