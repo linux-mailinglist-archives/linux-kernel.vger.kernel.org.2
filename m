@@ -2,137 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968BC460598
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 11:03:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94BB04605B1
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 11:37:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245503AbhK1KGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 05:06:41 -0500
-Received: from mout.gmx.net ([212.227.15.15]:58949 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232449AbhK1KEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 05:04:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1638093661;
-        bh=W4OA5B8RsL5jolbKnXkXQOQbT/WRhFUAJHyD/Mmh6+Y=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=gRWs3SKCQYQSythd0Bxfs+HTWsC/yRadm+0U954++NJ/FIClT1/h+03L4OzyuTk6R
-         492cEd77vNcmzEA9tNF/gdF635CC8DyFEpP7SuzDxHZh4pFgsJPl0oPvDBpjaTbCiW
-         IOXAc0j88NcQXU9rCsD0UXzI1FNe9azjo8OL0obo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.150.210]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MMGN2-1n9M4Z2cuk-00JJ5X; Sun, 28
- Nov 2021 11:01:01 +0100
-Message-ID: <252cd5acd9bf6588ec87ce02884925c737b6a8b7.camel@gmx.de>
-Subject: Re: [PATCH 1/1] mm: vmscan: Reduce throttling due to a failure to
- make progress
-From:   Mike Galbraith <efault@gmx.de>
-To:     Alexey Avramov <hakavlad@inbox.lv>,
-        Mel Gorman <mgorman@techsingularity.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Rik van Riel <riel@surriel.com>,
-        Darrick Wong <djwong@kernel.org>, regressions@lists.linux.dev,
-        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Sun, 28 Nov 2021 11:00:59 +0100
-In-Reply-To: <20211128042635.543a2d04@mail.inbox.lv>
-References: <20211125151853.8540-1-mgorman@techsingularity.net>
-         <20211127011246.7a8ac7b8@mail.inbox.lv>
-         <20211126165211.GL3366@techsingularity.net>
-         <20211128042635.543a2d04@mail.inbox.lv>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:79XMNOX2dcJkpKsjLkjp8P5yZeNxbCGiV8Yeqj4OBuyjhuFwfli
- 4pFpswaoJ8X9Twe7Y3bLBbDf0LozDMfPjWF0oqNGiO0BDQ7pvtE5aann4tUiZ6xilrLe7BX
- 4fmpsCrNtoX4c5PbuFxzItIkvEhP7Dz1B3jMqi1l3XmzMBbdLinh/x62HcobNMweegJSRJG
- AShfLkDfOUL1hdxpKv3xw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:0qdtCiJknZA=:C0TWX5EyVht6rFRoUlC0pV
- 4Y4n2ArxTop4Tq8C0GhzY+LPFH4kSAyQhH6Ol4ZEaDuHxg/UmWNDTu3zUh2EYwVoguitfPZIr
- vtdj01ESYckMYmvs8S9L/39zj7qxam48egIJfHPLsdN2+i+/iK0h9cjpdLHfMLMaS49F7Ckts
- jR4TcYGIci+QebhbXEFVLbdwDwQavD4R34DaUtTQToDp3IzwISLI6rmUUkHSOfZOFTcuavZaW
- prfSh5agChhA9eBwXKLGWKxmJP4x2jigkdlBTk8SE5gslDlwa54xlj6AMheR2m/ZLp6PeZTix
- NjaQKR0MFZzu513We2u4qg0iup2asTRxGdxRVWVkj5R0X8wHeb/7gDtcWr9qPOy2j5WUkSIXu
- 6GIIdt7hHVc+igBTS8gZT/7JK+mpy0zLmmbtObldTnYdnD9N3xjyMttKA+MRuuuwgBgdUtvGQ
- OW6B4jN9llsIIEiyT69IRp8aK02FaYuk1sPHfCKKgfUExVICv5wYp9kDZmMii0XLrFdi/dW+B
- vUaE2DAwVrIB1Iyx3jZDBxz1uF5wCVrqGb6egaYcvGk3BwTHac3RaRszgCoq0tml/Isq8Ko/5
- hb5pd6+X65+tbV88plCwL/IT9U133cCymwEzBkpYe71fqa5lvy8CmUOFuFK3P0Qnq85MFAN8Q
- /4vIzXJZCrK5klZdLX1iDXV7HzL9EhuG2i40XDvG4EkeP7fcCkjZV22RR4p2gMjlFoqr8P/EQ
- CgGh4DD2P9WN4FOfgP95L2wHivu9ekwDCmLxAh2VZcs1wI+Hy1VKa3zgwjgpnshdwX4R7wpzm
- Hi97YpkcRON9ed2JXGkVc01kL93KiW4vy+qlogcivz6eTZf0DSPWi+OSaWnfd4SVFZyZI3Sl4
- Ezd2hP9IPHK9THlJB2ZDo+rBKthlHRWGbCZAgdD6Monrz/Hg5nM0zxBRyEsMgNC4PYkApnqkz
- CxCNQP5TNABhNMhtOYqWCM/wYH2HYFSCZW+L6oKzT6SgP5U0zBnFf8Fx5SgQTlGiB5qQ1Z3O7
- PBX12jnFMfL6cX0GGwTVEAbqXjenhSUFyqwAZvc8F9l97Eq1kZGhFJqS6+h5bAbvIpbXe3+5A
- Uwjq0+2ClTX/gU=
+        id S1357114AbhK1KkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 05:40:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234612AbhK1KiP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Nov 2021 05:38:15 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDBBC061574;
+        Sun, 28 Nov 2021 02:34:59 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D88F260F17;
+        Sun, 28 Nov 2021 10:34:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D3F1C004E1;
+        Sun, 28 Nov 2021 10:34:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638095698;
+        bh=+8T3JcjffAOWYDApIveGl9HhTHeoo4rTTyhbueXv0QI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=q/2TbPHtAaSsEKff9XOEXMGU1xfRPZTrMxRtH1qzxYWwGLCS+Ucw59axB7CeqKkTL
+         aJOIf3/Za+8U4Ajcc5S9YWVYztV7HkuGSi5lIVHfIAcY0ni0CZXihirmlgaFH8F7Yr
+         QE31eqW/NUz7bg0mALlcHlZ1p1kiKqaM8FwvJW8rTs1xpVGbVr3/m8AmAwhKXU2SUw
+         e2CSH6rpD7r8Fq6GX0m5S95aBpVuFO7Ryd4xoa6e8lRcbINArqn5AXY+Ex9xRTj2IN
+         tv55Gf+cSsvyPhGcPN+7DarOAZFrR4mPFK8g9dsTrxc21l0XotbujLEKWYp6+9ngjW
+         okUnX0rKuyP6A==
+Date:   Sun, 28 Nov 2021 19:34:50 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Steven Rostedt <rostedt@goodmis.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>
+Subject: Re: [RFC 0/8] perf/bpf: Add batch support for [ku]probes attach
+Message-Id: <20211128193450.8147832ab7d0d10494102ffb@kernel.org>
+In-Reply-To: <20211124084119.260239-1-jolsa@kernel.org>
+References: <20211124084119.260239-1-jolsa@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-11-28 at 04:26 +0900, Alexey Avramov wrote:
-> I will present the results of the new tests here.
->
-> TLDR;
-> =3D=3D=3D=3D=3D
-> No one Mel's patch doesn't prevent stalls in my tests.
+Hi Jiri,
 
-Seems there may be a problem with the THROTTLE_WRITEBACK bits..
+On Wed, 24 Nov 2021 09:41:11 +0100
+Jiri Olsa <jolsa@redhat.com> wrote:
 
-> $ for i in {1..10}; do tail /dev/zero; done
-> -- 1. with noswap
+> hi,
+> adding support to create multiple kprobes/uprobes within single
+> perf event. This way we can associate single bpf program with
+> multiple kprobes.
 
-..because the bandaid below (made of 8cd7c588 shards) on top of Mel's
-last pulled that one-liner's very pointy fangs.
+Thanks for the change, basically, you can repeatedly call the
+create_local_trace_kprobe() and register it.
 
-=2D--
- mm/backing-dev.c |    5 +++++
- mm/vmscan.c      |    8 +++++++-
- 2 files changed, 12 insertions(+), 1 deletion(-)
+> 
+> Sending this as RFC because I'm not completely sure I haven't
+> missed anything in the trace/events area.
 
-=2D-- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -1055,3 +1055,8 @@ long congestion_wait(int sync, long time
- 	return ret;
- }
- EXPORT_SYMBOL(congestion_wait);
-+
-+int async_bdi_congested(void)
-+{
-+	return atomic_read(&nr_wb_congested[BLK_RW_ASYNC]) !=3D 0;
-+}
-=2D-- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1021,6 +1021,8 @@ static void handle_write_error(struct ad
- 	unlock_page(page);
- }
+OK let me check that.
 
-+extern int async_bdi_congested(void);
-+
- void reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason=
-)
- {
- 	wait_queue_head_t *wqh =3D &pgdat->reclaim_wait[reason];
-@@ -1048,6 +1050,10 @@ void reclaim_throttle(pg_data_t *pgdat,
- 	 */
- 	switch(reason) {
- 	case VMSCAN_THROTTLE_WRITEBACK:
-+		if (!async_bdi_congested()) {
-+			cond_resched();
-+			return;
-+		}
- 		timeout =3D HZ/10;
+Thanks,
 
- 		if (atomic_inc_return(&pgdat->nr_writeback_throttled) =3D=3D 1) {
-@@ -1079,7 +1085,7 @@ void reclaim_throttle(pg_data_t *pgdat,
- 	}
+> 
+> Also it needs following uprobe fix to work properly:
+>   https://lore.kernel.org/lkml/20211123142801.182530-1-jolsa@kernel.org/
+> 
+> Also available at:
+>   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+>   bpf/kuprobe_batch
+> 
+> thanks,
+> jirka
+> 
+> 
+> ---
+> Jiri Olsa (8):
+>       perf/kprobe: Add support to create multiple probes
+>       perf/uprobe: Add support to create multiple probes
+>       libbpf: Add libbpf__kallsyms_parse function
+>       libbpf: Add struct perf_event_open_args
+>       libbpf: Add support to attach multiple [ku]probes
+>       libbpf: Add support for k[ret]probe.multi program section
+>       selftest/bpf: Add kprobe multi attach test
+>       selftest/bpf: Add uprobe multi attach test
+> 
+>  include/uapi/linux/perf_event.h                            |   1 +
+>  kernel/trace/trace_event_perf.c                            | 214 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------
+>  kernel/trace/trace_kprobe.c                                |  47 ++++++++++++++++---
+>  kernel/trace/trace_probe.c                                 |   2 +-
+>  kernel/trace/trace_probe.h                                 |   6 ++-
+>  kernel/trace/trace_uprobe.c                                |  43 +++++++++++++++--
+>  tools/include/uapi/linux/perf_event.h                      |   1 +
+>  tools/lib/bpf/libbpf.c                                     | 235 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--------------
+>  tools/lib/bpf/libbpf.h                                     |  25 +++++++++-
+>  tools/lib/bpf/libbpf_internal.h                            |   5 ++
+>  tools/testing/selftests/bpf/prog_tests/multi_kprobe_test.c |  83 +++++++++++++++++++++++++++++++++
+>  tools/testing/selftests/bpf/prog_tests/multi_uprobe_test.c |  97 ++++++++++++++++++++++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/multi_kprobe.c           |  58 +++++++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/multi_uprobe.c           |  26 +++++++++++
+>  14 files changed, 765 insertions(+), 78 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/multi_kprobe_test.c
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/multi_uprobe_test.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/multi_kprobe.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/multi_uprobe.c
+> 
 
- 	prepare_to_wait(wqh, &wait, TASK_UNINTERRUPTIBLE);
--	ret =3D schedule_timeout(timeout);
-+	ret =3D io_schedule_timeout(timeout);
- 	finish_wait(wqh, &wait);
 
- 	if (reason =3D=3D VMSCAN_THROTTLE_WRITEBACK)
-
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
