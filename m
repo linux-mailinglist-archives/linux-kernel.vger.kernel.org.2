@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E62460977
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 20:37:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 189F446097A
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 20:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359115AbhK1TkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 14:40:21 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:35538 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240202AbhK1TiK (ORCPT
+        id S1359297AbhK1Tk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 14:40:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240183AbhK1TiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 14:38:10 -0500
+        Sun, 28 Nov 2021 14:38:12 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C289C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 11:34:55 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DBFDAB80D5D
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 19:34:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4C0CC53FC7;
-        Sun, 28 Nov 2021 19:34:50 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4877CB80D63
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 19:34:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2777CC004E1;
+        Sun, 28 Nov 2021 19:34:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638128091;
-        bh=9qHION/j+cCuBe5Fmd/bm9sdSErThEiD7tePTGaE8O8=;
+        s=k20201202; t=1638128093;
+        bh=veudWGF53U2FVmhKaDgqSuU/txGuYwWBiT1CAhAmvms=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kyCx5HGzwnz4cvo6ALIenJJJVQiD/M0Iy/kb08WvJwpR5A8WoKuln3EZk1bVk6o6G
-         AoBGWa75xUmr0+La9fWCXZE/1v7/vq6LSKKxyE2W6SipZFVi89zSu7MQJHoVhXnPQf
-         fCF1QN8nK3ouRNHTHY71DpFsnauw3804Bd7a2GmTHMN5t64auRVd/4+qR/RwyH37KR
-         vDsuGHzNBKgbY04cDydimn8NeV5SnBBQdYnQFtc/M9i3VkZjnqgFTiN61ktIY+i6zs
-         pK4xzNXTIsl6CQa03enCO0qR+YsRFdFtTKLM+va2kLoVqA/TUYF8wP2+ytaie8T7ds
-         tKx9WUeI/FdOg==
+        b=CmZnQoU51Dgtb/1RiNHDO8gn+2bPakRq6VFXDSsyp0QDduyLrXJt3jukaakVc3xUu
+         hJiS1gdSMUtLwdavNHMzhei1peqbTDFYHUYG3LzO7clYbU+jQbkQfQn1ec4cep3zyK
+         +kbtpZUl7tE3FHEDO85yf1qRexN2qeNPjCLQqcB5iEXlRjlRzcIX2OPPKUL5R3l8Nz
+         CKtvEkj7b90tU3nZoQCDYliRhFZzHz4kh3z5Yq+l2KyBBJtTNpDHeB63brfM0NtxjU
+         ptJhIOUxdmci/4TuKT3frTi8Jbfh8hgXIDkhKYGfIiaVxB5BSmjvsW0W2eAL4KSwzv
+         ZQWpWkYxf270w==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Ofir Bitton <obitton@habana.ai>
-Subject: [PATCH 09/12] habanalabs: handle events during soft-reset
-Date:   Sun, 28 Nov 2021 21:34:32 +0200
-Message-Id: <20211128193435.266534-9-ogabbay@kernel.org>
+Cc:     Ohad Sharabi <osharabi@habana.ai>
+Subject: [PATCH 10/12] habanalabs: skip read fw errors if dynamic descriptor invalid
+Date:   Sun, 28 Nov 2021 21:34:33 +0200
+Message-Id: <20211128193435.266534-10-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211128193435.266534-1-ogabbay@kernel.org>
 References: <20211128193435.266534-1-ogabbay@kernel.org>
@@ -44,82 +47,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ofir Bitton <obitton@habana.ai>
+From: Ohad Sharabi <osharabi@habana.ai>
 
-Driver should handle events during soft-reset as F/W is not
-going through reset and it keeps sending events towards host.
+Reporting FW errors involves reading of the error registers.
 
-Signed-off-by: Ofir Bitton <obitton@habana.ai>
+In case we have a corrupted FW descriptor we cannot do that since the
+dynamic scratchpad is potentially corrupted as well and may cause kernel
+crush when attempting access to a corrupted register offset.
+
+Signed-off-by: Ohad Sharabi <osharabi@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/misc/habanalabs/common/device.c     | 4 ++++
- drivers/misc/habanalabs/common/habanalabs.h | 2 ++
- drivers/misc/habanalabs/common/irq.c        | 2 +-
- 3 files changed, 7 insertions(+), 1 deletion(-)
+ drivers/misc/habanalabs/common/firmware_if.c | 17 +++++++++++++++--
+ drivers/misc/habanalabs/common/habanalabs.h  |  2 ++
+ 2 files changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/device.c b/drivers/misc/habanalabs/common/device.c
-index 822d9cec5aaf..720eea0b7e9c 100644
---- a/drivers/misc/habanalabs/common/device.c
-+++ b/drivers/misc/habanalabs/common/device.c
-@@ -1019,6 +1019,8 @@ int hl_device_reset(struct hl_device *hdev, u32 flags)
+diff --git a/drivers/misc/habanalabs/common/firmware_if.c b/drivers/misc/habanalabs/common/firmware_if.c
+index bafadcc65497..760ca139d5cf 100644
+--- a/drivers/misc/habanalabs/common/firmware_if.c
++++ b/drivers/misc/habanalabs/common/firmware_if.c
+@@ -1772,6 +1772,9 @@ static int hl_fw_dynamic_validate_descriptor(struct hl_device *hdev,
+ 		return rc;
+ 	}
  
- 		handle_reset_trigger(hdev, flags);
- 
-+		hdev->is_in_soft_reset = !hard_reset;
++	/* here we can mark the descriptor as valid as the content has been validated */
++	fw_loader->dynamic_loader.fw_desc_valid = true;
 +
- 		/* This also blocks future CS/VM/JOB completion operations */
- 		hdev->disabled = true;
+ 	return 0;
+ }
  
-@@ -1171,6 +1173,7 @@ int hl_device_reset(struct hl_device *hdev, u32 flags)
- 	 * is required for the initialization itself
- 	 */
- 	hdev->disabled = false;
-+	hdev->is_in_soft_reset = false;
+@@ -1828,7 +1831,13 @@ static int hl_fw_dynamic_read_and_validate_descriptor(struct hl_device *hdev,
+ 		return rc;
+ 	}
  
- 	rc = hdev->asic_funcs->hw_init(hdev);
- 	if (rc) {
-@@ -1242,6 +1245,7 @@ int hl_device_reset(struct hl_device *hdev, u32 flags)
+-	/* extract address copy the descriptor from */
++	/*
++	 * extract address to copy the descriptor from
++	 * in addition, as the descriptor value is going to be over-ridden by new data- we mark it
++	 * as invalid.
++	 * it will be marked again as valid once validated
++	 */
++	fw_loader->dynamic_loader.fw_desc_valid = false;
+ 	src = hdev->pcie_bar[region->bar_id] + region->offset_in_bar +
+ 							response->ram_offset;
+ 	memcpy_fromio(fw_desc, src, sizeof(struct lkd_fw_comms_desc));
+@@ -2317,6 +2326,9 @@ static int hl_fw_dynamic_init_cpu(struct hl_device *hdev,
+ 	dev_info(hdev->dev,
+ 		"Loading firmware to device, may take some time...\n");
  
- out_err:
- 	hdev->disabled = true;
-+	hdev->is_in_soft_reset = false;
++	/* initialize FW descriptor as invalid */
++	fw_loader->dynamic_loader.fw_desc_valid = false;
++
+ 	/*
+ 	 * In this stage, "cpu_dyn_regs" contains only LKD's hard coded values!
+ 	 * It will be updated from FW after hl_fw_dynamic_request_descriptor().
+@@ -2412,7 +2424,8 @@ static int hl_fw_dynamic_init_cpu(struct hl_device *hdev,
+ 	return 0;
  
- 	if (hard_reset) {
- 		dev_err(hdev->dev, "Failed to reset! Device is NOT usable\n");
+ protocol_err:
+-	fw_read_errors(hdev, le32_to_cpu(dyn_regs->cpu_boot_err0),
++	if (fw_loader->dynamic_loader.fw_desc_valid)
++		fw_read_errors(hdev, le32_to_cpu(dyn_regs->cpu_boot_err0),
+ 				le32_to_cpu(dyn_regs->cpu_boot_err1),
+ 				le32_to_cpu(dyn_regs->cpu_boot_dev_sts0),
+ 				le32_to_cpu(dyn_regs->cpu_boot_dev_sts1));
 diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index a465b4a5f31d..c2129c9fe9e4 100644
+index c2129c9fe9e4..77ac4bb98137 100644
 --- a/drivers/misc/habanalabs/common/habanalabs.h
 +++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -2591,6 +2591,7 @@ struct last_error_session_info {
-  *                        protocol will throw an error. Relevant only for
-  *                        cases where Linux was not loaded to device CPU
-  * @supports_wait_for_multi_cs: true if wait for multi CS is supported
-+ * @is_in_soft_reset: Device is currently in soft reset process.
+@@ -1034,6 +1034,7 @@ struct fw_response {
+  * @image_region: region to copy the FW image to
+  * @fw_image_size: size of FW image to load
+  * @wait_for_bl_timeout: timeout for waiting for boot loader to respond
++ * @fw_desc_valid: true if FW descriptor has been validated and hence the data can be used
   */
- struct hl_device {
- 	struct pci_dev			*pdev;
-@@ -2719,6 +2720,7 @@ struct hl_device {
- 	u8				device_cpu_is_halted;
- 	u8				supports_wait_for_multi_cs;
- 	u8				stream_master_qid_arr_size;
-+	u8				is_in_soft_reset;
+ struct dynamic_fw_load_mgr {
+ 	struct fw_response response;
+@@ -1041,6 +1042,7 @@ struct dynamic_fw_load_mgr {
+ 	struct pci_mem_region *image_region;
+ 	size_t fw_image_size;
+ 	u32 wait_for_bl_timeout;
++	bool fw_desc_valid;
+ };
  
- 	/* Parameters for bring-up */
- 	u64				nic_ports_mask;
-diff --git a/drivers/misc/habanalabs/common/irq.c b/drivers/misc/habanalabs/common/irq.c
-index 9fd4c18e274e..64e0d9de21bd 100644
---- a/drivers/misc/habanalabs/common/irq.c
-+++ b/drivers/misc/habanalabs/common/irq.c
-@@ -245,7 +245,7 @@ irqreturn_t hl_irq_handler_eq(int irq, void *arg)
- 		 */
- 		dma_rmb();
- 
--		if (hdev->disabled) {
-+		if (hdev->disabled && !hdev->is_in_soft_reset) {
- 			dev_warn(hdev->dev, "Device disabled but received an EQ event\n");
- 			goto skip_irq;
- 		}
+ /**
 -- 
 2.25.1
 
