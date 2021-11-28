@@ -2,140 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 312F34607E9
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 18:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA8964607EB
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 18:13:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358815AbhK1RPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 12:15:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43536 "EHLO
+        id S1358726AbhK1RRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 12:17:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358599AbhK1RNP (ORCPT
+        with ESMTP id S1358755AbhK1RPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 12:13:15 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C04BBC06175F
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 09:09:58 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id p27-20020a05600c1d9b00b0033bf8532855so10673525wms.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 09:09:58 -0800 (PST)
+        Sun, 28 Nov 2021 12:15:07 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0E5C0613F3
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 09:11:38 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id r9-20020a7bc089000000b00332f4abf43fso9849631wmh.0
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 09:11:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VDR+IVxxeeTY3pueMAGZ7jxJmYafV0PT+lGE6gPzU/g=;
-        b=S5upfRz9lN77QH3G8CFZjUiEavx1EituaAIIS0ZVDRdzwB7zjfd2vl6ZO+Jj6uXKd5
-         wGtfpVXYru01kEk/OC8uYWcTifWWRVffUV61HVY4J+voUE+543QU1xrtcTwpTGX1Nak0
-         RvNN4ltyJysLXL/m1QXNqY0WG7yMqvneFcMWheKYFmZ8YaVVJBsYA7mBvYtWXptX3C71
-         U2emytwQQoTmzr4/JB1x2e/i0BZ3+svXvTXHxsH7Wl+mKibWo2p4EqO3dPjlw0iqT382
-         n5wn+xtQ2eB3BaP2M/g4mfzRh5hpXXUFphBZ5L9gq9ikiBwyf00Df5P903/zY/ZDQSU5
-         KhMg==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=/BxCr/w+l2bdFSYByk/AHxwMpqs21Y+yuV2W/kHzL+I=;
+        b=KDecI5aLdOlhDki13ybUHu9/Y5J42QKcMIpHg1aLjEGz0t9QCWaLz0oYLY5JFI3s+Y
+         1CTnFAXVhjHQbCpYlylaGh+ORIqLXog3xdg3xTn95XE6H4zUjCkuAgXhMjOJNwMdxz8K
+         PVM77gNXx7mLBq2Bb41e0b7bwCP1aPjQsn4ZZlcgtk47m70Dn6ZGG9BV+h6lsUg1BlMx
+         0FuuwAGufbL9bfr9TmcTYmabyJ38GxyVzsMjDsmbey/7EUxNAT5uS8302U/Mb3G1pHn6
+         N81zgoC40RLMDYXZG+NBp58GOgw/fdBQUSIvtJd5K8Aam+012KsgLW96w+L9B9ucDTd6
+         2bEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VDR+IVxxeeTY3pueMAGZ7jxJmYafV0PT+lGE6gPzU/g=;
-        b=kUvAMzFnQBJQDfOhouJ9VcgI1ZxNBPrzmhBqpn02Uzgx59XDoe8TJJcVK/taHkJcDo
-         PmwPCbPFQxxEEIynB2c8AHfc2gMDkaQXFDM1O6InyfDQ9LA0HsJc7Toj4Sou7zgqZGHV
-         Uf7NvdKDugRhjy7dCILeoq3nGyMaV0N46M5fR5A94BALFVBkDVdg1VuoGrWsjJr75vZ/
-         JnZneHOw5oAenat7V+4SsgcLhmLW+M6hgrO0VOb0Z0h9AlhobFABE0MSrPy2Plhx4fZB
-         TwoiOtex0fDoO/NijCWHPoG3vgEEOu9FZbfdKhrdSdjqw07CqJP0moiKx1owYGRz9PHg
-         6uRQ==
-X-Gm-Message-State: AOAM532Gk4CbcMYAP5B9vL2aSr0yfFJ0VEK9g4ObsQSPn227fKY8hQFV
-        J1GhDPTp8HzXrGOlhTP9iK4=
-X-Google-Smtp-Source: ABdhPJymkgns9D9qgHJXuC1+m/H1yB/tlovzTOzwy3lgONbZuLc8hCIfufDa5HYB5cY5wtyoCz9CSw==
-X-Received: by 2002:a7b:cf10:: with SMTP id l16mr30923511wmg.17.1638119397390;
-        Sun, 28 Nov 2021 09:09:57 -0800 (PST)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::ac86])
-        by smtp.gmail.com with ESMTPSA id n15sm18243845wmq.38.2021.11.28.09.09.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 09:09:57 -0800 (PST)
-From:   Michael Straube <straube.linux@gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=/BxCr/w+l2bdFSYByk/AHxwMpqs21Y+yuV2W/kHzL+I=;
+        b=SK/CBU9v5ZhGAGtCvdwmsPjxFPVdOpBkYsP8Nv/FCqCOfaWpzNpYvrqPZvBU5ruh22
+         nXJR7qg/G+7pONIi+x+S6KgOSLWP/57xQs31z54GVDdIHsVfu0vsDq2+3ESUdtRfZa2Z
+         Ybg+7voqoOOpox8+IR9PLvShC89oDOnUwWud6gBZsk+7CLqaiApRjzx/FTnMW6sOKb0t
+         AALGCwbkPKfrl2S6z8mpnlDMCfl4v6lESA694lu+mBD0wTsTKStNSe4Hh2CQjpIx+2jn
+         kjdxsVEJbU0rDTY45xrEI+IlO+vthPn3evyUP42ZK/MPBX88WwrZezbqkiQln8HZqtLl
+         HZYQ==
+X-Gm-Message-State: AOAM532bJ/hro/5iP6pppc28pojQ4bT44K+TK1VBAQn+QR41gnJXZEf2
+        72jlzbduY2rUngO3Xm/GQuk=
+X-Google-Smtp-Source: ABdhPJyFIfFjI5xFlN5Ci7B73zmINwCcGloWUFgH5wF3Pb6tZe5a5qqLcHjtMCvyKhag9Gjn7Uz/+A==
+X-Received: by 2002:a05:600c:3c91:: with SMTP id bg17mr31130727wmb.80.1638119497259;
+        Sun, 28 Nov 2021 09:11:37 -0800 (PST)
+Received: from ?IPV6:2a02:8108:96c0:3b88::ac86? ([2a02:8108:96c0:3b88::ac86])
+        by smtp.gmail.com with ESMTPSA id r7sm11120728wrq.29.2021.11.28.09.11.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Nov 2021 09:11:36 -0800 (PST)
+Message-ID: <1634f480-db75-48aa-7050-8720d60ab7d4@gmail.com>
+Date:   Sun, 28 Nov 2021 18:11:36 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH 0/5] staging: r8188eu: remove more usages of rf_type
+Content-Language: en-US
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH v2 10/10] staging: r8188eu: remove module parameter rtw_rf_config
-Date:   Sun, 28 Nov 2021 18:09:24 +0100
-Message-Id: <20211128170924.5874-11-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211128170924.5874-1-straube.linux@gmail.com>
-References: <20211128170924.5874-1-straube.linux@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20211125195936.10060-1-straube.linux@gmail.com>
+From:   Michael Straube <straube.linux@gmail.com>
+In-Reply-To: <20211125195936.10060-1-straube.linux@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The module parameter rtw_rf_config is not used in the driver.
-Remove it and remove the now unused enum rt_rf_type_def.
+On 11/25/21 20:59, Michael Straube wrote:
+> This series removes some more usages of rf_type to get one step
+> closer to remove rf_type from the hal_data_8188e structure.
+> 
+> Tested with InterTech DMG-02 on x86_64.
+> 
+> Michael Straube (5):
+>    staging: r8188eu: remove rf_type from rtw_update_ht_cap()
+>    staging: r8188eu: remove rf_type from issue_assocreq()
+>    staging: r8188eu: remove rf_type from storePwrIndexDiffRateOffset()
+>    staging: r8188eu: remove rf_type from getTxPowerIndex88E()
+>    staging: r8188eu: remove TxCount from getTxPowerIndex88E()
+> 
+>   drivers/staging/r8188eu/core/rtw_mlme.c       | 12 +--
+>   drivers/staging/r8188eu/core/rtw_mlme_ext.c   | 25 ++----
+>   drivers/staging/r8188eu/hal/rtl8188e_phycfg.c | 85 +++----------------
+>   3 files changed, 20 insertions(+), 102 deletions(-)
+> 
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/r8188eu/include/drv_types.h |  1 -
- drivers/staging/r8188eu/include/rtw_rf.h    | 10 ----------
- drivers/staging/r8188eu/os_dep/os_intfs.c   |  3 ---
- 3 files changed, 14 deletions(-)
+This series is outdated an can be dropped.
 
-diff --git a/drivers/staging/r8188eu/include/drv_types.h b/drivers/staging/r8188eu/include/drv_types.h
-index 3e4928320f17..edcdbd646eaa 100644
---- a/drivers/staging/r8188eu/include/drv_types.h
-+++ b/drivers/staging/r8188eu/include/drv_types.h
-@@ -85,7 +85,6 @@ struct registry_priv {
- 	u8	ampdu_amsdu;/* A-MPDU Supports A-MSDU is permitted */
- 	u8	lowrate_two_xmit;
- 
--	u8	rf_config;
- 	u8	low_power;
- 
- 	u8	wifi_spec;/*  !turbo_mode */
-diff --git a/drivers/staging/r8188eu/include/rtw_rf.h b/drivers/staging/r8188eu/include/rtw_rf.h
-index 7ec252fec054..d0a408b903dc 100644
---- a/drivers/staging/r8188eu/include/rtw_rf.h
-+++ b/drivers/staging/r8188eu/include/rtw_rf.h
-@@ -99,16 +99,6 @@ enum ht_extchnl_offset {
- 	HT_EXTCHNL_OFFSET_LOWER = 3,
- };
- 
--/* 2007/11/15 MH Define different RF type. */
--enum rt_rf_type_def {
--	RF_1T2R = 0,
--	RF_2T4R = 1,
--	RF_2T2R = 2,
--	RF_1T1R = 3,
--	RF_2T2R_GREEN = 4,
--	RF_819X_MAX_TYPE = 5,
--};
--
- u32 rtw_ch2freq(u32 ch);
- 
- #endif /* _RTL8711_RF_H_ */
-diff --git a/drivers/staging/r8188eu/os_dep/os_intfs.c b/drivers/staging/r8188eu/os_dep/os_intfs.c
-index 5a5f182d30c9..0021ca578949 100644
---- a/drivers/staging/r8188eu/os_dep/os_intfs.c
-+++ b/drivers/staging/r8188eu/os_dep/os_intfs.c
-@@ -75,7 +75,6 @@ static int rtw_ampdu_amsdu;/*  0: disabled, 1:enabled, 2:auto */
- 
- static int rtw_lowrate_two_xmit = 1;/* Use 2 path Tx to transmit MCS0~7 and legacy mode */
- 
--static int rtw_rf_config = RF_819X_MAX_TYPE;  /* auto */
- static int rtw_low_power;
- static int rtw_wifi_spec;
- static int rtw_channel_plan = RT_CHANNEL_DOMAIN_MAX;
-@@ -123,7 +122,6 @@ module_param(rtw_ampdu_enable, int, 0644);
- module_param(rtw_rx_stbc, int, 0644);
- module_param(rtw_ampdu_amsdu, int, 0644);
- module_param(rtw_lowrate_two_xmit, int, 0644);
--module_param(rtw_rf_config, int, 0644);
- module_param(rtw_power_mgnt, int, 0644);
- module_param(rtw_smart_ps, int, 0644);
- module_param(rtw_low_power, int, 0644);
-@@ -205,7 +203,6 @@ static uint loadparam(struct adapter *padapter,  struct  net_device *pnetdev)
- 	registry_par->rx_stbc = (u8)rtw_rx_stbc;
- 	registry_par->ampdu_amsdu = (u8)rtw_ampdu_amsdu;
- 	registry_par->lowrate_two_xmit = (u8)rtw_lowrate_two_xmit;
--	registry_par->rf_config = (u8)rtw_rf_config;
- 	registry_par->low_power = (u8)rtw_low_power;
- 	registry_par->wifi_spec = (u8)rtw_wifi_spec;
- 	registry_par->channel_plan = (u8)rtw_channel_plan;
--- 
-2.34.0
-
+Thanks,
+Michael
