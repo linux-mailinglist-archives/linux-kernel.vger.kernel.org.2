@@ -2,221 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D183446034F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 03:55:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B43F94603CE
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 05:04:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356817AbhK1C61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 21:58:27 -0500
-Received: from mga14.intel.com ([192.55.52.115]:46183 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240916AbhK1C4Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 21:56:16 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10181"; a="236040305"
-X-IronPort-AV: E=Sophos;i="5.87,270,1631602800"; 
-   d="scan'208";a="236040305"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 18:53:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,270,1631602800"; 
-   d="scan'208";a="652489221"
-Received: from allen-box.sh.intel.com ([10.239.159.118])
-  by fmsmga001.fm.intel.com with ESMTP; 27 Nov 2021 18:52:54 -0800
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Dan Williams <dan.j.williams@intel.com>, rafael@kernel.org,
-        Diana Craciun <diana.craciun@oss.nxp.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Liu Yi L <yi.l.liu@intel.com>,
-        Jacob jun Pan <jacob.jun.pan@intel.com>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Stuart Yoder <stuyoder@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Li Yang <leoyang.li@nxp.com>, iommu@lists.linux-foundation.org,
-        linux-pci@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v2 17/17] drm/tegra: Use the iommu dma_owner mechanism
-Date:   Sun, 28 Nov 2021 10:50:51 +0800
-Message-Id: <20211128025051.355578-18-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211128025051.355578-1-baolu.lu@linux.intel.com>
-References: <20211128025051.355578-1-baolu.lu@linux.intel.com>
+        id S1347209AbhK1EIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 23:08:05 -0500
+Received: from sender4-op-o15.zoho.com ([136.143.188.15]:17545 "EHLO
+        sender4-op-o15.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243542AbhK1EGD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 23:06:03 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1638057926; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=k+N01kzcipbexhHQsG88X2M0FQGUx7o/+bnRg1X6P6lyVOiD8+BbReMlTn0+Oi3d1c7w9m6u7kcgTCTv6d+BOpVO36r0mVQQy1L/o97VJEK3ohLVz927iOckGst0cFmLQti4Chc/9y20bMbd+0kgLRNjeZ1TGdTUALgolDYT0dw=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1638057926; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=k/axBYgs8ePu82NKai1qn+cHK8gQhlozWwXZnDXD8yk=; 
+        b=OexewUidtTGMEGSPfuJVLpIck/dTD52CYt8S+WPys75HdmGs49nYiKODg5XEu699gIqo6TlVR7iU2GAApuAuR+8azPDH0YknNLHpDhsT7vOPmhaChYD8tKyUKjTb8/hx7tx2psFIBtsXZa3dxJz8poIP0FMO7ke5CSZtFmK+xno=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=szanni.org;
+        spf=pass  smtp.mailfrom=angelo@szanni.org;
+        dmarc=pass header.from=<lkml@szanni.org>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1638057926;
+        s=zoho; d=szanni.org; i=lkml@szanni.org;
+        h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type:Content-Transfer-Encoding;
+        bh=k/axBYgs8ePu82NKai1qn+cHK8gQhlozWwXZnDXD8yk=;
+        b=Kn37IrDoVNidrb6X54m7LkCfk4fXsdTOh1vVjU4K3AaFUzv40tFX+7/y6FOyJiit
+        +2Ds4yqz4mGD6AhFB16H8bryGG1OuVI2zQkSqpJ6kprfETH+K8YPj+CPxc0WBKJ6/hL
+        FeasMNHSlJ8BPf4AO798O5gnGRu/2f/mEroY59iI=
+Received: from [192.168.0.128] (200.60.135.218 [200.60.135.218]) by mx.zohomail.com
+        with SMTPS id 1638057923743427.7880943683017; Sat, 27 Nov 2021 16:05:23 -0800 (PST)
+Message-ID: <5475c3ab-a53c-8728-98c5-98fd948ff556@szanni.org>
+Date:   Sat, 27 Nov 2021 19:07:49 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Content-Language: en-US
+To:     linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Will Deacon <will@kernel.org>, linux-rt-users@vger.kernel.org
+From:   Angelo Haller <lkml@szanni.org>
+Subject: sched: some non-GPL symbols becoming GPL-only with CONFIG_PREEMPT_RT
+ enabled
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@nvidia.com>
+Greetings. I hope I picked the right mailing list, as this issue might 
+be one that affects various subsystems and components:
 
-Tegra joins many platform devices onto the same iommu_domain and builds
-sort-of a DMA API on top of it.
+When compiling kernel 5.15 (and 5.16-rc2) with `CONFIG_PREEMPT_RT` 
+enabled, some of the symbols being exported as `EXPORT_SYMBOL` suddenly 
+become `EXPORT_SYMBOL_GPL` through transitive effects.
 
-Given that iommu_attach/detatch_device_shared() has supported this usage
-model. Each device that wants to use the special domain will use
-suppress_auto_claim_dma_owner and call iommu_attach_device_shared() which
-will use dma owner framework to lock out other usages of the group and
-refcount the domain attachment.
+In particular the symbols `migrate_enable` and `migrate_disable` are 
+currently marked as `EXPORT_SYMBOL_GPL` - yet are called from multiple 
+functions that are marked as `EXPORT_SYMBOL`.
 
-When the last device calls detatch the domain will be disconnected.
+Here an (incomplete?) listing of call sites I came across:
 
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/gpu/drm/tegra/dc.c   |  1 +
- drivers/gpu/drm/tegra/drm.c  | 55 ++++++++++++++++++------------------
- drivers/gpu/drm/tegra/gr2d.c |  1 +
- drivers/gpu/drm/tegra/gr3d.c |  1 +
- drivers/gpu/drm/tegra/vic.c  |  1 +
- 5 files changed, 32 insertions(+), 27 deletions(-)
+kernel/locking/spinlock_rt.c - rt_spin_unlock()
+kernel/locking/spinlock_rt.c - rt_read_unlock()
+kernel/locking/spinlock_rt.c - rt_write_unlock()
+mm/highmem.c - kunmap_local_indexed()
 
-diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
-index a29d64f87563..3a2458f56fbc 100644
---- a/drivers/gpu/drm/tegra/dc.c
-+++ b/drivers/gpu/drm/tegra/dc.c
-@@ -3111,4 +3111,5 @@ struct platform_driver tegra_dc_driver = {
- 	},
- 	.probe = tegra_dc_probe,
- 	.remove = tegra_dc_remove,
-+	.suppress_auto_claim_dma_owner = true,
- };
-diff --git a/drivers/gpu/drm/tegra/drm.c b/drivers/gpu/drm/tegra/drm.c
-index 8d37d6b00562..e6e2da799674 100644
---- a/drivers/gpu/drm/tegra/drm.c
-+++ b/drivers/gpu/drm/tegra/drm.c
-@@ -928,12 +928,15 @@ int tegra_drm_unregister_client(struct tegra_drm *tegra,
- 	return 0;
- }
- 
-+/*
-+ * Clients which use this function must set suppress_auto_claim_dma_owner in
-+ * their platform_driver's device_driver struct.
-+ */
- int host1x_client_iommu_attach(struct host1x_client *client)
- {
- 	struct iommu_domain *domain = iommu_get_domain_for_dev(client->dev);
- 	struct drm_device *drm = dev_get_drvdata(client->host);
- 	struct tegra_drm *tegra = drm->dev_private;
--	struct iommu_group *group = NULL;
- 	int err;
- 
- 	/*
-@@ -941,47 +944,45 @@ int host1x_client_iommu_attach(struct host1x_client *client)
- 	 * not the shared IOMMU domain, don't try to attach it to a different
- 	 * domain. This allows using the IOMMU-backed DMA API.
- 	 */
-+	client->group = NULL;
- 	if (domain && domain != tegra->domain)
-+		return iommu_device_set_dma_owner(client->dev,
-+						  DMA_OWNER_DMA_API, NULL);
-+
-+	if (!tegra->domain)
- 		return 0;
- 
--	if (tegra->domain) {
--		group = iommu_group_get(client->dev);
--		if (!group)
--			return -ENODEV;
--
--		if (domain != tegra->domain) {
--			err = iommu_attach_group(tegra->domain, group);
--			if (err < 0) {
--				iommu_group_put(group);
--				return err;
--			}
--		}
-+	err = iommu_device_set_dma_owner(client->dev,
-+					 DMA_OWNER_PRIVATE_DOMAIN, NULL);
-+	if (err)
-+		return err;
- 
--		tegra->use_explicit_iommu = true;
-+	err = iommu_attach_device_shared(tegra->domain, client->dev);
-+	if (err) {
-+		iommu_device_release_dma_owner(client->dev,
-+					       DMA_OWNER_PRIVATE_DOMAIN);
-+		return err;
- 	}
- 
--	client->group = group;
--
-+	tegra->use_explicit_iommu = true;
-+	client->group = client->dev->iommu_group;
- 	return 0;
- }
- 
- void host1x_client_iommu_detach(struct host1x_client *client)
- {
-+	struct iommu_domain *domain = iommu_get_domain_for_dev(client->dev);
- 	struct drm_device *drm = dev_get_drvdata(client->host);
- 	struct tegra_drm *tegra = drm->dev_private;
--	struct iommu_domain *domain;
- 
--	if (client->group) {
--		/*
--		 * Devices that are part of the same group may no longer be
--		 * attached to a domain at this point because their group may
--		 * have been detached by an earlier client.
--		 */
--		domain = iommu_get_domain_for_dev(client->dev);
--		if (domain)
--			iommu_detach_group(tegra->domain, client->group);
-+	if (domain && domain != tegra->domain)
-+		return iommu_device_release_dma_owner(client->dev,
-+						      DMA_OWNER_DMA_API);
- 
--		iommu_group_put(client->group);
-+	if (client->group) {
-+		iommu_detach_device_shared(tegra->domain, client->dev);
-+		iommu_device_release_dma_owner(client->dev,
-+					       DMA_OWNER_PRIVATE_DOMAIN);
- 		client->group = NULL;
- 	}
- }
-diff --git a/drivers/gpu/drm/tegra/gr2d.c b/drivers/gpu/drm/tegra/gr2d.c
-index de288cba3905..8d92141c3c86 100644
---- a/drivers/gpu/drm/tegra/gr2d.c
-+++ b/drivers/gpu/drm/tegra/gr2d.c
-@@ -271,4 +271,5 @@ struct platform_driver tegra_gr2d_driver = {
- 	},
- 	.probe = gr2d_probe,
- 	.remove = gr2d_remove,
-+	.suppress_auto_claim_dma_owner = true,
- };
-diff --git a/drivers/gpu/drm/tegra/gr3d.c b/drivers/gpu/drm/tegra/gr3d.c
-index 24442ade0da3..33c4954977ab 100644
---- a/drivers/gpu/drm/tegra/gr3d.c
-+++ b/drivers/gpu/drm/tegra/gr3d.c
-@@ -400,4 +400,5 @@ struct platform_driver tegra_gr3d_driver = {
- 	},
- 	.probe = gr3d_probe,
- 	.remove = gr3d_remove,
-+	.suppress_auto_claim_dma_owner = true,
- };
-diff --git a/drivers/gpu/drm/tegra/vic.c b/drivers/gpu/drm/tegra/vic.c
-index c02010ff2b7f..114df067ea00 100644
---- a/drivers/gpu/drm/tegra/vic.c
-+++ b/drivers/gpu/drm/tegra/vic.c
-@@ -527,6 +527,7 @@ struct platform_driver tegra_vic_driver = {
- 	},
- 	.probe = vic_probe,
- 	.remove = vic_remove,
-+	.suppress_auto_claim_dma_owner = true,
- };
- 
- #if IS_ENABLED(CONFIG_ARCH_TEGRA_124_SOC)
--- 
-2.25.1
+The issue I'm facing in particular is kmap_atomic() calling 
+`migrate_disable` and therefore suddenly becoming GPL-only. This breaks 
+the out-of-tree CDDL licensed module ZFS and has been reported before 
+already [0]. The conversation seemingly going nowhere - or patches at 
+least not being applied upstream. Downstream issue for reference [1].
+
+As the original implementation of `migrate_enable` and `migrate_disable` 
+is apparently by Peter Zijlstra [2]. Peter would you be willing to 
+re-license both symbols `migrate_enable` and `migrate_disable` as 
+`EXPORT_SYMBOL`?
+
+The bigger issue I'm seeing though is that there is currently no 
+automated test to uncover exported symbols changing their license 
+depending on build configuration? I am not intimately familiar with the 
+API guarantees the kernel gives, but this seems like a violation. There 
+might be other symbols with similar licensing problems.
+
+I can open a bugzilla ticket too - if that is preferred.
+
+Angelo
+
+
+[0] 
+https://lore.kernel.org/linux-rt-users/20201208212841.694b3022@orivej.orivej.org/T/
+[1] https://github.com/openzfs/zfs/issues/11097
+[2] 
+https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/diff/patches/0009-sched-Add-migrate_disable.patch?h=v5.9-rc8-rt14-patches&id=9a89bfdb3bc77aecdd0ff8cc69b595541c7b50c4
 
