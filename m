@@ -2,103 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E4A46028A
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 01:23:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75DFA460293
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 01:31:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356655AbhK1AZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 19:25:49 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:49256 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233504AbhK1AXs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 19:23:48 -0500
-Received: from mail.kernel.org (unknown [198.145.29.99])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 209A3B80B23
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 00:20:32 +0000 (UTC)
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B29560524;
-        Sun, 28 Nov 2021 00:20:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1638058830;
-        bh=CKZ+e8k135ZZUhwVMJEQB8rHyvFCB7GPOLchrJ0D5go=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=0AOvXxVGgboRb7eA1NwxoOrMf3dtsAtHRbiyZJL4nEy3F08Oa/ZLj16GfcnXRIJmQ
-         zNZm5UQQ+WtO20dXMQTea3IZT5FwLccbE4YPuMfSs7Jp9bVSU1rj6fTkfWTJcosPWc
-         rf2Z7VW47FypZ3+a0a+W/VfSsCykoRdSyig12/zE=
-Date:   Sat, 27 Nov 2021 16:20:28 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Andrey Konovalov <andreyknvl@gmail.com>
-Cc:     Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>,
+        id S1356715AbhK1AeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 19:34:19 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:24740 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1356618AbhK1AcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 19:32:18 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4J1q8r4xRGz9Y;
+        Sun, 28 Nov 2021 01:28:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1638059340; bh=BpCUv6sc6+ijt8bP2X1dBPBQztb08CMPEjcmSI4mWHs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E2pJXVdwpF7xa7NgJpuaA7I4sUgCSxdIM51ma240k1OvyN0BqmbHCll/qibc7LmRW
+         l2lYyRdiOG0LzZZRcQGCbOEp7l5l7FW2EF13o78tAxh2BlfQLPIqSf2RtHjwNL3AHE
+         ag5QLlLhW95Kp8fH9dCV3j4Imx5XQ5T4nV1vyleMAzKz1Soq6c6OnKpJ5TdzfdwJ2G
+         LnQoKtgUWmpQEblg3IMnaxzgslueaP8apjKdZ9y96JJ35QjeXKQSawNEPmoxjBztTd
+         XADr6Ffb3r0e7Kv67f/UCkeky+8m4GCPkGRqXkdYh2BWzTit8bUIHp4dPNUh/LgLHY
+         SH/yCd1X39o+Q==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.3 at mail
+Date:   Sun, 28 Nov 2021 01:28:40 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Russell King <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chinwen Chang (=?UTF-8?Q?=E5=BC=B5=E9=8C=A6=E6=96=87?=) 
-        <chinwen.chang@mediatek.com>,
-        Nicholas Tang (=?UTF-8?Q?=E9=84=AD=E7=A7=A6?= =?UTF-8?Q?=E8=BC=9D?=) 
-        <nicholas.tang@mediatek.com>,
-        James Hsu ( =?UTF-8?Q?=E5=BE=90=E6=85=B6=E8=96=B0?=) 
-        <James.Hsu@mediatek.com>,
-        Yee Lee (=?UTF-8?Q?=E6=9D=8E=E5=BB=BA=E8=AA=BC?=) 
-        <Yee.Lee@mediatek.com>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Subject: Re: [PATCH] kmemleak: fix kmemleak false positive report with HW
- tag-based kasan enable
-Message-Id: <20211127162028.07d1a9fc392d91e7d234daae@linux-foundation.org>
-In-Reply-To: <CA+fCnZchvHjU9G_SSf_M2--jHPqEa6PEr3u_5q-wJWvZK4N2pA@mail.gmail.com>
-References: <20211118054426.4123-1-Kuan-Ying.Lee@mediatek.com>
-        <754511d9a0368065768cc3ad8037184d62c3fbd1.camel@mediatek.com>
-        <CA+fCnZchvHjU9G_SSf_M2--jHPqEa6PEr3u_5q-wJWvZK4N2pA@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee.jones@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
+        "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v4 05/25] reboot: Warn if restart handler has duplicated
+ priority
+Message-ID: <YaLNOJTM+lVq+YNS@qmqm.qmqm.pl>
+References: <20211126180101.27818-1-digetx@gmail.com>
+ <20211126180101.27818-6-digetx@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211126180101.27818-6-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Nov 2021 17:13:36 +0100 Andrey Konovalov <andreyknvl@gmail.com> wrote:
+On Fri, Nov 26, 2021 at 09:00:41PM +0300, Dmitry Osipenko wrote:
+> Add sanity check which ensures that there are no two restart handlers
+> registered with the same priority. Normally it's a direct sign of a
+> problem if two handlers use the same priority.
 
-> > > kmemleak_object *object)
-> > >  static struct kmemleak_object *lookup_object(unsigned long ptr, int
-> > > alias)
-> > >  {
-> > >       struct rb_node *rb = object_tree_root.rb_node;
-> > > +     unsigned long untagged_ptr = (unsigned
-> > > long)kasan_reset_tag((void *)ptr);
-> > >
-> > >       while (rb) {
-> > >               struct kmemleak_object *object =
-> > >                       rb_entry(rb, struct kmemleak_object, rb_node);
-> > > -             if (ptr < object->pointer)
-> > > +             unsigned long untagged_objp;
-> > > +
-> > > +             untagged_objp = (unsigned long)kasan_reset_tag((void
-> > > *)object->pointer);
-> 
-> The two lines above can be squashed together.
+The patch doesn't ensure the property that there are no duplicated-priority
+entries on the chain.
 
-That would make a too-long line even longer.  In fact I think it's
-better to go the other way:
+I'd rather see a atomic_notifier_chain_register_unique() that returns
+-EBUSY or something istead of adding an entry with duplicate priority.
+That way it would need only one list traversal unless you want to
+register the duplicate anyway (then you would call the older
+atomic_notifier_chain_register() after reporting the error).
 
---- a/mm/kmemleak.c~kmemleak-fix-kmemleak-false-positive-report-with-hw-tag-based-kasan-enable-fix
-+++ a/mm/kmemleak.c
-@@ -384,10 +384,10 @@ static struct kmemleak_object *lookup_ob
- 	unsigned long untagged_ptr = (unsigned long)kasan_reset_tag((void *)ptr);
- 
- 	while (rb) {
--		struct kmemleak_object *object =
--			rb_entry(rb, struct kmemleak_object, rb_node);
-+		struct kmemleak_object *object;
- 		unsigned long untagged_objp;
- 
-+		object = rb_entry(rb, struct kmemleak_object, rb_node);
- 		untagged_objp = (unsigned long)kasan_reset_tag((void *)object->pointer);
- 
- 		if (untagged_ptr < untagged_objp)
-_
+(Or you could return > 0 when a duplicate is registered in
+atomic_notifier_chain_register() if the callers are prepared
+for that. I don't really like this way, though.)
 
+Best Regards
+Micha³ Miros³aw
