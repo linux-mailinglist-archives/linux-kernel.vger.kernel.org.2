@@ -2,106 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8EBB460B5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 01:03:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD232460B5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 01:04:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376318AbhK2AGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 19:06:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47926 "EHLO
+        id S1359829AbhK2AID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 19:08:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241235AbhK2AEw (ORCPT
+        with ESMTP id S1359721AbhK2AGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 19:04:52 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F0FC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 16:01:35 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id a18so32821200wrn.6
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 16:01:35 -0800 (PST)
+        Sun, 28 Nov 2021 19:06:01 -0500
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54228C0613DD
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 16:02:12 -0800 (PST)
+Received: by mail-ua1-x935.google.com with SMTP id p37so30354480uae.8
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 16:02:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=hxpIxgszqLxUoL2VSzhFmmcZyWKf58JJNFT+Q7Zm/4E=;
-        b=DatfEIHTtzF3+0NWWOu/fsent1XIMdrgwoC85Tqda/uDVL1smQ8nGqWEmjUVGZpmE5
-         3USaAfeUVkZ5VxNMeeNdHS0Ilf3CcbvBFdoa8UrDG2KlbPvHmOSd+fQb4ekYAPZBW5nh
-         sNi02dotLjX1wGPtR1AUuch8EVz86n3bFIdmgh/ghV9xzArwXzyUjymfMGusuOyPjHZ5
-         tEo1hKDRZ9mDrNjJhV3ERSwIDo4orhZzA8qDrsGTluNgQpuMeo7ZgiIZ9ZEOq9IfI77r
-         cMhtZSVFuVBKns0U6HLblh7LKJiyGTSVGZST/6gMF6S0nmOyD6bI+E2BDWoQXmaevLIE
-         1MRw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iX/liG3cogM7y6xTjLVTRJ7br8H2lhulk0j4IZZdOaQ=;
+        b=uGe8zOrAcFrS6z7QKGo9xMOZg9CRr8M4izeUnePF88hPW3IOU4O47zaGY3ehLTJ7ad
+         jjp/QfHp82CjKI63WwBE9dITiRQtKezFFSOrSjz5ClIRSE3QGYDg+XCo+0Ms4r+/kbSu
+         glgbX/zxa/WBlsB16AuTRQs2FQqadz+FldsS42Q4F/qDUyBfI5bzByZwN+90bzGM+ITS
+         cpdZU3TcFgVt6NApgJa2NVB6pVumAWqrHlkE/4ehl1V3jjQAGwTg+/O5YPrNoQZvB9Z4
+         fPLH38w79wmmzGLT4vmMkeZLhvPNIc86Xdyp5fIhurOrDWbBRwgR7fHa0iRIDL1OJWaD
+         lJOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=hxpIxgszqLxUoL2VSzhFmmcZyWKf58JJNFT+Q7Zm/4E=;
-        b=YrtstJp+NCR1eimWHyp/JzzkxI3wwC1X6rtDgN6NspWTpNZKOkbyCkFsvDRn7Fo+1k
-         3KjyDvDityidGFhAOTOk160OgpzckjM0wKNVz1HwkaJNUhlNq0fpIRpEBjE0u43EmDtB
-         vl5EVdxf/7YnbO6Tnp3JVL4ZhYfSgX8l0ykB8p0vF8EcIqCMPjK5XFIWMU8m9AiLfAJW
-         tgBdTNGnoBfqILF0KsZBdqf7mxKKSvDXihJJRjrhK4Vh8GbFx1WhMGftt7va10jg5gvr
-         V0UV2FbjMHx4r5BoX4s6FjpwIY26/+enGUtYQZUZ66/f3yys1exeZ2BTmJp/PSpPv3BN
-         v11w==
-X-Gm-Message-State: AOAM532/JWPihL/vXwnnVqOiBkMeTN3uDe9RqgWBUIpeiG5rDn/Lo11T
-        SZy/op3Wl6jAvu0RyTif5CPXDJYL/PJOA0vdQRU=
-X-Google-Smtp-Source: ABdhPJxxaGBkHFMcyOdX9uZoFpo4yNSwBSMbG+FaWQC9eg3ecAyQcPQD5cjWGUjspU3TSUj1Asm3FaynUjoCaGxxXsw=
-X-Received: by 2002:a5d:5912:: with SMTP id v18mr29682995wrd.144.1638144094319;
- Sun, 28 Nov 2021 16:01:34 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iX/liG3cogM7y6xTjLVTRJ7br8H2lhulk0j4IZZdOaQ=;
+        b=Ewyf7n4bK8FJzDYDLam6IKihnH7ek7JuYhVYz7iHxEjO5OhJudXzHqou6L9bX3rw4p
+         G26TFIBldbTSoqE0v4k4ljp3kY3hVTMT3J0q41l0Laixc6PU2EvgECOpN6QtgPNRwSLu
+         Q0fz/ZNlgaRy9tNXXRE2mp5LvsGcCIepJcdf/5U+TmpOtE1iAKPr+O9iKvr1vzk3Zrep
+         ZlFatm+XF8N5enY4ETp2ZKl2yOJVuvwlZvatU7Skw6ioPlz6dxpjOTHEvOvNI33pd6Se
+         U/xneqhsw1NNutlRHf/7VxDsmcP2RnuCKhMKA8Q8/sw6bkvdW6YyF6lCVt31KrM3QWz4
+         f94w==
+X-Gm-Message-State: AOAM532QErmoqjCdVsArVIrv3ixRJDzbdUCYcZnWWwYH5adX9qmBrkvU
+        vZ9C2+z/+al9QvCU4PX/krLyZYP7xVYF4VTQs2xJ7g==
+X-Google-Smtp-Source: ABdhPJyCQS9jji7xzd9RwMMKE908k3zhD5Kc+fdoA3RuOXkWpCn93jL0JO8s9A/cdRM25JVC4dSxIq/pH3Ao+owxJYo=
+X-Received: by 2002:a67:7247:: with SMTP id n68mr27587295vsc.6.1638144131510;
+ Sun, 28 Nov 2021 16:02:11 -0800 (PST)
 MIME-Version: 1.0
-Sender: okeosazze@gmail.com
-Received: by 2002:a05:600c:510a:0:0:0:0 with HTTP; Sun, 28 Nov 2021 16:01:34
- -0800 (PST)
-From:   Alicia Collins <aliciacollins634@gmail.com>
-Date:   Sun, 28 Nov 2021 16:01:34 -0800
-X-Google-Sender-Auth: 2my4TPbpCcaInQINSnntTspwPXw
-Message-ID: <CAGz+XHdpFX4PxfHcPYtyOqH8n-LUf6T-=syoCvaEGFR0Z-dOJw@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
+References: <20211127223253.19098-1-semen.protsenko@linaro.org> <20211127223253.19098-8-semen.protsenko@linaro.org>
+In-Reply-To: <20211127223253.19098-8-semen.protsenko@linaro.org>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Mon, 29 Nov 2021 02:02:00 +0200
+Message-ID: <CAPLW+4nf7Y6HQW-XmgB93Lyie=FwZMAG2rA+S5=KcKpEn_4mjA@mail.gmail.com>
+Subject: Re: [PATCH 7/8] i2c: Make I2C_EXYNOS5=y impossible when EXYNOS_USI_V2=m
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jaewon Kim <jaewon02.kim@samsung.com>,
+        Chanho Park <chanho61.park@samsung.com>,
+        David Virag <virag.david003@gmail.com>,
+        Youngmin Nam <youngmin.nam@samsung.com>,
+        devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-i2c@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello my Dear friend,
+On Sun, 28 Nov 2021 at 00:33, Sam Protsenko <semen.protsenko@linaro.org> wrote:
+>
+> When HSI2C is encapsulated in USIv2 block (e.g. in Exynos850), USIv2
+> driver must be loaded first, as it's preparing USI hardware for
+> particular protocol use. Make it impossible for i2c-exynos5 driver to be
+> built-in when USIv2 driver is built as a module, to prevent incorrect
+> booting order for those drivers.
+>
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
 
-With due respect to your person and much sincerity of purpose I wish
-to write to you today, seeking for your urgent assistance in this
-humanitarian social investment project to be establish in your country
-for the mutual benefit of the orphans and the less privileged ones,
-haven't known each other or met before, I know that everything is
-controlled by God as there is nothing impossible to him. I believe
-that you and I can cooperate together in the service of the Lord,
-please open your heart to assist me in carrying out this benevolent
-project in your country/position. I am Mrs Alicia Collins, a dying
-widow hospitalized undergoing treatment for brain tumor disease, I
-believe that you will not expose or betray this trust and confidence
-that I am about to entrust to you for the mutual benefit of the
-orphans and the less privileged ones. My late husband made a
-substantial deposit with the Bank which I have decided to hand over
-and entrust the sum of ($ 12,500,000.00 Dollars) in the account under
-your custody for you to invest it into any social charitable project
-in your location or your country. Based on my present health status I
-am permanently indisposed to handle finances or any financial related
-project.
+This patch is not needed, please ignore it.
 
- This is the reason why I decided to contact you for your support and
-help to stand as my rightful beneficiary and claim the money for
-humanitarian purposes for the mutual benefits of the less privileged
-ones. Because If the money remains unclaimed with the bank after my
-death, those greedy bank executives will place the money as an
-unclaimed Fund and share it for their selfish and worthless ventures.
-However I need your sincerity and ability to carry out this
-transaction and fulfill my final wish in implementing the charitable
-investment project in your country as it requires absolute trust and
-devotion without any failure. Meanwhile It will be my pleasure to
-compensate you with part of the total money as my Investment
-manager/partner for your effort in handling the transaction, while the
-remaining amount shall be invested into any charity project of your
-choice there in your country.
-
-Your early response will be appreciated to enable me to send you
-further details and the bank contact details where the fund has been
-deposited for you to contact the Bank for immediate release and
-transfer of the fund into your bank account as my rightful
-beneficiary.
-Thank you very much for your kind consideration and I wish you well
-and God enlighten you in this social humanitarian project.
-
-Best regards and God bless you.
-Sincerely Mrs Alicia Collins.
+>  drivers/i2c/busses/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
+> index df89cb809330..e815a9dffb2c 100644
+> --- a/drivers/i2c/busses/Kconfig
+> +++ b/drivers/i2c/busses/Kconfig
+> @@ -613,6 +613,7 @@ config I2C_EXYNOS5
+>         tristate "Exynos high-speed I2C driver"
+>         depends on OF
+>         depends on ARCH_EXYNOS || COMPILE_TEST
+> +       depends on EXYNOS_USI_V2 || !EXYNOS_USI_V2
+>         default y if ARCH_EXYNOS
+>         help
+>           High-speed I2C controller on Samsung Exynos5 and newer Samsung SoCs:
+> --
+> 2.30.2
+>
