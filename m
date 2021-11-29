@@ -2,123 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4A9460CBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 03:40:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA84460CC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 03:41:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243055AbhK2CoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 21:44:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:53513 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239504AbhK2CmE (ORCPT
+        id S241220AbhK2Co4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 21:44:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239725AbhK2Cmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 21:42:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1638153527;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wra7t4P4ZBv5QtkwKs9JyUuRuz38EhYq6YFNmbJSCZk=;
-        b=EYhaahrHEgjq1YPbtQrg8BlkBWPGVser7Ljbk3mh6XQOxTZ+Xo4w+9cA1TQ3RVOGnVNyxm
-        +sTnCPN377DlxZs3NMRK+sKARCXu7xkBxf1FeBRy+TKaabeFchUVx4pQNFJRg7e1AOzr9t
-        5kTezUkyVG+XP2NeDagTTRJn397uS74=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-191-50cbhO1PNyupgWD_UDrq3g-1; Sun, 28 Nov 2021 21:38:43 -0500
-X-MC-Unique: 50cbhO1PNyupgWD_UDrq3g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 873CD81CCB4;
-        Mon, 29 Nov 2021 02:38:42 +0000 (UTC)
-Received: from T590 (ovpn-8-28.pek2.redhat.com [10.72.8.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 11FCF19729;
-        Mon, 29 Nov 2021 02:38:31 +0000 (UTC)
-Date:   Mon, 29 Nov 2021 10:38:26 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>
-Subject: Re: [PATCH 1/2] kobject: don't delay to cleanup module kobject
-Message-ID: <YaQ9Iq3qF6H76Pzt@T590>
-References: <20211105063710.4092936-1-ming.lei@redhat.com>
- <20211105063710.4092936-2-ming.lei@redhat.com>
- <YaEGcEoCqVHwGEZH@kroah.com>
- <YaELQGKCQovNqTAp@T590>
- <YaEMaWMT+PmMvSwg@kroah.com>
+        Sun, 28 Nov 2021 21:42:51 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8717C06175A
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 18:39:34 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id y7so10976607plp.0
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 18:39:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=t+k1vMicazZQGgJua3VBr5ex8kbXiYjORBm2hnGSMD4=;
+        b=MRs7i/NWaND3/92EJ/l39FhB4+Fr9qAgXy/LxE9XPc49a1OAP9QE4W8OyGJTr/JruP
+         uU8dxEl8jJClXwQosyviuExYM4QcU99mD5F4C2XZbaKayf9so8cXOs+D54bnUv7ipjs7
+         m3ZyHsSnMU+ERyUyiK62c7AZk83/h+oy3HZPIUdp1r1k9wQgW8zySICP2QLwwTBRfO2P
+         zjsEsuCKvz/1APUqYlO9l+PcDVXEQC+SlWJrx6tHLX3K94mmLiSYgs40WlfiCHAlFKYX
+         fg+NFcdcYIyvpoJ5lYgsPisyaj2VYB4u9LHn2+y2oNMp525FNs/LeQSEdxDTDmGQyB43
+         AdeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=t+k1vMicazZQGgJua3VBr5ex8kbXiYjORBm2hnGSMD4=;
+        b=wYFsBnqcjyukopLgo+k6iADtzP5oGK62hO7bg/4Iy+84rcwGo1kZZY86xxPj1SGgMZ
+         qNUvjlzWKh0wHit/n1xmxtc93fn/ZWg9IndPNG7f1DvOUn/GsETfqVZkJHdM5T0YBCp+
+         fm/KIp3BZItbTvDouZvC3t/yk5NeVagTEgeXykwRxCdXU3NaJhaCuo0x0CSrXhTajX/1
+         8DoIe/kLifpx3DOolPkQTXj2y1RGGxqKjB+eDFv8Lbl1GIBWEiztd9/dk9O9+Xp459Xd
+         O5dRuHgPWA99TmBDxyaB7Nmcfp6hw4+mlXosEMFk5YKKe+PzBKIEv/qT7Ejfr9xNjFt1
+         0RLw==
+X-Gm-Message-State: AOAM531nd2RzRZYv8l7NDBDrM6gPcc+PwRnzfAuCQj4coQ6kqTfUH/mJ
+        eu7by250S6dtE+MenZSP9mexngYPdvDvoung+c4=
+X-Google-Smtp-Source: ABdhPJwym8GjpPfqp1VPZyuKVCM4caVBNUFtBojFMlErKCDapc1ODpjXdPoihWYpgyddM85UHF/y8ljpHld5n9IcKpA=
+X-Received: by 2002:a17:90b:33d0:: with SMTP id lk16mr35565485pjb.20.1638153574198;
+ Sun, 28 Nov 2021 18:39:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YaEMaWMT+PmMvSwg@kroah.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Received: by 2002:a17:90a:ea18:0:0:0:0 with HTTP; Sun, 28 Nov 2021 18:39:33
+ -0800 (PST)
+Reply-To: lindajonathan993@gmail.com
+From:   Miss Linda <ikennaubochi9@gmail.com>
+Date:   Mon, 29 Nov 2021 02:39:33 +0000
+Message-ID: <CACFJyUDbBGNkc=w2twv4p67mrxbSOYtaw=RxDt0j+03t0hvECw@mail.gmail.com>
+Subject: Hi my love
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 05:33:45PM +0100, Greg Kroah-Hartman wrote:
-> On Sat, Nov 27, 2021 at 12:28:48AM +0800, Ming Lei wrote:
-> > On Fri, Nov 26, 2021 at 05:08:16PM +0100, Greg Kroah-Hartman wrote:
-> > > On Fri, Nov 05, 2021 at 02:37:09PM +0800, Ming Lei wrote:
-> > > > CONFIG_DEBUG_KOBJECT_RELEASE is used for debugging kobject release/cleanup
-> > > > issue. The module kobject is released after module_exit() returns. If
-> > > > this kobject is delayed too much, and may cause other kobject's
-> > > > cleaned up a bit earlier before freeing module, then real issue is
-> > > > hidden.
-> > > > 
-> > > > So don't delay module kobject's cleanup, meantime module kobject is
-> > > > always cleaned up synchronously, and we needn't module kobject's
-> > > > cleanup.
-> > > > 
-> > > > Signed-off-by: Ming Lei <ming.lei@redhat.com>
-> > > > ---
-> > > >  lib/kobject.c | 5 +++++
-> > > >  1 file changed, 5 insertions(+)
-> > > > 
-> > > > diff --git a/lib/kobject.c b/lib/kobject.c
-> > > > index ea53b30cf483..4c0dbe11be3d 100644
-> > > > --- a/lib/kobject.c
-> > > > +++ b/lib/kobject.c
-> > > > @@ -16,6 +16,7 @@
-> > > >  #include <linux/stat.h>
-> > > >  #include <linux/slab.h>
-> > > >  #include <linux/random.h>
-> > > > +#include <linux/module.h>
-> > > >  
-> > > >  /**
-> > > >   * kobject_namespace() - Return @kobj's namespace tag.
-> > > > @@ -727,6 +728,10 @@ static void kobject_release(struct kref *kref)
-> > > >  	struct kobject *kobj = container_of(kref, struct kobject, kref);
-> > > >  #ifdef CONFIG_DEBUG_KOBJECT_RELEASE
-> > > >  	unsigned long delay = HZ + HZ * (get_random_int() & 0x3);
-> > > > +
-> > > > +	if (kobj->ktype == &module_ktype)
-> > > > +		delay = 0;
-> > > 
-> > > No, there should not be anything "special" about module kobjects to get
-> > > this kind of treatment.  They should work like any other kobject and
-> > > clean up properly when needed.
-> > 
-> > Here setting 0 delay for module kobject is just for making DEBUG_KOBJECT_RELEASE
-> > reliable to detect/report issues. Otherwise if the random delay for module
-> > kobject is bigger than other kobjects, potential use-after-after won't
-> > be exposed.
-> 
-> So you now can not debug the module kobject code?
+Hey dear
 
-So far, module kobject code is always released in sync way, see
-mod_kobject_put(), and CONFIG_DEBUG_KOBJECT_RELEASE is basically useless
-for module kobject.
+Nice to meet you, Am Miss Linda I found your email here in google
+search and I picked
+interest to contact you. I've something very important which I would like
+to discuss with you and I would appreciate if you respond back to me
+through my email address as to tell you more
 
-> 
-> This needs to be documented really really really well why this kobject
-> type is somehow "special" in the code.  We should not special-case these
-> things unless you have a great reason, and I am not yet convinced.
+about me with my
+photos, my private email as fellows??   lindajonathan993@gmail.com
 
-OK, I will add comment on this special usage in V2 so that you can
-review it further.
-
-
-Thanks,
-Ming
-
+From, Linda
