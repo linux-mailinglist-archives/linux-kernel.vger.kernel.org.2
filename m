@@ -2,216 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28BE2460E44
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 06:02:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1BC3460E48
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 06:03:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhK2FGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Nov 2021 00:06:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231349AbhK2FEE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Nov 2021 00:04:04 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB89C061746
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 21:00:47 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 49B19611E0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Nov 2021 05:00:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7D8DC004E1;
-        Mon, 29 Nov 2021 05:00:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638162045;
-        bh=7uBpe6jzG2pC4cmnqrWZHw15hdx3/0c/20sYugqj7HM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GSJsUgCz/kPJAvhy0HF6VnfPhJKo+/d5SbUGEcuSIE3kOcN2m/gFU9ghDxQX23FS8
-         Dk42TX0db7uOjkK1bul+7Ck6hhma+c/42SjdYgy4tSmBb9qqxyNzf1bepyHiEQaxR9
-         NnASZ5KXlcdaa5wEVvW0gI945QOZG+8QB2OGHcanoQdu1DoGJQbs/pDh+eLRxuy8A3
-         yIDIoF73cYKt1n6DGYF/OvRS6RXUXGirGXoiKegPRQtg7sZARgwEyQ9xHyCml3ueGx
-         cLDMRGjjaXBySUP8Y1Fq78sQYU4JsAI33hX5+8LVxry5QvmpJd+LGSm1Vg092LLXVA
-         1A2i6c5udU33Q==
-Date:   Mon, 29 Nov 2021 14:00:40 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     "liuqi (BA)" <liuqi115@huawei.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <naveen.n.rao@linux.ibm.com>,
-        <anil.s.keshavamurthy@intel.com>, <davem@davemloft.net>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <song.bao.hua@hisilicon.com>, <prime.zeng@hisilicon.com>,
-        <robin.murphy@arm.com>, <f.fangjian@huawei.com>,
-        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 2/2] arm64: kprobe: Enable OPTPROBE for arm64
-Message-Id: <20211129140040.87c5f423a72c95c90602c2c6@kernel.org>
-In-Reply-To: <4998f219-eb47-a07c-b3ed-c2ae46a77230@huawei.com>
-References: <20210818073336.59678-1-liuqi115@huawei.com>
-        <20210818073336.59678-3-liuqi115@huawei.com>
-        <20210824105001.GA96738@C02TD0UTHF1T.local>
-        <aebcfbcb-eded-ff48-9d1f-2a93539575ca@huawei.com>
-        <20211127212302.f71345c34e5a62e5e779adb2@kernel.org>
-        <4998f219-eb47-a07c-b3ed-c2ae46a77230@huawei.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S236932AbhK2FG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Nov 2021 00:06:27 -0500
+Received: from mail-bn7nam10on2083.outbound.protection.outlook.com ([40.107.92.83]:23105
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231806AbhK2FEY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Nov 2021 00:04:24 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=S9k7rPisDOiss5Cl5gbSMOjC42lgJjuupsE6Z9XREJE/22y+6qPiox+9OA03/66B6WOZ7BwAOWV2ZVM7B+nXE6aVKZanFCvypRoc9SZNZCMTpZZgctzKps6O0x/mhUQKVi7t4io0Cpd9+xFW2MlnwgHRKytR/v/fSizM1ywdkJ3QQmf0gsNN0U4ksLYNX0x8DGLiVyb5o3u7zcFwB6PspXlX8GszUsvTX7mW7LNACD30nBSUS+Z+JjXrx9K5DYWxBQvrnchzu9G16PCMOM8O7zREkM9zsM8pBs2EUs/HXWYahbRF2OHalZWWRuiGCztLkzMnel7HtuUo4+JU6kKsEQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wCZjbW/hEdNdSQRDGu7bSkJg76q/jzA+72jR4kJF8V0=;
+ b=D42TYkucreRIIKVRAC6mgfPM0iX1PBpoUkL6kNyU0XcATaGb3h828N/Ujie4PE7Aii+yHGy/vwbT0dGGLgth1ynvZ4TrhN3yIk3H5kiZ73Mtj2ehmtHjR1Ymdt8jrnDaYuFWlcgAc5rsQnLB2dDZI0ZzLJanNXyYNh40Eyia9vEbUAmJLoRur+hodJQXe260Bbz5+etgC5aFZPiXsxx2VbnTvQnxlluZPKyxtfEXOExPMl0CjeixwEDWwAZr3MrIqnr8Mg1e4fuGOtX7ICy60hKwkf09yNHijarhkMjM48rgEuTDUh2HoaKZHjELNIhYMG5omqNokhbHz4+CihhmMg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wCZjbW/hEdNdSQRDGu7bSkJg76q/jzA+72jR4kJF8V0=;
+ b=uS6LLh+PRA2ICs2QLMpqycaoAnHkgBzGdKOmYwl3JfP4aEmedPu+jnsBmGF+7OTlTnolbVzBdve5IKomsEPlBS0++Q0P7KTpk91TvSdvC1tKpffxXdv0xMOycDi3KOmYW+/z/W3XamDt2W2uXTNW/vXVKoaIW0voTwGxYa4UKERKZ1MecmyNIpM0CibstcgKBPbiK+t8KE7wuUDN7+INXZ6agVZByVFXTi6O0sF35tshKiipCIYO47NIWu610pc+SqXI7jW4lcO3M/rg1TlQvdqEczb7oSsP/GUWaru/ycIhbA4Qr2VGf6DvAGmz7JRUwrazPDIX+y3ywhGrXN8ZJw==
+Received: from BN9PR12MB5273.namprd12.prod.outlook.com (2603:10b6:408:11e::22)
+ by BN9PR12MB5306.namprd12.prod.outlook.com (2603:10b6:408:103::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.23; Mon, 29 Nov
+ 2021 05:01:05 +0000
+Received: from BN9PR12MB5273.namprd12.prod.outlook.com
+ ([fe80::d170:24c:2ca0:7e1e]) by BN9PR12MB5273.namprd12.prod.outlook.com
+ ([fe80::d170:24c:2ca0:7e1e%7]) with mapi id 15.20.4713.025; Mon, 29 Nov 2021
+ 05:01:05 +0000
+From:   Akhil R <akhilrajeev@nvidia.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krishna Yarlagadda <kyarlagadda@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        Rajesh Gumasta <rgumasta@nvidia.com>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "vkoul@kernel.org" <vkoul@kernel.org>
+Subject: RE: [PATCH v13 1/4] dt-bindings: dmaengine: Add doc for tegra gpcdma
+Thread-Topic: [PATCH v13 1/4] dt-bindings: dmaengine: Add doc for tegra gpcdma
+Thread-Index: AQHX34NVcul1w0Qezk+t7x91Ako3MqwZJLwAgADMPWA=
+Date:   Mon, 29 Nov 2021 05:01:05 +0000
+Message-ID: <BN9PR12MB527335B55F187C2A1864FDCEC0669@BN9PR12MB5273.namprd12.prod.outlook.com>
+References: <1637573292-13214-1-git-send-email-akhilrajeev@nvidia.com>
+ <1637573292-13214-2-git-send-email-akhilrajeev@nvidia.com>
+ <YaOo/FHKQBAa93hd@robh.at.kernel.org>
+In-Reply-To: <YaOo/FHKQBAa93hd@robh.at.kernel.org>
+Accept-Language: en-IN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d1e0c14a-c72b-4c24-9769-08d9b2f53fb1
+x-ms-traffictypediagnostic: BN9PR12MB5306:
+x-microsoft-antispam-prvs: <BN9PR12MB5306499B7AD24A69A7D85D3DC0669@BN9PR12MB5306.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: cUVU7FMfqbkowLBDdqicx7TA6lnIENUucm39W/40R/QI0WO0Ks/KahsGLSTH893CueixFv2B9I4ik2ECvUAvBP7njMG7GoPd7X6zD/gmDP66rDkIGF/Qa/CaaqPG90YN93RsWwf/JS95ICf4bKZ3y5xAvKQD5DC70VKj0v32IBL3waj6agwYBt5GnI2Oa3/zfL4ChEWLfeQlg+bqy3aH1Aqsoq+t2L6W6JfDo9r5L2zyr/xSGjs8BDs/feD2iQVHAXsWbTBPKQDFnfYH13GDtpkImZTGmS1dGLSeqXAfWYM5dlo4mBB9x6/FwDeKO8F75m99a07XnDII1ZGcZjHVlZFcR5n2cvVsVBFNc5zMzAuvh5A6ThTKwjYEyQCrVppzwE3/4FG+Jv0SeBWLjMeU3QU4idWvdBYaWZT3Ig5ucgI9NHEN50M5VGkoUrRbuEzL4JEdv4ZFg/orqGw5euXvF/frA0dh97a//3bpZ+2rJ1T5AA38IosfjY7Jcgy+4tDY//R45kN8qbZS+ZmGVWA93FiOkKUcE3zPqTW/1F+9YqDBsN//s8OH4p8ZIMxWqlM7qGPK+NXZRO402C0xKdRKqmfeRuNuIfrZjPIfoi3E0qz9pfc7XO59p+++M+LSsIxbyS7DPY08FlERrwK9Ta/8w8MFzFs1sRRnhdum6BMH6Q46G+IP52yeVyvJdqbtN9Z4iQs8+ZsCWdMudEr1QOvRWKA7c9Eb0dghAxqR64swxups/IN/gCLIMFtwOpqCHIWoZY4mflmJqoZo6u18/GV1ZHeIfdKcEQDqmkm91fSAdYBDbdmq5n8bV8hHzJ8Ex3nfuI+q8gtoSoljx8xMHVyt5w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5273.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(122000001)(71200400001)(64756008)(6506007)(66556008)(6916009)(86362001)(66476007)(66446008)(2906002)(4326008)(26005)(66946007)(33656002)(7696005)(38070700005)(186003)(52536014)(508600001)(38100700002)(76116006)(55016003)(9686003)(8936002)(54906003)(5660300002)(316002)(966005)(8676002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dzhVTFNrTjlFb3hjMFluUWlOdFdPVFVJRHhqREVUWVhiSXF0K1pOaTU1Y3Z2?=
+ =?utf-8?B?czVJNnE3TXJ3c0taaDFIejJwbE1qdTkrY1BkdVk4S01aeGFQalllR2pNQnJP?=
+ =?utf-8?B?YzFJS2IyNmk3OGlQaWlwT2N6d2xDMVRqM2dwZ2R3eGVMZFYyNHlDSlc2T1Nl?=
+ =?utf-8?B?dWgwa003Tk1FQzgraXNXV0FiNVhNZng5ajQrOTdDcHd3b2hYakJHa1Z5NkFV?=
+ =?utf-8?B?MncweDhEd0dmUFpJSGRqOFhCSk9yakVoRUk3VG02TGJPUmpONnFXN0xleVpx?=
+ =?utf-8?B?My9FWDRZWWg1bTdIbzlJcmVER01sNEszMmRsY0FyU2doV0psSDlwL0Y5d0ZB?=
+ =?utf-8?B?dFhSaWRoWm5mNVlhSG12Yzlzcm9TWHdPWXZEQVJvNkFxV21HUkxkZ2ZrMU1B?=
+ =?utf-8?B?d3ZxdVNBUE9lMHljcFhLY3lCN0NtTVNFUWRDbC95cEJjNUdyWmo1K01KS3dP?=
+ =?utf-8?B?Z1F1TTlPSjE0cDV4NnhtUStCamxTUmtHUU5GMUFIT3lIalVUNW0zUWVxWGF2?=
+ =?utf-8?B?a295VDVYaVpGbzBTS05BTXlBeTI0eUJnN3AzVzh3NUpVWkpNN21KOCsxK2RH?=
+ =?utf-8?B?YlYrZDl1SVZZczhXWlpVMGVLR08vSGgzT1EvYXBRRzBJYjVlRDFqd0dCM0R0?=
+ =?utf-8?B?S1lWczlWUFRhZWk5dDdGZXJ5OUNyOWpXK2VHQ1BuVzB5Yy9CU2hvelc5ci9O?=
+ =?utf-8?B?eU5pZW9Zb0VPVXlzdEI5eFNRUHh5UkVEQmJUaXMrV2MxYUlualNzb1VETGpx?=
+ =?utf-8?B?cmlmVFFkSHNEb1FsczdzSmVpc0ZPNU83QjRIeENwVlU5b2NqcXkxa05laDYv?=
+ =?utf-8?B?QnR5ekl4SFVnSU9JYVBvVXFrdHNsQVBBRk4xRm9nRFcrdzVLdXdMNDVEZ0lo?=
+ =?utf-8?B?blhkZ2wraHM5YUNxVjladC9pWGpmdjlHZzJ3UUtzbkVQQ2NtR1BuY3F5NU5U?=
+ =?utf-8?B?UGVhQTVPTmpLKzBXWEZSVGJmcFhYUkZBRFh0eEVoWEtJanFKYnBsRFRpQTc3?=
+ =?utf-8?B?WTFxY2dYKy96YUF2R3hxMy9oY1dEM2QzSFJ2RGhKS1BybE1Xa1djdGlDcXMz?=
+ =?utf-8?B?WWlZZ3ZKdkcvL2tKVjg1QTF4TW51bjVHSVN1c0x0L3Z5dTBGZ1FFVDhsMEh0?=
+ =?utf-8?B?N3JPV3lQMVBxbTJMM203a1B0dEVESzdoYlBZeTBKZHpHS1dPSEpnbE5pM3FZ?=
+ =?utf-8?B?cXJydFNXL3p2S1J3cFZkbktNc3VxS1pvckgrUjNVUExJcGx5Rm14VWliajRq?=
+ =?utf-8?B?ZTJuL1JnUHdBazMraEJvUjlMTEUwOUhPVTdpeUJmNkZHVEtpclJmRHlHMFh0?=
+ =?utf-8?B?Tjl3anVOTFlKeXh5RFNESFNXemdibkhvUkVBTE90dUZNNmZhd2FhUEN4TFo4?=
+ =?utf-8?B?K2V6dGNUQXdWdUg1UnFhU1ZGTllpOHdIVkI0VjdDbFlhZ1IxbHRhZkQ5cHZp?=
+ =?utf-8?B?WjBBdXc1MU0wSG55MVhLZzJIT3NXdE9YMG5xSTBwMTcxbVNPSld1OGxsKzYy?=
+ =?utf-8?B?RzNxYVZlSmtzOUo0VGx3OElHNU5rVnpHZVJuRjJ1ZG1CYXRWRTBUZlp5UFRP?=
+ =?utf-8?B?QWIxV0lselBMclhpRjRQc2R5TUd5MlBzdVFYV0RDQksxUDl6MC9zQzNRTzFK?=
+ =?utf-8?B?RDlkZVFrOFk0K1grcmZWVi9pcjhNYWxDNzdydnJZeGNXWkhHRkZzcVhkeThF?=
+ =?utf-8?B?VXhGL1VvSTdneUNmOFk1SGRnTHgvK1kzSDN5WFhYMnc2UHk4ZDdHb3NBYlNq?=
+ =?utf-8?B?cHJ0SzI1a0RmbnRObUFHR0NlQ2Vmd1BLNEh6M3NXREFwN0F5T3gvamRyWHVP?=
+ =?utf-8?B?THY1NVQ1cTUra2tNMGZDSGEzNHZmOHJjSUovSCtIUEJHSlNXQ2U0K0ZIOU43?=
+ =?utf-8?B?VkY1Tit2ZkZxcHdiQmZzTHdUY3ZHNjdFWVhsZVQ5RGsxSm1ITUZEelRFQzhJ?=
+ =?utf-8?B?cVQzV3pPQUZ4VU1IYndoZmJsNkp1NG5XY3hnSDUyRDNRRkRjYVpTYzJsbGU1?=
+ =?utf-8?B?a2gxTkVDVEtpOTkwOEp5RnVKZkJuTnJ3Vm9IVnpQU1lMcXFRZVJUUWd1YW54?=
+ =?utf-8?B?OTNpc2xXMzlSTFRMa0lVSi8vOXhJalk0TGtUdW9NVTdUZ2Z4S21sWmxBb1Ew?=
+ =?utf-8?B?c00rRFVsTEJIN3VWdU1uVXJHSmJQYWp5bG1FaldCK0FJbkJqVmdPK3JPVDhL?=
+ =?utf-8?Q?DIjA1DaUF+nZ1w2t7I6OAl4=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5273.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d1e0c14a-c72b-4c24-9769-08d9b2f53fb1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Nov 2021 05:01:05.2700
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Usts0nBidgFcr8mUUu0qKjc4QefMin3jRjfWVXywp6gbidztUUIHgH5E16HtvXKaBN5JvwzcbchpVTtegYl58w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5306
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Nov 2021 09:40:30 +0800
-"liuqi (BA)" <liuqi115@huawei.com> wrote:
-
-> 
-> 
-> On 2021/11/27 20:23, Masami Hiramatsu wrote:
-> > On Fri, 26 Nov 2021 18:31:06 +0800
-> > "liuqi (BA)" <liuqi115@huawei.com> wrote:
-> > 
-> >>
-> >>
-> >> On 2021/8/24 18:50, Mark Rutland wrote:
-> >>>> diff --git a/arch/arm64/kernel/probes/optprobe_trampoline.S b/arch/arm64/kernel/probes/optprobe_trampoline.S
-> >>>> new file mode 100644
-> >>>> index 000000000000..24d713d400cd
-> >>>> --- /dev/null
-> >>>> +++ b/arch/arm64/kernel/probes/optprobe_trampoline.S
-> >>>> @@ -0,0 +1,37 @@
-> >>>> +/* SPDX-License-Identifier: GPL-2.0 */
-> >>>> +/*
-> >>>> + * trampoline entry and return code for optprobes.
-> >>>> + */
-> >>>> +
-> >>>> +#include <linux/linkage.h>
-> >>>> +#include <asm/asm-offsets.h>
-> >>>> +#include <asm/assembler.h>
-> >>>> +
-> >>>> +	.global optprobe_template_entry
-> >>>> +optprobe_template_entry:
-> >>> Please use SYM_*(); see arch/arm64/kernel/entry-ftrace.S for examples of
-> >>> how to use that for trampolines.
-> >>>
-> >>> This should be:
-> >>>
-> >>> SYM_CODE_START(optprobe_template)
-> >>>
-> >> Hi all,
-> >>
-> >> I meet a problem when I use SYM_CODE_START(optprobe_template) to replace
-> >> optprobe_template_entry.
-> >>
-> >> If SYM_CODE_START is used, all optprobe will share one trampoline space.
-> >> Under this circumstances, if user register two optprobes, trampoline
-> >> will be overwritten by the newer one, and this will cause kernel panic
-> >> when the old optprobe is trigger.
-> > 
-> > Hm, this is curious, because the template should be copied to the
-> > trampoline buffer for each optprobe and be modified.
-> > 
-> >>
-> >> Using optprobe_template_entry will not have this problem, as each
-> >> optprobe has its own trampoline space (alloced in get_opinsn_slot()).
-> > 
-> > Yes, it is designed to do so.
-> > 
-> > Thank you,
-> > 
-> 
-> Hi Masami,
-> 
-> Thanks for your reply. But I also met a problem when using 
-> get_opinsn_slot() to alloc trampoline buffer.
-> 
-> As module_alloc(like x86) is used to alloc buffer, trampoline is in 
-> module space, so if origin insn is in kernel space, the range between 
-> origin insn and trampoline is out of 128M.
-> 
-> As module PLT cannot used here, I have no idea to achieve long jump in 
-> this situation. Do you have any good idea?
-
-One possible solution is to use pre-allocated trampoline space in
-the text area, as same as ppc64 does.
-(See arch/powerpc/kernel/optprobes_head.S, it embeds a space at "optinsn_slot")
-
-Also, the trampoline can be minimized, since what we need is the
-probed address (and the address of struct optprobe).
-A single trampoline entry will do the following;
-
-1. push lr and a victim register (here, x0)
-2. load the address of optprobe to x0
-3. call(br) common-optprobe asm code
-4. pop lr and x0
-5. jump back to (next to) the original place
-
-Here the common-optprobe asm code does;
-
-c1. push all registers on the stack (like save_all_base_regs) for making
-  struct pt_regs.
-c2. set the pt_regs address to x1.
-c3. call optimized_callback()
-c4. return
-
-Since arm64 will emulate the probed instruction, we can do this.
-(On the other hand, x86 needs to run the probed insn in trampoline
- code, it will do that between step 4 and 5)
-
-The trampoline entry code is just 5 instructions (but may need an
-immediate value (&optprobe) needs to be embedded).
-
-Thank you,
-
-> 
-> Thanks,
-> Qi
-> 
-> >>
-> >> So how to reuse SYM_CODE_START  in this situation, does anyone has a
-> >> good idea?
-> >>
-> >> Thanks,
-> >> Qi
-> >>> ... and note the matching end below.
-> >>>
-> >>>> +	sub sp, sp, #PT_REGS_SIZE
-> >>>> +	save_all_base_regs
-> >>>> +	/* Get parameters to optimized_callback() */
-> >>>> +	ldr	x0, 1f
-> >>>> +	mov	x1, sp
-> >>>> +	/* Branch to optimized_callback() */
-> >>>> +	.global optprobe_template_call
-> >>>> +optprobe_template_call:
-> >>> SYM_INNER_LABEL(optprobe_template_call, SYM_L_GLOBAL)
-> >>>
-> >>> ...and likewise for all the other labels.
-> >>>
-> >>>> +	nop
-> >>>> +	restore_all_base_regs
-> >>>> +	ldr lr, [sp, #S_LR]
-> >>>> +        add sp, sp, #PT_REGS_SIZE
-> >>>> +	.global optprobe_template_restore_orig_insn
-> >>>> +optprobe_template_restore_orig_insn:
-> >>>> +	nop
-> >>>> +	.global optprobe_template_restore_end
-> >>>> +optprobe_template_restore_end:
-> >>>> +	nop
-> >>>> +	.global optprobe_template_end
-> >>>> +optprobe_template_end:
-> >>>> +	.global optprobe_template_val
-> >>>> +optprobe_template_val:
-> >>>> +	1:	.long 0
-> >>>> +		.long 0
-> >>>> +	.global optprobe_template_max_length
-> >>>> +optprobe_template_max_length:
-> >>> SYM_INNER_LABEL(optprobe_template_end, SYM_L_GLOBAL)
-> >>> SYM_CODE_END(optprobe_template)
-> >>>
-> >>> Thanks,
-> >>> Mark.
-> >>>
-> >>>> -- 
-> > 
-> > 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+PiBPbiBNb24sIE5vdiAyMiwgMjAyMSBhdCAwMjo1ODowOVBNICswNTMwLCBBa2hpbCBSIHdyb3Rl
+Og0KPiA+IEFkZCBEVCBiaW5kaW5nIGRvY3VtZW50IGZvciBOdmlkaWEgVGVncmEgR1BDRE1BIGNv
+bnRyb2xsZXIuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBSYWplc2ggR3VtYXN0YSA8cmd1bWFz
+dGFAbnZpZGlhLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBBa2hpbCBSIDxha2hpbHJhamVldkBu
+dmlkaWEuY29tPg0KPiA+IFJldmlld2VkLWJ5OiBKb24gSHVudGVyIDxqb25hdGhhbmhAbnZpZGlh
+LmNvbT4NCj4gPiAtLS0NCj4gPiAgLi4uL2JpbmRpbmdzL2RtYS9udmlkaWEsdGVncmExODYtZ3Bj
+LWRtYS55YW1sICAgICAgfCAxMTENCj4gKysrKysrKysrKysrKysrKysrKysrDQo+ID4gIDEgZmls
+ZSBjaGFuZ2VkLCAxMTEgaW5zZXJ0aW9ucygrKQ0KPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQNCj4g
+PiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZG1hL252aWRpYSx0ZWdyYTE4Ni1n
+cGMtZG1hLnlhbWwNCj4gPg0KPiA+IGRpZmYgLS1naXQNCj4gPiBhL0RvY3VtZW50YXRpb24vZGV2
+aWNldHJlZS9iaW5kaW5ncy9kbWEvbnZpZGlhLHRlZ3JhMTg2LWdwYy1kbWEueWFtbA0KPiA+IGIv
+RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2RtYS9udmlkaWEsdGVncmExODYtZ3Bj
+LWRtYS55YW1sDQo+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gPiBpbmRleCAwMDAwMDAwLi4z
+YTVhNzBkDQo+ID4gLS0tIC9kZXYvbnVsbA0KPiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNl
+dHJlZS9iaW5kaW5ncy9kbWEvbnZpZGlhLHRlZ3JhMTg2LWdwYy1kbWEueWENCj4gPiArKysgbWwN
+Cj4gPiBAQCAtMCwwICsxLDExMSBAQA0KPiA+ICsjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiAo
+R1BMLTIuMC1vbmx5IE9SIEJTRC0yLUNsYXVzZSkgJVlBTUwgMS4yDQo+ID4gKy0tLQ0KPiA+ICsk
+aWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9zY2hlbWFzL2RtYS9udmlkaWEsdGVncmExODYtZ3Bj
+LWRtYS55YW1sIw0KPiA+ICskc2NoZW1hOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvbWV0YS1zY2hl
+bWFzL2NvcmUueWFtbCMNCj4gPiArDQo+ID4gK3RpdGxlOiBOVklESUEgVGVncmEgR1BDIERNQSBD
+b250cm9sbGVyIERldmljZSBUcmVlIEJpbmRpbmdzDQo+ID4gKw0KPiA+ICtkZXNjcmlwdGlvbjog
+fA0KPiA+ICsgIFRoZSBUZWdyYSBHZW5lcmFsIFB1cnBvc2UgQ2VudHJhbCAoR1BDKSBETUEgY29u
+dHJvbGxlciBpcyB1c2VkIGZvcg0KPiA+ICtmYXN0ZXINCj4gPiArICBkYXRhIHRyYW5zZmVycyBi
+ZXR3ZWVuIG1lbW9yeSB0byBtZW1vcnksIG1lbW9yeSB0byBkZXZpY2UgYW5kDQo+ID4gK2Rldmlj
+ZSB0bw0KPiA+ICsgIG1lbW9yeS4NCj4gPiArDQo+ID4gK21haW50YWluZXJzOg0KPiA+ICsgIC0g
+Sm9uIEh1bnRlciA8am9uYXRoYW5oQG52aWRpYS5jb20+DQo+ID4gKyAgLSBSYWplc2ggR3VtYXN0
+YSA8cmd1bWFzdGFAbnZpZGlhLmNvbT4NCj4gPiArDQo+ID4gK2FsbE9mOg0KPiA+ICsgIC0gJHJl
+ZjogImRtYS1jb250cm9sbGVyLnlhbWwjIg0KPiA+ICsNCj4gPiArcHJvcGVydGllczoNCj4gPiAr
+ICBjb21wYXRpYmxlOg0KPiA+ICsgICAgb25lT2Y6DQo+ID4gKyAgICAgIC0gY29uc3Q6IG52aWRp
+YSx0ZWdyYTE4Ni1ncGNkbWENCj4gPiArICAgICAgLSBpdGVtczoNCj4gPiArICAgICAgICAgLSBj
+b25zdDogbnZpZGlhLHRlZ3JhMTg2LWdwY2RtYQ0KPiA+ICsgICAgICAgICAtIGNvbnN0OiBudmlk
+aWEsdGVncmExOTQtZ3BjZG1hDQo+IA0KPiBTdGlsbCBub3QgaG93ICdjb21wYXRpYmxlJyB3b3Jr
+cyBub3Igd2hhdCBJIHdyb3RlIG91dCBmb3IgeW91Lg0KSSB0aG91Z2h0ICcxODYnIGFuZCAnMTk0
+JyBnb3QgaW50ZXJjaGFuZ2VkIGluIHlvdXIgcHJldmlvdXMgY29tbWVudCBiZWNhdXNlIGl0IGlz
+IDE5NA0Kd2hpY2ggaXMgdGhlIHN1cGVyc2V0IG9mIDE4NiBhbmQgaGF2ZSBnb3QgbW9yZSBmZWF0
+dXJlcyB0aGFuIDE4Ni4NCk9yIHByb2JhYmx5IEkgZGlkIG5vdCB1bmRlcnN0YW5kIHRoZSBpZGVh
+IGNvcnJlY3RseSB5ZXQuIA0K
