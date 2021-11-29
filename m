@@ -2,191 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 259A5460C5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 02:39:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF90460C5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 02:42:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231450AbhK2Bmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 20:42:55 -0500
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:36459 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236804AbhK2Bky (ORCPT
+        id S233690AbhK2Bpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 20:45:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:56738 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235168AbhK2Bnu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 20:40:54 -0500
-Received: by mail-ot1-f54.google.com with SMTP id w6-20020a9d77c6000000b0055e804fa524so23293746otl.3;
-        Sun, 28 Nov 2021 17:37:37 -0800 (PST)
+        Sun, 28 Nov 2021 20:43:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1638150033;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=J8MhmGAottj8rByklsYBOCTO3w0A9a0z83LyPAaYS74=;
+        b=LCwYlY7dNoibvEbIN5HXFzaZA1Y5B4GBd2wsKs+S8FrsywQj4tqn2SmoryXprKt0HpUe8Y
+        OUZeOYxXdV7trmmiXdn6gfNIFkj7uZOr8xdvHVzEnrGw7bmLnak19C0fQ5e4YBWcKEFops
+        5OEvJEtkgZyXXdK5gxxqYWV4ecruM8I=
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-469-kURwIA6UMpSROsuayyJ5YQ-1; Sun, 28 Nov 2021 20:40:32 -0500
+X-MC-Unique: kURwIA6UMpSROsuayyJ5YQ-1
+Received: by mail-pg1-f199.google.com with SMTP id n22-20020a6563d6000000b0029261ffde9bso7576698pgv.22
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 17:40:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7/DoGnFVXvUt4WNy+s27fV+fbXXzvgs3f3dRsIX/quo=;
-        b=cdGD1S7zfJBZ2kFk8TrY9U1zNb1ZVfBEMEKHzrxtHjYHmLgFBgn+meD4Jcp+KJLmQF
-         W9PxMdtDU/z59YjRyZ0Z0N2xiwdVpB3Co7by+oL6d+jH7HORiE40qxdyqBjTiHhss92T
-         Bzz9W27bBdCKB50mZQyuEfYh+fNUKCcegqoLXbbnBIecIeok0jDX/VncLOw32i4BqWTo
-         fOFLIwPLZpKTj4kQmTCEJBLtscR/RUM8RK/+GmI2Gkpc0DbuIrgv8hKEoeAI5lg8AI3L
-         l43jwmtoaYd5OmyvwZeEZuBhQfc95Sl0Bj1BKShLyeHwm1A4hDMqaNV822/fD5qR6F5c
-         /WDg==
-X-Gm-Message-State: AOAM5312ntn/AKoUKjF0EM88tHmVXVSRFYO8zlsNlJSD6yGCBRpZe5uq
-        b/hWjW85oa8skw0d9AMB+w==
-X-Google-Smtp-Source: ABdhPJz8N4i1i720AnWSvmpIPpitKT1ahalUiueonhjgbSnFQWF+yoota1k0duiIouJLZ/ETmGDyQw==
-X-Received: by 2002:a9d:68d9:: with SMTP id i25mr42150047oto.189.1638149857357;
-        Sun, 28 Nov 2021 17:37:37 -0800 (PST)
-Received: from robh.at.kernel.org ([172.58.99.229])
-        by smtp.gmail.com with ESMTPSA id f20sm2715812oiw.48.2021.11.28.17.37.35
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J8MhmGAottj8rByklsYBOCTO3w0A9a0z83LyPAaYS74=;
+        b=xkBCmdENcUObVvKa6fPlqwur+67x26/mTmNfbhmoe/Lup00osyjGRvfvENcgs7cRL6
+         yy0ZWMK64YVSrkh6TRMoT9WHM9BVb9zfl+aBcJnJjSoAWUpAYsw69eWYXuWeWRkCH9mw
+         Lfyq2zJlHIjoSF64Z1+M9ikz2dygzRJGeAVr8v6RhOKvmqcNqU/mpwz5CR79qjYs3pnj
+         /NrIHkacFYdDLu2Gb9GsWiziFK2gnB/Eo29nKGg//zXu0VFv7k1nBjOyRj8D50/VJdvw
+         Bu8YfPcQz5P/myw9j+4yGG2hFPEl5WH2uUTZ+hkIQi5a4Xl8JnGKSXfIFgQkk1jckSKT
+         1etw==
+X-Gm-Message-State: AOAM530eSlyvstdU9juombcBmX5PpBiRkXOapvcwbS4m4qE5E8hFFps3
+        bChTsuGb/uj6qX/rW2Jo7f2/jQ6N3SynLluuUPhAeJ3HEHlkO0bk1zzLHqED3OXmCqXWm2ymyJE
+        sOeSjarpowMyvIRjMn5JdR6Rv
+X-Received: by 2002:a17:90b:4c4c:: with SMTP id np12mr34052990pjb.68.1638150031022;
+        Sun, 28 Nov 2021 17:40:31 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw2v0SCntrTCewEggO1HPs1thoxUoYO8KvVGYjWgC0LUSWe22kMuWp7rOlBQjSs8MTbVqBRvQ==
+X-Received: by 2002:a17:90b:4c4c:: with SMTP id np12mr34052935pjb.68.1638150030758;
+        Sun, 28 Nov 2021 17:40:30 -0800 (PST)
+Received: from samantha.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id e18sm10367575pgl.50.2021.11.28.17.40.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 17:37:36 -0800 (PST)
-Received: (nullmailer pid 2987524 invoked by uid 1000);
-        Mon, 29 Nov 2021 01:37:33 -0000
-Date:   Sun, 28 Nov 2021 19:37:33 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     "LH.Kuo" <lhjeff911@gmail.com>
-Cc:     p.zabel@pengutronix.de, daniel.thompson@linaro.org,
-        lee.jones@linaro.org, u.kleine-koenig@pengutronix.de,
-        ulf.hansson@linaro.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        qinjian@cqplus1.com, wells.lu@sunplus.com,
-        "LH.Kuo" <lh.kuo@sunplus.com>
-Subject: Re: [PATCH v2 2/2] devicetree bindings mmc Add bindings doc for
- Sunplus SP7021
-Message-ID: <YaQu3dCQD4FG7ete@robh.at.kernel.org>
-References: <1635487055-18494-1-git-send-email-lh.kuo@sunplus.com>
- <1636444705-17883-1-git-send-email-lh.kuo@sunplus.com>
- <1636444705-17883-3-git-send-email-lh.kuo@sunplus.com>
+        Sun, 28 Nov 2021 17:40:30 -0800 (PST)
+From:   wefu@redhat.com
+To:     anup.patel@wdc.com, atishp04@gmail.com, palmer@dabbelt.com,
+        guoren@kernel.org, christoph.muellner@vrull.eu,
+        philipp.tomsich@vrull.eu, hch@lst.de, liush@allwinnertech.com,
+        wefu@redhat.com, lazyparser@gmail.com, drew@beagleboard.org
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        taiten.peng@canonical.com, aniket.ponkshe@canonical.com,
+        heinrich.schuchardt@canonical.com, gordan.markus@canonical.com,
+        guoren@linux.alibaba.com, arnd@arndb.de, wens@csie.org,
+        maxime@cerno.tech, dlustig@nvidia.com, gfavor@ventanamicro.com,
+        andrea.mondelli@huawei.com, behrensj@mit.edu, xinhaoqu@huawei.com,
+        huffman@cadence.com, mick@ics.forth.gr,
+        allen.baum@esperantotech.com, jscheid@ventanamicro.com,
+        rtrauben@gmail.com
+Subject: [PATCH V4 0/2] riscv: add RISC-V Svpbmt Standard Extension supports
+Date:   Mon, 29 Nov 2021 09:40:05 +0800
+Message-Id: <20211129014007.286478-1-wefu@redhat.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1636444705-17883-3-git-send-email-lh.kuo@sunplus.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 03:58:25PM +0800, LH.Kuo wrote:
-> Add devicetree bindings mmc Add bindings doc for Sunplus SP7021
-> 
-> Signed-off-by: LH.Kuo <lh.kuo@sunplus.com>
-> ---
-> Changes in v2:
->  - Addressed all comments from Mr. Philipp Zabel
->  - Modified the structure and register access method.
->  - Modifiedthe path about MAINTAINERS. ( wrong messages PATH in v1).
-> 
->  .../devicetree/bindings/mmc/sunplus-sd2.yaml       | 82 ++++++++++++++++++++++
->  MAINTAINERS                                        |  1 +
->  2 files changed, 83 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mmc/sunplus-sd2.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mmc/sunplus-sd2.yaml b/Documentation/devicetree/bindings/mmc/sunplus-sd2.yaml
-> new file mode 100644
-> index 0000000..95dc0bb
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mmc/sunplus-sd2.yaml
-> @@ -0,0 +1,82 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright (C) Sunplus Co., Ltd. 2021
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mmc/sunplus-sd2.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Sunplus SD/SDIO controller
-> +
-> +maintainers:
-> +  - lh.kuo <lh.kuo@sunplus.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - sunplus,sp7021-card1
-> +      - sunplus,sp7021-sdio
+From: Fu Wei <wefu@redhat.com>
 
-What's the difference between these 2 blocks?
+This patch follows the  RISC-V standard Svpbmt extension in 
+privilege spec to solve the non-coherent SOC DMA synchronization
+issues.
 
-> +
-> +  reg:
-> +    items:
-> +      - description: Base address and length of the SD/SDIO registers
+The svpbmt PTE format:
+| 63 | 62-61 | 60-8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
+  N     MT     RSW    D   A   G   U   X   W   R   V
+        ^
 
-Just 'maxItems: 1' is sufficient.
+Of the Reserved bits [63:54] in a leaf PTE, the bits [62:61] are used as
+the MT (aka MemType) field. This field specifies one of three memory types
+as shown in the following table：
+MemType     RISC-V Description
+----------  ------------------------------------------------
+00 - PMA    Normal Cacheable, No change to implied PMA memory type
+01 - NC     Non-cacheable, idempotent, weakly-ordered Main Memory
+10 - IO     Non-cacheable, non-idempotent, strongly-ordered I/O memory
+11 - Rsvd   Reserved for future standard use
 
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +  pinctrl-names:
-> +    description:
-> +      A pinctrl state named "default" must be defined.
-> +    const: default
-> +
-> +  pinctrl-0:
-> +    description:
-> +      A phandle to the default pinctrl state.
-> +
-> +  max-frequency: true
-> +
-> +allOf:
-> +  - $ref: "mmc-controller.yaml"
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - resets
-> +  - pinctrl-names
-> +  - pinctrl-0
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/sp-sp7021.h>
-> +    #include <dt-bindings/reset/sp-sp7021.h>
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    mmc1: mmc@9C003e80 {
+The standard protection_map[] needn't be modified because the "PMA"
+type keeps the highest bits zero.
+And the whole modification is limited in the arch/riscv/* and using
+a global variable(__svpbmt) as _PAGE_MASK/IO/NOCACHE for pgprot_noncached
+(&writecombine) in pgtable.h. We also add _PAGE_CHG_MASK to filter
+PFN than before.
 
-Use lower case hex.
+Enable it in devicetree - (Add "riscv,svpbmt" in the mmu of cpu node)
+ - mmu:
+     riscv,svpmbt
 
-> +       compatible = "sunplus,sp7021-card1";
-> +       reg = <0x9c003e80 0x280>;
-> +       interrupts = <21 IRQ_TYPE_LEVEL_HIGH>;
-> +       clocks = <&clkc CARD_CTL1>;
-> +       resets = <&rstc RST_CARD_CTL1>;
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&mmc1_mux &mmc1_mux_cd>;
-> +       max-frequency = <52000000>;
-> +    };
-> +    sdio: mmc@9C008400 {
+Wei Fu (2):
+  dt-bindings: riscv: add MMU Standard Extensions support for Svpbmt
+  riscv: add RISC-V Svpbmt extension supports
 
-Use lower case hex.
+ .../devicetree/bindings/riscv/cpus.yaml       | 10 +++++
+ arch/riscv/include/asm/fixmap.h               |  2 +-
+ arch/riscv/include/asm/pgtable-64.h           | 21 ++++++++--
+ arch/riscv/include/asm/pgtable-bits.h         | 39 ++++++++++++++++++-
+ arch/riscv/include/asm/pgtable.h              | 39 ++++++++++++++-----
+ arch/riscv/kernel/cpufeature.c                | 35 +++++++++++++++++
+ arch/riscv/mm/init.c                          |  5 +++
+ 7 files changed, 136 insertions(+), 15 deletions(-)
 
-> +       compatible = "sunplus,sp7021-sdio";
-> +       reg = <0x9c008400 0x280>;
-> +       interrupts = <21 IRQ_TYPE_LEVEL_HIGH>;
-> +       clocks = <&clkc CARD_CTL1>;
-> +       resets = <&rstc RST_CARD_CTL1>;
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pins_sdio>;
-> +       max-frequency = <52000000>;
-> +    };   
-> +...
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 2746084..e653a1d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -18193,6 +18193,7 @@ SUNPLUS SD/SDIO HOST CONTROLLER INTERFACE DRIVER
->  M:	LH Kuo <lh.kuo@sunplus.com>
->  L:	linux-mmc@vger.kernel.org
->  S:	Maintained
-> +F:	Documentation/devicetree/bindings/mmc/sunplus-sd2.yaml
->  F:	drivers/mmc/host/sunplus_sd2.*
->  
->  SUPERH
-> -- 
-> 2.7.4
-> 
-> 
+-- 
+2.25.4
+
