@@ -2,429 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BCFF460EF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 07:48:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46102460F00
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 07:52:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233344AbhK2Gvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Nov 2021 01:51:44 -0500
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:18649 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240302AbhK2Gtc (ORCPT
+        id S230320AbhK2Gzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Nov 2021 01:55:44 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:28186 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233171AbhK2Gxn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Nov 2021 01:49:32 -0500
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1AT6HdaL024518;
-        Mon, 29 Nov 2021 14:17:39 +0800 (GMT-8)
-        (envelope-from billy_tsai@aspeedtech.com)
-Received: from BillyTsai-pc.aspeed.com (192.168.2.149) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 29 Nov
- 2021 14:42:06 +0800
-From:   Billy Tsai <billy_tsai@aspeedtech.com>
-To:     <jdelvare@suse.com>, <linux@roeck-us.net>, <robh+dt@kernel.org>,
-        <joel@jms.id.au>, <andrew@aj.id.au>, <lee.jones@linaro.org>,
-        <thierry.reding@gmail.com>, <u.kleine-koenig@pengutronix.de>,
-        <p.zabel@pengutronix.de>, <billy_tsai@aspeedtech.com>,
-        <linux-hwmon@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Mon, 29 Nov 2021 01:53:43 -0500
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4J2bXX2ZStz8vh7;
+        Mon, 29 Nov 2021 14:48:28 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 29 Nov 2021 14:50:24 +0800
+Received: from [10.67.102.185] (10.67.102.185) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 29 Nov 2021 14:50:23 +0800
+Subject: Re: [PATCH v4 2/2] arm64: kprobe: Enable OPTPROBE for arm64
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+CC:     Mark Rutland <mark.rutland@arm.com>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <naveen.n.rao@linux.ibm.com>,
+        <anil.s.keshavamurthy@intel.com>, <davem@davemloft.net>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pwm@vger.kernel.org>
-CC:     <BMC-SW@aspeedtech.com>
-Subject: [v13 2/2] pwm: Add Aspeed ast2600 PWM support
-Date:   Mon, 29 Nov 2021 14:43:29 +0800
-Message-ID: <20211129064329.27006-3-billy_tsai@aspeedtech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211129064329.27006-1-billy_tsai@aspeedtech.com>
-References: <20211129064329.27006-1-billy_tsai@aspeedtech.com>
+        <song.bao.hua@hisilicon.com>, <prime.zeng@hisilicon.com>,
+        <robin.murphy@arm.com>, <f.fangjian@huawei.com>,
+        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
+References: <20210818073336.59678-1-liuqi115@huawei.com>
+ <20210818073336.59678-3-liuqi115@huawei.com>
+ <20210824105001.GA96738@C02TD0UTHF1T.local>
+ <aebcfbcb-eded-ff48-9d1f-2a93539575ca@huawei.com>
+ <20211127212302.f71345c34e5a62e5e779adb2@kernel.org>
+ <4998f219-eb47-a07c-b3ed-c2ae46a77230@huawei.com>
+ <20211129140040.87c5f423a72c95c90602c2c6@kernel.org>
+From:   "liuqi (BA)" <liuqi115@huawei.com>
+Message-ID: <3f8c1754-b677-971c-2e04-a04678206424@huawei.com>
+Date:   Mon, 29 Nov 2021 14:50:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.2.149]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1AT6HdaL024518
+In-Reply-To: <20211129140040.87c5f423a72c95c90602c2c6@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.185]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add the support of PWM controller which can be found at aspeed
-ast2600 soc. The pwm supoorts up to 16 channels and it's part function
-of multi-function device "pwm-tach controller".
 
-Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
----
- drivers/pwm/Kconfig              |  10 +
- drivers/pwm/Makefile             |   1 +
- drivers/pwm/pwm-aspeed-ast2600.c | 327 +++++++++++++++++++++++++++++++
- 3 files changed, 338 insertions(+)
- create mode 100644 drivers/pwm/pwm-aspeed-ast2600.c
 
-diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-index 63be5362fd3a..b0d26f6c2a8f 100644
---- a/drivers/pwm/Kconfig
-+++ b/drivers/pwm/Kconfig
-@@ -51,6 +51,16 @@ config PWM_AB8500
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called pwm-ab8500.
- 
-+config PWM_ASPEED_AST2600
-+	tristate "Aspeed ast2600 PWM support"
-+	depends on ARCH_ASPEED || COMPILE_TEST
-+	depends on HAVE_CLK && HAS_IOMEM
-+	help
-+	  This driver provides support for Aspeed ast2600 PWM controllers.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called pwm-aspeed-ast2600.
-+
- config PWM_ATMEL
- 	tristate "Atmel PWM support"
- 	depends on OF
-diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-index cbdcd55d69ee..ada454f9129a 100644
---- a/drivers/pwm/Makefile
-+++ b/drivers/pwm/Makefile
-@@ -2,6 +2,7 @@
- obj-$(CONFIG_PWM)		+= core.o
- obj-$(CONFIG_PWM_SYSFS)		+= sysfs.o
- obj-$(CONFIG_PWM_AB8500)	+= pwm-ab8500.o
-+obj-$(CONFIG_PWM_ASPEED_AST2600)	+= pwm-aspeed-ast2600.o
- obj-$(CONFIG_PWM_ATMEL)		+= pwm-atmel.o
- obj-$(CONFIG_PWM_ATMEL_HLCDC_PWM)	+= pwm-atmel-hlcdc.o
- obj-$(CONFIG_PWM_ATMEL_TCB)	+= pwm-atmel-tcb.o
-diff --git a/drivers/pwm/pwm-aspeed-ast2600.c b/drivers/pwm/pwm-aspeed-ast2600.c
-new file mode 100644
-index 000000000000..34fa5800db4d
---- /dev/null
-+++ b/drivers/pwm/pwm-aspeed-ast2600.c
-@@ -0,0 +1,327 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2021 Aspeed Technology Inc.
-+ *
-+ * PWM controller driver for Aspeed ast2600 SoCs.
-+ * This drivers doesn't support earlier version of the IP.
-+ *
-+ * The hardware operates in time quantities of length
-+ * Q := (DIV_L + 1) << DIV_H / input-clk
-+ * The length of a PWM period is (DUTY_CYCLE_PERIOD + 1) * Q.
-+ * The maximal value for DUTY_CYCLE_PERIOD is used here to provide
-+ * a fine grained selection for the duty cycle.
-+ *
-+ * This driver uses DUTY_CYCLE_RISING_POINT = 0, so from the start of a
-+ * period the output is active until DUTY_CYCLE_FALLING_POINT * Q. Note
-+ * that if DUTY_CYCLE_RISING_POINT = DUTY_CYCLE_FALLING_POINT the output is
-+ * always active.
-+ *
-+ * Register usage:
-+ * PIN_ENABLE: When it is unset the pwm controller will emit inactive level to the external.
-+ * Use to determine whether the PWM channel is enabled or disabled
-+ * CLK_ENABLE: When it is unset the pwm controller will assert the duty counter reset and
-+ * emit inactive level to the PIN_ENABLE mux after that the driver can still change the pwm period
-+ * and duty and the value will apply when CLK_ENABLE be set again.
-+ * Use to determine whether duty_cycle bigger than 0.
-+ * PWM_ASPEED_CTRL_INVERSE: When it is toggled the output value will inverse immediately.
-+ * PWM_ASPEED_DUTY_CYCLE_FALLING_POINT/PWM_ASPEED_DUTY_CYCLE_RISING_POINT: When these two
-+ * values are equal it means the duty cycle = 100%.
-+ *
-+ * The glitch may generate at:
-+ * - Enabled changing when the duty_cycle bigger than 0% and less than 100%.
-+ * - Polarity changing when the duty_cycle bigger than 0% and less than 100%.
-+ *
-+ * Limitations:
-+ * - When changing both duty cycle and period, we cannot prevent in
-+ *   software that the output might produce a period with mixed
-+ *   settings.
-+ * - Disabling the PWM doesn't complete the current period.
-+ *
-+ * Improvements:
-+ * - When only changing one of duty cycle or period, our pwm controller will not
-+ *   generate the glitch, the configure will change at next cycle of pwm.
-+ *   This improvement can disable/enable through PWM_ASPEED_CTRL_DUTY_SYNC_DISABLE.
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/errno.h>
-+#include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/module.h>
-+#include <linux/of_platform.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include <linux/sysfs.h>
-+#include <linux/reset.h>
-+#include <linux/regmap.h>
-+#include <linux/bitfield.h>
-+#include <linux/slab.h>
-+#include <linux/pwm.h>
-+#include <linux/math64.h>
-+
-+/* The channel number of Aspeed pwm controller */
-+#define PWM_ASPEED_NR_PWMS 16
-+
-+/* PWM Control Register */
-+#define PWM_ASPEED_CTRL(ch) ((ch) * 0x10 + 0x00)
-+#define PWM_ASPEED_CTRL_LOAD_SEL_RISING_AS_WDT BIT(19)
-+#define PWM_ASPEED_CTRL_DUTY_LOAD_AS_WDT_ENABLE BIT(18)
-+#define PWM_ASPEED_CTRL_DUTY_SYNC_DISABLE BIT(17)
-+#define PWM_ASPEED_CTRL_CLK_ENABLE BIT(16)
-+#define PWM_ASPEED_CTRL_LEVEL_OUTPUT BIT(15)
-+#define PWM_ASPEED_CTRL_INVERSE BIT(14)
-+#define PWM_ASPEED_CTRL_OPEN_DRAIN_ENABLE BIT(13)
-+#define PWM_ASPEED_CTRL_PIN_ENABLE BIT(12)
-+#define PWM_ASPEED_CTRL_CLK_DIV_H GENMASK(11, 8)
-+#define PWM_ASPEED_CTRL_CLK_DIV_L GENMASK(7, 0)
-+
-+/* PWM Duty Cycle Register */
-+#define PWM_ASPEED_DUTY_CYCLE(ch) ((ch) * 0x10 + 0x04)
-+#define PWM_ASPEED_DUTY_CYCLE_PERIOD GENMASK(31, 24)
-+#define PWM_ASPEED_DUTY_CYCLE_POINT_AS_WDT GENMASK(23, 16)
-+#define PWM_ASPEED_DUTY_CYCLE_FALLING_POINT GENMASK(15, 8)
-+#define PWM_ASPEED_DUTY_CYCLE_RISING_POINT GENMASK(7, 0)
-+
-+/* PWM fixed value */
-+#define PWM_ASPEED_FIXED_PERIOD FIELD_MAX(PWM_ASPEED_DUTY_CYCLE_PERIOD)
-+
-+struct aspeed_pwm_data {
-+	struct pwm_chip chip;
-+	struct clk *clk;
-+	struct regmap *regmap;
-+	struct reset_control *reset;
-+};
-+
-+static inline struct aspeed_pwm_data *
-+aspeed_pwm_chip_to_data(struct pwm_chip *chip)
-+{
-+	return container_of(chip, struct aspeed_pwm_data, chip);
-+}
-+
-+static void aspeed_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
-+				 struct pwm_state *state)
-+{
-+	struct device *dev = chip->dev;
-+	struct aspeed_pwm_data *priv = aspeed_pwm_chip_to_data(chip);
-+	u32 hwpwm = pwm->hwpwm;
-+	bool polarity,	pin_en, clk_en;
-+	u32 duty_pt, val;
-+	unsigned long rate;
-+	u64 div_h, div_l, duty_cycle_period, dividend;
-+
-+	regmap_read(priv->regmap, PWM_ASPEED_CTRL(hwpwm), &val);
-+	polarity = FIELD_GET(PWM_ASPEED_CTRL_INVERSE, val);
-+	pin_en = FIELD_GET(PWM_ASPEED_CTRL_PIN_ENABLE, val);
-+	clk_en = FIELD_GET(PWM_ASPEED_CTRL_CLK_ENABLE, val);
-+	div_h = FIELD_GET(PWM_ASPEED_CTRL_CLK_DIV_H, val);
-+	div_l = FIELD_GET(PWM_ASPEED_CTRL_CLK_DIV_L, val);
-+	regmap_read(priv->regmap, PWM_ASPEED_DUTY_CYCLE(hwpwm), &val);
-+	duty_pt = FIELD_GET(PWM_ASPEED_DUTY_CYCLE_FALLING_POINT, val);
-+	duty_cycle_period = FIELD_GET(PWM_ASPEED_DUTY_CYCLE_PERIOD, val);
-+
-+	rate = clk_get_rate(priv->clk);
-+
-+	/*
-+	 * This multiplication doesn't overflow, the upper bound is
-+	 * 1000000000 * 256 * 256 << 15 = 0x1dcd650000000000
-+	 */
-+	dividend = (u64)NSEC_PER_SEC * (div_l + 1) * (duty_cycle_period + 1)
-+		       << div_h;
-+	state->period = DIV_ROUND_UP_ULL(dividend, rate);
-+
-+	if (clk_en && duty_pt) {
-+		dividend = (u64)NSEC_PER_SEC * (div_l + 1) * duty_pt
-+				 << div_h;
-+		state->duty_cycle = DIV_ROUND_UP_ULL(dividend, rate);
-+	} else
-+		state->duty_cycle = clk_en ? state->period : 0;
-+	state->polarity = polarity ? PWM_POLARITY_INVERSED : PWM_POLARITY_NORMAL;
-+	state->enabled = pin_en;
-+	dev_dbg(dev, "get period: %lldns, duty_cycle: %lldns", state->period,
-+		state->duty_cycle);
-+}
-+
-+static int aspeed_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-+			    const struct pwm_state *state)
-+{
-+	struct device *dev = chip->dev;
-+	struct aspeed_pwm_data *priv = aspeed_pwm_chip_to_data(chip);
-+	u32 hwpwm = pwm->hwpwm, duty_pt;
-+	unsigned long rate;
-+	u64 div_h, div_l, divisor, expect_period;
-+	bool clk_en;
-+
-+	expect_period = state->period;
-+	dev_dbg(dev, "expect period: %lldns, duty_cycle: %lldns", expect_period,
-+		state->duty_cycle);
-+
-+	rate = clk_get_rate(priv->clk);
-+	if (expect_period > div64_u64(ULLONG_MAX, (u64)rate))
-+		expect_period = div64_u64(ULLONG_MAX, (u64)rate);
-+	/*
-+	 * Pick the smallest value for div_h so that div_l can be the biggest
-+	 * which results in a finer resolution near the target period value.
-+	 */
-+	divisor = (u64)NSEC_PER_SEC * (PWM_ASPEED_FIXED_PERIOD + 1) *
-+		  (FIELD_MAX(PWM_ASPEED_CTRL_CLK_DIV_L) + 1);
-+	div_h = order_base_2(DIV64_U64_ROUND_UP(rate * expect_period, divisor));
-+	if (div_h > 0xf)
-+		div_h = 0xf;
-+
-+	divisor = ((u64)NSEC_PER_SEC * (PWM_ASPEED_FIXED_PERIOD + 1)) << div_h;
-+	div_l = div64_u64(rate * expect_period, divisor);
-+
-+	if (div_l == 0)
-+		return -ERANGE;
-+
-+	div_l -= 1;
-+
-+	if (div_l > 255)
-+		div_l = 255;
-+
-+	dev_dbg(dev, "clk source: %ld div_h %lld, div_l : %lld\n", rate, div_h,
-+		div_l);
-+	/* duty_pt = duty_cycle * (PERIOD + 1) / period */
-+	duty_pt = div64_u64(state->duty_cycle * rate,
-+			    (u64)NSEC_PER_SEC * (div_l + 1) << div_h);
-+	dev_dbg(dev, "duty_cycle = %lld, duty_pt = %d\n", state->duty_cycle,
-+		 duty_pt);
-+
-+	/*
-+	 * Fixed DUTY_CYCLE_PERIOD to its max value to get a
-+	 * fine-grained resolution for duty_cycle at the expense of a
-+	 * coarser period resolution.
-+	 */
-+	regmap_update_bits(priv->regmap, PWM_ASPEED_DUTY_CYCLE(hwpwm),
-+			   PWM_ASPEED_DUTY_CYCLE_PERIOD,
-+			   FIELD_PREP(PWM_ASPEED_DUTY_CYCLE_PERIOD,
-+				      PWM_ASPEED_FIXED_PERIOD));
-+	if (duty_pt == 0)
-+		/* emit inactive level and assert the duty counter reset */
-+		clk_en = 0;
-+	else {
-+		clk_en = 1;
-+		if (duty_pt >= (PWM_ASPEED_FIXED_PERIOD + 1))
-+			duty_pt = 0;
-+		regmap_update_bits(
-+			priv->regmap, PWM_ASPEED_DUTY_CYCLE(hwpwm),
-+			PWM_ASPEED_DUTY_CYCLE_RISING_POINT |
-+				PWM_ASPEED_DUTY_CYCLE_FALLING_POINT,
-+			FIELD_PREP(PWM_ASPEED_DUTY_CYCLE_FALLING_POINT,
-+				   duty_pt));
-+	}
-+
-+	regmap_update_bits(
-+		priv->regmap, PWM_ASPEED_CTRL(hwpwm),
-+		PWM_ASPEED_CTRL_CLK_DIV_H | PWM_ASPEED_CTRL_CLK_DIV_L |
-+			PWM_ASPEED_CTRL_PIN_ENABLE |
-+			PWM_ASPEED_CTRL_CLK_ENABLE | PWM_ASPEED_CTRL_INVERSE,
-+		FIELD_PREP(PWM_ASPEED_CTRL_CLK_DIV_H, div_h) |
-+			FIELD_PREP(PWM_ASPEED_CTRL_CLK_DIV_L, div_l) |
-+			FIELD_PREP(PWM_ASPEED_CTRL_PIN_ENABLE, state->enabled) |
-+			FIELD_PREP(PWM_ASPEED_CTRL_CLK_ENABLE, clk_en) |
-+			FIELD_PREP(PWM_ASPEED_CTRL_INVERSE, state->polarity));
-+	return 0;
-+}
-+
-+static const struct pwm_ops aspeed_pwm_ops = {
-+	.apply = aspeed_pwm_apply,
-+	.get_state = aspeed_pwm_get_state,
-+	.owner = THIS_MODULE,
-+};
-+
-+static int aspeed_pwm_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	int ret;
-+	struct aspeed_pwm_data *priv;
-+	struct device_node *np;
-+	struct platform_device *parent_dev;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	np = pdev->dev.parent->of_node;
-+	if (!of_device_is_compatible(np, "aspeed,ast2600-pwm-tach"))
-+		return dev_err_probe(dev, -ENODEV,
-+				     "Unsupported pwm device binding\n");
-+
-+	priv->regmap = syscon_node_to_regmap(np);
-+	if (IS_ERR(priv->regmap))
-+		return dev_err_probe(dev, PTR_ERR(priv->regmap),
-+				     "Couldn't get regmap\n");
-+
-+	parent_dev = of_find_device_by_node(np);
-+	priv->clk = devm_clk_get(&parent_dev->dev, 0);
-+	if (IS_ERR(priv->clk))
-+		return dev_err_probe(dev, PTR_ERR(priv->clk),
-+				     "Couldn't get clock\n");
-+
-+	priv->reset = devm_reset_control_get_shared(&parent_dev->dev, NULL);
-+	if (IS_ERR(priv->reset))
-+		return dev_err_probe(dev, PTR_ERR(priv->reset),
-+				     "Couldn't get reset control\n");
-+
-+	ret = clk_prepare_enable(priv->clk);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Couldn't enable clock\n");
-+
-+	ret = reset_control_deassert(priv->reset);
-+	if (ret) {
-+		dev_err_probe(dev, ret, "Couldn't deassert reset control\n");
-+		goto err_disable_clk;
-+	}
-+
-+	priv->chip.dev = dev;
-+	priv->chip.ops = &aspeed_pwm_ops;
-+	priv->chip.npwm = PWM_ASPEED_NR_PWMS;
-+
-+	ret = pwmchip_add(&priv->chip);
-+	if (ret < 0) {
-+		dev_err_probe(dev, ret, "Failed to add PWM chip\n");
-+		goto err_assert_reset;
-+	}
-+	dev_set_drvdata(dev, priv);
-+	return 0;
-+err_assert_reset:
-+	reset_control_assert(priv->reset);
-+err_disable_clk:
-+	clk_disable_unprepare(priv->clk);
-+	return ret;
-+}
-+
-+static int aspeed_pwm_remove(struct platform_device *dev)
-+{
-+	struct aspeed_pwm_data *priv = platform_get_drvdata(dev);
-+
-+	pwmchip_remove(&priv->chip);
-+	reset_control_assert(priv->reset);
-+	clk_disable_unprepare(priv->clk);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id of_pwm_match_table[] = {
-+	{
-+		.compatible = "aspeed,ast2600-pwm",
-+	},
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, of_pwm_match_table);
-+
-+static struct platform_driver aspeed_pwm_driver = {
-+	.probe = aspeed_pwm_probe,
-+	.remove	= aspeed_pwm_remove,
-+	.driver	= {
-+		.name = "aspeed-pwm",
-+		.of_match_table = of_pwm_match_table,
-+	},
-+};
-+
-+module_platform_driver(aspeed_pwm_driver);
-+
-+MODULE_AUTHOR("Billy Tsai <billy_tsai@aspeedtech.com>");
-+MODULE_DESCRIPTION("Aspeed ast2600 PWM device driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.25.1
+On 2021/11/29 13:00, Masami Hiramatsu wrote:
+> On Mon, 29 Nov 2021 09:40:30 +0800
+> "liuqi (BA)" <liuqi115@huawei.com> wrote:
+> 
+>>
+>>
+>> On 2021/11/27 20:23, Masami Hiramatsu wrote:
+>>> On Fri, 26 Nov 2021 18:31:06 +0800
+>>> "liuqi (BA)" <liuqi115@huawei.com> wrote:
+>>>
+>>>>
+>>>>
+>>>> On 2021/8/24 18:50, Mark Rutland wrote:
+>>>>>> diff --git a/arch/arm64/kernel/probes/optprobe_trampoline.S b/arch/arm64/kernel/probes/optprobe_trampoline.S
+>>>>>> new file mode 100644
+>>>>>> index 000000000000..24d713d400cd
+>>>>>> --- /dev/null
+>>>>>> +++ b/arch/arm64/kernel/probes/optprobe_trampoline.S
+>>>>>> @@ -0,0 +1,37 @@
+>>>>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>>>>> +/*
+>>>>>> + * trampoline entry and return code for optprobes.
+>>>>>> + */
+>>>>>> +
+>>>>>> +#include <linux/linkage.h>
+>>>>>> +#include <asm/asm-offsets.h>
+>>>>>> +#include <asm/assembler.h>
+>>>>>> +
+>>>>>> +	.global optprobe_template_entry
+>>>>>> +optprobe_template_entry:
+>>>>> Please use SYM_*(); see arch/arm64/kernel/entry-ftrace.S for examples of
+>>>>> how to use that for trampolines.
+>>>>>
+>>>>> This should be:
+>>>>>
+>>>>> SYM_CODE_START(optprobe_template)
+>>>>>
+>>>> Hi all,
+>>>>
+>>>> I meet a problem when I use SYM_CODE_START(optprobe_template) to replace
+>>>> optprobe_template_entry.
+>>>>
+>>>> If SYM_CODE_START is used, all optprobe will share one trampoline space.
+>>>> Under this circumstances, if user register two optprobes, trampoline
+>>>> will be overwritten by the newer one, and this will cause kernel panic
+>>>> when the old optprobe is trigger.
+>>>
+>>> Hm, this is curious, because the template should be copied to the
+>>> trampoline buffer for each optprobe and be modified.
+>>>
+>>>>
+>>>> Using optprobe_template_entry will not have this problem, as each
+>>>> optprobe has its own trampoline space (alloced in get_opinsn_slot()).
+>>>
+>>> Yes, it is designed to do so.
+>>>
+>>> Thank you,
+>>>
+>>
+>> Hi Masami,
+>>
+>> Thanks for your reply. But I also met a problem when using
+>> get_opinsn_slot() to alloc trampoline buffer.
+>>
+>> As module_alloc(like x86) is used to alloc buffer, trampoline is in
+>> module space, so if origin insn is in kernel space, the range between
+>> origin insn and trampoline is out of 128M.
+>>
+>> As module PLT cannot used here, I have no idea to achieve long jump in
+>> this situation. Do you have any good idea?
+> 
+Hi Masami,
 
+Thanks so much for your reply.
+
+> One possible solution is to use pre-allocated trampoline space in
+> the text area, as same as ppc64 does.
+> (See arch/powerpc/kernel/optprobes_head.S, it embeds a space at "optinsn_slot")
+> 
+
+I find something interesting in arch/powerpc/kernel/optprobes.c, it use 
+"optinsn_slot" as a public buffer, and use a static "insn_page_in_use" 
+to make sure there is only one optprobe in kernel.
+
+If we use this solution , users could only register one optprobe each 
+time. This will also be a limitation for users, what's your opinion 
+about this?
+
+
+> Also, the trampoline can be minimized, since what we need is the
+> probed address (and the address of struct optprobe).
+> A single trampoline entry will do the following;
+> 
+> 1. push lr and a victim register (here, x0)
+> 2. load the address of optprobe to x0
+> 3. call(br) common-optprobe asm code
+> 4. pop lr and x0
+> 5. jump back to (next to) the original place
+> 
+> Here the common-optprobe asm code does;
+> 
+> c1. push all registers on the stack (like save_all_base_regs) for making
+>    struct pt_regs.
+> c2. set the pt_regs address to x1.
+> c3. call optimized_callback()
+> c4. return
+> 
+> Since arm64 will emulate the probed instruction, we can do this.
+> (On the other hand, x86 needs to run the probed insn in trampoline
+>   code, it will do that between step 4 and 5)
+> 
+
+I'll try to minimize the trampoline according to this,
+
+Thanks,
+Qi
+> The trampoline entry code is just 5 instructions (but may need an
+> immediate value (&optprobe) needs to be embedded).
+> 
+> Thank you,
+> 
+>>
+>> Thanks,
+>> Qi
+>>
+>>>>
+>>>> So how to reuse SYM_CODE_START  in this situation, does anyone has a
+>>>> good idea?
+>>>>
+>>>> Thanks,
+>>>> Qi
+>>>>> ... and note the matching end below.
+>>>>>
+>>>>>> +	sub sp, sp, #PT_REGS_SIZE
+>>>>>> +	save_all_base_regs
+>>>>>> +	/* Get parameters to optimized_callback() */
+>>>>>> +	ldr	x0, 1f
+>>>>>> +	mov	x1, sp
+>>>>>> +	/* Branch to optimized_callback() */
+>>>>>> +	.global optprobe_template_call
+>>>>>> +optprobe_template_call:
+>>>>> SYM_INNER_LABEL(optprobe_template_call, SYM_L_GLOBAL)
+>>>>>
+>>>>> ...and likewise for all the other labels.
+>>>>>
+>>>>>> +	nop
+>>>>>> +	restore_all_base_regs
+>>>>>> +	ldr lr, [sp, #S_LR]
+>>>>>> +        add sp, sp, #PT_REGS_SIZE
+>>>>>> +	.global optprobe_template_restore_orig_insn
+>>>>>> +optprobe_template_restore_orig_insn:
+>>>>>> +	nop
+>>>>>> +	.global optprobe_template_restore_end
+>>>>>> +optprobe_template_restore_end:
+>>>>>> +	nop
+>>>>>> +	.global optprobe_template_end
+>>>>>> +optprobe_template_end:
+>>>>>> +	.global optprobe_template_val
+>>>>>> +optprobe_template_val:
+>>>>>> +	1:	.long 0
+>>>>>> +		.long 0
+>>>>>> +	.global optprobe_template_max_length
+>>>>>> +optprobe_template_max_length:
+>>>>> SYM_INNER_LABEL(optprobe_template_end, SYM_L_GLOBAL)
+>>>>> SYM_CODE_END(optprobe_template)
+>>>>>
+>>>>> Thanks,
+>>>>> Mark.
+>>>>>
+>>>>>> -- 
+>>>
+>>>
+> 
+> 
