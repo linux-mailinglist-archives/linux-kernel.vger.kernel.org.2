@@ -2,74 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93C2E460B97
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 01:24:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C43460B9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 01:27:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232866AbhK2A16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 19:27:58 -0500
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:36435 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376343AbhK2AZ4 (ORCPT
+        id S234906AbhK2AaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 19:30:14 -0500
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:33695 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241060AbhK2A2O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 19:25:56 -0500
-Received: by mail-oi1-f182.google.com with SMTP id t23so31305634oiw.3;
-        Sun, 28 Nov 2021 16:22:40 -0800 (PST)
+        Sun, 28 Nov 2021 19:28:14 -0500
+Received: by mail-ot1-f50.google.com with SMTP id 35-20020a9d08a6000000b00579cd5e605eso23235731otf.0;
+        Sun, 28 Nov 2021 16:24:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=CbsF1xcuqt7P+diOdv7BChnjrBiFtTcwuF6zSxf2jN0=;
-        b=0+3QEsgURLIQt/P3tcLzv7PikzSywWvBit3Ssp4lF/7LdL1dIjuQsFkq6oQ1v4eT4X
-         DKpUJetBNO78eIg5acadQ+f9pyCab1wMqK1E8lGOoPUszz1xKpUQZrqgpwf6NmhsOglc
-         FDhsSPq1d+ztuGhNjAFA+y9Rj9kpClTO+D5H0Ir8UFhj2mJFTu46Qm9cN9T3YnGaOJ1i
-         IcwcfRMNCcxYkE5P4ZclbXChJ0KFfo/hH61PoR30WBr/FEvyRQvDE0v4nGGCuqPm2WJB
-         IcczbBCyE6Xcf5zopfoHHu76mK/YcCA6nkhJKk2Cq3VAjdU9xFh5hRaGyz4ZhO7KBtod
-         OT7g==
-X-Gm-Message-State: AOAM533o20zwrdk3Ils0UZTBUMcDQaoiN3+EcQ64vRWjHZ9exgMmPerl
-        Vr7vULwpOHLwlFNXiBZSdw==
-X-Google-Smtp-Source: ABdhPJwr8Vf3nh0ZqXFcTKdx06qCGZIzJbgoshUGgimoxAMNjQBrUZt9xpq78T2/PA3iWpzS+kUFsA==
-X-Received: by 2002:aca:646:: with SMTP id 67mr37018108oig.175.1638145359861;
-        Sun, 28 Nov 2021 16:22:39 -0800 (PST)
+        bh=gpxsLU6o1Yq28IvHM8hocQq391YFp9KWdpHzvMtrL3c=;
+        b=6We+qih5AkdQClLdmr/xE0djAE6Ul5ZtMpL0Kmo9A0EpOFUDlkl8dzOMSyZt2n+LN9
+         V0xM+Qq+y05pMppCMTKEoSf3K/BJV3RQWaYDpyiWrMdlwq63qMGIYXw/P5WviOe62XEY
+         QKAnKGrZ2xZ78PXioK1eHh6Fn3aNIgiPX5N8pINx80JBEUM3GcSW2z2bfAo2TYQ/wKTr
+         +Maf+DwddE57qg1R26f4M8Tj9aE/SUK6fDEuOmLivnSxhCfiDXFdK1b2pPcqVDMz5stS
+         xoP9cPDAkqp+G5X/P88YXgh0Cvb0adsb+0gnNiGFq6rK/zTM9p7/jVq3fNmhwYqI0wSO
+         GZOA==
+X-Gm-Message-State: AOAM531gPD8OFqwiTpQG9VxyPlbaHxERpvHTibpufJ1W9WAPlv0ad4bP
+        PHTcjLU8jDkj5LjJ5sxyMg==
+X-Google-Smtp-Source: ABdhPJyEZsw2qHoboCT4LrMarGV5mtt2ZYCTg2tcgA7wYu841PQ1G8u9xoP52/RDscxcu1bC2U3Lxg==
+X-Received: by 2002:a05:6830:12c3:: with SMTP id a3mr42299961otq.24.1638145497026;
+        Sun, 28 Nov 2021 16:24:57 -0800 (PST)
 Received: from robh.at.kernel.org ([172.58.99.242])
-        by smtp.gmail.com with ESMTPSA id x16sm2382207ott.8.2021.11.28.16.22.37
+        by smtp.gmail.com with ESMTPSA id bn41sm2638724oib.18.2021.11.28.16.24.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 16:22:39 -0800 (PST)
-Received: (nullmailer pid 2879901 invoked by uid 1000);
-        Mon, 29 Nov 2021 00:22:36 -0000
-Date:   Sun, 28 Nov 2021 18:22:36 -0600
+        Sun, 28 Nov 2021 16:24:56 -0800 (PST)
+Received: (nullmailer pid 2883129 invoked by uid 1000);
+        Mon, 29 Nov 2021 00:24:53 -0000
+Date:   Sun, 28 Nov 2021 18:24:53 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Hammer Hsieh <hammerh0314@gmail.com>
-Cc:     Hammer Hsieh <hammer.hsieh@sunplus.com>, p.zabel@pengutronix.de,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        wells.lu@sunplus.com, robh+dt@kernel.org, tony.huang@sunplus.com,
-        linux-serial@vger.kernel.org, jirislaby@kernel.org,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH v3 1/2] dt-bindings:serial:Add bindings doc for Sunplus
- SoC UART Driver
-Message-ID: <YaQdTLoN/FFPtI3A@robh.at.kernel.org>
-References: <1635752903-14968-1-git-send-email-hammer.hsieh@sunplus.com>
- <1637299163-6460-1-git-send-email-hammer.hsieh@sunplus.com>
- <1637299163-6460-2-git-send-email-hammer.hsieh@sunplus.com>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, Pavel Machek <pavel@ucw.cz>,
+        Chen-Yu Tsai <wens@csie.org>
+Subject: Re: [PATCH v3 1/2] dt-bindings: leds: Add Allwinner R329/D1 LED
+ controller
+Message-ID: <YaQd1bSS3VCvvj5l@robh.at.kernel.org>
+References: <20211119054044.16286-1-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1637299163-6460-2-git-send-email-hammer.hsieh@sunplus.com>
+In-Reply-To: <20211119054044.16286-1-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Nov 2021 13:19:22 +0800, Hammer Hsieh wrote:
-> Add bindings doc for Sunplus SoC UART Driver
+On Thu, 18 Nov 2021 23:40:42 -0600, Samuel Holland wrote:
+> The Allwinner R329 and D1 SoCs contain an LED controller designed to
+> drive a series of RGB LED pixels. It supports PIO and DMA transfers, and
+> has configurable timing and pixel format.
 > 
-> Signed-off-by: Hammer Hsieh <hammer.hsieh@sunplus.com>
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
 > ---
-> Changes in v3:
->  - Modify yaml file based on uart driver (remove dma function).
 > 
->  .../bindings/serial/sunplus,sp7021-uart.yaml       | 58 ++++++++++++++++++++++
->  MAINTAINERS                                        |  5 ++
->  2 files changed, 63 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/serial/sunplus,sp7021-uart.yaml
+> Changes in v3:
+>  - Removed quotes from enumeration values
+>  - Added vendor prefix to timing/format properties
+>  - Renamed "format" property to "pixel-format" for clarity
+>  - Dropped "vled-supply" as it is unrelated to the controller hardware
+> 
+> Changes in v2:
+>  - Fixed typo leading to duplicate t1h-ns property
+>  - Removed "items" layer in definition of dmas/dma-names
+>  - Replaced uint32 type reference with maxItems in timing properties
+> 
+>  .../leds/allwinner,sun50i-r329-ledc.yaml      | 137 ++++++++++++++++++
+>  1 file changed, 137 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/leds/allwinner,sun50i-r329-ledc.yaml
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
