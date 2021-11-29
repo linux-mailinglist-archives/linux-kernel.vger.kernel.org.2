@@ -2,102 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2AD460B70
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 01:08:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24DE5460B88
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 01:22:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376365AbhK2ALQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 19:11:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376281AbhK2AJP (ORCPT
+        id S1376272AbhK2AZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 19:25:21 -0500
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:46625 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344104AbhK2AXT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 19:09:15 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF98C061761
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 16:05:39 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id k2so31116743lji.4
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 16:05:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=hs3qnIcKtRCT83bE7Elusv1v0jityjS4B84eiJJr7pM=;
-        b=H8o0BSfnPeJiEbYqwwaIzxxt3dBBXRLCTVQR6coynWOtm4se76sdgXe3gI5jts5xYO
-         ZQUn9g6USpqXs4Wc6vCH0VEiOCnCtY8paSEItbXeSfUSUv+vUBEzxxtWvVuBLQa+S/rr
-         LTd64RalxhYzCI/moJoknhwPi+Qzy4ykGQmbz8TCTw7DyfuhSZHXjGqUs2M28nA/qTas
-         Va7YWU33NGrNS31agfSOWybLEb9cazyozQfj9sg45YicKdoU0QcokompqBDzIj5OX1vH
-         nTR/pqc3oUfUNZ3oIAyEhAZxwGTEV302Ep6q653xI07bZ0SZU76ndqwNepVgh3LE9h7T
-         cgdA==
+        Sun, 28 Nov 2021 19:23:19 -0500
+Received: by mail-ot1-f47.google.com with SMTP id b5-20020a9d60c5000000b0055c6349ff22so23037383otk.13;
+        Sun, 28 Nov 2021 16:20:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=hs3qnIcKtRCT83bE7Elusv1v0jityjS4B84eiJJr7pM=;
-        b=ih03jvwegAxmdqKygpqGrWVOjnCo9PfXUp3YoPWT47jTNBg/k1HVFqN9Kz9d/QPG/i
-         4XTRgWeARpIXnOFw2m7LCG1tuhvmNXboeiuOFJ6BMqnb9MaIEnkM6rhf+kxJ4YTfhwNH
-         h2RmlLknfsW8A91HdVr3I2uw9sbUdK3N8YvdfIT0co1RG7GWmHe53koq6/TDHsj/h7fl
-         wzlVfNPsyKgKUnROSvfBfegHhA593tvIDc0NP91CzAFL0V5ei2Iwkfvknn6g8wIV7iz6
-         m9zO7PuxBPdSqv3RtbBrm3/XXwfmaxrfIDe/iRu6y+p4GKKdWR4tAQ9KZ2YqTPbzFzdh
-         b/Zw==
-X-Gm-Message-State: AOAM530axu/cSxP+q2v1yNInRTqfy/S2PriZrhfZANBxsxTU+s2ktMmr
-        +RE7BagkS8NrwhfaHUn8kg0W15jDqhyQLTj5Icc=
-X-Google-Smtp-Source: ABdhPJxLzZX1Z7aPISfmZgbEzfgnfPPOJ19Co3Q0WsWgIkTMnbRtAFLYCoTlRTYgCCttpEwrhZ9uJ4ouwCtZ161rx3Q=
-X-Received: by 2002:a05:651c:621:: with SMTP id k33mr46125665lje.359.1638144337213;
- Sun, 28 Nov 2021 16:05:37 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Tmn8UPuYCbbaAu9yuKqOIAL/Z3VCsmY2MYHurrVcL6I=;
+        b=0zZlOCwGmp9UpDRhMGTp+YnoAzqY4t6S4UbMzJjHW3HHLERgP1wYQ3Peq6T2HifZuc
+         wCdPYlTo5tovwvTLzNJ0vQ3niWr2wxQRfeQK/MeSpdvnsL4nm3NUSPaUf1/LX48RxpQN
+         96kKwf4kJHhSFcp43KyTK0shKPDncDfVtwNr8QFqpHSI13shX00y4ulqvdC7Jr5INRTy
+         Wsm4G7kbObSpnY8gX5i6pFkexCkj6+zahCx3fXRQqQ9wfsbOyFyuF0MPKi3Jmvg0qB3g
+         MVgjAflMDd7TqIHbmr+cuZlL+lpo4pN2Nd7IiuRkGgYDECCO0urqbmTEjlhYGAideWf2
+         ddpA==
+X-Gm-Message-State: AOAM530vvdRXT+yean+yeWo1a40t9C5oZ0RNmbI/Z/4sRpZzNfyz6Eyu
+        kAyQ1g1J8PsaaUhfSJsf/w==
+X-Google-Smtp-Source: ABdhPJxgP+4Ec1L+bfIw9v66vTNZr0gLUBgMY59qf0MCtqMYqS9ZuJ839D9e1DwN0GzbL/OnlM16aA==
+X-Received: by 2002:a9d:749a:: with SMTP id t26mr43471407otk.96.1638145202357;
+        Sun, 28 Nov 2021 16:20:02 -0800 (PST)
+Received: from robh.at.kernel.org ([172.58.99.242])
+        by smtp.gmail.com with ESMTPSA id w18sm2376042otm.1.2021.11.28.16.20.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Nov 2021 16:20:01 -0800 (PST)
+Received: (nullmailer pid 2876190 invoked by uid 1000);
+        Mon, 29 Nov 2021 00:19:59 -0000
+Date:   Sun, 28 Nov 2021 18:19:59 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        linux-tegra@vger.kernel.org,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH V3 1/2] dt-bindings: Add YAML bindings for NVENC and NVJPG
+Message-ID: <YaQcr5ntuVmsQMgy@robh.at.kernel.org>
+References: <20211117095608.60415-1-jonathanh@nvidia.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6504:1149:0:0:0:0 with HTTP; Sun, 28 Nov 2021 16:05:36
- -0800 (PST)
-Reply-To: aishsgaddafi00@gmail.com
-From:   "Miss.Aisha Gaddafi" <aishsgaddafi880@gmail.com>
-Date:   Sun, 28 Nov 2021 16:05:36 -0800
-Message-ID: <CAK8Xn7E_=b8NndfmWrpZK9ApY-zSP5rffkCLD47Fbf9M4RP3Nw@mail.gmail.com>
-Subject: THE AMOUNT IS 27.5 MILLIOMS USD
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211117095608.60415-1-jonathanh@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dearest One,
+On Wed, 17 Nov 2021 09:56:07 +0000, Jon Hunter wrote:
+> Add YAML device tree bindings for the Tegra NVENC and NVJPG Host1x
+> engines.
+> 
+> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+> ---
+> Changes since V2:
+> - Fixed indentation
+> Changes since V1:
+> - Fixed errors reported by Rob's bot
+> 
+>  .../gpu/host1x/nvidia,tegra210-nvenc.yaml     | 135 ++++++++++++++++++
+>  .../gpu/host1x/nvidia,tegra210-nvjpg.yaml     |  94 ++++++++++++
+>  2 files changed, 229 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/gpu/host1x/nvidia,tegra210-nvenc.yaml
+>  create mode 100644 Documentation/devicetree/bindings/gpu/host1x/nvidia,tegra210-nvjpg.yaml
+> 
 
-I am Miss AIshs Gaddafi, one of the daughters of the embattled
-president of Libya, I am currently residing in one of the African
-Countries, unfortunately as a refugee. At the meantime, my family is
-the target of Western nations led by Nato who wants to destroy my
-father at all costs. Our investments and bank accounts in several
-countries are their targets to freeze.
-
-I have been commissioned to contact an interested foreign
-investor/partner who will be able to take
-absolute control of part of the vast cash available to private
-account with my late brother who was killed by NATO air strike, for a
-possible investment in your country.
-
-If this transaction interest you, you don=E2=80=99t have to disclose it to =
-any
-body because of what is going with my entire family, if the united
-nation happens to know this account, they will freezing it as they
-freeze others so keep this transaction for yourself only until we
-finalize it.
-I want to transfer this money into your account immediately for onward
-investment in your country because I don=E2=80=99t want the united nation t=
-o
-know about this account.
-
-Therefore if you are capable of running an establishment and can
-maintain the high level of secrecy required in this project, kindly
-respond with the following information for details of the
-project.Please contact me to my email ( aishsgaddafi00@gmail.com )
-
-
-
-1. Your Full Name =E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6
-2. Your Current Address=E2=80=A6=E2=80=A6=E2=80=A6
-3. Your Nationality=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6
-4. Your Age=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6
-5. Your Occupation=E2=80=A6=E2=80=A6=E2=80=A6
-6. Send me a scan copy of your Photograph
-
-Best Regard
-Miss.Aisha Gaddafi
+Reviewed-by: Rob Herring <robh@kernel.org>
