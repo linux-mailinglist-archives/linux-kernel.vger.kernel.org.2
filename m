@@ -2,56 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E5A460C94
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 03:15:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B04B460C96
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 03:16:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233764AbhK2CSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 21:18:44 -0500
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:33917 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231774AbhK2CQn (ORCPT
+        id S238186AbhK2CTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 21:19:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40341 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231578AbhK2CRW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 21:16:43 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R491e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=yinan@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Uyb4swN_1638152004;
-Received: from 30.240.100.24(mailfrom:yinan@linux.alibaba.com fp:SMTPD_---0Uyb4swN_1638152004)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 29 Nov 2021 10:13:24 +0800
-Message-ID: <eb65291b-edc3-6968-46a9-fc7e5ac48adb@linux.alibaba.com>
-Date:   Mon, 29 Nov 2021 10:13:23 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.0
-Subject: Re: [PATCH v4] scripts: ftrace - move the sort-processing in
- ftrace_init to compile time
-From:   Yinan Liu <yinan@linux.alibaba.com>
-To:     rostedt@goodmis.org, peterz@infradead.org
-Cc:     mark-pk.tsai@mediatek.com, mingo@redhat.com,
+        Sun, 28 Nov 2021 21:17:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1638152045;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UsND0WUJx3OdyiBYmPkELfPAaNB8Sg6JYEf2yT7Btts=;
+        b=hqyxDwGcH0zXQ9J43OHJ0AMM/pLUqY22Q8pS3kRV313t9UN2hS1ZJ3JwXIthbRG1qoPynp
+        WAiedmYTSqBCiolmJhQUx1kQ++3TPOMF8uMuWrkmliNyQTro2uz30e3CrOdr6tWJmvc4bH
+        6I20XHDicXsvRxMVcYndfrwVvFvixzE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-93-58uIZnieNb-CNlo1YaEybw-1; Sun, 28 Nov 2021 21:14:01 -0500
+X-MC-Unique: 58uIZnieNb-CNlo1YaEybw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F0FB91006AA0;
+        Mon, 29 Nov 2021 02:13:59 +0000 (UTC)
+Received: from T590 (ovpn-8-28.pek2.redhat.com [10.72.8.28])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E54735D6BA;
+        Mon, 29 Nov 2021 02:13:53 +0000 (UTC)
+Date:   Mon, 29 Nov 2021 10:13:48 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Ye Bin <yebin10@huawei.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210911135043.16014-1-yinan@linux.alibaba.com>
- <20211123105404.22166-1-yinan@linux.alibaba.com>
- <20211123105404.22166-2-yinan@linux.alibaba.com>
-In-Reply-To: <20211123105404.22166-2-yinan@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH -next] block: Fix fsync always failed if once failed
+Message-ID: <YaQ3XGi1HHIIMgI+@T590>
+References: <20211129012659.1553733-1-yebin10@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211129012659.1553733-1-yebin10@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-在 2021/11/23 下午6:54, Yinan Liu 写道:
-> When the kernel starts, the initialization of ftrace takes
-> up a portion of the time (approximately 6~8ms) to sort mcount
-> addresses. We can save this time by moving mcount-sorting to
-> compile time.
+On Mon, Nov 29, 2021 at 09:26:59AM +0800, Ye Bin wrote:
+> We do test with inject error fault base on v4.19, after test some time we found
+> sync /dev/sda always failed.
+> [root@localhost] sync /dev/sda
+> sync: error syncing '/dev/sda': Input/output error
 > 
-> Signed-off-by: Yinan Liu <yinan@linux.alibaba.com>
-> Reported-by: kernel test robot <lkp@intel.com>
+> scsi log as follows:
+> [19069.812296] sd 0:0:0:0: [sda] tag#64 Send: scmd 0x00000000d03a0b6b
+> [19069.812302] sd 0:0:0:0: [sda] tag#64 CDB: Synchronize Cache(10) 35 00 00 00 00 00 00 00 00 00
+> [19069.812533] sd 0:0:0:0: [sda] tag#64 Done: SUCCESS Result: hostbyte=DID_OK driverbyte=DRIVER_OK
+> [19069.812536] sd 0:0:0:0: [sda] tag#64 CDB: Synchronize Cache(10) 35 00 00 00 00 00 00 00 00 00
+> [19069.812539] sd 0:0:0:0: [sda] tag#64 scsi host busy 1 failed 0
+> [19069.812542] sd 0:0:0:0: Notifying upper driver of completion (result 0)
+> [19069.812546] sd 0:0:0:0: [sda] tag#64 sd_done: completed 0 of 0 bytes
+> [19069.812549] sd 0:0:0:0: [sda] tag#64 0 sectors total, 0 bytes done.
+> [19069.812564] print_req_error: I/O error, dev sda, sector 0
+> 
+> ftrace log as follows:
+>  rep-306069 [007] .... 19654.923315: block_bio_queue: 8,0 FWS 0 + 0 [rep]
+>  rep-306069 [007] .... 19654.923333: block_getrq: 8,0 FWS 0 + 0 [rep]
+>  kworker/7:1H-250   [007] .... 19654.923352: block_rq_issue: 8,0 FF 0 () 0 + 0 [kworker/7:1H]
+>  <idle>-0     [007] ..s. 19654.923562: block_rq_complete: 8,0 FF () 18446744073709551615 + 0 [0]
+>  <idle>-0     [007] d.s. 19654.923576: block_rq_complete: 8,0 WS () 0 + 0 [-5]
+> 
+> As 8d6996630c03 introduce 'fq->rq_status', this data only update when 'flush_rq'
+> reference count isn't zero. If flush request once failed and record error code
+> in 'fq->rq_status'. If there is no chance to update 'fq->rq_status',then do fsync
+> will always failed.
+> To address this issue reset 'fq->rq_status' after return error code to upper layer.
+> 
+> Fixes: 8d6996630c03("block: fix null pointer dereference in blk_mq_rq_timed_out()")
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> ---
+>  block/blk-flush.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/block/blk-flush.c b/block/blk-flush.c
+> index 902e80e48e4a..8b43088d41f2 100644
+> --- a/block/blk-flush.c
+> +++ b/block/blk-flush.c
+> @@ -242,8 +242,10 @@ static void flush_end_io(struct request *flush_rq, blk_status_t error)
+>  	 * avoiding use-after-free.
+>  	 */
+>  	WRITE_ONCE(flush_rq->state, MQ_RQ_IDLE);
+> -	if (fq->rq_status != BLK_STS_OK)
+> +	if (fq->rq_status != BLK_STS_OK) {
+>  		error = fq->rq_status;
+> +		fq->rq_status = BLK_STS_OK;
+> +	}
 
-Hi,
+Looks fine,
 
-Is there anything wrong with this patch? Or are you too busy
-to review? Let me make sure that it has not been forgotten.
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
 
 
-Best regards!
--- Yinan Liu
+Thanks, 
+Ming
+
