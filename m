@@ -2,16 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03EBA460C44
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 02:30:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70068460C8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 03:03:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376866AbhK2BdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 20:33:17 -0500
-Received: from smtpcmd14162.aruba.it ([62.149.156.162]:49714 "EHLO
+        id S239554AbhK2CGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 21:06:22 -0500
+Received: from smtpcmd14162.aruba.it ([62.149.156.162]:39752 "EHLO
         smtpcmd14162.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239298AbhK2BbQ (ORCPT
+        with ESMTP id S243167AbhK2CEV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 20:31:16 -0500
+        Sun, 28 Nov 2021 21:04:21 -0500
 Received: from [192.168.50.18] ([146.241.138.59])
         by Aruba Outgoing Smtp  with ESMTPSA
         id rVMImypYirIRlrVMImljzA; Mon, 29 Nov 2021 02:21:32 +0100
