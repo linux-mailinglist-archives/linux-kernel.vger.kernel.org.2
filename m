@@ -2,163 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A7F460DB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 04:47:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66DB1460DBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 04:47:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377405AbhK2Dts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 22:49:48 -0500
-Received: from mailgw01.mediatek.com ([60.244.123.138]:44548 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1376963AbhK2Dre (ORCPT
+        id S1377176AbhK2DuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 22:50:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352907AbhK2Dr6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 22:47:34 -0500
-X-UUID: 3ec5cf5cdd234616816c6821cdde4c9e-20211129
-X-UUID: 3ec5cf5cdd234616816c6821cdde4c9e-20211129
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <yunfei.dong@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1134237539; Mon, 29 Nov 2021 11:42:32 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 29 Nov 2021 11:42:30 +0800
-Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
- mtkcas10.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Mon, 29 Nov 2021 11:42:29 +0800
-From:   Yunfei Dong <yunfei.dong@mediatek.com>
-To:     Yunfei Dong <yunfei.dong@mediatek.com>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>
-CC:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: [PATCH v11, 19/19] media: mtk-vcodec: Remove mtk_vcodec_release_enc_pm
-Date:   Mon, 29 Nov 2021 11:42:01 +0800
-Message-ID: <20211129034201.5767-20-yunfei.dong@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211129034201.5767-1-yunfei.dong@mediatek.com>
-References: <20211129034201.5767-1-yunfei.dong@mediatek.com>
+        Sun, 28 Nov 2021 22:47:58 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68E99C0613F8
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 19:43:38 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id y8so11063167plg.1
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 19:43:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g1AjNx0u4QsH0ydDfhoNnZaeQc7rEh0mvCty4L4f7eQ=;
+        b=Wt8FaLZ08KUnARUpfZuFUX8/aWHCXUzDWW38X2tieklC/DI06HFADNTel2urdcLghd
+         6xuwD96bktbINCX1L48Tnqrgt/rnLZX0XjKzef2OqinmBYRmyB92QmVHjIXnsa4D3adc
+         Ewoo7Xso2SY8bIPCIsveHyTJlUKvgLq1OWVdg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g1AjNx0u4QsH0ydDfhoNnZaeQc7rEh0mvCty4L4f7eQ=;
+        b=uWcDRWRHymf4eh0hMwcA8NbAgR+VLy43lpZ2m2SPdeqdQIeEyG6ouPPqR9mLed2U/H
+         6se2SVK+SsTNwcBD0XILupF6f14pozLe7eEKyJO26eqt2TvcP60WMm1rcbYt79pdGaha
+         VP4xXD2ZnXWrJY2B/ZsO6G/sBeTU8XB5ZPeHyn+dgDUfSGKDEI0XE6FvVreLpil6WLDv
+         gmvbzFglfq8KGIpurohqVJX9GNtKRBtnyoey6yLSnjpM/sWrHIqwcR2di2cwtZnqJG//
+         awZLTERYG1wgpDLQ8jm5PHxHywEVbvFIf3R8jhlwq0198b+oAdIGWoJ/3jjGDB1B3qh8
+         3+bw==
+X-Gm-Message-State: AOAM531KrmuXmJoEs9srKhghoG5YXU4ZWXLaeTYXBmkLnhRg7Zh24rVk
+        /4XXeHeUFC5XkbWgm0o+X6PzgA==
+X-Google-Smtp-Source: ABdhPJxLhGhNYMx62P8hwpiqGSK0LeOGFyNZHJnZlg3ztGeJOu1G+77rZi203d7zD5d/O00+rTeohw==
+X-Received: by 2002:a17:902:ee95:b0:141:f28f:7296 with SMTP id a21-20020a170902ee9500b00141f28f7296mr58161089pld.50.1638157417973;
+        Sun, 28 Nov 2021 19:43:37 -0800 (PST)
+Received: from localhost ([2401:fa00:8f:203:72d1:80f6:e1c9:ed0a])
+        by smtp.gmail.com with UTF8SMTPSA id r14sm6895238pgj.64.2021.11.28.19.43.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Nov 2021 19:43:37 -0800 (PST)
+From:   David Stevens <stevensd@chromium.org>
+X-Google-Original-From: David Stevens <stevensd@google.com>
+To:     Marc Zyngier <maz@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        David Stevens <stevensd@chromium.org>
+Subject: [PATCH v5 0/4] KVM: allow mapping non-refcounted pages
+Date:   Mon, 29 Nov 2021 12:43:13 +0900
+Message-Id: <20211129034317.2964790-1-stevensd@google.com>
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are only two lines in mtk_vcodec_release_enc_pm, using
-pm_runtime_disable and put_device instead directly.
+From: David Stevens <stevensd@chromium.org>
 
-Move pm_runtime_enable outside mtk_vcodec_release_enc_pm to symmetry with
-pm_runtime_disable, after that, rename mtk_vcodec_init_enc_pm to *_clk since
-it only has clock operations now.
+This patch series adds support for mapping non-refcount VM_IO and
+VM_PFNMAP memory into the guest.
 
-Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
-Co-developed-by: Yong Wu <yong.wu@mediatek.com>
----
- drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c | 9 ++++++---
- drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c  | 9 +--------
- drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.h  | 3 +--
- 3 files changed, 8 insertions(+), 13 deletions(-)
+Currently, the gfn_to_pfn functions require being able to pin the target
+pfn, so they will fail if the pfn returned by follow_pte isn't a
+ref-counted page.  However, the KVM secondary MMUs do not require that
+the pfn be pinned, since they are integrated with the mmu notifier API.
+This series adds a new set of gfn_to_pfn_page functions which parallel
+the gfn_to_pfn functions but do not pin the pfn. The new functions
+return the page from gup if it was present, so callers can use it and
+call put_page when done.
 
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
-index 0f326d82dea0..7816efb90cbe 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
-@@ -11,6 +11,7 @@
- #include <linux/module.h>
- #include <linux/of_device.h>
- #include <linux/of.h>
-+#include <linux/pm_runtime.h>
- #include <media/v4l2-event.h>
- #include <media/v4l2-mem2mem.h>
- #include <media/videobuf2-dma-contig.h>
-@@ -260,7 +261,7 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
- 		return PTR_ERR(dev->fw_handler);
- 
- 	dev->venc_pdata = of_device_get_match_data(&pdev->dev);
--	ret = mtk_vcodec_init_enc_pm(dev);
-+	ret = mtk_vcodec_init_enc_clk(dev);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "Failed to get mtk vcodec clock source!");
- 		goto err_enc_pm;
-@@ -372,7 +373,8 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
- err_enc_alloc:
- 	v4l2_device_unregister(&dev->v4l2_dev);
- err_res:
--	mtk_vcodec_release_enc_pm(dev);
-+	pm_runtime_disable(dev->pm.dev);
-+	put_device(dev->pm.larbvenc);
- err_enc_pm:
- 	mtk_vcodec_fw_release(dev->fw_handler);
- 	return ret;
-@@ -462,7 +464,8 @@ static int mtk_vcodec_enc_remove(struct platform_device *pdev)
- 		video_unregister_device(dev->vfd_enc);
- 
- 	v4l2_device_unregister(&dev->v4l2_dev);
--	mtk_vcodec_release_enc_pm(dev);
-+	pm_runtime_disable(dev->pm.dev);
-+	put_device(dev->pm.larbvenc);
- 	mtk_vcodec_fw_release(dev->fw_handler);
- 	return 0;
- }
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c
-index 0c8c8f86788c..0825c6ec4eb7 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c
-@@ -13,7 +13,7 @@
- #include "mtk_vcodec_enc_pm.h"
- #include "mtk_vcodec_util.h"
- 
--int mtk_vcodec_init_enc_pm(struct mtk_vcodec_dev *mtkdev)
-+int mtk_vcodec_init_enc_clk(struct mtk_vcodec_dev *mtkdev)
- {
- 	struct device_node *node;
- 	struct platform_device *pdev;
-@@ -86,13 +86,6 @@ int mtk_vcodec_init_enc_pm(struct mtk_vcodec_dev *mtkdev)
- 	return ret;
- }
- 
--void mtk_vcodec_release_enc_pm(struct mtk_vcodec_dev *mtkdev)
--{
--	pm_runtime_disable(mtkdev->pm.dev);
--	put_device(mtkdev->pm.larbvenc);
--}
--
--
- void mtk_vcodec_enc_clock_on(struct mtk_vcodec_pm *pm)
- {
- 	struct mtk_vcodec_clk *enc_clk = &pm->venc_clk;
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.h
-index b7ecdfd74823..bc455cefc0cd 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.h
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.h
-@@ -9,8 +9,7 @@
- 
- #include "mtk_vcodec_drv.h"
- 
--int mtk_vcodec_init_enc_pm(struct mtk_vcodec_dev *dev);
--void mtk_vcodec_release_enc_pm(struct mtk_vcodec_dev *dev);
-+int mtk_vcodec_init_enc_clk(struct mtk_vcodec_dev *dev);
- 
- void mtk_vcodec_enc_clock_on(struct mtk_vcodec_pm *pm);
- void mtk_vcodec_enc_clock_off(struct mtk_vcodec_pm *pm);
+The gfn_to_pfn functions should be depreciated, since as they are unsafe
+due to relying on trying to obtain a struct page from a pfn returned by
+follow_pte. I added new functions instead of simply adding another
+optional parameter to the existing functions to make it easier to track
+down users of the deprecated functions.
+
+This series updates x86 and arm64 secondary MMUs to the new API.
+
+v4 -> v5:
+ - rebase on kvm next branch again
+v3 -> v4:
+ - rebase on kvm next branch again
+ - Add some more context to a comment in ensure_pfn_ref
+v2 -> v3:
+ - rebase on kvm next branch
+v1 -> v2:
+ - Introduce new gfn_to_pfn_page functions instead of modifying the
+   behavior of existing gfn_to_pfn functions, to make the change less
+   invasive.
+ - Drop changes to mmu_audit.c
+ - Include Nicholas Piggin's patch to avoid corrupting refcount in the
+   follow_pte case, and use it in depreciated gfn_to_pfn functions.
+ - Rebase on kvm/next
+
+David Stevens (4):
+  KVM: mmu: introduce new gfn_to_pfn_page functions
+  KVM: x86/mmu: use gfn_to_pfn_page
+  KVM: arm64/mmu: use gfn_to_pfn_page
+  KVM: mmu: remove over-aggressive warnings
+
+ arch/arm64/kvm/mmu.c           |  27 +++--
+ arch/x86/kvm/mmu.h             |   1 +
+ arch/x86/kvm/mmu/mmu.c         |  25 ++---
+ arch/x86/kvm/mmu/paging_tmpl.h |   9 +-
+ arch/x86/kvm/x86.c             |   6 +-
+ include/linux/kvm_host.h       |  17 +++
+ virt/kvm/kvm_main.c            | 198 ++++++++++++++++++++++++---------
+ 7 files changed, 202 insertions(+), 81 deletions(-)
+
 -- 
-2.25.1
+2.34.0.rc2.393.gf8c9666880-goog
 
