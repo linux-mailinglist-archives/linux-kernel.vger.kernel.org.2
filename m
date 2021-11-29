@@ -2,84 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8315F460BFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 02:03:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 744C5460BFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 02:03:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376686AbhK2BGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 20:06:40 -0500
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:39671 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376638AbhK2BEi (ORCPT
+        id S1376760AbhK2BGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 20:06:48 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:14990 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233932AbhK2BEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 20:04:38 -0500
-Received: by mail-oi1-f174.google.com with SMTP id bf8so31440027oib.6;
-        Sun, 28 Nov 2021 17:01:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gkyjuo6MmtLiwh7POxoNoQdP1NjooIZOrMils/hYYIE=;
-        b=ugnm2Cha7yT7FL49ifJEl7wk3mZMMCpehzthGBrRI09JX0+uryTbTu1HVXT56jyuEq
-         G8o4eD+cDfhxLX6guaZTl5SWKY32OAsYoI+LdVkMjmouNK2+4+/dFjxqvScY0F3NMaSG
-         LisENgsZEYAOYFkoy9BJE0ZiDdEQkg6Kxv2zRSuvcQ41k43FdD/mIAxRAF4OIbmNOvTx
-         ASfT0QUinicICrztDlcPRRkAGWXJsspYe3w2aVW2RwLHC2Bgt03S+QGvca12xdyPxg7E
-         APRqs1v14sMYgL2Er89JDM+1zqc83tNnda8aWIsGd18y4bKlFcuroXdwDNdEwHfBPZb2
-         r57A==
-X-Gm-Message-State: AOAM531lLr600Xe8PauAzaNObj9WAbSYH7/WQ4OQvxkKf8CpHi5Gw8as
-        eNGn5ApEmmWr/OhZe4cdAw==
-X-Google-Smtp-Source: ABdhPJwr/v9hFcvb1N+bf6bPHrQUb9xfuS63o4Gq1N5QJ09K6S+ZDqeDG+Ki8ve08g69OHSEAFdsTw==
-X-Received: by 2002:aca:afc6:: with SMTP id y189mr37224521oie.46.1638147681830;
-        Sun, 28 Nov 2021 17:01:21 -0800 (PST)
-Received: from robh.at.kernel.org ([172.58.99.229])
-        by smtp.gmail.com with ESMTPSA id r22sm2635197oij.36.2021.11.28.17.01.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 17:01:21 -0800 (PST)
-Received: (nullmailer pid 2935047 invoked by uid 1000);
-        Mon, 29 Nov 2021 01:01:19 -0000
-Date:   Sun, 28 Nov 2021 19:01:19 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Oleksandr Tyshchenko <olekstysh@gmail.com>
-Cc:     xen-devel@lists.xenproject.org,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Julien Grall <julien@xen.org>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Subject: Re: [PATCH V3 6/6] dt-bindings: xen: Clarify "reg" purpose
-Message-ID: <YaQmX/OlHFa0F4kD@robh.at.kernel.org>
-References: <1637787223-21129-1-git-send-email-olekstysh@gmail.com>
- <1637787223-21129-7-git-send-email-olekstysh@gmail.com>
+        Sun, 28 Nov 2021 20:04:47 -0500
+Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4J2Rn61lxYzVfsf;
+        Mon, 29 Nov 2021 08:58:50 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
+ dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 29 Nov 2021 09:01:28 +0800
+Received: from [10.174.178.247] (10.174.178.247) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 29 Nov 2021 09:01:28 +0800
+Subject: Re: [PATCH v2] acpi/tables: Add AEST in ACPI Table Definition
+To:     "ishii.shuuichir@fujitsu.com" <ishii.shuuichir@fujitsu.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <20211125083240.123131-1-ishii.shuuichir@fujitsu.com>
+ <ae3dc745-13b0-7f9c-4929-527de4b92d97@huawei.com>
+ <TYCPR01MB6160526A9B559655FAEE2DEFE9659@TYCPR01MB6160.jpnprd01.prod.outlook.com>
+From:   Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <25725e77-d6ba-aa33-6a1e-075f57e1b309@huawei.com>
+Date:   Mon, 29 Nov 2021 09:01:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1637787223-21129-7-git-send-email-olekstysh@gmail.com>
+In-Reply-To: <TYCPR01MB6160526A9B559655FAEE2DEFE9659@TYCPR01MB6160.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.247]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 22:53:43 +0200, Oleksandr Tyshchenko wrote:
-> From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+On 2021/11/29 7:54, ishii.shuuichir@fujitsu.com wrote:
+> Hi, Hanjun.
 > 
-> Xen on Arm has gained new support recently to calculate and report
-> extended regions (unused address space) safe to use for external
-> mappings. These regions are reported via "reg" property under
-> "hypervisor" node in the guest device-tree. As region 0 is reserved
-> for grant table space (always present), the indexes for extended
-> regions are 1...N.
+> Thank you for your comment.
+> We apologize for the basic mistake.
 > 
-> No device-tree bindings update is needed (except clarifying the text)
-> as guest infers the presence of extended regions from the number
-> of regions in "reg" property.
+> We will try to fix it as follows, is it OK?
 > 
-> Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
 > ---
-> According to the recent update to Xen's guest.txt:
-> https://xenbits.xen.org/gitweb/?p=xen.git;a=blob_plain;f=docs/misc/arm/device-tree/guest.txt;hb=refs/heads/master
+> Subject: [PATCH v3] acpi/tables: Add AEST in ACPI Table Definition
 > 
-> Changes V2 -> V3:
->    - new patch
+> When We added AEST using the Upgrading ACPI tables via initrd function,
+> the kernel could not recognize the AEST, so added the AEST table to
+> the list to enable the table upgrade function.
+> 
+> Signed-off-by: Shuuichirou Ishii <ishii.shuuichir@fujitsu.com>
 > ---
->  Documentation/devicetree/bindings/arm/xen.txt | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
+> v3 : Changed the location of the change log so that it does not
+>       disappear when the patch is applied.
 > 
+> v2 : The reason for committing in the commit log was not clear,
+>       so it was pointed out and corrected.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Looks good to me.
+
+Thanks
+Hanjun
