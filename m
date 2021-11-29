@@ -2,162 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ABA3460D4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 04:31:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 949DB460D59
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 04:38:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243766AbhK2Deu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 22:34:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348163AbhK2Dct (ORCPT
+        id S1347305AbhK2Dld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 22:41:33 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:28114 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347152AbhK2Djc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 22:32:49 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 134A7C061574;
-        Sun, 28 Nov 2021 19:29:08 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id 8so15363137pfo.4;
-        Sun, 28 Nov 2021 19:29:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=iatS13sutXzzthvveSjyuAeqndR1TlQQpWzKyFyjlkM=;
-        b=elynjsio8fpfWYK5pbyKQYh4U67qYEmKV5iqw40fTjPlwp/MzCagdBJ4mbU8HJK2jE
-         WcEVL7dkPihPls/s/qnB+A8D7LvquSOMvpuag86ubh3FFXha5p6GGGqJgMWrpPie6aOJ
-         ZmT6AxObt66qWjorAyACJw4DDGAEjcFznSyVlXHqTC8WDyx3f9PHIaVCpL9aBtZUY0Nn
-         cxPqcHY0M3pjOfYv3BCJWdiP0YKQ/eZKs7j7SKUb9qPYzrb7eBqbJ0fBq85XoafCE3Ed
-         OT82oiRU3YNHNC1BzPgxsZFc9MR2RwLKl/h8BRhfY6sPzaNJTjFB+hXHkhySzVFAfS4F
-         peIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=iatS13sutXzzthvveSjyuAeqndR1TlQQpWzKyFyjlkM=;
-        b=bSCMaJgakNAIeZ/J2XJhoWME3cvW/QWTmealJtO52oua0of1LPAIwrPChnD35epqBo
-         CDwFk/fhn+32PZeRYbdlNHQGY11DW4p4+isZwh0Cg76Hdvq7bvjOGOtrgqx46lLeJ2IL
-         1qbWBna3cXN5oLmzJ86hm04z23QGWYwd3Ffb3AbIyh9s6q+ijlY/fk0SKuFD4eAUReCe
-         AxInpp62mVcqzHgBQf9aPZ6Tjdxq0lGh7wQR33rMaXNY7yHRFV84asb4Dea9lJOzVyPx
-         wTglNB++EzvSc+g/oMF39lsSxfb9SALVASiu28BmZZ9d8LEHY7+0UOM92Yra41Pp4grx
-         RM5w==
-X-Gm-Message-State: AOAM5337ctiJh0eujl/MHKUIiYszDRf0bNfDuvzE1CMQHYrHeypvUqvT
-        iz59s2+sBBUtfS3zSdWmrcf8Uw/8S+ZTjFKlMSQ=
-X-Google-Smtp-Source: ABdhPJyieQLsKqqrSgM1aQ1qqQAp1ZuD5qmX1LSwyWR72G2wlXXhv+eLFksgIuHqr724KpGLhPphdg==
-X-Received: by 2002:a63:130c:: with SMTP id i12mr26458676pgl.297.1638156547446;
-        Sun, 28 Nov 2021 19:29:07 -0800 (PST)
-Received: from localhost.localdomain ([43.128.78.144])
-        by smtp.gmail.com with ESMTPSA id pf15sm17911786pjb.40.2021.11.28.19.29.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 19:29:07 -0800 (PST)
-Date:   Mon, 29 Nov 2021 11:28:59 +0800
-From:   Aili Yao <yaoaili126@gmail.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     pbonzini@redhat.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yaoaili@kingsoft.com
-Subject: Re: [PATCH] KVM: LAPIC: Per vCPU control over
- kvm_can_post_timer_interrupt
-Message-ID: <20211129112859.048b3d1a@gmail.com>
-In-Reply-To: <20211123161834.30714698@gmail.com>
-References: <20211122095619.000060d2@gmail.com>
-        <YZvrvmRnuDc1e+gi@google.com>
-        <20211123161834.30714698@gmail.com>
-Organization: ksyun
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Sun, 28 Nov 2021 22:39:32 -0500
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4J2WCg5V6Jz1DJgc;
+        Mon, 29 Nov 2021 11:33:35 +0800 (CST)
+Received: from [10.174.178.185] (10.174.178.185) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 29 Nov 2021 11:36:13 +0800
+Subject: Re: [PATCH -next] io_uring: Fix undefined-behaviour in io_issue_sqe
+To:     Jens Axboe <axboe@kernel.dk>, <asml.silence@gmail.com>,
+        <io-uring@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20211118015907.844807-1-yebin10@huawei.com>
+ <d264f41a-2940-f1f8-1371-a24be6f2ad13@kernel.dk>
+From:   yebin <yebin10@huawei.com>
+Message-ID: <61A44AAD.9050002@huawei.com>
+Date:   Mon, 29 Nov 2021 11:36:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <d264f41a-2940-f1f8-1371-a24be6f2ad13@kernel.dk>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.185]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Nov 2021 16:18:34 +0800
-Aili Yao <yaoaili126@gmail.com> wrote:
 
-> On Mon, 22 Nov 2021 19:13:02 +0000
-> Sean Christopherson <seanjc@google.com> wrote:
-> 
-> > On Mon, Nov 22, 2021, Aili Yao wrote:
-> > > From: Aili Yao <yaoaili@kingsoft.com>
-> > > 
-> > > When we isolate some pyhiscal cores, We may not use them for kvm
-> > > guests, We may use them for other purposes like DPDK, or we can
-> > > make some kvm guests isolated and some not, the global judgement
-> > > pi_inject_timer is not enough; We may make wrong decisions:
-> > > 
-> > > In such a scenario, the guests without isolated cores will not be
-> > > permitted to use vmx preemption timer, and tscdeadline fastpath
-> > > also be disabled, both will lead to performance penalty.
-> > > 
-> > > So check whether the vcpu->cpu is isolated, if not, don't post timer
-> > > interrupt.
-> > > 
-> > > Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
-> > > ---
-> > >  arch/x86/kvm/lapic.c | 4 +++-
-> > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> > > index 759952dd1222..72dde5532101 100644
-> > > --- a/arch/x86/kvm/lapic.c
-> > > +++ b/arch/x86/kvm/lapic.c
-> > > @@ -34,6 +34,7 @@
-> > >  #include <asm/delay.h>
-> > >  #include <linux/atomic.h>
-> > >  #include <linux/jump_label.h>
-> > > +#include <linux/sched/isolation.h>
-> > >  #include "kvm_cache_regs.h"
-> > >  #include "irq.h"
-> > >  #include "ioapic.h"
-> > > @@ -113,7 +114,8 @@ static inline u32 kvm_x2apic_id(struct
-> > > kvm_lapic *apic) 
-> > >  static bool kvm_can_post_timer_interrupt(struct kvm_vcpu *vcpu)
-> > >  {
-> > > -	return pi_inject_timer && kvm_vcpu_apicv_active(vcpu);
-> > > +	return pi_inject_timer && kvm_vcpu_apicv_active(vcpu) &&
-> > > +		!housekeeping_cpu(vcpu->cpu, HK_FLAG_TIMER);  
-> > 
-> > I don't think this is safe, vcpu->cpu will be -1 if the vCPU isn't
-> > scheduled in. 
-> 
-> I checked this, It seems we will set vcpu->cpu to a valid value when we
-> create vcpu( kvm_vm_ioctl_create_vcpu()), 
 
-Really Sorry, My code base is too old; This vcpu->cpu assignment has been deleted
-in latest code, And this housekeeping_cpu() check will result problem.
-
-Thanks!
-
->only after that we can
-> configure lapic through vcpu fd and start the timer, this may not be one
-> real problem.
-> 
-> Currently, the patch seems work as expected in my test, maybe one
-> possible candidate for the issue listed above.
-> 
-> Thanks
-> 
-> > This also doesn't play nice with the admin forcing
-> > pi_inject_timer=1.  Not saying there's a reasonable use case for
-> > doing that, but it's supported today and this would break that
-> > behavior.  It would also lead to weird behavior if a vCPU were
-> > migrated on/off a housekeeping vCPU.  Again, probably not a
-> > reasonable use case, but I don't see anything that would outright
-> > prevent that behavior.
-> > 
-> > The existing behavior also feels a bit unsafe as pi_inject_timer is
-> > writable while KVM is running, though I supposed that's orthogonal to
-> > this discussion.
-> > 
-> > Rather than check vcpu->cpu, is there an existing vCPU flag that can
-> > be queried, e.g. KVM_HINTS_REALTIME?
-> > 
-> > >  }
-> > >  
-> > >  bool kvm_can_use_hv_timer(struct kvm_vcpu *vcpu)
-> > > -- 
-> > > 2.25.1
-> > >   
-> 
+On 2021/11/27 21:45, Jens Axboe wrote:
+> On 11/17/21 6:59 PM, Ye Bin wrote:
+>> We got issue as follows:
+>> ================================================================================
+>> UBSAN: Undefined behaviour in ./include/linux/ktime.h:42:14
+>> signed integer overflow:
+>> -4966321760114568020 * 1000000000 cannot be represented in type 'long long int'
+>> CPU: 1 PID: 2186 Comm: syz-executor.2 Not tainted 4.19.90+ #12
+>> Hardware name: linux,dummy-virt (DT)
+>> Call trace:
+>>   dump_backtrace+0x0/0x3f0 arch/arm64/kernel/time.c:78
+>>   show_stack+0x28/0x38 arch/arm64/kernel/traps.c:158
+>>   __dump_stack lib/dump_stack.c:77 [inline]
+>>   dump_stack+0x170/0x1dc lib/dump_stack.c:118
+>>   ubsan_epilogue+0x18/0xb4 lib/ubsan.c:161
+>>   handle_overflow+0x188/0x1dc lib/ubsan.c:192
+>>   __ubsan_handle_mul_overflow+0x34/0x44 lib/ubsan.c:213
+>>   ktime_set include/linux/ktime.h:42 [inline]
+>>   timespec64_to_ktime include/linux/ktime.h:78 [inline]
+>>   io_timeout fs/io_uring.c:5153 [inline]
+>>   io_issue_sqe+0x42c8/0x4550 fs/io_uring.c:5599
+>>   __io_queue_sqe+0x1b0/0xbc0 fs/io_uring.c:5988
+>>   io_queue_sqe+0x1ac/0x248 fs/io_uring.c:6067
+>>   io_submit_sqe fs/io_uring.c:6137 [inline]
+>>   io_submit_sqes+0xed8/0x1c88 fs/io_uring.c:6331
+>>   __do_sys_io_uring_enter fs/io_uring.c:8170 [inline]
+>>   __se_sys_io_uring_enter fs/io_uring.c:8129 [inline]
+>>   __arm64_sys_io_uring_enter+0x490/0x980 fs/io_uring.c:8129
+>>   invoke_syscall arch/arm64/kernel/syscall.c:53 [inline]
+>>   el0_svc_common+0x374/0x570 arch/arm64/kernel/syscall.c:121
+>>   el0_svc_handler+0x190/0x260 arch/arm64/kernel/syscall.c:190
+>>   el0_svc+0x10/0x218 arch/arm64/kernel/entry.S:1017
+>> ================================================================================
+>>
+>> As ktime_set only judge 'secs' if big than KTIME_SEC_MAX, but if we pass
+>> negative value maybe lead to overflow.
+>> To address this issue, we must check if 'sec' is negative.
+>>
+>> Signed-off-by: Ye Bin <yebin10@huawei.com>
+>> ---
+>>   fs/io_uring.c | 3 +++
+>>   1 file changed, 3 insertions(+)
+>>
+>> diff --git a/fs/io_uring.c b/fs/io_uring.c
+>> index f9e720595860..d8a6446a7921 100644
+>> --- a/fs/io_uring.c
+>> +++ b/fs/io_uring.c
+>> @@ -6157,6 +6157,9 @@ static int io_timeout_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe,
+>>   	if (get_timespec64(&data->ts, u64_to_user_ptr(sqe->addr)))
+>>   		return -EFAULT;
+>>   
+>> +	if (data->ts.tv_sec < 0 || data->ts.tv_nsec < 0)
+>> +		return -EINVAL;
+>> +
+>>   	data->mode = io_translate_timeout_mode(flags);
+>>   	hrtimer_init(&data->timer, io_timeout_get_clock(data), data->mode);
+> This seems to only fix one instance of when a timespec is copied in, what
+> about the ones in io_timeout_remove_prep()?
+I will send another new patch to fix the scene you said
 
