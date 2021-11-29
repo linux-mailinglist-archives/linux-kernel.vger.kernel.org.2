@@ -2,151 +2,383 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7305460C17
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 02:14:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D63460C20
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 02:18:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376767AbhK2BR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 20:17:56 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:40342 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231580AbhK2BPz (ORCPT
+        id S1376861AbhK2BVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 20:21:45 -0500
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:43893 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230057AbhK2BTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 20:15:55 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 22CF96119B;
-        Mon, 29 Nov 2021 01:12:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FA35C004E1;
-        Mon, 29 Nov 2021 01:12:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638148357;
-        bh=aELK/pKqc8nJVVr6JTDLAfcoVvTYsEkVAluHXrd8hcE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=blE2B1O9qDPRBnmqvCoHvHZyM/PO6Zhmyen321mVJeWr/4c1s5wMi3x2AyzXYM6J3
-         EdW9lyHNbojTBmko3JWmAdhBPX2Y79TaaRRVfslVcSEDaHgK5hlGIY8WwzQ6XsroCQ
-         096xY4vFXFkAp38yJle0uba0XPy3XfKJOYTCKo46IOzqSLyIF5a/AiAJlFCxbpsgWS
-         04Pf2vz94BCt5DTiy3L4Tj+fkUDOaqD1fo76BZ8+hrKpxTusxxv3kUGMT9cXmQYkWH
-         yW+K6QYOU0JAIVXrwN+RCzWtQaZ0WjdFwDSRSqF8s8PcwT4CSuAP3C8qmUwB2pVTyi
-         KUHI0FiA4bppw==
-Date:   Sun, 28 Nov 2021 20:12:36 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Marek Kedzierski <mkedzier@redhat.com>,
-        Hui Zhu <teawater@gmail.com>,
-        Sebastien Boeuf <sebastien.boeuf@intel.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH AUTOSEL 5.15 7/7] virtio-mem: support
- VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE
-Message-ID: <YaQpBKh+fUJM+p/y@sashalap>
-References: <20211126023006.440839-1-sashal@kernel.org>
- <20211126023006.440839-7-sashal@kernel.org>
- <74c1d756-3f7c-7085-0ae9-2c082dce63b2@redhat.com>
+        Sun, 28 Nov 2021 20:19:44 -0500
+Received: by mail-ot1-f45.google.com with SMTP id i5-20020a05683033e500b0057a369ac614so1786891otu.10;
+        Sun, 28 Nov 2021 17:16:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=230w9ape9JpzqZr74e2sVyCORpXl3Wj9yImdFjz57gs=;
+        b=RRQbLRoJ8aGuJI3IDuIzH5CbaWBJ7LpTuU8Q7t3f1luXyMLS0s6lxOHBINT1rcn0k2
+         Xm6BR53NXgJwEasX+R/o4ANwof/sH7EcOllSyB9L6bzKx9d2ZRt7SEVtFKh+15otzQ2I
+         klzEBpLJt21OpLSIdE7Srpr2mPQI2nOhPAeMCODG30Tiw4SCnVeg2RKjWSoP1i5A0ryt
+         Lk66eLFOBq1AgGm+2qnAgkAEH3Ct17vH0Q+aKRBYdSxeO7LMVVCvvxa8TerMjAMw8kkl
+         pevpwuOaz8Pb2Idx7tNKrBknff1cUa6/jMmSZQy0zBSOMJKA7jkTebY+Mga/7GDosKEf
+         2jJA==
+X-Gm-Message-State: AOAM533awNRITCagiyadQbnPQ6WoQ3bLX4AevQuYfoRoous8A9yENZpT
+        EDjHU0Pwb1CCCYsQfiacwTn0uXk3og==
+X-Google-Smtp-Source: ABdhPJxw7RaRn8u7lMfZwgPBfX9c0xo3f1wQiGd25fOtpLSff7OrzkM36mL2nrRKmheta6i+/knLlw==
+X-Received: by 2002:a9d:750c:: with SMTP id r12mr41395664otk.273.1638148587262;
+        Sun, 28 Nov 2021 17:16:27 -0800 (PST)
+Received: from robh.at.kernel.org ([172.58.99.229])
+        by smtp.gmail.com with ESMTPSA id q22sm2401602ots.62.2021.11.28.17.16.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Nov 2021 17:16:26 -0800 (PST)
+Received: (nullmailer pid 2958524 invoked by uid 1000);
+        Mon, 29 Nov 2021 01:16:19 -0000
+Date:   Sun, 28 Nov 2021 19:16:19 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jayesh Choudhary <j-choudhary@ti.com>
+Cc:     lgirdwood@gmail.com, broonie@kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] ASoC: dt-bindings: davinci-mcasp: convert McASP
+ bindings to yaml schema
+Message-ID: <YaQp4wkSBfh5lREV@robh.at.kernel.org>
+References: <20211126050228.6257-1-j-choudhary@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <74c1d756-3f7c-7085-0ae9-2c082dce63b2@redhat.com>
+In-Reply-To: <20211126050228.6257-1-j-choudhary@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 09:51:23AM +0100, David Hildenbrand wrote:
->On 26.11.21 03:30, Sasha Levin wrote:
->> From: David Hildenbrand <david@redhat.com>
->>
->> [ Upstream commit 61082ad6a6e1f999eef7e7e90046486c87933b1e ]
->>
->> The initial virtio-mem spec states that while unplugged memory should not
->> be read, the device still has to allow for reading unplugged memory inside
->> the usable region. The primary motivation for this default handling was
->> to simplify bringup of virtio-mem, because there were corner cases where
->> Linux might have accidentially read unplugged memory inside added Linux
->> memory blocks.
->>
->> In the meantime, we:
->> 1. Removed /dev/kmem in commit bbcd53c96071 ("drivers/char: remove
->>    /dev/kmem for good")
->> 2. Disallowed access to virtio-mem device memory via /dev/mem in
->>    commit 2128f4e21aa2 ("virtio-mem: disallow mapping virtio-mem memory via
->>    /dev/mem")
->> 3. Sanitized access to virtio-mem device memory via /proc/kcore in
->>    commit 0daa322b8ff9 ("fs/proc/kcore: don't read offline sections,
->>    logically offline pages and hwpoisoned pages")
->> 4. Sanitized access to virtio-mem device memory via /proc/vmcore in
->>    commit ce2814622e84 ("virtio-mem: kdump mode to sanitize /proc/vmcore
->>    access")
->>
->> "Accidential" access to unplugged memory is no longer possible; we can
->> support the new VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE feature that will be
->> required by some hypervisors implementing virtio-mem in the near future.
->>
->> Acked-by: Michael S. Tsirkin <mst@redhat.com>
->> Cc: "Michael S. Tsirkin" <mst@redhat.com>
->> Cc: Jason Wang <jasowang@redhat.com>
->> Cc: Marek Kedzierski <mkedzier@redhat.com>
->> Cc: Hui Zhu <teawater@gmail.com>
->> Cc: Sebastien Boeuf <sebastien.boeuf@intel.com>
->> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
->> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
->> Signed-off-by: David Hildenbrand <david@redhat.com>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->> ---
->>  drivers/virtio/virtio_mem.c     | 1 +
->>  include/uapi/linux/virtio_mem.h | 9 ++++++---
->>  2 files changed, 7 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
->> index bef8ad6bf4661..78dfdc9c98a1c 100644
->> --- a/drivers/virtio/virtio_mem.c
->> +++ b/drivers/virtio/virtio_mem.c
->> @@ -2758,6 +2758,7 @@ static unsigned int virtio_mem_features[] = {
->>  #if defined(CONFIG_NUMA) && defined(CONFIG_ACPI_NUMA)
->>  	VIRTIO_MEM_F_ACPI_PXM,
->>  #endif
->> +	VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE,
->>  };
->>
->>  static const struct virtio_device_id virtio_mem_id_table[] = {
->> diff --git a/include/uapi/linux/virtio_mem.h b/include/uapi/linux/virtio_mem.h
->> index 70e01c687d5eb..e9122f1d0e0cb 100644
->> --- a/include/uapi/linux/virtio_mem.h
->> +++ b/include/uapi/linux/virtio_mem.h
->> @@ -68,9 +68,10 @@
->>   * explicitly triggered (VIRTIO_MEM_REQ_UNPLUG).
->>   *
->>   * There are no guarantees what will happen if unplugged memory is
->> - * read/written. Such memory should, in general, not be touched. E.g.,
->> - * even writing might succeed, but the values will simply be discarded at
->> - * random points in time.
->> + * read/written. In general, unplugged memory should not be touched, because
->> + * the resulting action is undefined. There is one exception: without
->> + * VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE, unplugged memory inside the usable
->> + * region can be read, to simplify creation of memory dumps.
->>   *
->>   * It can happen that the device cannot process a request, because it is
->>   * busy. The device driver has to retry later.
->> @@ -87,6 +88,8 @@
->>
->>  /* node_id is an ACPI PXM and is valid */
->>  #define VIRTIO_MEM_F_ACPI_PXM		0
->> +/* unplugged memory must not be accessed */
->> +#define VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE	1
->>
->>
->>  /* --- virtio-mem: guest -> host requests --- */
->>
->
->As 2. and 4. are part of v5.16-rc1 but not v5.15-stable
->
->Nacked-by: David Hildenbrand <david@redhat.com>
+On Fri, Nov 26, 2021 at 10:32:28AM +0530, Jayesh Choudhary wrote:
+> Convert the bindings for McASP controllers for TI SOCs
+> from txt to YAML schema.
+> 
+> Adds additional properties 'clocks', 'clock-names', 'power-domains',
+> '#sound-dai-cells', 'num-serializer' and 'port' which were not there
+> in the txt file.
+> Adds 'dmas' and 'dma-names' in the example which were not there in
+> the txt file.
+> Changes 'interrupts' and 'interrupt-names' from optional to
+> required properties.
+> 
+> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+> ---
+> Changelog:
+> v3:
+> - removes maxItems from 'clock-names'
+> 
+> v2:
+> - changes the commit message
+> - modifies the properties 'clocks', 'clock-names', 'dma-names',
+>   'dmas', 'interrupts' and 'interrupt-names' according to the
+>   arm SOCs
+> - adds 'port' and 'num-serializer' as node properties
+>  
+>  .../bindings/sound/davinci-mcasp-audio.txt    |  86 ---------
+>  .../bindings/sound/davinci-mcasp-audio.yaml   | 178 ++++++++++++++++++
+>  2 files changed, 178 insertions(+), 86 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
+> deleted file mode 100644
+> index bd863bd69501..000000000000
+> --- a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
+> +++ /dev/null
+> @@ -1,86 +0,0 @@
+> -Texas Instruments McASP controller
+> -
+> -Required properties:
+> -- compatible :
+> -	"ti,dm646x-mcasp-audio"	: for DM646x platforms
+> -	"ti,da830-mcasp-audio"	: for both DA830 & DA850 platforms
+> -	"ti,am33xx-mcasp-audio"	: for AM33xx platforms (AM33xx, AM43xx, TI81xx)
+> -	"ti,dra7-mcasp-audio"	: for DRA7xx platforms
+> -	"ti,omap4-mcasp-audio"	: for OMAP4
+> -
+> -- reg : Should contain reg specifiers for the entries in the reg-names property.
+> -- reg-names : Should contain:
+> -         * "mpu" for the main registers (required). For compatibility with
+> -           existing software, it is recommended this is the first entry.
+> -         * "dat" for separate data port register access (optional).
+> -- op-mode : I2S/DIT ops mode. 0 for I2S mode. 1 for DIT mode used for S/PDIF,
+> -  	    IEC60958-1, and AES-3 formats.
+> -- tdm-slots : Slots for TDM operation. Indicates number of channels transmitted
+> -  	      or received over one serializer.
+> -- serial-dir : A list of serializer configuration. Each entry is a number
+> -               indication for serializer pin direction.
+> -               (0 - INACTIVE, 1 - TX, 2 - RX)
+> -- dmas: two element list of DMA controller phandles and DMA request line
+> -        ordered pairs.
+> -- dma-names: identifier string for each DMA request line in the dmas property.
+> -	     These strings correspond 1:1 with the ordered pairs in dmas. The dma
+> -	     identifiers must be "rx" and "tx".
+> -
+> -Optional properties:
+> -
+> -- ti,hwmods : Must be "mcasp<n>", n is controller instance starting 0
+> -- tx-num-evt : FIFO levels.
+> -- rx-num-evt : FIFO levels.
+> -- dismod : Specify the drive on TX pin during inactive slots
+> -	0 : 3-state
+> -	2 : logic low
+> -	3 : logic high
+> -	Defaults to 'logic low' when the property is not present
+> -- sram-size-playback : size of sram to be allocated during playback
+> -- sram-size-capture  : size of sram to be allocated during capture
+> -- interrupts : Interrupt numbers for McASP
+> -- interrupt-names : Known interrupt names are "tx" and "rx"
+> -- pinctrl-0: Should specify pin control group used for this controller.
+> -- pinctrl-names: Should contain only one value - "default", for more details
+> -  		 please refer to pinctrl-bindings.txt
+> -- fck_parent : Should contain a valid clock name which will be used as parent
+> -	       for the McASP fck
+> -- auxclk-fs-ratio: When McASP is bus master indicates the ratio between AUCLK
+> -		   and FS rate if applicable:
+> -		   AUCLK rate = auxclk-fs-ratio * FS rate
+> -
+> -Optional GPIO support:
+> -If any McASP pin need to be used as GPIO then the McASP node must have:
+> -...
+> -  gpio-controller
+> -  #gpio-cells = <2>;
+> -...
+> -
+> -When requesting a GPIO, the first parameter is the PIN index in McASP_P*
+> -registers.
+> -For example to request the AXR2 pin of mcasp8:
+> -function-gpios = <&mcasp8 2 0>;
+> -
+> -Or to request the ACLKR pin of mcasp8:
+> -function-gpios = <&mcasp8 29 0>;
+> -
+> -For generic gpio information, please refer to bindings/gpio/gpio.txt
+> -
+> -Example:
+> -
+> -mcasp0: mcasp0@1d00000 {
+> -	compatible = "ti,da830-mcasp-audio";
+> -	reg = <0x100000 0x3000>;
+> -	reg-names "mpu";
+> -	interrupts = <82>, <83>;
+> -	interrupt-names = "tx", "rx";
+> -	op-mode = <0>;		/* MCASP_IIS_MODE */
+> -	tdm-slots = <2>;
+> -	serial-dir = <
+> -			0 0 0 0	/* 0: INACTIVE, 1: TX, 2: RX */
+> -			0 0 0 0
+> -			0 0 0 1
+> -			2 0 0 0 >;
+> -	tx-num-evt = <1>;
+> -	rx-num-evt = <1>;
+> -};
+> diff --git a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml
+> new file mode 100644
+> index 000000000000..c4d3f56470bf
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml
+> @@ -0,0 +1,178 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/davinci-mcasp-audio.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: McASP Controller for TI SoCs
+> +
+> +maintainers:
+> +  - Jayesh Choudhary <j-choudhary@ti.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,dm646x-mcasp-audio
+> +      - ti,da830-mcasp-audio
+> +      - ti,am33xx-mcasp-audio
+> +      - ti,dra7-mcasp-audio
+> +      - ti,omap4-mcasp-audio
+> +
+> +  reg:
+> +    minItems: 1
+> +    items:
+> +      - description: main registers
+> +      - description: data port register
+> +
+> +  reg-names:
+> +    minItems: 1
+> +    items:
+> +      - const: mpu
+> +      - const: dat
+> +
+> +  op-mode:
+> +    description: I2S - 0 or DIT - 1 mode
+> +    enum:
+> +      - 0
+> +      - 1
 
-I'll drop them, thanks!
+Needs a type.
 
--- 
-Thanks,
-Sasha
+> +
+> +  tdm-slots:
+> +    maxItems: 1
+
+An array? Needs a type.
+
+> +
+> +  serial-dir:
+> +    description:
+> +      A list of serializer configuration
+> +      Entry is indication for serializer pin direction
+> +      0 - Inactive, 1 - TX, 2 - RX
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    minItems: 1
+> +    maxItems: 16
+> +    items:
+> +      minimum: 0
+> +      maximum: 2
+> +      default: 0
+> +
+> +  dmas:
+> +    minItems: 1
+> +    items:
+> +      - description: transmission DMA channel
+> +      - description: reception DMA channel
+> +
+> +  dma-names:
+> +    minItems: 1
+> +    items:
+> +      - const: tx
+> +      - const: rx
+> +
+> +  ti,hwmods:
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    description: Name of hwmod associated with McASP
+> +    maxItems: 1
+> +    deprecated: true
+> +
+> +  tx-num-evt:
+> +    maxItems: 1
+
+Array? Needs a type.
+
+> +
+> +  rx-num-evt:
+> +    maxItems: 1
+
+Array? Needs a type.
+
+> +
+> +  dismod:
+> +    enum:
+> +      - 0
+> +      - 2
+> +      - 3
+> +    default: 2
+
+Needs a type.
+
+And so on...
+
+> +
+> +  sram-size-playback:
+> +    maxItems: 1
+> +
+> +  sram-size-capture:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    minItems: 1
+> +    items:
+> +      - description: TX FIFO interrupt
+> +      - description: RX FIFO interrupt
+> +
+> +  interrupt-names:
+> +    oneOf:
+> +      - minItems: 1
+> +        items:
+> +          - const: tx
+> +          - const: rx
+> +      - const: common
+> +
+> +  fck_parent:
+> +    description: parent clock for McASP fck
+> +    maxItems: 1
+> +
+> +  auxclk-fs-ratio:
+> +    description: ratio of AUCLK and FS if applicable
+> +    maxItems: 1
+> +
+> +  gpio-controller: true
+> +
+> +  "#gpio-cells":
+> +    const: 2
+> +
+> +  function-gpios:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    minItems: 1
+> +    maxItems: 3
+> +
+> +  clock-names:
+> +    minItems: 1
+> +    items:
+> +      - const: fck
+> +      - const: ahclkx
+> +      - const: ahclkr
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  "#sound-dai-cells":
+> +    const: 0
+> +
+> +  num-serializer:
+> +    maxItems: 1
+> +
+> +  port:
+> +    type: object
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - dmas
+> +  - dma-names
+> +  - interrupts
+> +  - interrupt-names
+> +  - serial-dir
+> +  - op-mode
+> +  - tdm-slots
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    mcasp0: mcasp0@1d00000 {
+> +      compatible = "ti,da830-mcasp-audio";
+> +      reg = <0x100000 0x3000>;
+> +      reg-names = "mpu";
+> +      interrupts = <82>, <83>;
+> +      interrupt-names = "tx", "rx";
+> +      op-mode = <0>;		/* MCASP_IIS_MODE */
+> +      tdm-slots = <2>;
+> +      dmas = <&main_udmap 0xc400>, <&main_udmap 0x4400>;
+> +      dma-names = "tx", "rx";
+> +      serial-dir = <
+> +          0 0 0 0	/* 0: INACTIVE, 1: TX, 2: RX */
+> +          0 0 0 0
+> +          0 0 0 1
+> +          2 0 0 0 >;
+> +      tx-num-evt = <1>;
+> +      rx-num-evt = <1>;
+> +    };
+> -- 
+> 2.17.1
+> 
+> 
