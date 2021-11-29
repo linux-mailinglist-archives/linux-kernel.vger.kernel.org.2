@@ -2,94 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F5B460E71
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 06:25:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E48CF460E9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 06:31:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236932AbhK2F2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Nov 2021 00:28:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231806AbhK2F0d (ORCPT
+        id S241632AbhK2FeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Nov 2021 00:34:11 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:26830 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238647AbhK2FcJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Nov 2021 00:26:33 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 556F6C061756
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 21:23:16 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id k4so4759159pgb.8
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 21:23:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=irOV3j4vbeWhkKZZS8pKM9srtDflYt0SC5pb7+oBXfQ=;
-        b=4GqTtW3WY+Ee8ZRFk170sEeEWF1gtrRF56VQXH8J+fw3Zd3rsVtc9TGD0aS6YD28as
-         AepDPAoDQX8tyHyw5MjiXsafUJEa6M05XEKpQFDdoKmaePQ/bSQ7SHeA4aXLDoVYxzZv
-         nP1wAA8AtIaRBZh8Pnyfsr+heaFCI/PjMaDwO+vv3YkHFGStPwZoSsbePgZnfPG8kvE9
-         SAO5FLILf3rzzE0jk4KoFXCwR8JhSED72n1N2fzEIwtSgA+hiwHWQwBRmj9JtaKn2UNn
-         3F0sanXUp2tFcuPbrTRqmZWjwSRuEvaraGiS4V+WvhzJ44ql+/PdTfpj0RKf/T0U/Cmf
-         X2zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=irOV3j4vbeWhkKZZS8pKM9srtDflYt0SC5pb7+oBXfQ=;
-        b=Ia1ZvOflX2zAW740XcH3Rb/dGzEkPMeuq/K1xpqwTxu94StGGRV3KDqyeJaYjEzeYL
-         Ht1sm7HgldSvcpZE4jQPQXSX5VNDtT3ea1rR4Wiui3B563ShNYUrbSIBMgJj8Q04AeQ+
-         pJ3LiMBy6E90yHa1E77+7TNO5fyx5hg1VFlRnR+fZiqia6zOBQ2uhOYThqZnlZyWO5Aj
-         bFTrcHiGjYkEdZ60PlH4VFq/aijzLslR89KPWAATJbOpPjkyObzqwW82OSoMD5P71Lgt
-         3tiTnt7YZLdAo6rlGJzt4c8Y6UUwt4P1sDO0cATxZpjWeZ08XVjGXGqYB+k7BO2+38Ry
-         nnpQ==
-X-Gm-Message-State: AOAM533LPHCitsHVLo9DF1pnHeWszMzfpvdemcvpRGDJA5IzqSH2PaVg
-        JZSw+o+vBHicYTv1fB7wzA3JuQ==
-X-Google-Smtp-Source: ABdhPJxePdfuYnlLDjMX4vLzgyXbCdXtJGS7KgAb3hJIcFC8nVNnAWJscBp7u8ib4vGGuSoISszFtw==
-X-Received: by 2002:a63:e20c:: with SMTP id q12mr20573139pgh.558.1638163395900;
-        Sun, 28 Nov 2021 21:23:15 -0800 (PST)
-Received: from sushi.bytedance.net ([61.120.150.74])
-        by smtp.gmail.com with ESMTPSA id t13sm14753683pfl.214.2021.11.28.21.23.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 21:23:15 -0800 (PST)
-From:   zhenwei pi <pizhenwei@bytedance.com>
-To:     tglx@linutronix.de, pbonzini@redhat.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        zhenwei pi <pizhenwei@bytedance.com>
-Subject: [PATCH 2/2] KVM: x86: use x86_get_freq to get freq for kvmclock
-Date:   Mon, 29 Nov 2021 13:20:38 +0800
-Message-Id: <20211129052038.43758-2-pizhenwei@bytedance.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211129052038.43758-1-pizhenwei@bytedance.com>
-References: <20211129052038.43758-1-pizhenwei@bytedance.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 29 Nov 2021 00:32:09 -0500
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 28 Nov 2021 21:28:52 -0800
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 28 Nov 2021 21:28:51 -0800
+X-QCInternal: smtphost
+Received: from ekangupt-linux.qualcomm.com ([10.204.67.11])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 29 Nov 2021 10:58:43 +0530
+Received: by ekangupt-linux.qualcomm.com (Postfix, from userid 2319895)
+        id 260DB4318; Mon, 29 Nov 2021 10:58:42 +0530 (IST)
+From:   Jeya R <jeyr@codeaurora.org>
+To:     linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org
+Cc:     Jeya R <jeyr@codeaurora.org>, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
+Subject: [PATCH 0/2] Add DMA handle implementation
+Date:   Mon, 29 Nov 2021 10:58:38 +0530
+Message-Id: <1638163720-23123-1-git-send-email-jeyr@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the host side supports APERF&MPERF feature, the guest side may get
-mismatched freq.
+DMA handle is passed in an RPC call. When call reaches DSP,the fd is
+added to DSP user process fd list. To unmap any DMA handle, DSP request
+for unmap of fd and add it to fdlist which is then freed by driver when
+call is returned from DSP.
 
-KVM uses x86_get_freq to get the same freq for guest side.
+Jeya R (2):
+  misc: fastrpc: Add fdlist implementation
+  misc: fastrpc: Add dma handle implementation
 
-Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
----
- arch/x86/kvm/x86.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/misc/fastrpc.c | 97 ++++++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 75 insertions(+), 22 deletions(-)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 5a403d92833f..0c2a2188700f 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -8305,10 +8305,8 @@ static void tsc_khz_changed(void *data)
- 
- 	if (data)
- 		khz = freq->new;
--	else if (!boot_cpu_has(X86_FEATURE_CONSTANT_TSC))
--		khz = cpufreq_quick_get(raw_smp_processor_id());
- 	if (!khz)
--		khz = tsc_khz;
-+		khz = x86_get_freq(raw_smp_processor_id());
- 	__this_cpu_write(cpu_tsc_khz, khz);
- }
- 
 -- 
-2.25.1
+2.7.4
 
