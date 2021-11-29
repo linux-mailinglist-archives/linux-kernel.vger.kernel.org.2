@@ -2,104 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949DB460D59
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 04:38:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6EDD460D65
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 04:42:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347305AbhK2Dld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 22:41:33 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:28114 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347152AbhK2Djc (ORCPT
+        id S1350484AbhK2Dpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 22:45:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348163AbhK2Dno (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 22:39:32 -0500
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4J2WCg5V6Jz1DJgc;
-        Mon, 29 Nov 2021 11:33:35 +0800 (CST)
-Received: from [10.174.178.185] (10.174.178.185) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Mon, 29 Nov 2021 11:36:13 +0800
-Subject: Re: [PATCH -next] io_uring: Fix undefined-behaviour in io_issue_sqe
-To:     Jens Axboe <axboe@kernel.dk>, <asml.silence@gmail.com>,
-        <io-uring@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20211118015907.844807-1-yebin10@huawei.com>
- <d264f41a-2940-f1f8-1371-a24be6f2ad13@kernel.dk>
-From:   yebin <yebin10@huawei.com>
-Message-ID: <61A44AAD.9050002@huawei.com>
-Date:   Mon, 29 Nov 2021 11:36:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        Sun, 28 Nov 2021 22:43:44 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45EEAC06175E
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 19:40:10 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id s13so33647123wrb.3
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 19:40:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MWox7pMHyR0qcRdGS+0RZRCWvfw/dHAAH8xPTK+l3bg=;
+        b=Xk+d+xhG4+Z7lzMNFQPU/ZRqqE2Q8Vku4rPID+rdJv5DwOS8XvIvjgfz0tJKLwGm+z
+         b/URVPG9yvCfoXpJxi7nBFCEITlxA3qpPxsVoilHt0IeSzbPeVBXP60Caex28GxHOb8k
+         gMT0lDAKzhCl+UL6QB8Fl4vqiR9vFAjNgvTPRM30cFs30fnxtn9EYkG3ony7zFw0w/qW
+         bFHGact0uqCGI999gHsRBLtleAlwr/xPaaa525Gizp72gEpPEfLPVbOlcb1AqpJP5etE
+         05toy7BXQGGXMuuD/8o9onenREXFlOVqEm9oxqLNcgKouOIMYTOY84mhRH8VgUe4NHVB
+         YaAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MWox7pMHyR0qcRdGS+0RZRCWvfw/dHAAH8xPTK+l3bg=;
+        b=AbuJ+fnIfpXkVho6CLFKL/3mWTe8UuF6M+WEwPtUD0mV3gXYRqqRCNDJaop49uIAES
+         qVm/VKdJdjL50g4/U19gYo4xRp4p1WP8XLwWv4Ed4VdP2a6dkh1Qd9UJ2ATaRld9go8f
+         UFq8WWKCeOhcibpMWJicMs83l3yNRT3oBrLZ6hPaZE8sgipjnzsRRBSx3IoJIel12wxG
+         NfSdshG0wqnK9upxzTwY5vxvRXK+n+NQuMzxQALQura4l15SX6rq+iZglXra9Bx/tENG
+         cwawgAAVFhQ4FzYZybEzMeVsdxeBOmmB5x6CG3DHUCOHcoGG2GASlFBHy/zI94T/wEuU
+         LwoQ==
+X-Gm-Message-State: AOAM533H9OO+LC7XEtq7CFjm8TAiSEIIqlUSNI34foFVS6UCx6jYYYX/
+        HF7RiCSCF2HfAfvS81cSqH2E/rbP9f/17V4ba9jjCQ==
+X-Google-Smtp-Source: ABdhPJwxTF4itSodvdNADBx2t3eVLv2fdXR7JyED2RU5O76/w+2bvnAc9HWZucJxJtZvwzvqgEAh8s66khCIOZboUzQ=
+X-Received: by 2002:a5d:4f8d:: with SMTP id d13mr29221931wru.89.1638157208592;
+ Sun, 28 Nov 2021 19:40:08 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <d264f41a-2940-f1f8-1371-a24be6f2ad13@kernel.dk>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.185]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
+References: <20211126154020.342924-1-anup.patel@wdc.com> <20211126154020.342924-2-anup.patel@wdc.com>
+ <558e7e30-2d87-a19c-c85c-a2993a354074@redhat.com>
+In-Reply-To: <558e7e30-2d87-a19c-c85c-a2993a354074@redhat.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Mon, 29 Nov 2021 09:09:57 +0530
+Message-ID: <CAAhSdy2mAHyA04nTOh_XM==moKv1UARpmqt2QhkQwFZo98kwtA@mail.gmail.com>
+Subject: Re: [PATCH 1/4] RISC-V: KVM: Forward SBI experimental and vendor extensions
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Anup Patel <anup.patel@wdc.com>, Shuah Khan <shuah@kernel.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        KVM General <kvm@vger.kernel.org>,
+        kvm-riscv@lists.infradead.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 26, 2021 at 9:42 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 11/26/21 16:40, Anup Patel wrote:
+> > +static int kvm_sbi_ext_expevend_handler(struct kvm_vcpu *vcpu,
+> > +                                     struct kvm_run *run,
+> > +                                     unsigned long *out_val,
+> > +                                     struct kvm_cpu_trap *utrap,
+> > +                                     bool *exit)
+>
+> Doesn't really matter what this is used for, it's a handler that
+> forwards.  So you can name it kvm_sbi_ext_forward_handler.
 
+Sure, I will rename this to kvm_sbi_ext_forward_handler()
 
-On 2021/11/27 21:45, Jens Axboe wrote:
-> On 11/17/21 6:59 PM, Ye Bin wrote:
->> We got issue as follows:
->> ================================================================================
->> UBSAN: Undefined behaviour in ./include/linux/ktime.h:42:14
->> signed integer overflow:
->> -4966321760114568020 * 1000000000 cannot be represented in type 'long long int'
->> CPU: 1 PID: 2186 Comm: syz-executor.2 Not tainted 4.19.90+ #12
->> Hardware name: linux,dummy-virt (DT)
->> Call trace:
->>   dump_backtrace+0x0/0x3f0 arch/arm64/kernel/time.c:78
->>   show_stack+0x28/0x38 arch/arm64/kernel/traps.c:158
->>   __dump_stack lib/dump_stack.c:77 [inline]
->>   dump_stack+0x170/0x1dc lib/dump_stack.c:118
->>   ubsan_epilogue+0x18/0xb4 lib/ubsan.c:161
->>   handle_overflow+0x188/0x1dc lib/ubsan.c:192
->>   __ubsan_handle_mul_overflow+0x34/0x44 lib/ubsan.c:213
->>   ktime_set include/linux/ktime.h:42 [inline]
->>   timespec64_to_ktime include/linux/ktime.h:78 [inline]
->>   io_timeout fs/io_uring.c:5153 [inline]
->>   io_issue_sqe+0x42c8/0x4550 fs/io_uring.c:5599
->>   __io_queue_sqe+0x1b0/0xbc0 fs/io_uring.c:5988
->>   io_queue_sqe+0x1ac/0x248 fs/io_uring.c:6067
->>   io_submit_sqe fs/io_uring.c:6137 [inline]
->>   io_submit_sqes+0xed8/0x1c88 fs/io_uring.c:6331
->>   __do_sys_io_uring_enter fs/io_uring.c:8170 [inline]
->>   __se_sys_io_uring_enter fs/io_uring.c:8129 [inline]
->>   __arm64_sys_io_uring_enter+0x490/0x980 fs/io_uring.c:8129
->>   invoke_syscall arch/arm64/kernel/syscall.c:53 [inline]
->>   el0_svc_common+0x374/0x570 arch/arm64/kernel/syscall.c:121
->>   el0_svc_handler+0x190/0x260 arch/arm64/kernel/syscall.c:190
->>   el0_svc+0x10/0x218 arch/arm64/kernel/entry.S:1017
->> ================================================================================
->>
->> As ktime_set only judge 'secs' if big than KTIME_SEC_MAX, but if we pass
->> negative value maybe lead to overflow.
->> To address this issue, we must check if 'sec' is negative.
->>
->> Signed-off-by: Ye Bin <yebin10@huawei.com>
->> ---
->>   fs/io_uring.c | 3 +++
->>   1 file changed, 3 insertions(+)
->>
->> diff --git a/fs/io_uring.c b/fs/io_uring.c
->> index f9e720595860..d8a6446a7921 100644
->> --- a/fs/io_uring.c
->> +++ b/fs/io_uring.c
->> @@ -6157,6 +6157,9 @@ static int io_timeout_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe,
->>   	if (get_timespec64(&data->ts, u64_to_user_ptr(sqe->addr)))
->>   		return -EFAULT;
->>   
->> +	if (data->ts.tv_sec < 0 || data->ts.tv_nsec < 0)
->> +		return -EINVAL;
->> +
->>   	data->mode = io_translate_timeout_mode(flags);
->>   	hrtimer_init(&data->timer, io_timeout_get_clock(data), data->mode);
-> This seems to only fix one instance of when a timespec is copied in, what
-> about the ones in io_timeout_remove_prep()?
-I will send another new patch to fix the scene you said
+Regards,
+Anup
 
+>
+> Paolo
+>
+> > +{
+> > +     /*
+> > +      * Both SBI experimental and vendor extensions are
+> > +      * unconditionally forwarded to userspace.
+> > +      */
+> > +     kvm_riscv_vcpu_sbi_forward(vcpu, run);
+> > +     *exit = true;
+> > +     return 0;
+> > +}
+> > +
+>
