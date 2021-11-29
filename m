@@ -2,93 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4255B460C1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 02:16:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B364460C42
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 02:29:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376660AbhK2BUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 20:20:09 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:28112 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376830AbhK2BSJ (ORCPT
+        id S1376817AbhK2Bcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 20:32:43 -0500
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:44977 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231465AbhK2Bam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 20:18:09 -0500
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4J2S4X3Rsbz1DJBG;
-        Mon, 29 Nov 2021 09:12:12 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Mon, 29 Nov
- 2021 09:14:50 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <ming.lei@redhat.com>, Ye Bin <yebin10@huawei.com>
-Subject: [PATCH -next] block: Fix fsync always failed if once failed
-Date:   Mon, 29 Nov 2021 09:26:59 +0800
-Message-ID: <20211129012659.1553733-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Sun, 28 Nov 2021 20:30:42 -0500
+Received: by mail-ot1-f45.google.com with SMTP id u18-20020a9d7212000000b00560cb1dc10bso23255768otj.11;
+        Sun, 28 Nov 2021 17:27:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Q/CrGecYUeDdR6r8+yA6oPN9sOdPcqSzyh2oQnkTLSY=;
+        b=uEMJkfwYndC//ME2UkvJdAU74efgXNv48Y94FZYU4UNSpXxA+IEvNcN+qNFN1skwbE
+         FvLFYx+0YiA83o8W0upQEP8knx+tWuP9Sgjym+BsohkjhmhluWCORHBvx75Ckw6lY57n
+         N3XFyI/IKd+HkdGaiVvQEQyrE67iwVoEky6wkpJCfHM01zg28E66jaikKiQokR29pZx0
+         8Q0c8FpnIJm5Ln6VuzwbCXxGgQQcrTf9hLI0+WfdmOowc92cGNfwnFVA1szQgFwZkVUL
+         PHH0TRflYgk860I+RdWlX0efdJsO2etja17pXn7fUSsQfz2WLr06IQflVrbSC563D+Oy
+         byYw==
+X-Gm-Message-State: AOAM5316l+XKyLMcQHjkq5mQK71P9LpEd+8YDMgBD3zArW9JBCRLQxUs
+        rvmZoYViXYkedmLWWYStVQ==
+X-Google-Smtp-Source: ABdhPJxtuA+XfiWbawu7ZYKFsEv0Yo/JLTV8PehfvEcgdrBvReHgoIMJZMl5z7pxb0xzUVz0dkYoPA==
+X-Received: by 2002:a9d:75d7:: with SMTP id c23mr43552829otl.181.1638149244994;
+        Sun, 28 Nov 2021 17:27:24 -0800 (PST)
+Received: from robh.at.kernel.org ([172.58.99.229])
+        by smtp.gmail.com with ESMTPSA id bi20sm2734070oib.29.2021.11.28.17.27.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Nov 2021 17:27:24 -0800 (PST)
+Received: (nullmailer pid 2973705 invoked by uid 1000);
+        Mon, 29 Nov 2021 01:27:20 -0000
+Date:   Sun, 28 Nov 2021 19:27:20 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hector Martin <marcan@marcan.st>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: usb: Add Apple dwc3 bindings
+Message-ID: <YaQseO5kF71vABji@robh.at.kernel.org>
+References: <20211108170946.49689-1-sven@svenpeter.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211108170946.49689-1-sven@svenpeter.dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We do test with inject error fault base on v4.19, after test some time we found
-sync /dev/sda always failed.
-[root@localhost] sync /dev/sda
-sync: error syncing '/dev/sda': Input/output error
+On Mon, Nov 08, 2021 at 06:09:45PM +0100, Sven Peter wrote:
+> Apple Silicon SoCs such as the M1 have multiple USB controllers based on
+> the Synopsys DesignWare USB3 controller.
+> References to the ATC PHY required for SuperSpeed are left out for now
+> until support has been upstreamed as well.
+> 
+> Signed-off-by: Sven Peter <sven@svenpeter.dev>
+> ---
+> v1 -> v2:
+>  - added apple,dwc3 bindings instead of a property for the reset quirk
+>    as requested by robh
+> 
+> I think I have to use GPL-2.0 for this binding since it's based
+> on and references snps,dwc3.yaml which is also only GPL-2.0.
+> Otherwise I'd be fine with the usual GPL/BSD dual license as well.
+> 
+>  .../devicetree/bindings/usb/apple,dwc3.yaml   | 64 +++++++++++++++++++
+>  MAINTAINERS                                   |  1 +
+>  2 files changed, 65 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/usb/apple,dwc3.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/apple,dwc3.yaml b/Documentation/devicetree/bindings/usb/apple,dwc3.yaml
+> new file mode 100644
+> index 000000000000..fb3b3489e6b2
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/usb/apple,dwc3.yaml
+> @@ -0,0 +1,64 @@
+> +# SPDX-License-Identifier: GPL-2.0
 
-scsi log as follows:
-[19069.812296] sd 0:0:0:0: [sda] tag#64 Send: scmd 0x00000000d03a0b6b
-[19069.812302] sd 0:0:0:0: [sda] tag#64 CDB: Synchronize Cache(10) 35 00 00 00 00 00 00 00 00 00
-[19069.812533] sd 0:0:0:0: [sda] tag#64 Done: SUCCESS Result: hostbyte=DID_OK driverbyte=DRIVER_OK
-[19069.812536] sd 0:0:0:0: [sda] tag#64 CDB: Synchronize Cache(10) 35 00 00 00 00 00 00 00 00 00
-[19069.812539] sd 0:0:0:0: [sda] tag#64 scsi host busy 1 failed 0
-[19069.812542] sd 0:0:0:0: Notifying upper driver of completion (result 0)
-[19069.812546] sd 0:0:0:0: [sda] tag#64 sd_done: completed 0 of 0 bytes
-[19069.812549] sd 0:0:0:0: [sda] tag#64 0 sectors total, 0 bytes done.
-[19069.812564] print_req_error: I/O error, dev sda, sector 0
+Dual license please.
 
-ftrace log as follows:
- rep-306069 [007] .... 19654.923315: block_bio_queue: 8,0 FWS 0 + 0 [rep]
- rep-306069 [007] .... 19654.923333: block_getrq: 8,0 FWS 0 + 0 [rep]
- kworker/7:1H-250   [007] .... 19654.923352: block_rq_issue: 8,0 FF 0 () 0 + 0 [kworker/7:1H]
- <idle>-0     [007] ..s. 19654.923562: block_rq_complete: 8,0 FF () 18446744073709551615 + 0 [0]
- <idle>-0     [007] d.s. 19654.923576: block_rq_complete: 8,0 WS () 0 + 0 [-5]
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/usb/apple,dwc3.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Apple Silicon DWC3 USB controller
+> +
+> +maintainers:
+> +  - Sven Peter <sven@svenpeter.dev>
+> +
+> +description:
+> +  On Apple Silicon SoCs such as the M1 each Type-C port has a corresponding
+> +  USB controller based on the Synopsys DesignWare USB3 controller.
+> +
+> +  The common content of this binding is defined in snps,dwc3.yaml.
+> +
+> +allOf:
+> +  - $ref: snps,dwc3.yaml#
+> +
+> +select:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        const: apple,dwc3
 
-As 8d6996630c03 introduce 'fq->rq_status', this data only update when 'flush_rq'
-reference count isn't zero. If flush request once failed and record error code
-in 'fq->rq_status'. If there is no chance to update 'fq->rq_status',then do fsync
-will always failed.
-To address this issue reset 'fq->rq_status' after return error code to upper layer.
+This needs to list all possible compatibles except snps,dwc3 so the 
+schema is applied for any incorrect mixture of compatibles.
 
-Fixes: 8d6996630c03("block: fix null pointer dereference in blk_mq_rq_timed_out()")
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- block/blk-flush.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/block/blk-flush.c b/block/blk-flush.c
-index 902e80e48e4a..8b43088d41f2 100644
---- a/block/blk-flush.c
-+++ b/block/blk-flush.c
-@@ -242,8 +242,10 @@ static void flush_end_io(struct request *flush_rq, blk_status_t error)
- 	 * avoiding use-after-free.
- 	 */
- 	WRITE_ONCE(flush_rq->state, MQ_RQ_IDLE);
--	if (fq->rq_status != BLK_STS_OK)
-+	if (fq->rq_status != BLK_STS_OK) {
- 		error = fq->rq_status;
-+		fq->rq_status = BLK_STS_OK;
-+	}
- 
- 	if (!q->elevator) {
- 		flush_rq->tag = BLK_MQ_NO_TAG;
--- 
-2.31.1
-
+> +  required:
+> +    - compatible
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - apple,t8103-dwc3
+> +          - apple,t6000-dwc3
+> +      - const: apple,dwc3
+> +      - const: snps,dwc3
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +unevaluatedProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/apple-aic.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    usb@82280000 {
+> +      compatible = "apple,t8103-dwc3", "apple,dwc3", "snps,dwc3";
+> +      reg = <0x82280000 0x10000>;
+> +      interrupts = <AIC_IRQ 777 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +      dr_mode = "otg";
+> +      usb-role-switch;
+> +      role-switch-default-mode = "host";
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 3b79fd441dde..03e7cc48877a 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1724,6 +1724,7 @@ T:	git https://github.com/AsahiLinux/linux.git
+>  F:	Documentation/devicetree/bindings/arm/apple.yaml
+>  F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
+>  F:	Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
+> +F:	Documentation/devicetree/bindings/usb/apple,dwc3.yaml
+>  F:	arch/arm64/boot/dts/apple/
+>  F:	drivers/irqchip/irq-apple-aic.c
+>  F:	include/dt-bindings/interrupt-controller/apple-aic.h
+> -- 
+> 2.25.1
+> 
+> 
