@@ -2,79 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EAD4460BDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 01:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE538460BDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 01:51:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376374AbhK2AvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 19:51:12 -0500
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:34452 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236394AbhK2AtL (ORCPT
+        id S1376425AbhK2AyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 19:54:21 -0500
+Received: from mail-oo1-f51.google.com ([209.85.161.51]:35720 "EHLO
+        mail-oo1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233917AbhK2AwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 19:49:11 -0500
-Received: by mail-oi1-f175.google.com with SMTP id t19so31431299oij.1;
-        Sun, 28 Nov 2021 16:45:54 -0800 (PST)
+        Sun, 28 Nov 2021 19:52:20 -0500
+Received: by mail-oo1-f51.google.com with SMTP id e17-20020a4a8291000000b002c5ee0645e7so5201086oog.2;
+        Sun, 28 Nov 2021 16:49:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=RUMZtYVmOKmzKWvEgBBAy6Os4t7757ETuxyl2/LzMms=;
-        b=l63ct9OnqiYS2uKJnSY6zec3v89HTvLoTdpI+Rmjmf1Sba4CxnaIcE0LjecBxUXZv1
-         kTz4IYyxGEe0vMTOyXUvfBKwiz4azY4M+WoDmD0p6SdILcVlJYlTRw7ZHtGyjEpWsLOr
-         sb+tbTeYLtQ+GXUa04Baa9Z7+vphgCSOBZAdRnM1MbgW7j1mRkxSq9+LjFLsLfjw/GqZ
-         GiRLyETQu2xH+zsCZ77uXXqulMFKBEk9B8jjEbQNd466CvFWDkNdt87g8OIj12jLIqwW
-         i7balQUB8PCeIjL63vxDFbx64posejVd/P+qComgcrHsU3c4Kt5z0jTLJIJhEKXzoBc6
-         xVAQ==
-X-Gm-Message-State: AOAM532JNGljyoFat/+H0XEMUs+9DVViCdSOE2WWEN3jGHpOqY2fqD7W
-        QKmNXVMuzxFARur5IBhwew==
-X-Google-Smtp-Source: ABdhPJwiTS7PZPgXfbF/PFr//hEYE9Ia5kHLXct2UKvI7VLCBOfrMizjd5E8aog3TgjSpBFn3t16Qw==
-X-Received: by 2002:a05:6808:2388:: with SMTP id bp8mr38048904oib.38.1638146754406;
-        Sun, 28 Nov 2021 16:45:54 -0800 (PST)
+        bh=TdygPQfvIuf/Rqnm/LiZpMOirVFNGDG0GAPsA8dkmE0=;
+        b=1Ojs8WAjd8onWkLeIVn37srEEUOzomf2x8TaPYiN2T1icfUAMeJOPGn1+2u1Umynpc
+         mrJmEZUJZWA77zb2pJRAfAJqsUZ6EqThGpd5AGF4SQZ+QBtb4TbukECjH4+q9YGIsYaS
+         Z+7hOL8d0GjBfJm2Y9qJNhyq+Xcpg1suId4hJrPrFFO86j3nMptpWsBU57jg9etNNAd5
+         kp48U0Jb3QVyr+bwauoCcB9DLUWt+7ozAyNiSsc3px5UdsSasunJN8oWbBwviNHFwEfw
+         aEgSjwMEcz+NWtyxc8rA9EvcqvlMBZxhVhwiw7iglIUalv51JqAnFaGnPJ1DyD47diBL
+         HcYw==
+X-Gm-Message-State: AOAM530HMMfCup0LIaRpa0ae2NRDL768QyySlnNsxYvLbFaCkF4KRDuS
+        y7q2stnp5hWdoT/y3+PtSg==
+X-Google-Smtp-Source: ABdhPJyEcBYNOQIM8Q9FL9csszUFP9BxCEEL9u5/QJ44Yf5RlvSazpzWt8vkACMHBIn5JHWR0abgnA==
+X-Received: by 2002:a05:6820:30b:: with SMTP id l11mr29850146ooe.32.1638146942936;
+        Sun, 28 Nov 2021 16:49:02 -0800 (PST)
 Received: from robh.at.kernel.org ([172.58.99.229])
-        by smtp.gmail.com with ESMTPSA id a6sm2695366oic.39.2021.11.28.16.45.42
+        by smtp.gmail.com with ESMTPSA id a3sm2381090oti.29.2021.11.28.16.49.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 16:45:53 -0800 (PST)
-Received: (nullmailer pid 2912174 invoked by uid 1000);
-        Mon, 29 Nov 2021 00:45:40 -0000
-Date:   Sun, 28 Nov 2021 18:45:40 -0600
+        Sun, 28 Nov 2021 16:49:02 -0800 (PST)
+Received: (nullmailer pid 2917160 invoked by uid 1000);
+        Mon, 29 Nov 2021 00:48:59 -0000
+Date:   Sun, 28 Nov 2021 18:48:59 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Jishnu Prakash <quic_jprakash@quicinc.com>
-Cc:     rui.zhang@intel.com, pmeerw@pmeerw.net,
-        manivannan.sadhasivam@linaro.org, jic23@kernel.org,
-        mka@chromium.org, devicetree@vger.kernel.org,
-        bjorn.andersson@linaro.org, quic_subbaram@quicinc.com,
-        daniel.lezcano@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_aghayal@quicinc.com,
-        lars@metafoo.de, "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-iio@vger.kernel.org, linux-pm@vger.kernel.org,
-        agross@kernel.org, robh+dt@kernel.org,
-        linux-arm-msm-owner@vger.kernel.org, linus.walleij@linaro.org,
-        quic_kgunda@quicinc.com, amitk@kernel.org,
-        dmitry.baryshkov@linaro.org, knaack.h@gmx.de
-Subject: Re: [PATCH V3 1/4] dt-bindings: thermal: qcom: add PMIC5 Gen2 ADC_TM
- bindings
-Message-ID: <YaQitCoPQRqFuZaO@robh.at.kernel.org>
-References: <1637647025-20409-1-git-send-email-quic_jprakash@quicinc.com>
- <1637647025-20409-2-git-send-email-quic_jprakash@quicinc.com>
+To:     Adam Ward <Adam.Ward.opensource@diasemi.com>
+Cc:     devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Support Opensource <support.opensource@diasemi.com>
+Subject: Re: [PATCH V3 1/3] dt-bindings: da9121: Remove erroneous compatible
+ from binding
+Message-ID: <YaQje7L++mz1CknP@robh.at.kernel.org>
+References: <cover.1637709844.git.Adam.Ward.opensource@diasemi.com>
+ <2e5f602d3fba02691f6113884a57a894a697ba0e.1637709844.git.Adam.Ward.opensource@diasemi.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1637647025-20409-2-git-send-email-quic_jprakash@quicinc.com>
+In-Reply-To: <2e5f602d3fba02691f6113884a57a894a697ba0e.1637709844.git.Adam.Ward.opensource@diasemi.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Nov 2021 11:27:01 +0530, Jishnu Prakash wrote:
-> Add documentation for PMIC5 Gen2 ADC_TM peripheral.
-> It is used for monitoring ADC channel thresholds for PMIC7-type
-> PMICs. It is present on PMK8350, like PMIC7 ADC and can be used
-> to monitor up to 8 ADC channels, from any of the PMIC7 PMICs
-> on a target, through PBS(Programmable Boot Sequence).
-> 
-> Signed-off-by: Jishnu Prakash <quic_jprakash@quicinc.com>
+On Tue, 23 Nov 2021 23:27:56 +0000, Adam Ward wrote:
+> Signed-off-by: Adam Ward <Adam.Ward.opensource@diasemi.com>
 > ---
->  .../bindings/thermal/qcom-spmi-adc-tm5.yaml        | 110 ++++++++++++++++++++-
->  1 file changed, 108 insertions(+), 2 deletions(-)
+>  .../bindings/regulator/dlg,da9121.yaml        | 25 +++++++++----------
+>  1 file changed, 12 insertions(+), 13 deletions(-)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
