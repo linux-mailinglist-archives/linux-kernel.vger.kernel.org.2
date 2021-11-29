@@ -2,70 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAA84460CC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 03:41:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD79460CD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 03:52:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241220AbhK2Co4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 21:44:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54046 "EHLO
+        id S243374AbhK2C4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 21:56:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239725AbhK2Cmv (ORCPT
+        with ESMTP id S240869AbhK2CyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 21:42:51 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8717C06175A
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 18:39:34 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id y7so10976607plp.0
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 18:39:34 -0800 (PST)
+        Sun, 28 Nov 2021 21:54:00 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA82C06175D;
+        Sun, 28 Nov 2021 18:49:36 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id i6so15798411ila.0;
+        Sun, 28 Nov 2021 18:49:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=t+k1vMicazZQGgJua3VBr5ex8kbXiYjORBm2hnGSMD4=;
-        b=MRs7i/NWaND3/92EJ/l39FhB4+Fr9qAgXy/LxE9XPc49a1OAP9QE4W8OyGJTr/JruP
-         uU8dxEl8jJClXwQosyviuExYM4QcU99mD5F4C2XZbaKayf9so8cXOs+D54bnUv7ipjs7
-         m3ZyHsSnMU+ERyUyiK62c7AZk83/h+oy3HZPIUdp1r1k9wQgW8zySICP2QLwwTBRfO2P
-         zjsEsuCKvz/1APUqYlO9l+PcDVXEQC+SlWJrx6tHLX3K94mmLiSYgs40WlfiCHAlFKYX
-         fg+NFcdcYIyvpoJ5lYgsPisyaj2VYB4u9LHn2+y2oNMp525FNs/LeQSEdxDTDmGQyB43
-         AdeQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DQheVeQwls1vmnHq2eNXrVLUaLkFaOJlio+fVKDeZQU=;
+        b=dHm6ZVR+x9yQdn+x1jMrus/r4QnVZqYJqapSOByFxLWFz9prdV9vCqVhVRuOoDA3Ef
+         qTu9qg5qjI6HcP7q/80y5aHbn75ci4goW9XmOhDnENBmgoZdj1G29cFXzkPdPjIAMoNU
+         FbY1s59BJ36wmQgjH0JZrc7iPP1kLLd/LVXYg6QoKyw6wMCBObZ9K+uys9yJNLGi+My/
+         hK/cvgElV/qUxdOnLIMR59XWZ6CI4vRNx2K21wA1bE+3yjU0Ei3LZ7C+rJF9RRcUk3Io
+         V0egCwH2FWvWjV3B82YvFGALHeADFQBEijKhKJqUH3iH+tbDWY6H6h2AQI17kL+cyN7y
+         m+fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=t+k1vMicazZQGgJua3VBr5ex8kbXiYjORBm2hnGSMD4=;
-        b=wYFsBnqcjyukopLgo+k6iADtzP5oGK62hO7bg/4Iy+84rcwGo1kZZY86xxPj1SGgMZ
-         qNUvjlzWKh0wHit/n1xmxtc93fn/ZWg9IndPNG7f1DvOUn/GsETfqVZkJHdM5T0YBCp+
-         fm/KIp3BZItbTvDouZvC3t/yk5NeVagTEgeXykwRxCdXU3NaJhaCuo0x0CSrXhTajX/1
-         8DoIe/kLifpx3DOolPkQTXj2y1RGGxqKjB+eDFv8Lbl1GIBWEiztd9/dk9O9+Xp459Xd
-         O5dRuHgPWA99TmBDxyaB7Nmcfp6hw4+mlXosEMFk5YKKe+PzBKIEv/qT7Ejfr9xNjFt1
-         0RLw==
-X-Gm-Message-State: AOAM531nd2RzRZYv8l7NDBDrM6gPcc+PwRnzfAuCQj4coQ6kqTfUH/mJ
-        eu7by250S6dtE+MenZSP9mexngYPdvDvoung+c4=
-X-Google-Smtp-Source: ABdhPJwym8GjpPfqp1VPZyuKVCM4caVBNUFtBojFMlErKCDapc1ODpjXdPoihWYpgyddM85UHF/y8ljpHld5n9IcKpA=
-X-Received: by 2002:a17:90b:33d0:: with SMTP id lk16mr35565485pjb.20.1638153574198;
- Sun, 28 Nov 2021 18:39:34 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DQheVeQwls1vmnHq2eNXrVLUaLkFaOJlio+fVKDeZQU=;
+        b=Cl4+t+K50JlS6ZhLaTUzBI3XaQwtPQ8FF/s62Aq46ZWNDbxTqovTjb6qssFMsCPUtL
+         U9QiWXJl1aYNxj5xh2gsVjkpwBZegyWETUqHeq+LI6yKwQ8lASRuRyP/38vGxovm1d9e
+         rl8SsX8VPdoVCvd2P78xNAXS3cql2sRD1k68u/flGvXCKsYvatAjstVUeAlovaRP2hkM
+         AOdlTvJNNkiNN09wtA8ZSdsItmtFJKpBN0IP4Il5HkTmTZnnkkW8i7JBdxbFrzAoAu7M
+         D21sLCqeeroZhBHgDoV+emM0dXZUqGDMzl2Gs7s2GPErGxWj12vKsDveJ5iElU/lTkja
+         85Gw==
+X-Gm-Message-State: AOAM530NBTkcAV54LcWPHEzcmVo35awcAtgTBUhiXvqdiUHWMTDgSngU
+        YCUO/5dAd3oPidmdtL+Iltj6nT5Ti6W68+m7Zf/jA6XWcjI=
+X-Google-Smtp-Source: ABdhPJx3zhiQnSqPtOx1HQVS1Gc4qtfl1CbJYnwdk1/jZc/OmR56xGIE1RSfC0AZ2xEmUNaioLdAOv7nonIE8bmB/d4=
+X-Received: by 2002:a05:6e02:15c9:: with SMTP id q9mr53633744ilu.28.1638154175459;
+ Sun, 28 Nov 2021 18:49:35 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:a17:90a:ea18:0:0:0:0 with HTTP; Sun, 28 Nov 2021 18:39:33
- -0800 (PST)
-Reply-To: lindajonathan993@gmail.com
-From:   Miss Linda <ikennaubochi9@gmail.com>
-Date:   Mon, 29 Nov 2021 02:39:33 +0000
-Message-ID: <CACFJyUDbBGNkc=w2twv4p67mrxbSOYtaw=RxDt0j+03t0hvECw@mail.gmail.com>
-Subject: Hi my love
-To:     undisclosed-recipients:;
+References: <cover.1637799475.git.isaku.yamahata@intel.com> <dbf8648ee18606a5a450bce32100771a3de5fd83.1637799475.git.isaku.yamahata@intel.com>
+In-Reply-To: <dbf8648ee18606a5a450bce32100771a3de5fd83.1637799475.git.isaku.yamahata@intel.com>
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+Date:   Mon, 29 Nov 2021 10:49:23 +0800
+Message-ID: <CAJhGHyDgPv==-H55GDuzXzQcioaw5xb-2skUbzDfyODaUVwimA@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 16/59] KVM: x86: Add per-VM flag to disable direct
+ IRQ injection
+To:     isaku.yamahata@intel.com
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Connor Kuehl <ckuehl@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        isaku.yamahata@gmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey dear
+On Fri, Nov 26, 2021 at 3:44 PM <isaku.yamahata@intel.com> wrote:
 
-Nice to meet you, Am Miss Linda I found your email here in google
-search and I picked
-interest to contact you. I've something very important which I would like
-to discuss with you and I would appreciate if you respond back to me
-through my email address as to tell you more
+>  static int dm_request_for_irq_injection(struct kvm_vcpu *vcpu)
+>  {
+>         return vcpu->run->request_interrupt_window &&
+> +              !vcpu->kvm->arch.irq_injection_disallowed &&
+>                 likely(!pic_in_kernel(vcpu->kvm));
+>  }
 
-about me with my
-photos, my private email as fellows??   lindajonathan993@gmail.com
 
-From, Linda
+Just judged superficially by the function names, it seems that the
+logic is better to be put in kvm_cpu_accept_dm_intr() or some deeper
+function nested in kvm_cpu_accept_dm_intr().
+
+The function name will tell us that the interrupt is not injected
+because the CPU doesn't accept it.  And it will also have an effect
+that vcpu->run->ready_for_interrupt_injection will always be false
+which I think is better to have for TDX.
+
+>
+> --
+> 2.25.1
+>
