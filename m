@@ -2,101 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90420460CDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 03:54:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A1C460CE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 03:56:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345624AbhK2C5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 21:57:23 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:37634 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S241220AbhK2CzW (ORCPT
+        id S244534AbhK2C7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 21:59:55 -0500
+Received: from mail-qk1-f177.google.com ([209.85.222.177]:46076 "EHLO
+        mail-qk1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233236AbhK2C5y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 21:55:22 -0500
-X-UUID: f399f2cd5e844e9183bd30ec6b1d518e-20211129
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=kD09jtn2dVIcl3Vsg9OLSofmPvBwrfGGIswuDPvN4T0=;
-        b=U4YMdNp9oXuxWqgFZ5KGoPSBeqdJ6XDmfM79WmZb3Aq2M/Ti6HE8ikAWh6MYLorGRDhdGLFYyBPP/T7yWE9mCOAcUD3kJQLtMqBNyozkLQOqvyS+KGj7yQZdRMtI35bii46MFyNIEerW9L5vXxlrbyD4gy/LcjB/zUOKlSa1rik=;
-X-UUID: f399f2cd5e844e9183bd30ec6b1d518e-20211129
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <jianjun.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1824327397; Mon, 29 Nov 2021 10:52:01 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 29 Nov 2021 10:52:00 +0800
-Received: from mhfsdcap04 (10.17.3.154) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 29 Nov 2021 10:51:59 +0800
-Message-ID: <253e497abbcff425428ac8b7f30cebce718a63c9.camel@mediatek.com>
-Subject: Re: [PATCH v3] PCI: mediatek-gen3: Disable DVFSRC voltage request
-From:   Jianjun Wang <jianjun.wang@mediatek.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof =?UTF-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <qizhong.cheng@mediatek.com>, <Ryan-JH.Yu@mediatek.com>,
-        Tzung-Bi Shih <tzungbi@google.com>
-Date:   Mon, 29 Nov 2021 10:51:59 +0800
-In-Reply-To: <b18f74b8831492c4a75f45fa778c359fd80184d0.camel@mediatek.com>
-References: <20211015063602.29058-1-jianjun.wang@mediatek.com>
-         <b18f74b8831492c4a75f45fa778c359fd80184d0.camel@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Sun, 28 Nov 2021 21:57:54 -0500
+Received: by mail-qk1-f177.google.com with SMTP id d2so21312160qki.12;
+        Sun, 28 Nov 2021 18:54:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qbTe+lH71a6p8wzsCbhSxpErG9OzglSEt6YvNDwG21c=;
+        b=V1E2rThbUE0Cf5aObZnXmW8UKGIkTFCF0st4gbUmwSM55nvCanRU4adsiSqZG8rcrI
+         5juPLYreExfwVwNOPZIE44+EO7RO38Dx5+Kt58t8OOGOhEIZ3AThV0w46lnTY2f9mBCd
+         k50HZ4rHE/Cay1fyKdNIgF/xL12qvEiTyRKKuuBfj9T/SEgfMz+CTJd3QhHiv2ohNza0
+         SF/IzbV790kTILVls8Abvo9V15D2MzPsmpSEQu3H6r91KBYZpRxtK0HJ76e4UcNvALQ4
+         zU2L3SypbllWiLOcasNl30dtF2iSnPA5whCaxmAroRH26niDFrM672sZxlBiCPSpCXG6
+         SywA==
+X-Gm-Message-State: AOAM530ROYKtgSuHX8cYqceiR18eNRweeMvUKU+z8DtOaS7cpUfSXzFy
+        4uq7b/3VYvHjj4kr0wwAB5M=
+X-Google-Smtp-Source: ABdhPJyi7aAcRBTHZ33Xv2m6ARGtjYSUACLIAGWWBFseVcXDEPx4RpqRlD7ZTzSfnjCXSQaXvSA7XQ==
+X-Received: by 2002:a05:620a:1468:: with SMTP id j8mr36368878qkl.170.1638154476884;
+        Sun, 28 Nov 2021 18:54:36 -0800 (PST)
+Received: from fedora (pool-173-68-57-129.nycmny.fios.verizon.net. [173.68.57.129])
+        by smtp.gmail.com with ESMTPSA id s6sm5164326qko.43.2021.11.28.18.54.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Nov 2021 18:54:36 -0800 (PST)
+Date:   Sun, 28 Nov 2021 21:54:34 -0500
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, tj@kernel.org, gregkh@linuxfoundation.org,
+        cl@linux.com, catalin.marinas@arm.com, will@kernel.org,
+        tsbogend@alpha.franken.de, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, davem@davemloft.net, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH RFC 0/4] mm: percpu: Cleanup percpu first chunk funciton
+Message-ID: <YaRA6o0pHU6/206a@fedora>
+References: <20211121093557.139034-1-wangkefeng.wang@huawei.com>
+ <4fecd1ac-6c0a-f0fa-1ffb-18f3f266809d@huawei.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4fecd1ac-6c0a-f0fa-1ffb-18f3f266809d@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTWFpbnRhaW5lcnMsDQoNCkp1c3QgZ2VudGxlIHBpbmcgZm9yIHRoaXMgcGF0Y2gsIGlzIHRo
-ZXJlIGFueXRoaW5nIEkgbmVlZCB0byBkbyB0byBnZXQNCnRoaXMgcGF0Y2ggbWVyZ2VkPw0KDQpU
-aGFua3MuDQoNCk9uIFR1ZSwgMjAyMS0xMS0wOSBhdCAxNDoxMCArMDgwMCwgSmlhbmp1biBXYW5n
-IHdyb3RlOg0KPiANCj4gT24gRnJpLCAyMDIxLTEwLTE1IGF0IDE0OjM2ICswODAwLCBKaWFuanVu
-IFdhbmcgd3JvdGU6DQo+ID4gV2hlbiB0aGUgRFZGU1JDIChkeW5hbWljIHZvbHRhZ2UgYW5kIGZy
-ZXF1ZW5jeSBzY2FsaW5nIHJlc291cmNlDQo+ID4gY29sbGVjdG9yKQ0KPiA+IGZlYXR1cmUgaXMg
-bm90IGltcGxlbWVudGVkLCB0aGUgUENJZSBoYXJkd2FyZSB3aWxsIGFzc2VydCBhIHZvbHRhZ2UN
-Cj4gPiByZXF1ZXN0DQo+ID4gc2lnbmFsIHdoZW4gZXhpdCBmcm9tIHRoZSBMMSBQTSBTdWJzdGF0
-ZXMgdG8gcmVxdWVzdCBhIHNwZWNpZmljDQo+ID4gVmNvcmUNCj4gPiB2b2x0YWdlLCBidXQgY2Fu
-bm90IHJlY2VpdmUgdGhlIHZvbHRhZ2UgcmVhZHkgc2lnbmFsLCB3aGljaCB3aWxsDQo+ID4gY2F1
-c2UNCj4gPiB0aGUgbGluayB0byBmYWlsIHRvIGV4aXQgdGhlIEwxIFBNIFN1YnN0YXRlcy4NCj4g
-PiANCj4gPiBEaXNhYmxlIERWRlNSQyB2b2x0YWdlIHJlcXVlc3QgYnkgZGVmYXVsdCwgd2UgbmVl
-ZCB0byBmaW5kIGEgY29tbW9uDQo+ID4gd2F5IHRvDQo+ID4gZW5hYmxlIGl0IGluIHRoZSBmdXR1
-cmUuDQo+ID4gDQo+ID4gRml4ZXM6IGQzYmY3NWI1NzliOSAoIlBDSTogbWVkaWF0ZWstZ2VuMzog
-QWRkIE1lZGlhVGVrIEdlbjMgZHJpdmVyDQo+ID4gZm9yIE1UODE5MiIpDQo+ID4gU2lnbmVkLW9m
-Zi1ieTogSmlhbmp1biBXYW5nIDxqaWFuanVuLndhbmdAbWVkaWF0ZWsuY29tPg0KPiA+IFJldmll
-d2VkLWJ5OiBUenVuZy1CaSBTaGloIDx0enVuZ2JpQGdvb2dsZS5jb20+DQo+ID4gVGVzdGVkLWJ5
-OiBRaXpob25nIENoZW5nIDxxaXpob25nLmNoZW5nQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4g
-PiAgZHJpdmVycy9wY2kvY29udHJvbGxlci9wY2llLW1lZGlhdGVrLWdlbjMuYyB8IDggKysrKysr
-KysNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDggaW5zZXJ0aW9ucygrKQ0KPiA+IA0KPiA+IGRpZmYg
-LS1naXQgYS9kcml2ZXJzL3BjaS9jb250cm9sbGVyL3BjaWUtbWVkaWF0ZWstZ2VuMy5jDQo+ID4g
-Yi9kcml2ZXJzL3BjaS9jb250cm9sbGVyL3BjaWUtbWVkaWF0ZWstZ2VuMy5jDQo+ID4gaW5kZXgg
-ZjNhZWI4ZDRlYWNhLi43OWZiMTJmY2E2YTkgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9wY2kv
-Y29udHJvbGxlci9wY2llLW1lZGlhdGVrLWdlbjMuYw0KPiA+ICsrKyBiL2RyaXZlcnMvcGNpL2Nv
-bnRyb2xsZXIvcGNpZS1tZWRpYXRlay1nZW4zLmMNCj4gPiBAQCAtNzksNiArNzksOSBAQA0KPiA+
-ICAjZGVmaW5lIFBDSUVfSUNNRF9QTV9SRUcJCTB4MTk4DQo+ID4gICNkZWZpbmUgUENJRV9UVVJO
-X09GRl9MSU5LCQlCSVQoNCkNCj4gPiAgDQo+ID4gKyNkZWZpbmUgUENJRV9NSVNDX0NUUkxfUkVH
-CQkweDM0OA0KPiA+ICsjZGVmaW5lIFBDSUVfRElTQUJMRV9EVkZTUkNfVkxUX1JFUQlCSVQoMSkN
-Cj4gPiArDQo+ID4gICNkZWZpbmUgUENJRV9UUkFOU19UQUJMRV9CQVNFX1JFRwkweDgwMA0KPiA+
-ICAjZGVmaW5lIFBDSUVfQVRSX1NSQ19BRERSX01TQl9PRkZTRVQJMHg0DQo+ID4gICNkZWZpbmUg
-UENJRV9BVFJfVFJTTF9BRERSX0xTQl9PRkZTRVQJMHg4DQo+ID4gQEAgLTI5Nyw2ICszMDAsMTEg
-QEAgc3RhdGljIGludCBtdGtfcGNpZV9zdGFydHVwX3BvcnQoc3RydWN0DQo+ID4gbXRrX3BjaWVf
-cG9ydCAqcG9ydCkNCj4gPiAgCXZhbCAmPSB+UENJRV9JTlRYX0VOQUJMRTsNCj4gPiAgCXdyaXRl
-bF9yZWxheGVkKHZhbCwgcG9ydC0+YmFzZSArIFBDSUVfSU5UX0VOQUJMRV9SRUcpOw0KPiA+ICAN
-Cj4gPiArCS8qIERpc2FibGUgRFZGU1JDIHZvbHRhZ2UgcmVxdWVzdCAqLw0KPiA+ICsJdmFsID0g
-cmVhZGxfcmVsYXhlZChwb3J0LT5iYXNlICsgUENJRV9NSVNDX0NUUkxfUkVHKTsNCj4gPiArCXZh
-bCB8PSBQQ0lFX0RJU0FCTEVfRFZGU1JDX1ZMVF9SRVE7DQo+ID4gKwl3cml0ZWxfcmVsYXhlZCh2
-YWwsIHBvcnQtPmJhc2UgKyBQQ0lFX01JU0NfQ1RSTF9SRUcpOw0KPiA+ICsNCj4gPiAgCS8qIEFz
-c2VydCBhbGwgcmVzZXQgc2lnbmFscyAqLw0KPiA+ICAJdmFsID0gcmVhZGxfcmVsYXhlZChwb3J0
-LT5iYXNlICsgUENJRV9SU1RfQ1RSTF9SRUcpOw0KPiA+ICAJdmFsIHw9IFBDSUVfTUFDX1JTVEIg
-fCBQQ0lFX1BIWV9SU1RCIHwgUENJRV9CUkdfUlNUQiB8DQo+ID4gUENJRV9QRV9SU1RCOw0KPiAN
-Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4gTGlu
-dXgtbWVkaWF0ZWsgbWFpbGluZyBsaXN0DQo+IExpbnV4LW1lZGlhdGVrQGxpc3RzLmluZnJhZGVh
-ZC5vcmcNCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
-eC1tZWRpYXRlaw0K
+On Mon, Nov 29, 2021 at 10:51:18AM +0800, Kefeng Wang wrote:
+> Hi Dennis and all maintainers, any comments about the changes, many thanks.
+> 
+> On 2021/11/21 17:35, Kefeng Wang wrote:
+> > When support page mapping percpu first chunk allocator on arm64, we
+> > found there are lots of duplicated codes in percpu embed/page first
+> > chunk allocator. This patchset is aimed to cleanup them and should
+> > no funciton change, only test on arm64.
+> > 
+> > Kefeng Wang (4):
+> >    mm: percpu: Generalize percpu related config
+> >    mm: percpu: Add pcpu_fc_cpu_to_node_fn_t typedef
+> >    mm: percpu: Add generic pcpu_fc_alloc/free funciton
+> >    mm: percpu: Add generic pcpu_populate_pte() function
+> > 
+> >   arch/arm64/Kconfig             |  20 +----
+> >   arch/ia64/Kconfig              |   9 +--
+> >   arch/mips/Kconfig              |  10 +--
+> >   arch/mips/mm/init.c            |  14 +---
+> >   arch/powerpc/Kconfig           |  17 +---
+> >   arch/powerpc/kernel/setup_64.c |  92 +--------------------
+> >   arch/riscv/Kconfig             |  10 +--
+> >   arch/sparc/Kconfig             |  12 +--
+> >   arch/sparc/kernel/smp_64.c     | 105 +-----------------------
+> >   arch/x86/Kconfig               |  17 +---
+> >   arch/x86/kernel/setup_percpu.c |  66 ++-------------
+> >   drivers/base/arch_numa.c       |  68 +---------------
+> >   include/linux/percpu.h         |  13 +--
+> >   mm/Kconfig                     |  12 +++
+> >   mm/percpu.c                    | 143 +++++++++++++++++++++++++--------
+> >   15 files changed, 165 insertions(+), 443 deletions(-)
+> > 
 
+Hi Kefang,
+
+I apologize for the delay. It's a holiday week in the US + I had some
+personal things come up at the beginning of last week. I'll have it
+reviewed by tomorrow.
+
+Thanks,
+Dennis
