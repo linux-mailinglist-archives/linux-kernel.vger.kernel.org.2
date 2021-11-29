@@ -2,213 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F15460B6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 01:07:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2AD460B70
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 01:08:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359850AbhK2AKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 19:10:36 -0500
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:41485 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376257AbhK2AIe (ORCPT
+        id S1376365AbhK2ALQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 19:11:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1376281AbhK2AJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 19:08:34 -0500
-Received: by mail-ot1-f41.google.com with SMTP id n17-20020a9d64d1000000b00579cf677301so23047306otl.8;
-        Sun, 28 Nov 2021 16:05:17 -0800 (PST)
+        Sun, 28 Nov 2021 19:09:15 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF98C061761
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 16:05:39 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id k2so31116743lji.4
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 16:05:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=hs3qnIcKtRCT83bE7Elusv1v0jityjS4B84eiJJr7pM=;
+        b=H8o0BSfnPeJiEbYqwwaIzxxt3dBBXRLCTVQR6coynWOtm4se76sdgXe3gI5jts5xYO
+         ZQUn9g6USpqXs4Wc6vCH0VEiOCnCtY8paSEItbXeSfUSUv+vUBEzxxtWvVuBLQa+S/rr
+         LTd64RalxhYzCI/moJoknhwPi+Qzy4ykGQmbz8TCTw7DyfuhSZHXjGqUs2M28nA/qTas
+         Va7YWU33NGrNS31agfSOWybLEb9cazyozQfj9sg45YicKdoU0QcokompqBDzIj5OX1vH
+         nTR/pqc3oUfUNZ3oIAyEhAZxwGTEV302Ep6q653xI07bZ0SZU76ndqwNepVgh3LE9h7T
+         cgdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iwSIflfW61r4qMMe5AGMgQ3tkWLIXXhLm1LxJgz7nQY=;
-        b=XrIL02VFjvJp6M3gHKT2rbBOdKqOQs6EYNPy8a6OgLBpZLBTp0YIIMNB5l0URo9wyo
-         yAEtRVwLUB4YUMxET8TTVOF+4WQQaxMlTZCCawqEW/37VvwLgddzfg1dskJG+DgzRBvr
-         iTveORVwXhRWsDaAJJF5eoPrsJs8X2Ix6+j6tqSqF4ymdL+CgII4C3PHSF0GxXT6n4qH
-         QmvdURLpFR4h13mNpiHUYePjthzAnYfMbRfLPmZkAEJI11lX24p8M6xp2l+xCcQxFqF0
-         8C+AwtxFSyD5EOKdkhraGqpXEqc5xA/ib1rzGl7mQiMZeYtR+Z1hhvrt+PXHrj42LLsx
-         aedw==
-X-Gm-Message-State: AOAM532UCYsVmKDx6WWu+kU8Suxnjj+c7nNs9pbbP+blhFJjUnrJp441
-        fIVA69f17JezLl5ZDirOrQ==
-X-Google-Smtp-Source: ABdhPJyAFWt39rMuurc002tPJegnuR2ShMHjadX/k8wY8gGlpo0V3+AB6mJ1nMYec4g9/fhbKE478A==
-X-Received: by 2002:a9d:2002:: with SMTP id n2mr41519471ota.95.1638144317562;
-        Sun, 28 Nov 2021 16:05:17 -0800 (PST)
-Received: from robh.at.kernel.org ([172.58.99.242])
-        by smtp.gmail.com with ESMTPSA id w22sm2050772ooc.47.2021.11.28.16.05.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 16:05:17 -0800 (PST)
-Received: (nullmailer pid 2854097 invoked by uid 1000);
-        Mon, 29 Nov 2021 00:05:13 -0000
-Date:   Sun, 28 Nov 2021 18:05:13 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Biao Huang <biao.huang@mediatek.com>
-Cc:     davem@davemloft.net, Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        srv_heupstream@mediatek.com, macpaul.lin@mediatek.com,
-        angelogioacchino.delregno@collabora.com, dkirjanov@suse.de
-Subject: Re: [PATCH v3 7/7] net-next: dt-bindings: dwmac: add support for
- mt8195
-Message-ID: <YaQZOS54BawtWkGO@robh.at.kernel.org>
-References: <20211112093918.11061-1-biao.huang@mediatek.com>
- <20211112093918.11061-8-biao.huang@mediatek.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=hs3qnIcKtRCT83bE7Elusv1v0jityjS4B84eiJJr7pM=;
+        b=ih03jvwegAxmdqKygpqGrWVOjnCo9PfXUp3YoPWT47jTNBg/k1HVFqN9Kz9d/QPG/i
+         4XTRgWeARpIXnOFw2m7LCG1tuhvmNXboeiuOFJ6BMqnb9MaIEnkM6rhf+kxJ4YTfhwNH
+         h2RmlLknfsW8A91HdVr3I2uw9sbUdK3N8YvdfIT0co1RG7GWmHe53koq6/TDHsj/h7fl
+         wzlVfNPsyKgKUnROSvfBfegHhA593tvIDc0NP91CzAFL0V5ei2Iwkfvknn6g8wIV7iz6
+         m9zO7PuxBPdSqv3RtbBrm3/XXwfmaxrfIDe/iRu6y+p4GKKdWR4tAQ9KZ2YqTPbzFzdh
+         b/Zw==
+X-Gm-Message-State: AOAM530axu/cSxP+q2v1yNInRTqfy/S2PriZrhfZANBxsxTU+s2ktMmr
+        +RE7BagkS8NrwhfaHUn8kg0W15jDqhyQLTj5Icc=
+X-Google-Smtp-Source: ABdhPJxLzZX1Z7aPISfmZgbEzfgnfPPOJ19Co3Q0WsWgIkTMnbRtAFLYCoTlRTYgCCttpEwrhZ9uJ4ouwCtZ161rx3Q=
+X-Received: by 2002:a05:651c:621:: with SMTP id k33mr46125665lje.359.1638144337213;
+ Sun, 28 Nov 2021 16:05:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211112093918.11061-8-biao.huang@mediatek.com>
+Received: by 2002:a05:6504:1149:0:0:0:0 with HTTP; Sun, 28 Nov 2021 16:05:36
+ -0800 (PST)
+Reply-To: aishsgaddafi00@gmail.com
+From:   "Miss.Aisha Gaddafi" <aishsgaddafi880@gmail.com>
+Date:   Sun, 28 Nov 2021 16:05:36 -0800
+Message-ID: <CAK8Xn7E_=b8NndfmWrpZK9ApY-zSP5rffkCLD47Fbf9M4RP3Nw@mail.gmail.com>
+Subject: THE AMOUNT IS 27.5 MILLIOMS USD
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 05:39:18PM +0800, Biao Huang wrote:
-> Add binding document for the ethernet on mt8195.
-> 
-> Signed-off-by: Biao Huang <biao.huang@mediatek.com>
-> ---
->  .../bindings/net/mediatek-dwmac.yaml          | 86 +++++++++++++++----
->  1 file changed, 70 insertions(+), 16 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/mediatek-dwmac.yaml b/Documentation/devicetree/bindings/net/mediatek-dwmac.yaml
-> index 2eb4781536f7..b27566ed01c6 100644
-> --- a/Documentation/devicetree/bindings/net/mediatek-dwmac.yaml
-> +++ b/Documentation/devicetree/bindings/net/mediatek-dwmac.yaml
-> @@ -19,12 +19,68 @@ select:
->        contains:
->          enum:
->            - mediatek,mt2712-gmac
-> +          - mediatek,mt8195-gmac
->    required:
->      - compatible
->  
->  allOf:
->    - $ref: "snps,dwmac.yaml#"
->    - $ref: "ethernet-controller.yaml#"
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - mediatek,mt2712-gmac
-> +
-> +    then:
-> +      properties:
-> +        clocks:
-> +          minItems: 5
-> +          items:
-> +            - description: AXI clock
-> +            - description: APB clock
-> +            - description: MAC Main clock
-> +            - description: PTP clock
-> +            - description: RMII reference clock provided by MAC
-> +
-> +        clock-names:
-> +          minItems: 5
-> +          items:
-> +            - const: axi
-> +            - const: apb
-> +            - const: mac_main
-> +            - const: ptp_ref
-> +            - const: rmii_internal
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - mediatek,mt8195-gmac
-> +
-> +    then:
-> +      properties:
-> +        clocks:
-> +          minItems: 6
-> +          items:
-> +            - description: AXI clock
-> +            - description: APB clock
-> +            - description: MAC clock gate
-> +            - description: MAC Main clock
-> +            - description: PTP clock
-> +            - description: RMII reference clock provided by MAC
+Dearest One,
 
-Put mac_cg at the end and then the difference is just 5 or 6 clocks and 
-you don't have to duplicate everything.
+I am Miss AIshs Gaddafi, one of the daughters of the embattled
+president of Libya, I am currently residing in one of the African
+Countries, unfortunately as a refugee. At the meantime, my family is
+the target of Western nations led by Nato who wants to destroy my
+father at all costs. Our investments and bank accounts in several
+countries are their targets to freeze.
+
+I have been commissioned to contact an interested foreign
+investor/partner who will be able to take
+absolute control of part of the vast cash available to private
+account with my late brother who was killed by NATO air strike, for a
+possible investment in your country.
+
+If this transaction interest you, you don=E2=80=99t have to disclose it to =
+any
+body because of what is going with my entire family, if the united
+nation happens to know this account, they will freezing it as they
+freeze others so keep this transaction for yourself only until we
+finalize it.
+I want to transfer this money into your account immediately for onward
+investment in your country because I don=E2=80=99t want the united nation t=
+o
+know about this account.
+
+Therefore if you are capable of running an establishment and can
+maintain the high level of secrecy required in this project, kindly
+respond with the following information for details of the
+project.Please contact me to my email ( aishsgaddafi00@gmail.com )
 
 
-> +
-> +        clock-names:
-> +          minItems: 6
-> +          items:
-> +            - const: axi
-> +            - const: apb
-> +            - const: mac_cg
-> +            - const: mac_main
-> +            - const: ptp_ref
-> +            - const: rmii_internal
->  
->  properties:
->    compatible:
-> @@ -33,22 +89,10 @@ properties:
->            - enum:
->                - mediatek,mt2712-gmac
->            - const: snps,dwmac-4.20a
-> -
-> -  clocks:
-> -    items:
-> -      - description: AXI clock
-> -      - description: APB clock
-> -      - description: MAC Main clock
-> -      - description: PTP clock
-> -      - description: RMII reference clock provided by MAC
-> -
-> -  clock-names:
-> -    items:
-> -      - const: axi
-> -      - const: apb
-> -      - const: mac_main
-> -      - const: ptp_ref
-> -      - const: rmii_internal
-> +      - items:
-> +          - enum:
-> +              - mediatek,mt8195-gmac
-> +          - const: snps,dwmac-5.10a
->  
->    mediatek,pericfg:
->      $ref: /schemas/types.yaml#/definitions/phandle
-> @@ -63,6 +107,8 @@ properties:
->        or will round down. Range 0~31*170.
->        For MT2712 RMII/MII interface, Allowed value need to be a multiple of 550,
->        or will round down. Range 0~31*550.
-> +      For MT8195 RGMII/RMII/MII interface, Allowed value need to be a multiple of 290,
-> +      or will round down. Range 0~31*290.
->  
->    mediatek,rx-delay-ps:
->      description:
-> @@ -71,6 +117,8 @@ properties:
->        or will round down. Range 0~31*170.
->        For MT2712 RMII/MII interface, Allowed value need to be a multiple of 550,
->        or will round down. Range 0~31*550.
-> +      For MT8195 RGMII/RMII/MII interface, Allowed value need to be a multiple
-> +      of 290, or will round down. Range 0~31*290.
->  
->    mediatek,rmii-rxc:
->      type: boolean
-> @@ -104,6 +152,12 @@ properties:
->        3. the inside clock, which be sent to MAC, will be inversed in RMII case when
->           the reference clock is from MAC.
->  
-> +  mediatek,mac-wol:
-> +    type: boolean
-> +    description:
-> +      If present, indicates that MAC supports WOL(Wake-On-LAN), and MAC WOL will be enabled.
-> +      Otherwise, PHY WOL is perferred.
-> +
->  required:
->    - compatible
->    - reg
-> -- 
-> 2.25.1
-> 
-> 
+
+1. Your Full Name =E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6
+2. Your Current Address=E2=80=A6=E2=80=A6=E2=80=A6
+3. Your Nationality=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6
+4. Your Age=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6
+5. Your Occupation=E2=80=A6=E2=80=A6=E2=80=A6
+6. Send me a scan copy of your Photograph
+
+Best Regard
+Miss.Aisha Gaddafi
