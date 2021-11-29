@@ -2,188 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0AE460E17
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 05:39:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3C3460E14
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 05:39:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238207AbhK2EmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 23:42:18 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:46600 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233993AbhK2EkP (ORCPT
+        id S235424AbhK2EmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 23:42:13 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:46412 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233905AbhK2EkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 23:40:15 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AT4aZVA103393;
-        Sun, 28 Nov 2021 22:36:35 -0600
+        Sun, 28 Nov 2021 23:40:12 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AT4aYml118115;
+        Sun, 28 Nov 2021 22:36:34 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1638160595;
-        bh=T5ua16ilPFMaScWb+OoNmTXhxlYu6YduhMgRmagewJU=;
-        h=From:Subject:To:CC:References:Date:In-Reply-To;
-        b=Dql1PpzBGgHWPkere5NpJg6Vl1zEgoP5jH+keEuopHBBoh/cnvRsTQHBkDJKOBnW3
-         SIaBmnUNxTX/R3ssF28leIIXM0XiUDGY6tYBokPdQTNi4TuBU5ZnFCBIpznPwWLGVS
-         rPQgBgzSp21BcQZT3BxxIEjDapCY4eGQDiraEJ94=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AT4aZw6033420
+        s=ti-com-17Q1; t=1638160594;
+        bh=uc+McsQyh4vXxa36jTByMhq1Rk8pFaR494tnqxl9MhU=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=ePYbcrzO7ceJxKPbVR6kg0/SijmM02JHi6HmlYZIvtojBs+YQStyedtyQkHYHdL5P
+         cQAlRBJx1mpdRQFTxbKzoWMwrbbE9iKplbEPoK0dsdaaKHu7j8tQOgWTs4XDyRdJVs
+         8MrHEwlIPYFZ8MQYT5Bb9ypyy/LiTdVekWi32aL8=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AT4aYES100018
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 28 Nov 2021 22:36:35 -0600
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+        Sun, 28 Nov 2021 22:36:34 -0600
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Sun, 28
- Nov 2021 22:36:35 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ Nov 2021 22:36:33 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
  Frontend Transport; Sun, 28 Nov 2021 22:36:34 -0600
-Received: from [10.250.232.185] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AT4aVaE061174;
-        Sun, 28 Nov 2021 22:36:31 -0600
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Subject: Re: [PATCH RFC v3 1/4] dt-bindings: mux: Increase the number of
- arguments in mux-controls
-To:     Peter Rosin <peda@axentia.se>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-can@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>
-References: <20211123081222.27979-1-a-govindraju@ti.com>
- <20211123081222.27979-2-a-govindraju@ti.com>
- <24781209-928b-dea4-de0b-b103dac8de82@axentia.se>
-Message-ID: <5f455c4d-5edb-4382-1193-a519a7a227a5@ti.com>
-Date:   Mon, 29 Nov 2021 10:06:30 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AT4aXji085863;
+        Sun, 28 Nov 2021 22:36:33 -0600
+Date:   Sun, 28 Nov 2021 22:36:33 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Roger Quadros <rogerq@kernel.org>
+CC:     Miquel Raynal <miquel.raynal@bootlin.com>, <richard@nod.at>,
+        <vigneshr@ti.com>, <kishon@ti.com>, <tony@atomide.com>,
+        <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 4/4] mtd: nand: omap2: Add support for NAND Controller on
+ AM64 SoC
+Message-ID: <20211129043633.myxmgp6idbrqvx5p@unlisted>
+References: <20211123103609.14063-1-rogerq@kernel.org>
+ <20211123103609.14063-5-rogerq@kernel.org>
+ <20211124131552.6b9bc506@xps13>
+ <e52141a6-96fc-97d6-95d7-3e26276fbac3@kernel.org>
+ <20211126104231.7cc43149@xps13>
+ <917ac002-9d4b-237d-94f3-bcd05f481f39@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <24781209-928b-dea4-de0b-b103dac8de82@axentia.se>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <917ac002-9d4b-237d-94f3-bcd05f481f39@kernel.org>
+User-Agent: NeoMutt/20171215
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On 13:10-20211126, Roger Quadros wrote:
+[...]
 
-On 25/11/21 7:05 pm, Peter Rosin wrote:
-> Hi!
+> >>>> +	/* Some SoC's have 32-bit at least, read limitation */
+> >>>> +	if (soc_device_match(k3_soc_devices)) {
+> >>>> +		dev_info(&pdev->dev, "force 32-bit\n");
+> >>>> +		info->force_32bit = true;
+> >>>> +	}
+> >>>> +  
+> >>>
+> >>> As suggested above, just adding a capability structure tied to the
+> >>> compatible string and retrieved with of_device_get_match_data() should
+> >>> be enough and replace this manual tree research.  
+> >>
+> >> The trouble comes when TI updates the silicon revision to "SR2.0" and that has the issue fixed
+> >> but still uses the same compatible. So compatible string by itself is not sufficient to identify
+> >> the troubled devices. soc_device_match() was the easiest way to address this.
+> > 
+> > This is precisely what compatibles are for, I believe we should declare
+> > the necessary additional compatibles and fix the device trees that are
+> > wrong.
 > 
-> You need to have some description on how #mux-control-cells now work.
-> The previous description is in mux-consumer.yaml and an update there
-> is needed.
+> AFAIK TI SoCs don't have different compatibles for different revisions of the same SoC.
+> My understanding is that the SoC is the same so compatible shouldn't change. Just that there were some
+> hardware fixes and some quirks may not be needed anymore.
 > 
-> However, I have realized that the adg792a binding uses #mux-control-cells
-> to indicate if it should expose its three muxes with one mux-control
-> and operate the muxes in parallel, or if it should be expose three
-> independent mux-controls. So, the approach in this series to always
-> have the #mux-control-cells property fixed at <2> when indicating a
-> state will not work for that binding. And I see no fix for that binding
-> without adding a new property.
+> Nishanth,
 > 
-> So, I would like a different approach. Since I dislike how mux-controls
-> -after this series- is not (always) specifying a mux-control like the name
-> says, but instead optionally a specific state, the new property I would
-> like to add is #mux-state-cells such that it would always be one more
-> than #mux-control-cells.
-> 
-> 	mux: mux-controller {
-> 		compatible = "gpio-mux";
-> 		#mux-control-cells = <0>;
-> 		#mux-state-cells = <1>;
-> 
-> 		mux-gpios = <...>;
-> 	};
-> 
-> 	can-phy {
-> 		compatible = "ti,tcan1043";
-> 		...
-> 		mux-states = <&mux 1>;
-> 	};
-> 
-> That solves the naming issue, the unused argument for mux-conrtrollers
-> that previously had #mux-control-cells = <0>, and the binding for adg792a
-> need no longer be inconsistent.
-> 
-> Or, how should this be solved? I'm sure there are other options...
+> Could you please chime in on why SoC revisions can't use different compatibles?
 > 
 
+The permutations of boards (with add-on cards) and SRs become
+un-manageable esp when Silicon Revisions(SRs) dont actually get into
+production. Instead, what we do suggest are one of two things:
+a) The dts in k.org always reflect the latest SR for the chip that is
+   going into production. Older SR revisions are supported as overlays on top
+   of the dtb.
+b) Where possible, use the chip-id framework[1] to dynamically detect
+   the variations. This might be easier with newer K3 generation SoCs.
 
-I feel that the new approach using mux-state-cells seems to be
-overpopulating the device tree nodes, when the state can be represented
-using the control cells. I understand that the definition for
-mux-controls is to only specify the control line to be used in a given
-mux. Can't it now be upgraded to also represent the state at which the
-control line has to be set to?
 
-With respect to adg792a, it is inline with the current implementation
-and the only change I think would be required in the driver is,
-
-diff --git a/drivers/mux/adg792a.c b/drivers/mux/adg792a.c
-index e8fc2fc1ab09..2cd3bb8a40d4 100644
---- a/drivers/mux/adg792a.c
-+++ b/drivers/mux/adg792a.c
-@@ -73,8 +73,6 @@ static int adg792a_probe(struct i2c_client *i2c)
-        ret = device_property_read_u32(dev, "#mux-control-cells", &cells);
-        if (ret < 0)
-                return ret;
--       if (cells >= 2)
--               return -EINVAL;
-
-        mux_chip = devm_mux_chip_alloc(dev, cells ? 3 : 1, 0);
-        if (IS_ERR(mux_chip))
-
-And the following series should be compatible with it. If adg792a driver
-is the only issue then would there be any issue with only changing it
-and using this implementation?
-
-Thanks,
-Aswath
+In this instance, an overlay corresponding to older SoC might be
+feasible.
 
 
 
-
-> Cheers,
-> Peter
-> 
-> On 2021-11-23 09:12, Aswath Govindraju wrote:
->> Increase the allowed number of arguments in mux-controls to add support for
->> passing information regarding the state of the mux to be set, for a given
->> device.
->>
->> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
->> ---
->>  Documentation/devicetree/bindings/mux/gpio-mux.yaml       | 2 +-
->>  Documentation/devicetree/bindings/mux/mux-controller.yaml | 2 +-
->>  2 files changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/mux/gpio-mux.yaml b/Documentation/devicetree/bindings/mux/gpio-mux.yaml
->> index 0a7c8d64981a..c810b7df39de 100644
->> --- a/Documentation/devicetree/bindings/mux/gpio-mux.yaml
->> +++ b/Documentation/devicetree/bindings/mux/gpio-mux.yaml
->> @@ -26,7 +26,7 @@ properties:
->>        List of gpios used to control the multiplexer, least significant bit first.
->>  
->>    '#mux-control-cells':
->> -    const: 0
->> +    enum: [ 0, 1, 2 ]
->>  
->>    idle-state:
->>      default: -1
->> diff --git a/Documentation/devicetree/bindings/mux/mux-controller.yaml b/Documentation/devicetree/bindings/mux/mux-controller.yaml
->> index 736a84c3b6a5..0b4b067a97bf 100644
->> --- a/Documentation/devicetree/bindings/mux/mux-controller.yaml
->> +++ b/Documentation/devicetree/bindings/mux/mux-controller.yaml
->> @@ -73,7 +73,7 @@ properties:
->>      pattern: '^mux-controller(@.*|-[0-9a-f]+)?$'
->>  
->>    '#mux-control-cells':
->> -    enum: [ 0, 1 ]
->> +    enum: [ 0, 1, 2 ]
->>  
->>    idle-state:
->>      $ref: /schemas/types.yaml#/definitions/int32
->>
-
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/soc/ti/k3-socinfo.yaml
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
