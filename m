@@ -2,136 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1AEA460BB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 01:36:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE1F460BB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 01:37:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233491AbhK2Ajw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 19:39:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241577AbhK2Ahu (ORCPT
+        id S239251AbhK2Ak4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 19:40:56 -0500
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:44562 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231314AbhK2Aiz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 19:37:50 -0500
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BACCC0613DD
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 16:34:33 -0800 (PST)
-Received: by mail-qv1-xf36.google.com with SMTP id g9so10917338qvd.2
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 16:34:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=MBM2hgPdaVzuMXpexRjt9ys30h1jhGQorZpjq4Xn3Z0=;
-        b=dGj3SnbA5SmtMYNWo3TGvZxNH2l2AzDHFCTcq4HbpfyPEMMIPmvYoKa5o9gapOjyk+
-         2kFLZK72wFpJruzN1nLuXzknNoDCZSQ0Srx48iI5uuGzb/y+Ihxt31hH7Q5otYntN8Jz
-         UrXCtETMpP2V1kgH0nE8FStDsdEsbw/OYAWUDdyjXCbvoAY13Usbeg5GfLtWWQ8K7cdh
-         JqaY/HsS25DeMmzxYpjeOu7BehXH3ZCqidYdVZPTGkn/XNlPsMsHu6l8GcmT0Dbe0hQ1
-         9uHdM0taM9YU64w0hxLox3v73cNeDoqhLkBDnyO1Ozi1uJWwlbmtUbx901Q4dyJ9hS0B
-         HTcw==
+        Sun, 28 Nov 2021 19:38:55 -0500
+Received: by mail-ot1-f41.google.com with SMTP id u18-20020a9d7212000000b00560cb1dc10bso23117201otj.11;
+        Sun, 28 Nov 2021 16:35:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=MBM2hgPdaVzuMXpexRjt9ys30h1jhGQorZpjq4Xn3Z0=;
-        b=Z/SY5cY53xMYG+FfQtu525vgDfAnhWZ15YZce+Wa9iUcGc7AwxSeOXn062bwyjRJiK
-         FHRAlneCUEroYEBEiuCdvs/YPuJOBfbT2hpM4iJ6rlVX1h/8VBzIIMxs0eBj7cFrZzs4
-         cVxBh/DBMhr93nHmqc2Nx9kLhzMuJW7i+CmsoiIoQlXn1ISzaJ4R38wGYQG+e9QZaT3I
-         AX35ku3QOGuyy/aiqV/K3qEYM6KtUDaAT0rzhwYdEB3rtTO1bFzcqkVjxFJUcjOOe3sH
-         unFYc+Clt2pgh8VrUBLkQpB+zhsrvNX7XPpTdU1TCzbfrbS11487EE2EQgwt8OPoyh/4
-         bWAA==
-X-Gm-Message-State: AOAM532iNlVpuuBqUOMTUryPW43Q058623tRis1BMN+Op2xeSOAoVfYx
-        BzwLQOT1WWrvmczI7KgSGyT93lgNkDQLMw==
-X-Google-Smtp-Source: ABdhPJzO5gPPfBV+W09kPFiNQECpR/BRbY61wXGLhhGDeoKNy4D3Dx6Gluzmq2+xIF3KxSUuLW0EoQ==
-X-Received: by 2002:ad4:5b82:: with SMTP id 2mr26362228qvp.87.1638146072148;
-        Sun, 28 Nov 2021 16:34:32 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id i16sm7687059qtx.57.2021.11.28.16.34.31
+         :mime-version:content-disposition:in-reply-to;
+        bh=vTUt8JL8c0EbX4Ws9Y0MvfhBbZdQKPR3Lahk2uzREzY=;
+        b=q+GmNkORhoKvCJXShUK1j9nl14leO2sRrIplnNgGLdmKZ5iH02HgCKFtIaQlSZnzTV
+         Y5VP1qAEHspFPn22TrBrcZPm+hsnmLEr1qa9rh6TGwRoKs2t8WzMo84vY7lPmuOw5sOY
+         AKnmigAKKPpLWMUKydWnBNDrF0iBYq33E/dv3cvUyh/nqiZOOJZnuU2JnlR/zWT1xJxu
+         97vCvNtHSEFJJ0L0ihziAT1se1Mi6zFElYv11aUDgCowX9zmNxiQWqmFhQtEPdj+ZJEL
+         9PQRWM1+EgEqiXk1/sBmMbdfDbRoIc2HWYwO4zZB9UjGUQDabYpBY8DFUA+3tDAHLBt8
+         0iDw==
+X-Gm-Message-State: AOAM533tHhppzNoFh4ssdQlKe1a7hwypy/s7HhKsls9Ojwp3+w/xnZyX
+        iJeLma5xePSPS26jzOSK+g==
+X-Google-Smtp-Source: ABdhPJyIsxVbrAl6w5jRXWrXljVtVdOCK0m1rowcOQgI10uw0tBz00FfMlqNEu2vkoTJrlyJOe0CKQ==
+X-Received: by 2002:a05:6830:1bcf:: with SMTP id v15mr42639618ota.200.1638146138466;
+        Sun, 28 Nov 2021 16:35:38 -0800 (PST)
+Received: from robh.at.kernel.org ([172.58.99.229])
+        by smtp.gmail.com with ESMTPSA id a5sm1428275otd.74.2021.11.28.16.35.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 16:34:31 -0800 (PST)
-Date:   Sun, 28 Nov 2021 19:34:30 -0500
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc:     clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [BUG] fs: btrfs: several possible ABBA deadlocks
-Message-ID: <YaQgFhuaQHsND/jr@localhost.localdomain>
-References: <44b385ca-f00d-0b47-e370-bd7d97cb1be3@gmail.com>
+        Sun, 28 Nov 2021 16:35:37 -0800 (PST)
+Received: (nullmailer pid 2897649 invoked by uid 1000);
+        Mon, 29 Nov 2021 00:35:34 -0000
+Date:   Sun, 28 Nov 2021 18:35:34 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     "LH.Kuo" <lhjeff911@gmail.com>
+Cc:     p.zabel@pengutronix.de, broonie@kernel.org,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dvorkin@tibbo.com,
+        qinjian@cqplus1.com, wells.lu@sunplus.com,
+        "LH.Kuo" <lh.kuo@sunplus.com>
+Subject: Re: [PATCH v3 2/2] devicetree: bindings SPI Add bindings doc for
+ Sunplus SP7021
+Message-ID: <YaQgVn5sx3AHtmaF@robh.at.kernel.org>
+References: <cover.1637547799.git.lh.kuo@sunplus.com>
+ <7b8353666052fc42647fce833485b271df8dbc9f.1637547799.git.lh.kuo@sunplus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <44b385ca-f00d-0b47-e370-bd7d97cb1be3@gmail.com>
+In-Reply-To: <7b8353666052fc42647fce833485b271df8dbc9f.1637547799.git.lh.kuo@sunplus.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 27, 2021 at 04:23:37PM +0800, Jia-Ju Bai wrote:
-> Hello,
+On Mon, Nov 22, 2021 at 10:33:33AM +0800, LH.Kuo wrote:
+> Add devicetree bindings SPI Add bindings doc for Sunplus SP7021
 > 
-> My static analysis tool reports several possible ABBA deadlocks in the btrfs
-> module in Linux 5.10:
-> 
-> # DEADLOCK 1:
-> __clear_extent_bit()
->   spin_lock(&tree->lock); --> Line 733 (Lock A)
->   split_state()
->     btrfs_split_delalloc_extent()
->       spin_lock(&BTRFS_I(inode)->lock); --> Line 1870 (Lock B)
-> 
-> btrfs_inode_safe_disk_i_size_write()
->   spin_lock(&BTRFS_I(inode)->lock); --> Line 53 (Lock B)
->   find_contiguous_extent_bit()
->     spin_lock(&tree->lock); --> Line 1620 (Lock A)
-> 
-> When __clear_extent_bit() and btrfs_inode_safe_disk_i_size_write() are
-> concurrently executed, the deadlock can occur.
-> 
-> # DEADLOCK 2:
-> __set_extent_bit()
->   spin_lock(&tree->lock); --> Line 995 (Lock A)
->   set_state_bits()
->     btrfs_set_delalloc_extent()
->       spin_lock(&BTRFS_I(inode)->lock); --> Line 2007 or 2017 or 2029 (Lock
-> B)
-> 
-> btrfs_inode_safe_disk_i_size_write()
->   spin_lock(&BTRFS_I(inode)->lock); --> Line 53 (Lock B)
->   find_contiguous_extent_bit()
->     spin_lock(&tree->lock); --> Line 1620 (Lock A)
-> 
-> When __set_extent_bit() and btrfs_inode_safe_disk_i_size_write() are
-> concurrently executed, the deadlock can occur.
-> 
-> # DEADLOCK 3:
-> convert_extent_bit()
->   spin_lock(&tree->lock); --> Line 1241 (Lock A)
->   set_state_bits()
->     btrfs_set_delalloc_extent()
->       spin_lock(&BTRFS_I(inode)->lock); --> Line 2007 or 2017 or 2029 (Lock
-> B)
-> 
-> btrfs_inode_safe_disk_i_size_write()
->   spin_lock(&BTRFS_I(inode)->lock); --> Line 53 (Lock B)
->   find_contiguous_extent_bit()
->     spin_lock(&tree->lock); --> Line 1620 (Lock A)
-> 
-> When convert_extent_bit() and btrfs_inode_safe_disk_i_size_write() are
-> concurrently executed, the deadlock can occur.
-> 
-> I am not quite sure whether these possible deadlocks are real and how to fix
-> them if they are real.
-> Any feedback would be appreciated, thanks :)
-> 
+> Signed-off-by: LH.Kuo <lh.kuo@sunplus.com>
 
-Hey Jia-Ju,
+Again, From and S-o-b must match.
 
-This is pretty good work, unfortunately it's wrong but it's in a subtle way that
-a tool wouldn't be able to catch.  The btrfs_inode_safe_disk_i_size_write()
-helper only messes with BTRFS_I(inode)->file_extent_tree, which is separate from
-the BTRFS_I(inode)->io_tree.  io_tree gets the btrfs_set_delalloc_extent() stuff
-called on it, but the file_extent_tree does not.  The file_extent_tree has
-inode->lock -> tree->lock as the locking order, whereas the file_extent_tree has
-inode->lock -> tree->lock as the locking order.  Thanks,
+> ---
+> Changes in v3:
+>  - Addressed all comments from Mr. Mark Brown
+>  - Addressed all comments from Mr. Philipp Zabel
+>  - Addressed all comments from Mr. Rob Herring
+>  - remove spi transfer_one_message
+> 
+>  .../bindings/spi/spi-sunplus-sp7021.yaml           | 95 ++++++++++++++++++++++
+>  MAINTAINERS                                        |  1 +
+>  2 files changed, 96 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spi/spi-sunplus-sp7021.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/spi-sunplus-sp7021.yaml b/Documentation/devicetree/bindings/spi/spi-sunplus-sp7021.yaml
+> new file mode 100644
+> index 0000000..5502f15
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/spi-sunplus-sp7021.yaml
+> @@ -0,0 +1,95 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright (C) Sunplus Co., Ltd. 2021
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spi/spi-sunplus-sp7021.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Sunplus sp7021 SPI controller
+> +
+> +allOf:
+> +  - $ref: "spi-controller.yaml"
+> +
+> +maintainers:
+> +  - lh.kuo <lh.kuo@sunplus.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - sunplus,sp7021-spi-controller
 
-Josef
+I think you can drop '-controller'.
+
+> +
+> +  reg:
+> +    items:
+> +      - description: Base address and length of the SPI master registers
+> +      - description: Base address and length of the SPI slave registers
+
+Drop 'Base address and length of '. The rest is sufficient.
+
+> +
+> +  reg-names:
+> +    items:
+> +      - const: spi_master
+> +      - const: spi_slave
+
+Drop 'spi_'.
+
+> +
+> +  interrupt-names:
+> +    items:
+> +      - const: dma_w_intr
+> +      - const: mas_risc_intr
+> +      - const: slave_risc_intr
+
+Drop '_intr', it's redundant.
+
+> +
+> +  interrupts:
+> +    minItems: 3
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clocks-names:
+> +    items:
+> +      - const: sys_pll
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  pinctrl-names:
+> +    description:
+> +      A pinctrl state named "default" must be defined.
+> +    const: default
+> +
+> +  pinctrl-0:
+> +    description:
+> +      A phandle to the default pinctrl state.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - interrupts
+> +  - interrupt-names
+> +  - clocks
+> +  - clocks-names
+> +  - resets
+> +  - pinctrl-names
+> +  - pinctrl-0
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/sp-sp7021.h>
+> +    #include <dt-bindings/reset/sp-sp7021.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    spi@9C002D80 {
+> +        compatible = "sunplus,sp7021-spi-controller";
+> +        reg = <0x9C002D80 0x80>, <0x9C002E00 0x80>;
+> +        reg-names = "spi_master", "spi_slave";
+> +        interrupt-parent = <&intc>;
+> +        interrupt-names = "dma_w_intr",
+> +                          "mas_risc_intr",
+> +                          "slave_risc_intr";
+> +        interrupts = <144 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <146 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <145 IRQ_TYPE_LEVEL_HIGH>;
+> +        clocks = <&clkc SPI_COMBO_0>;
+> +        clocks-names = "sys_pll";
+> +        resets = <&rstc RST_SPI_COMBO_0>;
+> +        pinctrl-names = "default";
+> +        pinctrl-0 = <&pins_spi0>;
+> +    };
+> +...
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 75fa7d5..88f3747 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -18220,6 +18220,7 @@ SUNPLUS SPI CONTROLLER INTERFACE DRIVER
+>  M:	LH Kuo <lh.kuo@sunplus.com>
+>  L:	linux-spi@vger.kernel.org
+>  S:	Maintained
+> +F:	Documentation/devicetree/bindings/spi/spi-sunplus-sp7021.yaml
+>  F:	drivers/spi/spi-sunplus-sp7021.c
+>  
+>  SUPERH
+> -- 
+> 2.7.4
+> 
+> 
