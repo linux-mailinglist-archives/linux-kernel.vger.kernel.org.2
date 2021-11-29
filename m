@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD79460CD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 03:52:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 714DA460CDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 03:53:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243374AbhK2C4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 21:56:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240869AbhK2CyA (ORCPT
+        id S1344267AbhK2C5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 21:57:04 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:28185 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239438AbhK2CzC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 21:54:00 -0500
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA82C06175D;
-        Sun, 28 Nov 2021 18:49:36 -0800 (PST)
-Received: by mail-il1-x129.google.com with SMTP id i6so15798411ila.0;
-        Sun, 28 Nov 2021 18:49:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DQheVeQwls1vmnHq2eNXrVLUaLkFaOJlio+fVKDeZQU=;
-        b=dHm6ZVR+x9yQdn+x1jMrus/r4QnVZqYJqapSOByFxLWFz9prdV9vCqVhVRuOoDA3Ef
-         qTu9qg5qjI6HcP7q/80y5aHbn75ci4goW9XmOhDnENBmgoZdj1G29cFXzkPdPjIAMoNU
-         FbY1s59BJ36wmQgjH0JZrc7iPP1kLLd/LVXYg6QoKyw6wMCBObZ9K+uys9yJNLGi+My/
-         hK/cvgElV/qUxdOnLIMR59XWZ6CI4vRNx2K21wA1bE+3yjU0Ei3LZ7C+rJF9RRcUk3Io
-         V0egCwH2FWvWjV3B82YvFGALHeADFQBEijKhKJqUH3iH+tbDWY6H6h2AQI17kL+cyN7y
-         m+fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DQheVeQwls1vmnHq2eNXrVLUaLkFaOJlio+fVKDeZQU=;
-        b=Cl4+t+K50JlS6ZhLaTUzBI3XaQwtPQ8FF/s62Aq46ZWNDbxTqovTjb6qssFMsCPUtL
-         U9QiWXJl1aYNxj5xh2gsVjkpwBZegyWETUqHeq+LI6yKwQ8lASRuRyP/38vGxovm1d9e
-         rl8SsX8VPdoVCvd2P78xNAXS3cql2sRD1k68u/flGvXCKsYvatAjstVUeAlovaRP2hkM
-         AOdlTvJNNkiNN09wtA8ZSdsItmtFJKpBN0IP4Il5HkTmTZnnkkW8i7JBdxbFrzAoAu7M
-         D21sLCqeeroZhBHgDoV+emM0dXZUqGDMzl2Gs7s2GPErGxWj12vKsDveJ5iElU/lTkja
-         85Gw==
-X-Gm-Message-State: AOAM530NBTkcAV54LcWPHEzcmVo35awcAtgTBUhiXvqdiUHWMTDgSngU
-        YCUO/5dAd3oPidmdtL+Iltj6nT5Ti6W68+m7Zf/jA6XWcjI=
-X-Google-Smtp-Source: ABdhPJx3zhiQnSqPtOx1HQVS1Gc4qtfl1CbJYnwdk1/jZc/OmR56xGIE1RSfC0AZ2xEmUNaioLdAOv7nonIE8bmB/d4=
-X-Received: by 2002:a05:6e02:15c9:: with SMTP id q9mr53633744ilu.28.1638154175459;
- Sun, 28 Nov 2021 18:49:35 -0800 (PST)
+        Sun, 28 Nov 2021 21:55:02 -0500
+Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4J2VF7406Dz8vgD;
+        Mon, 29 Nov 2021 10:49:47 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 29 Nov 2021 10:51:20 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.20; Mon, 29 Nov 2021 10:51:19 +0800
+Message-ID: <4fecd1ac-6c0a-f0fa-1ffb-18f3f266809d@huawei.com>
+Date:   Mon, 29 Nov 2021 10:51:18 +0800
 MIME-Version: 1.0
-References: <cover.1637799475.git.isaku.yamahata@intel.com> <dbf8648ee18606a5a450bce32100771a3de5fd83.1637799475.git.isaku.yamahata@intel.com>
-In-Reply-To: <dbf8648ee18606a5a450bce32100771a3de5fd83.1637799475.git.isaku.yamahata@intel.com>
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-Date:   Mon, 29 Nov 2021 10:49:23 +0800
-Message-ID: <CAJhGHyDgPv==-H55GDuzXzQcioaw5xb-2skUbzDfyODaUVwimA@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 16/59] KVM: x86: Add per-VM flag to disable direct
- IRQ injection
-To:     isaku.yamahata@intel.com
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH RFC 0/4] mm: percpu: Cleanup percpu first chunk funciton
+Content-Language: en-US
+To:     <dennis@kernel.org>, <akpm@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+CC:     <tj@kernel.org>, <gregkh@linuxfoundation.org>, <cl@linux.com>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <tsbogend@alpha.franken.de>, <mpe@ellerman.id.au>,
+        <benh@kernel.crashing.org>, <paulus@samba.org>,
+        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>, <davem@davemloft.net>,
+        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <dave.hansen@linux.intel.com>, <hpa@zytor.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-ia64@vger.kernel.org>, <linux-mips@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-riscv@lists.infradead.org>,
+        <sparclinux@vger.kernel.org>, <x86@kernel.org>
+References: <20211121093557.139034-1-wangkefeng.wang@huawei.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+In-Reply-To: <20211121093557.139034-1-wangkefeng.wang@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggeme710-chm.china.huawei.com (10.1.199.106) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 3:44 PM <isaku.yamahata@intel.com> wrote:
+Hi Dennis and all maintainers, any comments about the changes, many thanks.
 
->  static int dm_request_for_irq_injection(struct kvm_vcpu *vcpu)
->  {
->         return vcpu->run->request_interrupt_window &&
-> +              !vcpu->kvm->arch.irq_injection_disallowed &&
->                 likely(!pic_in_kernel(vcpu->kvm));
->  }
-
-
-Just judged superficially by the function names, it seems that the
-logic is better to be put in kvm_cpu_accept_dm_intr() or some deeper
-function nested in kvm_cpu_accept_dm_intr().
-
-The function name will tell us that the interrupt is not injected
-because the CPU doesn't accept it.  And it will also have an effect
-that vcpu->run->ready_for_interrupt_injection will always be false
-which I think is better to have for TDX.
-
+On 2021/11/21 17:35, Kefeng Wang wrote:
+> When support page mapping percpu first chunk allocator on arm64, we
+> found there are lots of duplicated codes in percpu embed/page first
+> chunk allocator. This patchset is aimed to cleanup them and should
+> no funciton change, only test on arm64.
 >
-> --
-> 2.25.1
+> Kefeng Wang (4):
+>    mm: percpu: Generalize percpu related config
+>    mm: percpu: Add pcpu_fc_cpu_to_node_fn_t typedef
+>    mm: percpu: Add generic pcpu_fc_alloc/free funciton
+>    mm: percpu: Add generic pcpu_populate_pte() function
+>
+>   arch/arm64/Kconfig             |  20 +----
+>   arch/ia64/Kconfig              |   9 +--
+>   arch/mips/Kconfig              |  10 +--
+>   arch/mips/mm/init.c            |  14 +---
+>   arch/powerpc/Kconfig           |  17 +---
+>   arch/powerpc/kernel/setup_64.c |  92 +--------------------
+>   arch/riscv/Kconfig             |  10 +--
+>   arch/sparc/Kconfig             |  12 +--
+>   arch/sparc/kernel/smp_64.c     | 105 +-----------------------
+>   arch/x86/Kconfig               |  17 +---
+>   arch/x86/kernel/setup_percpu.c |  66 ++-------------
+>   drivers/base/arch_numa.c       |  68 +---------------
+>   include/linux/percpu.h         |  13 +--
+>   mm/Kconfig                     |  12 +++
+>   mm/percpu.c                    | 143 +++++++++++++++++++++++++--------
+>   15 files changed, 165 insertions(+), 443 deletions(-)
 >
