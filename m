@@ -2,160 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E7A460C58
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 02:37:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 259A5460C5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 02:39:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235168AbhK2Bky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 20:40:54 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:36650 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S238916AbhK2Bip (ORCPT
+        id S231450AbhK2Bmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 20:42:55 -0500
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:36459 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236804AbhK2Bky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 20:38:45 -0500
-X-UUID: 5298a3b35ca940f89135246985ea8080-20211129
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=yoJLhePLzBo3wM2e/RjTt9dvCDe07O0xX3v3BLWirxQ=;
-        b=g7DLTaIr1MBqoiAi1Y9CaATeLuSu+ACuXzzLa8ZbW9w1HkEz1ts5AASQYyVlg3N7z0oHyqy2ZX7DYilB+vUx7VGiB50RDwUQG27DDKyQ0Cgs3LYD/PAthGk8mmmFqvSmToHxzmYmVbVvgO2oXk2sQvUT2rxpgM+vqmTXt5SzZMQ=;
-X-UUID: 5298a3b35ca940f89135246985ea8080-20211129
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <biao.huang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 208505581; Mon, 29 Nov 2021 09:35:24 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Mon, 29 Nov 2021 09:35:23 +0800
-Received: from mhfsdcap04 (10.17.3.154) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 29 Nov 2021 09:35:22 +0800
-Message-ID: <a7e33e13b24ee98c37a822105ae9d78c44f437ab.camel@mediatek.com>
-Subject: Re: [PATCH v3 7/7] net-next: dt-bindings: dwmac: add support for
- mt8195
-From:   Biao Huang <biao.huang@mediatek.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <srv_heupstream@mediatek.com>, <macpaul.lin@mediatek.com>,
-        <angelogioacchino.delregno@collabora.com>, <dkirjanov@suse.de>
-Date:   Mon, 29 Nov 2021 09:35:22 +0800
-In-Reply-To: <YaQZOS54BawtWkGO@robh.at.kernel.org>
-References: <20211112093918.11061-1-biao.huang@mediatek.com>
-         <20211112093918.11061-8-biao.huang@mediatek.com>
-         <YaQZOS54BawtWkGO@robh.at.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Sun, 28 Nov 2021 20:40:54 -0500
+Received: by mail-ot1-f54.google.com with SMTP id w6-20020a9d77c6000000b0055e804fa524so23293746otl.3;
+        Sun, 28 Nov 2021 17:37:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7/DoGnFVXvUt4WNy+s27fV+fbXXzvgs3f3dRsIX/quo=;
+        b=cdGD1S7zfJBZ2kFk8TrY9U1zNb1ZVfBEMEKHzrxtHjYHmLgFBgn+meD4Jcp+KJLmQF
+         W9PxMdtDU/z59YjRyZ0Z0N2xiwdVpB3Co7by+oL6d+jH7HORiE40qxdyqBjTiHhss92T
+         Bzz9W27bBdCKB50mZQyuEfYh+fNUKCcegqoLXbbnBIecIeok0jDX/VncLOw32i4BqWTo
+         fOFLIwPLZpKTj4kQmTCEJBLtscR/RUM8RK/+GmI2Gkpc0DbuIrgv8hKEoeAI5lg8AI3L
+         l43jwmtoaYd5OmyvwZeEZuBhQfc95Sl0Bj1BKShLyeHwm1A4hDMqaNV822/fD5qR6F5c
+         /WDg==
+X-Gm-Message-State: AOAM5312ntn/AKoUKjF0EM88tHmVXVSRFYO8zlsNlJSD6yGCBRpZe5uq
+        b/hWjW85oa8skw0d9AMB+w==
+X-Google-Smtp-Source: ABdhPJz8N4i1i720AnWSvmpIPpitKT1ahalUiueonhjgbSnFQWF+yoota1k0duiIouJLZ/ETmGDyQw==
+X-Received: by 2002:a9d:68d9:: with SMTP id i25mr42150047oto.189.1638149857357;
+        Sun, 28 Nov 2021 17:37:37 -0800 (PST)
+Received: from robh.at.kernel.org ([172.58.99.229])
+        by smtp.gmail.com with ESMTPSA id f20sm2715812oiw.48.2021.11.28.17.37.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Nov 2021 17:37:36 -0800 (PST)
+Received: (nullmailer pid 2987524 invoked by uid 1000);
+        Mon, 29 Nov 2021 01:37:33 -0000
+Date:   Sun, 28 Nov 2021 19:37:33 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     "LH.Kuo" <lhjeff911@gmail.com>
+Cc:     p.zabel@pengutronix.de, daniel.thompson@linaro.org,
+        lee.jones@linaro.org, u.kleine-koenig@pengutronix.de,
+        ulf.hansson@linaro.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        qinjian@cqplus1.com, wells.lu@sunplus.com,
+        "LH.Kuo" <lh.kuo@sunplus.com>
+Subject: Re: [PATCH v2 2/2] devicetree bindings mmc Add bindings doc for
+ Sunplus SP7021
+Message-ID: <YaQu3dCQD4FG7ete@robh.at.kernel.org>
+References: <1635487055-18494-1-git-send-email-lh.kuo@sunplus.com>
+ <1636444705-17883-1-git-send-email-lh.kuo@sunplus.com>
+ <1636444705-17883-3-git-send-email-lh.kuo@sunplus.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1636444705-17883-3-git-send-email-lh.kuo@sunplus.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RGVhciBSb2IsDQoJVGhhbmtzIGZvciB5b3VyIGNvbW1lbnRzfg0KDQpPbiBTdW4sIDIwMjEtMTEt
-MjggYXQgMTg6MDUgLTA2MDAsIFJvYiBIZXJyaW5nIHdyb3RlOg0KPiBPbiBGcmksIE5vdiAxMiwg
-MjAyMSBhdCAwNTozOToxOFBNICswODAwLCBCaWFvIEh1YW5nIHdyb3RlOg0KPiA+IEFkZCBiaW5k
-aW5nIGRvY3VtZW50IGZvciB0aGUgZXRoZXJuZXQgb24gbXQ4MTk1Lg0KPiA+IA0KPiA+IFNpZ25l
-ZC1vZmYtYnk6IEJpYW8gSHVhbmcgPGJpYW8uaHVhbmdAbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0K
-PiA+ICAuLi4vYmluZGluZ3MvbmV0L21lZGlhdGVrLWR3bWFjLnlhbWwgICAgICAgICAgfCA4Ng0K
-PiA+ICsrKysrKysrKysrKysrKy0tLS0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDcwIGluc2VydGlv
-bnMoKyksIDE2IGRlbGV0aW9ucygtKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0
-aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbmV0L21lZGlhdGVrLQ0KPiA+IGR3bWFjLnlhbWwgYi9E
-b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbmV0L21lZGlhdGVrLQ0KPiA+IGR3bWFj
-LnlhbWwNCj4gPiBpbmRleCAyZWI0NzgxNTM2ZjcuLmIyNzU2NmVkMDFjNiAxMDA2NDQNCj4gPiAt
-LS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbmV0L21lZGlhdGVrLWR3bWFj
-LnlhbWwNCj4gPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbmV0L21l
-ZGlhdGVrLWR3bWFjLnlhbWwNCj4gPiBAQCAtMTksMTIgKzE5LDY4IEBAIHNlbGVjdDoNCj4gPiAg
-ICAgICAgY29udGFpbnM6DQo+ID4gICAgICAgICAgZW51bToNCj4gPiAgICAgICAgICAgIC0gbWVk
-aWF0ZWssbXQyNzEyLWdtYWMNCj4gPiArICAgICAgICAgIC0gbWVkaWF0ZWssbXQ4MTk1LWdtYWMN
-Cj4gPiAgICByZXF1aXJlZDoNCj4gPiAgICAgIC0gY29tcGF0aWJsZQ0KPiA+ICANCj4gPiAgYWxs
-T2Y6DQo+ID4gICAgLSAkcmVmOiAic25wcyxkd21hYy55YW1sIyINCj4gPiAgICAtICRyZWY6ICJl
-dGhlcm5ldC1jb250cm9sbGVyLnlhbWwjIg0KPiA+ICsgIC0gaWY6DQo+ID4gKyAgICAgIHByb3Bl
-cnRpZXM6DQo+ID4gKyAgICAgICAgY29tcGF0aWJsZToNCj4gPiArICAgICAgICAgIGNvbnRhaW5z
-Og0KPiA+ICsgICAgICAgICAgICBlbnVtOg0KPiA+ICsgICAgICAgICAgICAgIC0gbWVkaWF0ZWss
-bXQyNzEyLWdtYWMNCj4gPiArDQo+ID4gKyAgICB0aGVuOg0KPiA+ICsgICAgICBwcm9wZXJ0aWVz
-Og0KPiA+ICsgICAgICAgIGNsb2NrczoNCj4gPiArICAgICAgICAgIG1pbkl0ZW1zOiA1DQo+ID4g
-KyAgICAgICAgICBpdGVtczoNCj4gPiArICAgICAgICAgICAgLSBkZXNjcmlwdGlvbjogQVhJIGNs
-b2NrDQo+ID4gKyAgICAgICAgICAgIC0gZGVzY3JpcHRpb246IEFQQiBjbG9jaw0KPiA+ICsgICAg
-ICAgICAgICAtIGRlc2NyaXB0aW9uOiBNQUMgTWFpbiBjbG9jaw0KPiA+ICsgICAgICAgICAgICAt
-IGRlc2NyaXB0aW9uOiBQVFAgY2xvY2sNCj4gPiArICAgICAgICAgICAgLSBkZXNjcmlwdGlvbjog
-Uk1JSSByZWZlcmVuY2UgY2xvY2sgcHJvdmlkZWQgYnkgTUFDDQo+ID4gKw0KPiA+ICsgICAgICAg
-IGNsb2NrLW5hbWVzOg0KPiA+ICsgICAgICAgICAgbWluSXRlbXM6IDUNCj4gPiArICAgICAgICAg
-IGl0ZW1zOg0KPiA+ICsgICAgICAgICAgICAtIGNvbnN0OiBheGkNCj4gPiArICAgICAgICAgICAg
-LSBjb25zdDogYXBiDQo+ID4gKyAgICAgICAgICAgIC0gY29uc3Q6IG1hY19tYWluDQo+ID4gKyAg
-ICAgICAgICAgIC0gY29uc3Q6IHB0cF9yZWYNCj4gPiArICAgICAgICAgICAgLSBjb25zdDogcm1p
-aV9pbnRlcm5hbA0KPiA+ICsNCj4gPiArICAtIGlmOg0KPiA+ICsgICAgICBwcm9wZXJ0aWVzOg0K
-PiA+ICsgICAgICAgIGNvbXBhdGlibGU6DQo+ID4gKyAgICAgICAgICBjb250YWluczoNCj4gPiAr
-ICAgICAgICAgICAgZW51bToNCj4gPiArICAgICAgICAgICAgICAtIG1lZGlhdGVrLG10ODE5NS1n
-bWFjDQo+ID4gKw0KPiA+ICsgICAgdGhlbjoNCj4gPiArICAgICAgcHJvcGVydGllczoNCj4gPiAr
-ICAgICAgICBjbG9ja3M6DQo+ID4gKyAgICAgICAgICBtaW5JdGVtczogNg0KPiA+ICsgICAgICAg
-ICAgaXRlbXM6DQo+ID4gKyAgICAgICAgICAgIC0gZGVzY3JpcHRpb246IEFYSSBjbG9jaw0KPiA+
-ICsgICAgICAgICAgICAtIGRlc2NyaXB0aW9uOiBBUEIgY2xvY2sNCj4gPiArICAgICAgICAgICAg
-LSBkZXNjcmlwdGlvbjogTUFDIGNsb2NrIGdhdGUNCj4gPiArICAgICAgICAgICAgLSBkZXNjcmlw
-dGlvbjogTUFDIE1haW4gY2xvY2sNCj4gPiArICAgICAgICAgICAgLSBkZXNjcmlwdGlvbjogUFRQ
-IGNsb2NrDQo+ID4gKyAgICAgICAgICAgIC0gZGVzY3JpcHRpb246IFJNSUkgcmVmZXJlbmNlIGNs
-b2NrIHByb3ZpZGVkIGJ5IE1BQw0KPiANCj4gUHV0IG1hY19jZyBhdCB0aGUgZW5kIGFuZCB0aGVu
-IHRoZSBkaWZmZXJlbmNlIGlzIGp1c3QgNSBvciA2IGNsb2Nrcw0KPiBhbmQgDQo+IHlvdSBkb24n
-dCBoYXZlIHRvIGR1cGxpY2F0ZSBldmVyeXRoaW5nLg0KPiANClRoZXJlIGlzIGEgc3BlY2lhbCBj
-bG9jayAtLSBybWlpX2ludGVybmFsIGF0IHRoZSBlbmQgbm93LCBhbmQgd2UnbGwNCmVuYWJsZS9k
-aXNhYmxlIGl0IGluIG91ciBkcml2ZXIsIGFjY29yZGluZyB0byB3aGV0aGVyIHBoeSBpbnRlcmZh
-Y2UgaXMNClJNSUksIHdoaWNoIG1lYW5zIGludm9raW5nIGNsa19idWxrX3h4eCgpIHdpdGggcGFy
-YW1lbnQ6DQpzaXplb2YoY2xvY2tfbGlzdCkgb3IgKHNpemVvZihjbG9ja19saXN0KSAtIDEpLg0K
-DQpBbmQgdGhlIEV0aGVybmV0IHJlbGF0ZWQgY2xvY2sgbGlzdCBtYXkgYmUgZGlmZmVyZW50IGR1
-ZSB0byBzb21lDQpsaW1pdGF0aW9uIG9yIHJ1bGUgaW4gZGlmZmVyZW50IElDLCB3ZSB0aGluayBj
-dXJyZW50IGFycmFuZ2VtZW50IHdpbGwNCm1ha2UgaXQgY2xlYXIuKElmIHNvbWUgSUNzIHNoYXJl
-IHRoZSBzYW1lIGNsb2NrIGxpc3QsIHB1dCB0aGVtIGluIHRoZQ0Kc2FtZSBpZiBjb25kaXRpb24p
-DQoNClRoYW5rc34NCj4gDQo+ID4gKw0KPiA+ICsgICAgICAgIGNsb2NrLW5hbWVzOg0KPiA+ICsg
-ICAgICAgICAgbWluSXRlbXM6IDYNCj4gPiArICAgICAgICAgIGl0ZW1zOg0KPiA+ICsgICAgICAg
-ICAgICAtIGNvbnN0OiBheGkNCj4gPiArICAgICAgICAgICAgLSBjb25zdDogYXBiDQo+ID4gKyAg
-ICAgICAgICAgIC0gY29uc3Q6IG1hY19jZw0KPiA+ICsgICAgICAgICAgICAtIGNvbnN0OiBtYWNf
-bWFpbg0KPiA+ICsgICAgICAgICAgICAtIGNvbnN0OiBwdHBfcmVmDQo+ID4gKyAgICAgICAgICAg
-IC0gY29uc3Q6IHJtaWlfaW50ZXJuYWwNCj4gPiAgDQo+ID4gIHByb3BlcnRpZXM6DQo+ID4gICAg
-Y29tcGF0aWJsZToNCj4gPiBAQCAtMzMsMjIgKzg5LDEwIEBAIHByb3BlcnRpZXM6DQo+ID4gICAg
-ICAgICAgICAtIGVudW06DQo+ID4gICAgICAgICAgICAgICAgLSBtZWRpYXRlayxtdDI3MTItZ21h
-Yw0KPiA+ICAgICAgICAgICAgLSBjb25zdDogc25wcyxkd21hYy00LjIwYQ0KPiA+IC0NCj4gPiAt
-ICBjbG9ja3M6DQo+ID4gLSAgICBpdGVtczoNCj4gPiAtICAgICAgLSBkZXNjcmlwdGlvbjogQVhJ
-IGNsb2NrDQo+ID4gLSAgICAgIC0gZGVzY3JpcHRpb246IEFQQiBjbG9jaw0KPiA+IC0gICAgICAt
-IGRlc2NyaXB0aW9uOiBNQUMgTWFpbiBjbG9jaw0KPiA+IC0gICAgICAtIGRlc2NyaXB0aW9uOiBQ
-VFAgY2xvY2sNCj4gPiAtICAgICAgLSBkZXNjcmlwdGlvbjogUk1JSSByZWZlcmVuY2UgY2xvY2sg
-cHJvdmlkZWQgYnkgTUFDDQo+ID4gLQ0KPiA+IC0gIGNsb2NrLW5hbWVzOg0KPiA+IC0gICAgaXRl
-bXM6DQo+ID4gLSAgICAgIC0gY29uc3Q6IGF4aQ0KPiA+IC0gICAgICAtIGNvbnN0OiBhcGINCj4g
-PiAtICAgICAgLSBjb25zdDogbWFjX21haW4NCj4gPiAtICAgICAgLSBjb25zdDogcHRwX3JlZg0K
-PiA+IC0gICAgICAtIGNvbnN0OiBybWlpX2ludGVybmFsDQo+ID4gKyAgICAgIC0gaXRlbXM6DQo+
-ID4gKyAgICAgICAgICAtIGVudW06DQo+ID4gKyAgICAgICAgICAgICAgLSBtZWRpYXRlayxtdDgx
-OTUtZ21hYw0KPiA+ICsgICAgICAgICAgLSBjb25zdDogc25wcyxkd21hYy01LjEwYQ0KPiA+ICAN
-Cj4gPiAgICBtZWRpYXRlayxwZXJpY2ZnOg0KPiA+ICAgICAgJHJlZjogL3NjaGVtYXMvdHlwZXMu
-eWFtbCMvZGVmaW5pdGlvbnMvcGhhbmRsZQ0KPiA+IEBAIC02Myw2ICsxMDcsOCBAQCBwcm9wZXJ0
-aWVzOg0KPiA+ICAgICAgICBvciB3aWxsIHJvdW5kIGRvd24uIFJhbmdlIDB+MzEqMTcwLg0KPiA+
-ICAgICAgICBGb3IgTVQyNzEyIFJNSUkvTUlJIGludGVyZmFjZSwgQWxsb3dlZCB2YWx1ZSBuZWVk
-IHRvIGJlIGENCj4gPiBtdWx0aXBsZSBvZiA1NTAsDQo+ID4gICAgICAgIG9yIHdpbGwgcm91bmQg
-ZG93bi4gUmFuZ2UgMH4zMSo1NTAuDQo+ID4gKyAgICAgIEZvciBNVDgxOTUgUkdNSUkvUk1JSS9N
-SUkgaW50ZXJmYWNlLCBBbGxvd2VkIHZhbHVlIG5lZWQgdG8NCj4gPiBiZSBhIG11bHRpcGxlIG9m
-IDI5MCwNCj4gPiArICAgICAgb3Igd2lsbCByb3VuZCBkb3duLiBSYW5nZSAwfjMxKjI5MC4NCj4g
-PiAgDQo+ID4gICAgbWVkaWF0ZWsscngtZGVsYXktcHM6DQo+ID4gICAgICBkZXNjcmlwdGlvbjoN
-Cj4gPiBAQCAtNzEsNiArMTE3LDggQEAgcHJvcGVydGllczoNCj4gPiAgICAgICAgb3Igd2lsbCBy
-b3VuZCBkb3duLiBSYW5nZSAwfjMxKjE3MC4NCj4gPiAgICAgICAgRm9yIE1UMjcxMiBSTUlJL01J
-SSBpbnRlcmZhY2UsIEFsbG93ZWQgdmFsdWUgbmVlZCB0byBiZSBhDQo+ID4gbXVsdGlwbGUgb2Yg
-NTUwLA0KPiA+ICAgICAgICBvciB3aWxsIHJvdW5kIGRvd24uIFJhbmdlIDB+MzEqNTUwLg0KPiA+
-ICsgICAgICBGb3IgTVQ4MTk1IFJHTUlJL1JNSUkvTUlJIGludGVyZmFjZSwgQWxsb3dlZCB2YWx1
-ZSBuZWVkIHRvDQo+ID4gYmUgYSBtdWx0aXBsZQ0KPiA+ICsgICAgICBvZiAyOTAsIG9yIHdpbGwg
-cm91bmQgZG93bi4gUmFuZ2UgMH4zMSoyOTAuDQo+ID4gIA0KPiA+ICAgIG1lZGlhdGVrLHJtaWkt
-cnhjOg0KPiA+ICAgICAgdHlwZTogYm9vbGVhbg0KPiA+IEBAIC0xMDQsNiArMTUyLDEyIEBAIHBy
-b3BlcnRpZXM6DQo+ID4gICAgICAgIDMuIHRoZSBpbnNpZGUgY2xvY2ssIHdoaWNoIGJlIHNlbnQg
-dG8gTUFDLCB3aWxsIGJlIGludmVyc2VkDQo+ID4gaW4gUk1JSSBjYXNlIHdoZW4NCj4gPiAgICAg
-ICAgICAgdGhlIHJlZmVyZW5jZSBjbG9jayBpcyBmcm9tIE1BQy4NCj4gPiAgDQo+ID4gKyAgbWVk
-aWF0ZWssbWFjLXdvbDoNCj4gPiArICAgIHR5cGU6IGJvb2xlYW4NCj4gPiArICAgIGRlc2NyaXB0
-aW9uOg0KPiA+ICsgICAgICBJZiBwcmVzZW50LCBpbmRpY2F0ZXMgdGhhdCBNQUMgc3VwcG9ydHMg
-V09MKFdha2UtT24tTEFOKSwNCj4gPiBhbmQgTUFDIFdPTCB3aWxsIGJlIGVuYWJsZWQuDQo+ID4g
-KyAgICAgIE90aGVyd2lzZSwgUEhZIFdPTCBpcyBwZXJmZXJyZWQuDQo+ID4gKw0KPiA+ICByZXF1
-aXJlZDoNCj4gPiAgICAtIGNvbXBhdGlibGUNCj4gPiAgICAtIHJlZw0KPiA+IC0tIA0KPiA+IDIu
-MjUuMQ0KPiA+IA0KPiA+IA0K
+On Tue, Nov 09, 2021 at 03:58:25PM +0800, LH.Kuo wrote:
+> Add devicetree bindings mmc Add bindings doc for Sunplus SP7021
+> 
+> Signed-off-by: LH.Kuo <lh.kuo@sunplus.com>
+> ---
+> Changes in v2:
+>  - Addressed all comments from Mr. Philipp Zabel
+>  - Modified the structure and register access method.
+>  - Modifiedthe path about MAINTAINERS. ( wrong messages PATH in v1).
+> 
+>  .../devicetree/bindings/mmc/sunplus-sd2.yaml       | 82 ++++++++++++++++++++++
+>  MAINTAINERS                                        |  1 +
+>  2 files changed, 83 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mmc/sunplus-sd2.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/mmc/sunplus-sd2.yaml b/Documentation/devicetree/bindings/mmc/sunplus-sd2.yaml
+> new file mode 100644
+> index 0000000..95dc0bb
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mmc/sunplus-sd2.yaml
+> @@ -0,0 +1,82 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright (C) Sunplus Co., Ltd. 2021
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mmc/sunplus-sd2.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Sunplus SD/SDIO controller
+> +
+> +maintainers:
+> +  - lh.kuo <lh.kuo@sunplus.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - sunplus,sp7021-card1
+> +      - sunplus,sp7021-sdio
 
+What's the difference between these 2 blocks?
+
+> +
+> +  reg:
+> +    items:
+> +      - description: Base address and length of the SD/SDIO registers
+
+Just 'maxItems: 1' is sufficient.
+
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  pinctrl-names:
+> +    description:
+> +      A pinctrl state named "default" must be defined.
+> +    const: default
+> +
+> +  pinctrl-0:
+> +    description:
+> +      A phandle to the default pinctrl state.
+> +
+> +  max-frequency: true
+> +
+> +allOf:
+> +  - $ref: "mmc-controller.yaml"
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - resets
+> +  - pinctrl-names
+> +  - pinctrl-0
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/sp-sp7021.h>
+> +    #include <dt-bindings/reset/sp-sp7021.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    mmc1: mmc@9C003e80 {
+
+Use lower case hex.
+
+> +       compatible = "sunplus,sp7021-card1";
+> +       reg = <0x9c003e80 0x280>;
+> +       interrupts = <21 IRQ_TYPE_LEVEL_HIGH>;
+> +       clocks = <&clkc CARD_CTL1>;
+> +       resets = <&rstc RST_CARD_CTL1>;
+> +       pinctrl-names = "default";
+> +       pinctrl-0 = <&mmc1_mux &mmc1_mux_cd>;
+> +       max-frequency = <52000000>;
+> +    };
+> +    sdio: mmc@9C008400 {
+
+Use lower case hex.
+
+> +       compatible = "sunplus,sp7021-sdio";
+> +       reg = <0x9c008400 0x280>;
+> +       interrupts = <21 IRQ_TYPE_LEVEL_HIGH>;
+> +       clocks = <&clkc CARD_CTL1>;
+> +       resets = <&rstc RST_CARD_CTL1>;
+> +       pinctrl-names = "default";
+> +       pinctrl-0 = <&pins_sdio>;
+> +       max-frequency = <52000000>;
+> +    };   
+> +...
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 2746084..e653a1d 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -18193,6 +18193,7 @@ SUNPLUS SD/SDIO HOST CONTROLLER INTERFACE DRIVER
+>  M:	LH Kuo <lh.kuo@sunplus.com>
+>  L:	linux-mmc@vger.kernel.org
+>  S:	Maintained
+> +F:	Documentation/devicetree/bindings/mmc/sunplus-sd2.yaml
+>  F:	drivers/mmc/host/sunplus_sd2.*
+>  
+>  SUPERH
+> -- 
+> 2.7.4
+> 
+> 
