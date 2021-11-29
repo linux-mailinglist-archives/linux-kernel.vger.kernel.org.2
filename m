@@ -2,318 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8AE4460F2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 08:05:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C373460F27
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 08:04:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237788AbhK2HIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Nov 2021 02:08:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234891AbhK2HGM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Nov 2021 02:06:12 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84AEBC06139B
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 22:59:59 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id i5-20020a05683033e500b0057a369ac614so2792209otu.10
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 22:59:59 -0800 (PST)
+        id S233859AbhK2HHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Nov 2021 02:07:43 -0500
+Received: from mail-dm6nam08on2048.outbound.protection.outlook.com ([40.107.102.48]:4832
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229818AbhK2HFm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Nov 2021 02:05:42 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ktW+RuDrMJttFqs86zJZpTZZZl2h7YupcH80nzvybo5Q61Z6NYEhfq+SXsQBFLBstyQkX2RTtvc/lPTUvnyG+RL9yex78C+SjpLuKPLBOjhMVt8IjElgUvljNkCd5RCWVgwehfpuTKuUoirPkO8e8KnnQWqH5zhOqbevhgDMK+O9Uo0ZMuYpmbV8exOzLDAt/OlOtE6tmmTIy47VFg0bslwPRBJOAuXi7A0D22BnPDzKd2WGyTud8o5UhAExD5zG3Q+2wBPgFrf85aUcroVNIHdUaMzHUnV5o3lvFL/Di0Rfhr1ot+K5h1ZUpmdAzTemhPnmqYkIBATrfkbZ9ValyA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4AUAw3dik1899UTcLJDGYAWPcxTXApmVmWz3GQvTnUM=;
+ b=PNSS0xWKlQlpu4diui471aYFLntXacqLbl9JrxKSWnfu1AP2ck0bvbgY5KaADW+TEJ6/tUyv8BvkqUaHrl7RTg3LW8I8cqpVuy39FzAeCw6/xnpPef1RHkf7tJZm9SLzPaVCfYfpp+R7e4N5YTDzd0aUjWohmGkinLaSUbcot1cDycF+wn6JVvDQOs6HO3s97YcaK7U/zvoBzDfBhNg9GQc56ostICAtiSie2WNELY0JFsRrZBz4Y7KcQjY5dlL2KH83PxT/EGFrpRPTOsbPxNxzLDZe+J+ZLBE6D2CxCHxQyw3pb+9xSu1UYoMYxy1SYtRAz33OIrQh9+twOvEvIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=linuxfoundation.org
+ smtp.mailfrom=xilinx.com; dmarc=pass (p=none sp=none pct=100) action=none
+ header.from=xilinx.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9XRvsscbbpXoghIW+aA3YVp1J8GUILtgVu/qUNFVDJo=;
-        b=mcnd1eADZZrEWbWbSiOMKKn8cxfsrR7ZhE85jErdjCbaSkSWlDqoNkQKDDvmlOd77Y
-         y7Ijsh8IsSvBRs2JLRm2JV2UXgkY0GrltnbMY2UnwKU6k2rd2B7CXftxcv3kFqo+k1L5
-         iLpr914rzcSl/UZR2yVTvZrDQ58xNogA4nUazCDbS/oI7PWZmEEQpw6XvTxcMy4IvshQ
-         EAwNltbG3FKCzWliCOzFFy1KJ6U7OfUZJRE4WIA26DcfSR7L8xuhj/2z7kq0qyQO5A8o
-         dM2AC8VpV8Kj14uBYzi4Ve+IgeDnG+gnGXc3ZbHQcmDMQpDx6ZyvT30MfUjEMwJFAR44
-         S78A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9XRvsscbbpXoghIW+aA3YVp1J8GUILtgVu/qUNFVDJo=;
-        b=tQdk9/3x5NKs5I0cVLBPRimtJYIDE8RK80Mt4ielJ6s4r17l63JCp9Jq3a4kbSZ+RR
-         JD7CxUm2qoVeN0Gtrlu30Z6nH1wDtYF+i1/PU3CN4rOixAXvl2G0lRLkUWAyrOliTihC
-         VpHoNSQt8+yWZnEuS7/VdC0T+Lxsw9UKLGXBi54PeWuXZZ7oNVqq8tWUwMzagnb2t3LH
-         1lybAhJ146ywP4yS11zK20aKcwXuTVyAG59kTo+3RCOwRbOcAUvNojEi9L/cLSllN8Q1
-         KXbLMTiSimFpqSfNYewGAYvtUToTKZQZkpxz7IsdV5Ipozw/5RcykKGSjR187/XdiX0m
-         1mcw==
-X-Gm-Message-State: AOAM530Y1QerwjM1X58uRj0fzqJsxHGO9G2NXwbJ1iI/A3Lcsl4ZlXry
-        SbVHFEvzBGx4H6r+FyZ60JIcbGXCpmL9oPvN6OnezA==
-X-Google-Smtp-Source: ABdhPJyJXsshGHMe1bbT5WVbiJJZryXNe7LV0hkQB9TSA4HHS7ZLXkGbIiCz4BaMiW0onn3QNLHMuSiQ9lfKcQKRItI=
-X-Received: by 2002:a9d:4f0e:: with SMTP id d14mr43581783otl.137.1638169198504;
- Sun, 28 Nov 2021 22:59:58 -0800 (PST)
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4AUAw3dik1899UTcLJDGYAWPcxTXApmVmWz3GQvTnUM=;
+ b=HZni6PcHfDn/lY43CAf/qop/u+vjY4wSsxdukvCwc1gsrJKBUGJzqtiMLA1PdW0WC1lSHAjzNvU4CPoxdvk2v5zLrHFeplqwYb83KCHdx0jF8gja3xlvNHSrUUa47urygtzEjpQWC2Obamg6Hf6eagGH6E2vdcse5qqU5TUImDA=
+Received: from BN0PR02CA0052.namprd02.prod.outlook.com (2603:10b6:408:e5::27)
+ by DM6PR02MB6282.namprd02.prod.outlook.com (2603:10b6:5:1fe::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.23; Mon, 29 Nov
+ 2021 07:02:23 +0000
+Received: from BN1NAM02FT051.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:408:e5:cafe::f4) by BN0PR02CA0052.outlook.office365.com
+ (2603:10b6:408:e5::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.22 via Frontend
+ Transport; Mon, 29 Nov 2021 07:02:23 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ BN1NAM02FT051.mail.protection.outlook.com (10.13.2.159) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4734.20 via Frontend Transport; Mon, 29 Nov 2021 07:02:23 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Sun, 28 Nov 2021 23:02:23 -0800
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Sun, 28 Nov 2021 23:02:23 -0800
+Envelope-to: gregkh@linuxfoundation.org,
+ zou_wei@huawei.com,
+ linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+Received: from [172.19.2.91] (port=33638 helo=xsjjollys50.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <abhyuday.godhasara@xilinx.com>)
+        id 1mragB-000GZ4-9z; Sun, 28 Nov 2021 23:02:23 -0800
+From:   Abhyuday Godhasara <abhyuday.godhasara@xilinx.com>
+To:     <gregkh@linuxfoundation.org>
+CC:     <michal.simek@xilinx.com>, <abhyuday.godhasara@xilinx.com>,
+        <rajan.vaja@xilinx.com>, <manish.narani@xilinx.com>,
+        <zou_wei@huawei.com>, <lakshmi.sai.krishna.potthuri@xilinx.com>,
+        <jliang@xilinx.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v8 0/3] Add Xilinx Event Management Driver
+Date:   Sun, 28 Nov 2021 23:02:13 -0800
+Message-ID: <20211129070216.30253-1-abhyuday.godhasara@xilinx.com>
+X-Mailer: git-send-email 2.32.0.93.g670b81a
+In-Reply-To: <YZUcAch7lVZ32/+t@kroah.com>
+References: <YZUcAch7lVZ32/+t@kroah.com>
 MIME-Version: 1.0
-References: <0000000000003544c405c8a3026a@google.com> <20211128030309.1897-1-hdanton@sina.com>
-In-Reply-To: <20211128030309.1897-1-hdanton@sina.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 29 Nov 2021 07:59:47 +0100
-Message-ID: <CACT4Y+YXg=rRmCsM3i0ES_dXhFGdnS7LLwtX3YmRLjjr0haCOA@mail.gmail.com>
-Subject: Re: [syzbot] INFO: rcu detected stall in newstat
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     syzbot <syzbot+84ef57449019b1be878d@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rajatasthana4@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c8e2cb6e-d97c-4907-4b38-08d9b30631ec
+X-MS-TrafficTypeDiagnostic: DM6PR02MB6282:
+X-Microsoft-Antispam-PRVS: <DM6PR02MB62826A0E337940DA57A5F417A1669@DM6PR02MB6282.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:1824;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3V+KzElWx/o7cXwYEK2gEER6AHvUUK7qDWR4X28CNZtdnvnzCYv2ieyfLDG16/utvZsAWPSy1LkdqJ7HEpsupnVcU/VTftfxoeYywQue7QvWqz+VMd6jEzD6YqWl9ZoDwYd2U9bCPfvBN5WHG7GxnYajIALf7HVeD4tNpJ9TEHXt5HXr8WGB9R1APSoKrg11jUUMpZ0vxx+XAeiPYIaCNd1VbxUNiTvO2IitUs3BKNC6lMW080hil8S4CSPfnpzkJ9JIqiiaRAOyfDKBdJUd2yvAyXiezmHiboKTHpgW+n/bNFd58nIQ38dAFCQ2C0nGSqoLX99bCoghZlTn+JhKnMai0EuLc7Zdcr189FT7KhU+P5RQzC+QIBz8RxYeKB9m2np2vRqUvnjvSkNADjRQI0G4UlwdR66rmH7HVDWD2KKIxydzLgfzb74ZJ8pDQcnygN1Ax6tw1H0khsXlvow6g4fZ7AHlyVs9vibbUD5bvY6amk6w1PEUFE4Xpk3S7JIGDTnIVBriHw5GZJWovkBc4vRnrr8QD6fOo6Elx2ZJ7MM3OeUFq6xV8LlqWAZhGCrF4FR95obV7/SpbngVxd3ZcwIyy7QrRGmYmiQzT5CHuQ1RPy2lj5vsZ4XEDNyTUr04q3aA2x+cFdxfxJ6o8CAz+I4CAkmMZkHWkgmhMbr0ABbEXbvkZ8v2WZiH9dnXO82XVQxbp+iutlmR4S6Fna0hBQfpHz9NVX8LgfOlO8EWc9U=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(36840700001)(46966006)(47076005)(186003)(54906003)(508600001)(26005)(36756003)(426003)(336012)(36860700001)(9786002)(44832011)(2616005)(83380400001)(82310400004)(70586007)(8936002)(70206006)(1076003)(356005)(2906002)(6666004)(6916009)(4326008)(7696005)(5660300002)(8676002)(316002)(7636003)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2021 07:02:23.6801
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c8e2cb6e-d97c-4907-4b38-08d9b30631ec
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN1NAM02FT051.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB6282
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 28 Nov 2021 at 04:03, Hillf Danton <hdanton@sina.com> wrote:
->
-> On  Tue, 03 Aug 2021 00:55:25 -0700
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    7e96bf476270 Merge tag 'for-linus' of git://git.kernel.org..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=111d1e2a300000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=1dee114394f7d2c2
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=84ef57449019b1be878d
-> > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12f2aac9d00000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15470c66300000
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+84ef57449019b1be878d@syzkaller.appspotmail.com
-> >
-> > mceusb 2-1:0.0: Error: urb status = -71
-> > mceusb 5-1:0.0: Error: urb status = -71
-> > mceusb 2-1:0.0: Error: urb status = -71
-> > mceusb 5-1:0.0: Error: urb status = -71
-> > mceusb 2-1:0.0: Error: urb status = -71
-> > rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-> >       (detected by 1, t=10502 jiffies, g=13449, q=1758)
-> > rcu: All QSes seen, last rcu_preempt kthread activity 6502 (4295042261-4295035759), jiffies_till_next_fqs=1, root ->qsmask 0x0
-> > rcu: rcu_preempt kthread starved for 6502 jiffies! g13449 f0x2 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=0
-> > rcu:  Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-> > rcu: RCU grace-period kthread stack dump:
-> > task:rcu_preempt     state:R  running task     stack:29096 pid:   14 ppid:     2 flags:0x00004000
-> > Call Trace:
-> >  context_switch kernel/sched/core.c:4683 [inline]
-> >  __schedule+0x93a/0x26f0 kernel/sched/core.c:5940
-> >  schedule+0xd3/0x270 kernel/sched/core.c:6019
-> >  schedule_timeout+0x14a/0x2a0 kernel/time/timer.c:1879
-> >  rcu_gp_fqs_loop kernel/rcu/tree.c:1996 [inline]
-> >  rcu_gp_kthread+0xd34/0x1980 kernel/rcu/tree.c:2169
-> >  kthread+0x3e5/0x4d0 kernel/kthread.c:319
-> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-> > rcu: Stack dump where RCU GP kthread last ran:
-> > Sending NMI from CPU 1 to CPUs 0:
-> > NMI backtrace for cpu 0
-> > CPU: 0 PID: 8589 Comm: systemd-udevd Not tainted 5.14.0-rc3-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > RIP: 0010:halt arch/x86/include/asm/irqflags.h:99 [inline]
-> > RIP: 0010:kvm_wait+0xbb/0xf0 arch/x86/kernel/kvm.c:883
-> > Code: 5b d9 47 00 8b 74 24 0c 48 8b 3c 24 eb 82 e8 6c de 47 00 eb 07 0f 00 2d c3 d3 55 08 fb f4 eb 9b eb 07 0f 00 2d b6 d3 55 08 f4 <eb> c5 89 74 24 0c 48 89 3c 24 e8 36 74 87 00 8b 74 24 0c 48 8b 3c
-> > RSP: 0018:ffffc90001b87660 EFLAGS: 00000046
-> > RAX: 0000000000000003 RBX: 0000000000000000 RCX: dffffc0000000000
-> > RDX: 0000000000000000 RSI: 0000000000000003 RDI: ffffffff8b981e40
-> > RBP: ffffffff8b981e40 R08: 0000000000000001 R09: ffffffff8b981e40
-> > R10: fffffbfff17303c8 R11: 0000000000000001 R12: 0000000000000000
-> > R13: fffffbfff17303c8 R14: 0000000000000001 R15: ffff8880b9c52980
-> > FS:  00007f48df6fe8c0(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00007fff47502b08 CR3: 00000000141f0000 CR4: 00000000001506f0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > Call Trace:
-> >  pv_wait arch/x86/include/asm/paravirt.h:597 [inline]
-> >  pv_wait_head_or_lock kernel/locking/qspinlock_paravirt.h:470 [inline]
-> >  __pv_queued_spin_lock_slowpath+0x8b8/0xb40 kernel/locking/qspinlock.c:508
-> >  pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:585 [inline]
-> >  queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
-> >  queued_spin_lock include/asm-generic/qspinlock.h:85 [inline]
-> >  do_raw_spin_lock+0x200/0x2b0 kernel/locking/spinlock_debug.c:113
-> >  rcu_note_context_switch+0x294/0x16e0 kernel/rcu/tree_plugin.h:355
-> >  __schedule+0x21f/0x26f0 kernel/sched/core.c:5837
-> >  preempt_schedule_irq+0x4e/0x90 kernel/sched/core.c:6328
-> >  irqentry_exit+0x31/0x80 kernel/entry/common.c:427
-> >  asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-> > RIP: 0010:__sanitizer_cov_trace_const_cmp1+0x77/0x80 kernel/kcov.c:272
-> > Code: f0 72 27 41 0f b6 fb 41 0f b6 c9 48 83 c2 01 48 c7 44 30 e0 01 00 00 00 48 89 7c 30 e8 48 89 4c 30 f0 4c 89 54 d8 20 48 89 10 <5b> c3 0f 1f 80 00 00 00 00 53 41 89 fb 41 89 f1 bf 03 00 00 00 65
-> > RSP: 0018:ffffc90001b87a18 EFLAGS: 00000246
-> > RAX: 0000000000000000 RBX: 0000000000000075 RCX: ffff8880361be2c0
-> > RDX: 0000000000000000 RSI: ffff8880361be2c0 RDI: 0000000000000003
-> > RBP: 000000031dee9eb7 R08: 0000000000000000 R09: 0000000000000075
-> > R10: ffffffff81c97ccd R11: 0000000000000000 R12: ffffc90001b87bec
-> > R13: e2f55236f51925a6 R14: ffffc90001b87bb0 R15: ffff8880342d0825
-> >  link_path_walk.part.0+0x73d/0xd00 fs/namei.c:2272
-> >  link_path_walk fs/namei.c:2210 [inline]
-> >  path_lookupat+0xc8/0x860 fs/namei.c:2437
-> >  filename_lookup+0x1c6/0x5b0 fs/namei.c:2467
-> >  user_path_at include/linux/namei.h:57 [inline]
-> >  vfs_statx+0x142/0x390 fs/stat.c:203
-> >  vfs_fstatat fs/stat.c:225 [inline]
-> >  vfs_stat include/linux/fs.h:3382 [inline]
-> >  __do_sys_newstat+0x91/0x110 fs/stat.c:367
-> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> >  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > RIP: 0033:0x7f48de570295
-> > Code: 00 00 00 e8 5d 01 00 00 48 83 c4 18 c3 0f 1f 84 00 00 00 00 00 83 ff 01 48 89 f0 77 30 48 89 c7 48 89 d6 b8 04 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 03 f3 c3 90 48 8b 15 d1 db 2b 00 f7 d8 64 89
-> > RSP: 002b:00007fff47503388 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
-> > RAX: ffffffffffffffda RBX: 0000559e49eea790 RCX: 00007f48de570295
-> > RDX: 00007fff47503390 RSI: 00007fff47503390 RDI: 00007fff47503440
-> > RBP: 00007fff475034b0 R08: 000000000000c0c0 R09: 0000000000000000
-> > R10: 00007fff475034c0 R11: 0000000000000246 R12: 00007fff475034c0
-> > R13: 0000000000000001 R14: 0000559e49ed7a40 R15: 000000000000000e
-> >
-> > ================================
-> > WARNING: inconsistent lock state
-> > 5.14.0-rc3-syzkaller #0 Not tainted
-> > --------------------------------
-> > inconsistent {IN-HARDIRQ-W} -> {HARDIRQ-ON-W} usage.
-> > ksoftirqd/1/19 [HC0[0]:SC1[1]:HE0:SE0] takes:
-> > ffffffff8b981e58 (rcu_node_0){?.-.}-{2:2}, at: print_other_cpu_stall kernel/rcu/tree_stall.h:543 [inline]
-> > ffffffff8b981e58 (rcu_node_0){?.-.}-{2:2}, at: check_cpu_stall kernel/rcu/tree_stall.h:709 [inline]
-> > ffffffff8b981e58 (rcu_node_0){?.-.}-{2:2}, at: rcu_pending kernel/rcu/tree.c:3922 [inline]
-> > ffffffff8b981e58 (rcu_node_0){?.-.}-{2:2}, at: rcu_sched_clock_irq+0xc9a/0x20c0 kernel/rcu/tree.c:2641
-> > {IN-HARDIRQ-W} state was registered at:
-> >   lock_acquire kernel/locking/lockdep.c:5625 [inline]
-> >   lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
-> >   __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-> >   _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
-> >   rcu_report_exp_cpu_mult+0x1c/0x280 kernel/rcu/tree_exp.h:237
-> >   flush_smp_call_function_queue+0x34b/0x640 kernel/smp.c:663
-> >   __sysvec_call_function_single+0x95/0x3d0 arch/x86/kernel/smp.c:248
-> >   sysvec_call_function_single+0x8e/0xc0 arch/x86/kernel/smp.c:243
-> >   asm_sysvec_call_function_single+0x12/0x20 arch/x86/include/asm/idtentry.h:646
-> >   lock_acquire+0x1ef/0x510 kernel/locking/lockdep.c:5593
-> >   down_write_killable+0x95/0x170 kernel/locking/rwsem.c:1417
-> >   mmap_write_lock_killable include/linux/mmap_lock.h:87 [inline]
-> >   __bprm_mm_init fs/exec.c:257 [inline]
-> >   bprm_mm_init fs/exec.c:376 [inline]
-> >   alloc_bprm+0x3be/0x8f0 fs/exec.c:1521
-> >   kernel_execve+0x55/0x460 fs/exec.c:1941
-> >   call_usermodehelper_exec_async+0x2e3/0x580 kernel/umh.c:112
-> >   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-> > irq event stamp: 428515
-> > hardirqs last  enabled at (428514): [<ffffffff892ce380>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
-> > hardirqs last  enabled at (428514): [<ffffffff892ce380>] _raw_spin_unlock_irqrestore+0x50/0x70 kernel/locking/spinlock.c:191
-> > hardirqs last disabled at (428515): [<ffffffff892a264b>] sysvec_apic_timer_interrupt+0xb/0xc0 arch/x86/kernel/apic/apic.c:1100
-> > softirqs last  enabled at (392664): [<ffffffff81456d5d>] run_ksoftirqd kernel/softirq.c:920 [inline]
-> > softirqs last  enabled at (392664): [<ffffffff81456d5d>] run_ksoftirqd+0x2d/0x60 kernel/softirq.c:912
-> > softirqs last disabled at (392669): [<ffffffff81456d5d>] run_ksoftirqd kernel/softirq.c:920 [inline]
-> > softirqs last disabled at (392669): [<ffffffff81456d5d>] run_ksoftirqd+0x2d/0x60 kernel/softirq.c:912
-> >
-> > other info that might help us debug this:
-> >  Possible unsafe locking scenario:
-> >
-> >        CPU0
-> >        ----
-> >   lock(rcu_node_0);
-> >   <Interrupt>
-> >     lock(rcu_node_0);
-> >
-> >  *** DEADLOCK ***
-> >
-> > 2 locks held by ksoftirqd/1/19:
-> >  #0: ffffc90000fafc58 ((&dum_hcd->timer)){+.-.}-{0:0}, at: lockdep_copy_map include/linux/lockdep.h:35 [inline]
-> >  #0: ffffc90000fafc58 ((&dum_hcd->timer)){+.-.}-{0:0}, at: call_timer_fn+0xd5/0x6b0 kernel/time/timer.c:1409
-> >  #1: ffffffff8b981e58 (rcu_node_0){?.-.}-{2:2}, at: print_other_cpu_stall kernel/rcu/tree_stall.h:543 [inline]
-> >  #1: ffffffff8b981e58 (rcu_node_0){?.-.}-{2:2}, at: check_cpu_stall kernel/rcu/tree_stall.h:709 [inline]
-> >  #1: ffffffff8b981e58 (rcu_node_0){?.-.}-{2:2}, at: rcu_pending kernel/rcu/tree.c:3922 [inline]
-> >  #1: ffffffff8b981e58 (rcu_node_0){?.-.}-{2:2}, at: rcu_sched_clock_irq+0xc9a/0x20c0 kernel/rcu/tree.c:2641
-> >
-> > stack backtrace:
-> > CPU: 1 PID: 19 Comm: ksoftirqd/1 Not tainted 5.14.0-rc3-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > Call Trace:
-> >  __dump_stack lib/dump_stack.c:88 [inline]
-> >  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
-> >  print_usage_bug kernel/locking/lockdep.c:203 [inline]
-> >  valid_state kernel/locking/lockdep.c:3933 [inline]
-> >  mark_lock_irq kernel/locking/lockdep.c:4136 [inline]
-> >  mark_lock.cold+0x61/0x8e kernel/locking/lockdep.c:4593
-> >  mark_held_locks+0x9f/0xe0 kernel/locking/lockdep.c:4194
-> >  __trace_hardirqs_on_caller kernel/locking/lockdep.c:4212 [inline]
-> >  lockdep_hardirqs_on_prepare kernel/locking/lockdep.c:4280 [inline]
-> >  lockdep_hardirqs_on_prepare+0x135/0x400 kernel/locking/lockdep.c:4232
-> >  trace_hardirqs_on+0x5b/0x1c0 kernel/trace/trace_preemptirq.c:49
-> >  asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-> > RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:161 [inline]
-> > RIP: 0010:_raw_spin_unlock_irqrestore+0x38/0x70 kernel/locking/spinlock.c:191
-> > Code: 74 24 10 e8 5a 65 2d f8 48 89 ef e8 02 db 2d f8 81 e3 00 02 00 00 75 25 9c 58 f6 c4 02 75 2d 48 85 db 74 01 fb bf 01 00 00 00 <e8> 43 b5 21 f8 65 8b 05 4c 0c d5 76 85 c0 74 0a 5b 5d c3 e8 e0 10
-> > RSP: 0018:ffffc90000faf9f0 EFLAGS: 00000206
-> > RAX: 0000000000000006 RBX: 0000000000000200 RCX: 1ffffffff1fa5092
-> > RDX: 0000000000000000 RSI: 0000000000000101 RDI: 0000000000000001
-> > RBP: ffff888021db8000 R08: 0000000000000001 R09: ffffffff8fcd9977
-> > R10: 0000000000000001 R11: 0000000000000000 R12: ffff888146dbe440
-> > R13: ffff888016ba9600 R14: dffffc0000000000 R15: ffff8880242d7900
-> >  spin_unlock_irqrestore include/linux/spinlock.h:409 [inline]
-> >  dummy_timer+0x12f6/0x32b0 drivers/usb/gadget/udc/dummy_hcd.c:2001
-> >  call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1419
-> >  expire_timers kernel/time/timer.c:1464 [inline]
-> >  __run_timers.part.0+0x675/0xa50 kernel/time/timer.c:1732
-> >  __run_timers kernel/time/timer.c:1713 [inline]
-> >  run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1745
-> >  __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
-> >  run_ksoftirqd kernel/softirq.c:920 [inline]
-> >  run_ksoftirqd+0x2d/0x60 kernel/softirq.c:912
-> >  smpboot_thread_fn+0x645/0x9c0 kernel/smpboot.c:164
-> >  kthread+0x3e5/0x4d0 kernel/kthread.c:319
-> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-> > ------------[ cut here ]------------
-> > timer: dummy_timer+0x0/0x32b0 include/linux/list.h:112 preempt leak: 00000100 -> 00000101
-> > WARNING: CPU: 1 PID: 19 at kernel/time/timer.c:1425 call_timer_fn+0x664/0x6b0 kernel/time/timer.c:1425
->
-> Any light on how the dummy timer can trigger the warning is highly
-> appreciated.
->
-> Hillf
+This Linux driver provides support to subscribe error/event notification
+and receive notification from firmware for error/event and forward event
+notification to subscribed driver via registered callback.
 
-Hi Hillf,
+All types of events like power and error will be handled from single place
+as part of event management driver.
 
-syzbot says it's already fixed:
-https://lore.kernel.org/lkml/0000000000006c5f7705d1c84b93@google.com/
+Changes in v8:
+- Rebase on latest tree.
 
-The log was full of:
+Changes in v7:
+- Update the cover letter and version history.
 
-mceusb 2-1:0.0: Error: urb status = -71
-mceusb 5-1:0.0: Error: urb status = -71
-mceusb 2-1:0.0: Error: urb status = -71
-mceusb 5-1:0.0: Error: urb status = -71
-mceusb 2-1:0.0: Error: urb status = -71
+Changes in v6:
+- Fix compilation issue that come due to force merge during rebase.
 
-The fix is in mceusb, so I think it all lines up well. I guess an urb
-is resubmitted in an infinite loop or something similar.
+Changes in v5:
+- None.
 
-#syz fix:
-media: mceusb: return without resubmitting URB in case of -EPROTO error.
+Changes in v4:
+- Rebase on latest tree.
 
+Changes in v3:
+- Update the commit message.
 
-> > Modules linked in:
-> > CPU: 1 PID: 19 Comm: ksoftirqd/1 Not tainted 5.14.0-rc3-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > RIP: 0010:call_timer_fn+0x664/0x6b0 kernel/time/timer.c:1425
-> > Code: e8 41 ae 10 00 89 da 4c 89 f6 48 c7 c7 a0 9d 8d 89 65 8b 0d 1e cd 9d 7e 81 e1 ff ff ff 7f c6 05 b0 ae f3 0b 01 e8 b7 b8 83 07 <0f> 0b e9 f4 fb ff ff e8 10 ae 10 00 0f 0b e9 6f fd ff ff e8 04 ae
-> > RSP: 0018:ffffc90000fafc20 EFLAGS: 00010286
-> > RAX: 0000000000000000 RBX: 0000000000000100 RCX: 0000000000000000
-> > RDX: ffff888011e54140 RSI: ffffffff815cad15 RDI: fffff520001f5f76
-> > RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> > R10: ffffffff815c4b1e R11: 0000000000000000 R12: 0000000000000000
-> > R13: 1ffff920001f5f85 R14: ffffffff859db710 R15: 0000000000000000
-> > FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00007fb590071168 CR3: 000000001842b000 CR4: 00000000001506e0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > Call Trace:
-> >  expire_timers kernel/time/timer.c:1464 [inline]
-> >  __run_timers.part.0+0x675/0xa50 kernel/time/timer.c:1732
-> >  __run_timers kernel/time/timer.c:1713 [inline]
-> >  run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1745
-> >  __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
-> >  run_ksoftirqd kernel/softirq.c:920 [inline]
-> >  run_ksoftirqd+0x2d/0x60 kernel/softirq.c:912
-> >  smpboot_thread_fn+0x645/0x9c0 kernel/smpboot.c:164
-> >  kthread+0x3e5/0x4d0 kernel/kthread.c:319
-> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/20211128030309.1897-1-hdanton%40sina.com.
+Changes in v2:
+- Removed updated copyright year from unchanged files.
+- make sgi_num as module parameter for event management driver.
+- Use same object for error detection and printing.
+
+Acked-by: Michal Simek <michal.simek@xilinx.com>
+
+Abhyuday Godhasara (3):
+  drivers: soc: xilinx: add xilinx event management driver
+  firmware: xilinx: instantiate xilinx event manager driver
+  driver: soc: xilinx: register for power events in zynqmp power driver
+
+ MAINTAINERS                                 |   6 +
+ drivers/firmware/xilinx/zynqmp.c            |  14 +
+ drivers/soc/xilinx/Kconfig                  |  10 +
+ drivers/soc/xilinx/Makefile                 |   1 +
+ drivers/soc/xilinx/xlnx_event_manager.c     | 600 ++++++++++++++++++++
+ drivers/soc/xilinx/zynqmp_power.c           |  48 +-
+ include/linux/firmware/xlnx-event-manager.h |  36 ++
+ include/linux/firmware/xlnx-zynqmp.h        |   2 +
+ 8 files changed, 716 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/soc/xilinx/xlnx_event_manager.c
+ create mode 100644 include/linux/firmware/xlnx-event-manager.h
+
+-- 
+2.32.0.93.g670b81a
+
