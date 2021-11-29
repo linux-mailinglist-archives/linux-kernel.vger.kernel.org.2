@@ -2,96 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4262A460B90
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 01:23:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 256A2460B94
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 01:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376523AbhK2A0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 19:26:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344051AbhK2AYN (ORCPT
+        id S1376559AbhK2A0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 19:26:24 -0500
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:33450 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347452AbhK2AYW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 19:24:13 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE35C06175A
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 16:20:56 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id 132so20972701qkj.11
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 16:20:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BCgXLgppxFx/+yBAvu+NIds6u6sh50A8uraUotdl8hw=;
-        b=dm/PmPeohFP+EK9dFQ+1/yxwAuq8o/L5f+U/BrlHrevero4Zud15jVH/1GURrBPysW
-         y6bwnByusfQ9D6P3UqmSi2kzb87TiW8eUX+7qIEPL3uedzGl0C4dvD0G27BoIzODdS39
-         59Gkq7+VtHVpiR6YdV+Dsw4KHl9KUCin65MbpvkYIurgVY7rDEQDtgzOIGVVzzmUo810
-         EptBCqdiUgkkf5L0OmbzpcLxDSm7EeRxJIh80XXX1JtkKe1qudVu4LCuvWQyuOiIVeDo
-         Z67I/zRvBcqZ/MnzYxdOHtXpcsTKmzD/Dy/smddCIem6P6EQo5Ct5eA2/oelXrJw8Mr0
-         VWaw==
+        Sun, 28 Nov 2021 19:24:22 -0500
+Received: by mail-ot1-f43.google.com with SMTP id 35-20020a9d08a6000000b00579cd5e605eso23226026otf.0;
+        Sun, 28 Nov 2021 16:21:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BCgXLgppxFx/+yBAvu+NIds6u6sh50A8uraUotdl8hw=;
-        b=X/wzm269DAAmPmN7SXAQWusWhJ4zYkyu73Jw/DxKG4NYFfCe2StlhehMl0IuEORfcK
-         5LifByy+AshXSVNf16r6nUy5Oxz8wcTCVtVlyvb83914EelPe8kUxKWD02QFonQv5fEy
-         go+T7DF/4Rj+7qTpOkrYHtFZ6IRqOtPhl4zA8gNgn6ozirteQPSf9oUiiwYAwVM+jbhh
-         6VkrjiAGZeRL3ErQG2pTmgWjXRihLeAjVRvZqEnFCQS1UMqQEzrU7HL+VRcRQxXZVJpU
-         jWPKJXkASOHWhmlFBabGFVPY5yMWbJtQ1JpV1EEdMlthwYlld1Y5Xw/c9Tr5yOOI6Dmb
-         naxw==
-X-Gm-Message-State: AOAM5320U0rxztT6V5Dj8xYjBcb4u2oBPdiyWGt9HvaZ8GSCeIRSwXxy
-        nxcPoG4JPriaMZN7AfoeNOf0pQ==
-X-Google-Smtp-Source: ABdhPJzopBkJkxAnz5/2xSMBFyHFNb1CfIOvA81OkPa0b+x7z11KHtZH//Un1OnnFA4bF4Q/EEatkQ==
-X-Received: by 2002:a05:620a:ec2:: with SMTP id x2mr33234378qkm.400.1638145255992;
-        Sun, 28 Nov 2021 16:20:55 -0800 (PST)
-Received: from localhost.localdomain (3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16::3])
-        by smtp.gmail.com with ESMTPSA id n74sm5681022qkn.83.2021.11.28.16.20.54
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jFihDUcfKe3tbkzkBwFzBaLZw10RQ1vQ6L3GlSqJBEQ=;
+        b=tKI3f8/qOKMBlhR43gxLqJ6HZjIudfNMx33AF2UY8ytQRjNWBIglAJW5e0PhRQ0t9d
+         ukMMIOKn/xx+f2BWvA1d5WjugOvW/C5HmOlFpFwTS6iMvqyGuPudZKVu19MFh2a8czCL
+         mxQVxM1579tz93LMmIqRrG+25jvphTeJOEc+J0kL5yWlcOlggoutOf9qPEBLmRCmgZ9f
+         BGc+S2Fxsv8EJR76ZEjea+pTflRJ0tBfj0w0McRw4bmheisTBx2Cf6Jqkov8w3tGj3CE
+         JndRQRYNF1VKyMRiyR/8D0m8BWOnqzgSbrCiZg15n75ibKW/RDUYCDUNC3kf1Piq+if3
+         LE2g==
+X-Gm-Message-State: AOAM530I1dZt6vEgnpnNq3CZjPIinI3v8NezdkMdZDoTmFFufCuocmtO
+        zeKBizQlXS72YnoAGxBJvA==
+X-Google-Smtp-Source: ABdhPJwYjKHDjVIegEOQV55jA7l4/9WTjF6keTH5n1iSKGRRzxX7i0fjyfHVmkuIsJ7CsEIZEO9Ahw==
+X-Received: by 2002:a05:6830:1154:: with SMTP id x20mr42304686otq.205.1638145264911;
+        Sun, 28 Nov 2021 16:21:04 -0800 (PST)
+Received: from robh.at.kernel.org ([172.58.99.242])
+        by smtp.gmail.com with ESMTPSA id f18sm2373686otl.28.2021.11.28.16.21.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 16:20:55 -0800 (PST)
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, straube.linux@gmail.com,
-        martin@kaiser.cx, linux-staging@lists.linux.dev,
+        Sun, 28 Nov 2021 16:21:04 -0800 (PST)
+Received: (nullmailer pid 2877730 invoked by uid 1000);
+        Mon, 29 Nov 2021 00:21:01 -0000
+Date:   Sun, 28 Nov 2021 18:21:01 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     devicetree@vger.kernel.org, todor.too@gmail.com,
+        linux-media@vger.kernel.org, mchehab@kernel.org,
+        bjorn.andersson@linaro.org, Stephan Gerhold <stephan@gerhold.net>,
+        agross@kernel.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        angelogioacchino.delregno@somainline.org,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 7/7] staging: r8188eu: remove DBG_88E_LEVEL macro from include/rtw_debug.h
-Date:   Mon, 29 Nov 2021 00:20:41 +0000
-Message-Id: <20211129002041.865-8-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211129002041.865-1-phil@philpotter.co.uk>
-References: <20211129002041.865-1-phil@philpotter.co.uk>
+Subject: Re: [PATCH v3 2/4] media: dt-bindings: media: camss: Remove
+ clock-lane property
+Message-ID: <YaQc7cf2vHhlNAy0@robh.at.kernel.org>
+References: <20211118124819.1902427-1-robert.foss@linaro.org>
+ <20211118124819.1902427-3-robert.foss@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211118124819.1902427-3-robert.foss@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the DBG_88E_LEVEL macro definition from include/rtw_debug.h, as
-it has no callers and is surplus to requirements. This is motivated by
-ongoing efforts to remove all non-standard debugging code from the
-driver.
+On Thu, 18 Nov 2021 13:48:17 +0100, Robert Foss wrote:
+> The clock-lanes property is not programmable by the hardware,
+> and as such it should not be exposed in the dt-binding.
+> 
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> ---
+>  .../bindings/media/qcom,msm8916-camss.yaml    | 10 ----------
+>  .../bindings/media/qcom,msm8996-camss.yaml    | 20 -------------------
+>  .../bindings/media/qcom,sdm660-camss.yaml     | 20 -------------------
+>  .../bindings/media/qcom,sdm845-camss.yaml     | 17 ----------------
+>  4 files changed, 67 deletions(-)
+> 
 
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
----
- drivers/staging/r8188eu/include/rtw_debug.h | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/drivers/staging/r8188eu/include/rtw_debug.h b/drivers/staging/r8188eu/include/rtw_debug.h
-index 39b69b9ad0a3..311051757715 100644
---- a/drivers/staging/r8188eu/include/rtw_debug.h
-+++ b/drivers/staging/r8188eu/include/rtw_debug.h
-@@ -54,12 +54,6 @@
- 
- extern u32 GlobalDebugLevel;
- 
--#define DBG_88E_LEVEL(_level, fmt, arg...)				\
--	do {								\
--		if (_level <= GlobalDebugLevel)				\
--			pr_info(DRIVER_PREFIX"INFO " fmt, ##arg);	\
--	} while (0)
--
- #define DBG_88E(...)							\
- 	do {								\
- 		if (_drv_err_ <= GlobalDebugLevel)			\
--- 
-2.33.1
-
+Reviewed-by: Rob Herring <robh@kernel.org>
