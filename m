@@ -2,173 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D714F460C5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 02:42:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 525DC460C6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 02:48:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234569AbhK2Bpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 20:45:52 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:27307 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236804AbhK2Bnv (ORCPT
+        id S236815AbhK2Bvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 20:51:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237693AbhK2Btk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 20:43:51 -0500
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4J2Sj71rd9zbj2N;
-        Mon, 29 Nov 2021 09:40:27 +0800 (CST)
-Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Mon, 29 Nov 2021 09:40:32 +0800
-Received: from [10.67.102.185] (10.67.102.185) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Mon, 29 Nov 2021 09:40:31 +0800
-Subject: Re: [PATCH v4 2/2] arm64: kprobe: Enable OPTPROBE for arm64
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-CC:     Mark Rutland <mark.rutland@arm.com>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <naveen.n.rao@linux.ibm.com>,
-        <anil.s.keshavamurthy@intel.com>, <davem@davemloft.net>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <song.bao.hua@hisilicon.com>, <prime.zeng@hisilicon.com>,
-        <robin.murphy@arm.com>, <f.fangjian@huawei.com>,
-        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
-References: <20210818073336.59678-1-liuqi115@huawei.com>
- <20210818073336.59678-3-liuqi115@huawei.com>
- <20210824105001.GA96738@C02TD0UTHF1T.local>
- <aebcfbcb-eded-ff48-9d1f-2a93539575ca@huawei.com>
- <20211127212302.f71345c34e5a62e5e779adb2@kernel.org>
-From:   "liuqi (BA)" <liuqi115@huawei.com>
-Message-ID: <4998f219-eb47-a07c-b3ed-c2ae46a77230@huawei.com>
-Date:   Mon, 29 Nov 2021 09:40:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20211127212302.f71345c34e5a62e5e779adb2@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
+        Sun, 28 Nov 2021 20:49:40 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C72FBC0613E1;
+        Sun, 28 Nov 2021 17:43:17 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 73021611BC;
+        Mon, 29 Nov 2021 01:43:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27538C53FCB;
+        Mon, 29 Nov 2021 01:43:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638150195;
+        bh=8nkkrdNGnlQP+jlb/Ix2bh90sJUCsjqkLdWqK4kVdXQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ozhPw+SLCFsu6IKNg4BFhaADNqJ5RR6PR5QQUA+0lhXOaNy0QIUCCs4YVDnIkopeO
+         c3zmS/ZtpZqA6ly+41yYediSnvGk3dnHn9+xNpDN41zve+4OdGtz78oR+eonesIhH4
+         F3gBddTOmyUo59ne0exzOlO3K18qW/A7QgRjANmzLFbqSDjfIg8c589AZ6zHehMbBo
+         C1fG4pN0i6xrcEN0uAJ/iDCpB4qocZVjSb0xkhiNBzuPdHEm5ndLJ8Ut9nTWCXSW8k
+         cNiBnCNpWcerykqFdbQC+rF/2MOKv892AZVCCGA0zQfT57Dkdj4tXcQu/T5E4fjOHA
+         sguxglhDA9fsw==
+Date:   Mon, 29 Nov 2021 10:43:09 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Steven Rostedt <rostedt@goodmis.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>
+Subject: Re: [PATCH 1/8] perf/kprobe: Add support to create multiple probes
+Message-Id: <20211129104309.35b5cf2aa7108b0811470b3e@kernel.org>
+In-Reply-To: <YaQD5d7Uc6GCvNbe@krava>
+References: <20211124084119.260239-1-jolsa@kernel.org>
+        <20211124084119.260239-2-jolsa@kernel.org>
+        <20211128224954.11e8ac2a2ff1f45354c4a161@kernel.org>
+        <YaQD5d7Uc6GCvNbe@krava>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.185]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 28 Nov 2021 23:34:13 +0100
+Jiri Olsa <jolsa@redhat.com> wrote:
+> 
+> > > +		if (!tk_old) {
+> > > +			ret = -EINVAL;
+> > > +			goto error;
+> > > +		}
+> > > +
+> > > +		/* Append to existing event */
+> > > +		ret = trace_probe_append(&tk->tp, &tk_old->tp);
+> > > +		if (ret)
+> > > +			goto error;
+> > > +
+> > > +		/* Register k*probe */
+> > > +		ret = __register_trace_kprobe(tk);
+> > > +		if (ret)
+> > > +			goto error;
+> > 
+> > If "appended" probe failed to register, it must be "unlinked" from
+> > the first one and goto error to free the trace_kprobe.
+> > 
+> > 	if (ret) {
+> > 		trace_probe_unlink(&tk->tp);
+> > 		goto error;
+> > 	}
+> > 
+> > See append_trace_kprobe() for details.
+> 
+> so there's goto error jumping to:
+> 
+> error:
+> 	free_trace_kprobe(tk);
+> 
+> that calls:
+> 	trace_probe_cleanup
+> 	  -> trace_probe_unlink
+> 
+> that should do it, right?
+
+Ah, OK. Clean up all the kprobe events in this function. Then it's good. 
+
+> 
+> > 
+> > > +
+> > > +		return trace_probe_event_call(&tk->tp);
+> > > +	}
+> > > +
+> > >  	init_trace_event_call(tk);
+> > >  
+> > >  	ptype = trace_kprobe_is_return(tk) ?
+> > > @@ -1841,6 +1868,8 @@ create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
+> > >  
+> > >  void destroy_local_trace_kprobe(struct trace_event_call *event_call)
+> > >  {
+> > > +	struct trace_probe_event *event;
+> > > +	struct trace_probe *pos, *tmp;
+> > >  	struct trace_kprobe *tk;
+> > >  
+> > >  	tk = trace_kprobe_primary_from_call(event_call);
+> > > @@ -1852,9 +1881,15 @@ void destroy_local_trace_kprobe(struct trace_event_call *event_call)
+> > >  		return;
+> > >  	}
+> > >  
+> > > -	__unregister_trace_kprobe(tk);
+> > > +	event = tk->tp.event;
+> > > +	list_for_each_entry_safe(pos, tmp, &event->probes, list) {
+> > > +		list_for_each_entry_safe(pos, tmp, &event->probes, list) {
+> > > +		list_del_init(&pos->list);
+> > > +		__unregister_trace_kprobe(tk);
+> > > +		__free_trace_kprobe(tk);
+> > > +	}
+> > >  
+> > > -	free_trace_kprobe(tk);
+> > > +	trace_probe_event_free(event);
+> > 
+> > Actually, each probe already allocated the trace_probe events (which are not
+> > used if it is appended). Thus you have to use trace_probe_unlink(&tk->tp) in
+> > the above loop.
+> > 
+> > 	list_for_each_entry_safe(pos, tmp, &event->probes, list) {
+> > 		list_for_each_entry_safe(pos, tmp, &event->probes, list) {
+> > 		__unregister_trace_kprobe(tk);
+> > 		trace_probe_unlink(&tk->tp); /* This will call trace_probe_event_free() internally */
+> > 		free_trace_kprobe(tk);
+> > 	}
+> 
+> so calling trace_probe_event_free inside this loop is a problem,
+> because the loop iterates that trace_probe_event's probes list,
+> and last probe removed will trigger trace_probe_event_free, that
+> will free the list we iterate..  and we go down ;-)
+
+Oops, right. So in this case, you are looping on the all probes
+on an event, so event is referred outside of loop.
+
+OK, I got it.
+
+In the ftrace kprobe-event, this loop cursor is done by dynevent,
+so this problem doesn't occur. But the BPF is only using the
+trace_event, thus this special routine is needed.
+
+Could you add such comment on your loop?
+
+Thank you,
+
+> 
+> so that's why I added new free function '__free_trace_kprobe'
+> that frees everything as free_trace_kprobe, but does not call
+> trace_probe_unlink
+> 
+> 	event = tk->tp.event;
+> 	list_for_each_entry_safe(pos, tmp, &event->probes, list) {
+> 		list_for_each_entry_safe(pos, tmp, &event->probes, list) {
+> 		list_del_init(&pos->list);
+> 		__unregister_trace_kprobe(tk);
+> 		__free_trace_kprobe(tk);
+> 	}
+> 
+> 	trace_probe_event_free(event);
+> 
+> and there's trace_probe_event_free(event) to make the final free
+> 
+> thanks,
+> jirka
+> 
 
 
-On 2021/11/27 20:23, Masami Hiramatsu wrote:
-> On Fri, 26 Nov 2021 18:31:06 +0800
-> "liuqi (BA)" <liuqi115@huawei.com> wrote:
-> 
->>
->>
->> On 2021/8/24 18:50, Mark Rutland wrote:
->>>> diff --git a/arch/arm64/kernel/probes/optprobe_trampoline.S b/arch/arm64/kernel/probes/optprobe_trampoline.S
->>>> new file mode 100644
->>>> index 000000000000..24d713d400cd
->>>> --- /dev/null
->>>> +++ b/arch/arm64/kernel/probes/optprobe_trampoline.S
->>>> @@ -0,0 +1,37 @@
->>>> +/* SPDX-License-Identifier: GPL-2.0 */
->>>> +/*
->>>> + * trampoline entry and return code for optprobes.
->>>> + */
->>>> +
->>>> +#include <linux/linkage.h>
->>>> +#include <asm/asm-offsets.h>
->>>> +#include <asm/assembler.h>
->>>> +
->>>> +	.global optprobe_template_entry
->>>> +optprobe_template_entry:
->>> Please use SYM_*(); see arch/arm64/kernel/entry-ftrace.S for examples of
->>> how to use that for trampolines.
->>>
->>> This should be:
->>>
->>> SYM_CODE_START(optprobe_template)
->>>
->> Hi all,
->>
->> I meet a problem when I use SYM_CODE_START(optprobe_template) to replace
->> optprobe_template_entry.
->>
->> If SYM_CODE_START is used, all optprobe will share one trampoline space.
->> Under this circumstances, if user register two optprobes, trampoline
->> will be overwritten by the newer one, and this will cause kernel panic
->> when the old optprobe is trigger.
-> 
-> Hm, this is curious, because the template should be copied to the
-> trampoline buffer for each optprobe and be modified.
-> 
->>
->> Using optprobe_template_entry will not have this problem, as each
->> optprobe has its own trampoline space (alloced in get_opinsn_slot()).
-> 
-> Yes, it is designed to do so.
-> 
-> Thank you,
-> 
-
-Hi Masami,
-
-Thanks for your reply. But I also met a problem when using 
-get_opinsn_slot() to alloc trampoline buffer.
-
-As module_alloc(like x86) is used to alloc buffer, trampoline is in 
-module space, so if origin insn is in kernel space, the range between 
-origin insn and trampoline is out of 128M.
-
-As module PLT cannot used here, I have no idea to achieve long jump in 
-this situation. Do you have any good idea?
-
-Thanks,
-Qi
-
->>
->> So how to reuse SYM_CODE_START  in this situation, does anyone has a
->> good idea?
->>
->> Thanks,
->> Qi
->>> ... and note the matching end below.
->>>
->>>> +	sub sp, sp, #PT_REGS_SIZE
->>>> +	save_all_base_regs
->>>> +	/* Get parameters to optimized_callback() */
->>>> +	ldr	x0, 1f
->>>> +	mov	x1, sp
->>>> +	/* Branch to optimized_callback() */
->>>> +	.global optprobe_template_call
->>>> +optprobe_template_call:
->>> SYM_INNER_LABEL(optprobe_template_call, SYM_L_GLOBAL)
->>>
->>> ...and likewise for all the other labels.
->>>
->>>> +	nop
->>>> +	restore_all_base_regs
->>>> +	ldr lr, [sp, #S_LR]
->>>> +        add sp, sp, #PT_REGS_SIZE
->>>> +	.global optprobe_template_restore_orig_insn
->>>> +optprobe_template_restore_orig_insn:
->>>> +	nop
->>>> +	.global optprobe_template_restore_end
->>>> +optprobe_template_restore_end:
->>>> +	nop
->>>> +	.global optprobe_template_end
->>>> +optprobe_template_end:
->>>> +	.global optprobe_template_val
->>>> +optprobe_template_val:
->>>> +	1:	.long 0
->>>> +		.long 0
->>>> +	.global optprobe_template_max_length
->>>> +optprobe_template_max_length:
->>> SYM_INNER_LABEL(optprobe_template_end, SYM_L_GLOBAL)
->>> SYM_CODE_END(optprobe_template)
->>>
->>> Thanks,
->>> Mark.
->>>
->>>> -- 
-> 
-> 
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
